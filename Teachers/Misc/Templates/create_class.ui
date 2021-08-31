@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>779</width>
+    <height>831</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>779</width>
+    <height>831</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>779</width>
+    <height>831</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget{
+	background: #102542;
+	color: white; 
+	font-family: Barlow
+}
+
+QTimeEdit,
+QLineEdit {
+  	padding: 1px 5px;
+  	border: 1px solid #0e4884;
+  	border-radius: 5px;
+}
+
+QPushButton {
+  padding: 5px;
+  border: 1px solid #0e4884;
+  background-color: #0e4884;
+}
+
+QLineEdit:focus,
+QLineEdit:hover,
+QPushButton:focus,
+QPushButton:hover {
+  border: 1px solid #256eff;
+  outline: none;
+}
+
+QPushButton:pressed {
+  background-color: #072f49;
+}
+
+QGroupBox {
+	border: 1px solid #083654;
+	border-radius: 5px;
+	margin-top: 15px;
+}
+
+QGroupBox::title{
+	subcontrol-origin: margin;
+	subcontrol-position: top left;
+	margin-top: 7px;
+	margin-left: 15px;
+	background-color: transparent;
+}
+
+
+QListView{
+	border: 1px solid #0e4884;
+	border-radius: 5px;
+}
+
+QScrollBar:vertical{
+    width: 18px;
+    margin: 0px 3px 0px 7px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical{
+    background-color: #97b9f4;    
+    min-height: 5px;
+ 	border-radius: 4px;
+}
+
+QScrollBar::sub-line:vertical{
+     height: 0;
+     width: 0;
+}
+
+QScrollBar::add-line:vertical{
+   	 height: 0;
+     width: 0;
+}
+
+QScrollBar::add-page:vertical{
+    background: #0b1a30;
+	border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    margin-top: -3px;
+ }
+
+QScrollBar::sub-page:vertical{
+  	background: #0b1a30;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	margin-bottom: -3px;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="title_bar" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #102542;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <property name="spacing">
+      <number>20</number>
+     </property>
+     <property name="leftMargin">
+      <number>20</number>
+     </property>
+     <property name="topMargin">
+      <number>20</number>
+     </property>
+     <property name="rightMargin">
+      <number>20</number>
+     </property>
+     <property name="bottomMargin">
+      <number>20</number>
+     </property>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
+       <property name="spacing">
+        <number>20</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="lbl_title">
+         <property name="font">
+          <font>
+           <family>Barlow</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Create Class</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+         <property name="indent">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>20</number>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="font">
+          <font>
+           <family>Barlow</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="title">
+          <string>Class</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <property name="spacing">
+           <number>25</number>
+          </property>
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>20</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_27">
+            <property name="spacing">
+             <number>10</number>
+            </property>
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_21">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Code</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="txt_class_code">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="maxLength">
+               <number>8</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_25">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Name</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="txt_class_name">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_23">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Start</string>
+              </property>
+              <property name="indent">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTimeEdit" name="te_class_start">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="buttonSymbols">
+               <enum>QAbstractSpinBox::NoButtons</enum>
+              </property>
+              <property name="time">
+               <time>
+                <hour>7</hour>
+                <minute>0</minute>
+                <second>0</second>
+               </time>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_24">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>End</string>
+              </property>
+              <property name="indent">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTimeEdit" name="te_class_end">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="buttonSymbols">
+               <enum>QAbstractSpinBox::NoButtons</enum>
+              </property>
+              <property name="time">
+               <time>
+                <hour>7</hour>
+                <minute>0</minute>
+                <second>0</second>
+               </time>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <property name="spacing">
+             <number>10</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="btn_create_edit">
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border-radius: 5px;</string>
+              </property>
+              <property name="text">
+               <string>Create</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_cancel">
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton{
+	border-radius: 5px;
+	background: none;
+}
+
+
+QPushButton:pressed {
+ 	background-color: #072f49;
+}</string>
+              </property>
+              <property name="text">
+               <string>Cancel</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="font">
+          <font>
+           <family>Barlow</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="title">
+          <string>Section</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>20</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_48">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLineEdit" name="txt_search_section">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border-radius: none;
+border-top-left-radius: 5px;
+border-bottom-left-radius: 5px;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_search_section">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border-top-right-radius: 5px;
+border-bottom-right-radius: 5px;</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="C:/Users/moral/Desktop/Resources/Resources.qrc">
+                <normaloff>:/icons/search.png</normaloff>:/icons/search.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>18</width>
+                <height>18</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QListView" name="lv_section"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="font">
+        <font>
+         <family>Barlow</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="title">
+        <string>Students</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>20</number>
+        </property>
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>20</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <property name="sizeConstraint">
+           <enum>QLayout::SetFixedSize</enum>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QFrame" name="frame">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_49">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLineEdit" name="txt_search_student">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>35</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border-radius: none;
+border-top-left-radius: 5px;
+border-bottom-left-radius: 5px;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_search_student">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Barlow</family>
+                <pointsize>12</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border-top-right-radius: 5px;
+border-bottom-right-radius: 5px;</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="C:/Users/moral/Desktop/Resources/Resources.qrc">
+                <normaloff>:/icons/search.png</normaloff>:/icons/search.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>18</width>
+                <height>18</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QListView" name="lv_student"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="C:/Users/moral/Desktop/Resources/Resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
