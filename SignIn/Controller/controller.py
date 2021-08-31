@@ -7,8 +7,8 @@ from SignIn.Controller.forgot_password import ForgotPassword
 class Controller:
 
     def __init__(self):
-        self.Model = Model(self)
-        self.View = View(self)
+        self.Model = Model()
+        self.View = View()
 
         self.init_sign_in()
         

@@ -1,20 +1,20 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from SignIn.Misc.Widgets.title_bar import TitleBar
 from SignIn.Misc.Widgets.custom_lineedit import AdminPassword
+from SignIn.Misc.Widgets.loading_screen import LoadingScreen
 from SignIn.Misc.Widgets.active_overlay import ActiveOverlay
 from SignIn.Misc.Functions.relative_path import relative_path
-from SignIn.Misc.Functions.is_blank import is_blank
 
 
 class ForgotPassword(QtWidgets.QDialog):
 
-    def __init__(self, View, Controller):
+    def __init__(self, View):
         super().__init__()
         self.View = View
-        self.Controller = Controller
         self.setupUi(self)
 
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
+        self.LoadingScreen = LoadingScreen(self.widget, relative_path('SignIn', ['Misc', 'Resources'], 'loading_bars.gif'))
         self.ActiveOverlay = ActiveOverlay(self)
         self.dots = [self.dot_1, self.dot_2, self.dot_3, self.dot_4]
         self.validations = ["Password requirements:\n",
@@ -612,6 +612,11 @@ class ForgotPassword(QtWidgets.QDialog):
             return
         super().keyPressEvent(event)
 
+    def closeEvent(self, event):
+        if self.is_cancelled:
+            self.View.SignIn.stop_loading_screen()
+        super().closeEvent(event)
+
     def on_focus_change(self):
         if self.isActiveWindow():
             self.ActiveOverlay.show()
@@ -704,3 +709,9 @@ class ForgotPassword(QtWidgets.QDialog):
         self.lbl_answer_validation_2.hide()
         self.lbl_answer_validation_3.hide()
         self.setFixedSize(510, 315)
+
+    def run_loading_screen(self):
+        self.LoadingScreen.run()
+
+    def stop_loading_screen(self):
+        self.LoadingScreen.hide()

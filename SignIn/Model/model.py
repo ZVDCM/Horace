@@ -1,4 +1,7 @@
 from SignIn.Model.database import Database
+from SignIn.Model.sign_in import SignIn
+from SignIn.Model.register_admin import RegisterAdmin
+from SignIn.Model.forgot_password import ForgotPassword
 from SignIn.Misc.Functions.hash import *
 
 
@@ -15,52 +18,16 @@ class Model:
         def __str__(self):
             return f"User(ID={self.ID}, Username={self.Username}, Privilege={self.Privilege}, Salt={self.Salt}, Hash={self.Hash})"
 
-    def __init__(self, Controller):
-        self.Controller = Controller
+    def __init__(self):
         self.Database = Database()
+        
+        self.init_sign_in()
 
-    def get_user(self, username):
-        db = self.Database.connect('horace')
-        cursor = db.cursor()
+    def init_sign_in(self):
+        self.SignIn = SignIn(self)
 
-        select_query = 'SELECT * FROM Users WHERE Username=%s'
-        cursor.execute(select_query, (username,))
-
-        user = cursor.fetchone()
-
-        cursor.close()
-        db.close()
-
-        if user:
-            self.Controller.SignIn.results.put(self.User(*user))
-        else:
-            self.Controller.SignIn.results.put(None)
-
-    def register_admin(self, password):
-        db = self.Database.connect('horace')
-        cursor = db.cursor()
-
-        salt = generate_salt()
-        hashed_password = get_hashed_password(password, salt)
-
-        insert_query = 'UPDATE Users SET Salt=%s, Hash=%s WHERE Privilege=%s'
-        cursor.execute(insert_query, (salt, hashed_password, 'Admin'))
-        db.commit()
-
-        cursor.close()
-        db.close()
-
-    def register_admin_qna(self, qna):
-        db = self.Database.connect('horace')
-        cursor = db.cursor()
-
-        for question, answer in qna.items():
-            salt = generate_salt()
-            hashed_password = get_hashed_password(answer, salt)
-            insert_query = 'INSERT INTO security_questions ( Admin, Question, Salt, Hash ) VALUES ( %s, %s, %s, %s )'
-            cursor.execute(
-                insert_query, ("Admin", question, salt, hashed_password))
-            db.commit()
-
-        cursor.close()
-        db.close()
+    def init_register_admin(self):
+        self.RegisterAdmin = RegisterAdmin(self)
+    
+    def init_forgot_password(self):
+        self.ForgotPassword = ForgotPassword(self)

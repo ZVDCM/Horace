@@ -8,10 +8,9 @@ from SignIn.Misc.Functions.is_blank import is_blank
 
 class RegisterAdmin(QtWidgets.QDialog):
 
-    def __init__(self, View, Controller):
+    def __init__(self, View):
         super().__init__()
         self.View = View
-        self.Controller = Controller
         self.setupUi(self)
 
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)

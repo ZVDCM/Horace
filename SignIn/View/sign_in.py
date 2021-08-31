@@ -8,14 +8,13 @@ from SignIn.Misc.Functions.relative_path import relative_path
 
 class SignIn(QtWidgets.QWidget):
 
-    def __init__(self, View, Controller):
+    def __init__(self, View):
         super().__init__()
         self.View = View
-        self.Controller = Controller
         self.setupUi(self)
-        self.in_username = True
+        self.in_username = False
         self.is_admin = False
-        self.switch_state()
+        self.first_state()
 
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
 
@@ -80,7 +79,7 @@ class SignIn(QtWidgets.QWidget):
         self.widget.setObjectName("widget")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout_5.setContentsMargins(25, 25, 25, 25)
-        self.verticalLayout_5.setSpacing(25)
+        self.verticalLayout_5.setSpacing(15)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
@@ -241,35 +240,37 @@ class SignIn(QtWidgets.QWidget):
         else:
             self.ActiveOverlay.hide()
 
-    def switch_state(self):
-        if len(self.lbl_validation.text()) > 0:
-            self.lbl_validation.clear()
+    # def switch_state(self):
+    #     if len(self.lbl_validation.text()) > 0:
+    #         self.lbl_validation.clear()
             
-        if self.in_username:
-            self.first_state()
-        else:
-            self.second_state()
+    #     if self.in_username:
+    #         self.second_state()
+    #     else:
+    #         self.first_state()
 
-        if self.is_admin:
-            self.is_admin = False
-            self.lbl_forgot_password.show()
-        else:
-            self.lbl_forgot_password.hide()
+    #     if self.is_admin:
+    #         self.is_admin = False
+    #         self.lbl_forgot_password.show()
+    #     else:
+    #         self.lbl_forgot_password.hide()
 
     def invalid_input(self, message):
         self.lbl_validation.setText(message)
         self.lbl_validation.show()
 
     def first_state(self):
-        self.in_username = False
+        self.in_username = True
         self.lbl_tag.setText("Username")
         self.txt_input.clear()
         self.txt_input.setEchoMode(QtWidgets.QLineEdit.Normal)
         self.btn_next.setText("Next")
+        self.lbl_forgot_password.hide()
+        self.lbl_validation.clear()
         self.btn_cancel.hide()
 
     def second_state(self):
-        self.in_username = True
+        self.in_username = False
         self.lbl_tag.setText("Password")
         self.txt_input.clear()
         self.txt_input.setEchoMode(QtWidgets.QLineEdit.Password)

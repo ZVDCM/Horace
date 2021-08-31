@@ -1,3 +1,4 @@
+import queue
 from PyQt5.QtCore import QThread
 from SignIn.Misc.Functions.relative_path import relative_path
 from PyQt5 import QtGui
@@ -12,14 +13,17 @@ class Operation(QThread):
 
     def run(self):
         self.fn(self.val)
+        self.quit()
 
 
 class RegisterAdmin:
 
     def __init__(self, Controller):
-        self.Model = Controller.Model
+        self.Model = Controller.Model.RegisterAdmin
         self.View = Controller.View.RegisterAdmin
         self.Controller = Controller
+
+        self.results = queue.Queue()
 
         self.connect_signals()
         self.View.run()
@@ -66,6 +70,7 @@ class RegisterAdmin:
                 self.View.btn_next.setText("Sign Up")
 
             if current_index == 3:
+                self.View.is_cancelled = False
                 self.View.close()
                 self.register_admin.val = self.View.txt_repeat_password.text()
                 self.register_admin_qna.val = self.View.question_and_answer
