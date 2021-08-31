@@ -182,7 +182,8 @@ class SignIn(QtWidgets.QWidget):
         sizePolicy.setHeightForWidth(
             self.lbl_forgot_password.sizePolicy().hasHeightForWidth())
         self.lbl_forgot_password.setSizePolicy(sizePolicy)
-        self.lbl_forgot_password.setMinimumSize(QtCore.QSize(141, 17))
+        self.lbl_forgot_password.setMinimumSize(QtCore.QSize(100, 17))
+        self.lbl_forgot_password.setMaximumSize(QtCore.QSize(100, 16777215))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
@@ -224,7 +225,6 @@ class SignIn(QtWidgets.QWidget):
         self.verticalLayout_6.addWidget(self.widget)
 
         self.retranslateUi(Form)
-        self.lbl_validation.hide()
         self.lbl_forgot_password.hide()
         QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -242,8 +242,8 @@ class SignIn(QtWidgets.QWidget):
             self.ActiveOverlay.hide()
 
     def switch_state(self):
-        if self.lbl_validation.isVisible():
-            self.lbl_validation.hide()
+        if len(self.lbl_validation.text()) > 0:
+            self.lbl_validation.clear()
             
         if self.in_username:
             self.first_state()

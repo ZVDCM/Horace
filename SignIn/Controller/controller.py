@@ -2,6 +2,7 @@ from SignIn.View.view import View
 from SignIn.Model.model import Model 
 from SignIn.Controller.sign_in import SignIn
 from SignIn.Controller.register_admin import RegisterAdmin
+from SignIn.Controller.forgot_password import ForgotPassword
 
 class Controller:
 
@@ -16,3 +17,6 @@ class Controller:
 
     def init_register_admin(self):
         self.RegisterAdmin = RegisterAdmin(self)
+
+    def init_forgot_password(self):
+        self.ForgotPassword = ForgotPassword(self)

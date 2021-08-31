@@ -260,7 +260,7 @@ QPushButton:hover{
               <string notr="true">color: #bd2000</string>
              </property>
              <property name="text">
-              <string>Username incorrect</string>
+              <string/>
              </property>
              <property name="indent">
               <number>1</number>
@@ -277,8 +277,14 @@ QPushButton:hover{
              </property>
              <property name="minimumSize">
               <size>
-               <width>141</width>
+               <width>100</width>
                <height>17</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
               </size>
              </property>
              <property name="font">

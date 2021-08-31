@@ -33,7 +33,8 @@ class SignIn:
         self.View.btn_next.clicked.connect(self.input_username)
         self.View.btn_cancel.clicked.connect(self.View.switch_state)
 
-        self.View.lbl_forgot_password.operation.connect(self.input_password)
+        self.View.lbl_forgot_password.operation.connect(self.Controller.View.init_forgot_password)
+        self.View.lbl_forgot_password.operation.connect(self.Controller.init_forgot_password)
         self.get_user = Operation(self.Model.get_user)
 
     def input_username(self):
