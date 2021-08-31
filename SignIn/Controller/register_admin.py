@@ -66,7 +66,6 @@ class RegisterAdmin:
                 self.View.btn_next.setText("Sign Up")
 
             if current_index == 3:
-                self.View.is_cancelled = False
                 self.View.close()
                 self.register_admin.val = self.View.txt_repeat_password.text()
                 self.register_admin_qna.val = self.View.question_and_answer

@@ -53,6 +53,7 @@ class SignIn:
         if self.User.Username == "Admin":
             if not self.User.Hash:
                 self.View.run_loading_screen()
+                self.View.txt_input.clear()
                 self.Controller.View.init_register_admin()
                 self.Controller.init_register_admin()
                 return
