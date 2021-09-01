@@ -103,6 +103,19 @@ class SignIn:
             
         self.View.second_state()
 
+    def input_password(self):
+        password = self.View.txt_input.text()
+        if is_blank(password):
+            self.View.invalid_input("Password must be filled")
+            self.View.txt_input.clear()
+            return
+        
+        self.is_match.val = self.User.Salt, self.User.Hash, password
+        self.is_match.start()
+
+    def is_not_match(self):
+        self.View.invalid_input("Password invalid")
+
     def init_register_admin(self):
         self.Controller.Model.init_register_admin()
         self.Controller.View.init_register_admin()
@@ -117,16 +130,3 @@ class SignIn:
     def init_admin(self):
         print("Sign In Finished")
         self.View.close()
-
-    def input_password(self):
-        password = self.View.txt_input.text()
-        if is_blank(password):
-            self.View.invalid_input("Password must be filled")
-            self.View.txt_input.clear()
-            return
-        
-        self.is_match.val = self.User.Salt, self.User.Hash, password
-        self.is_match.start()
-
-    def is_not_match(self):
-        self.View.invalid_input("Password invalid")
