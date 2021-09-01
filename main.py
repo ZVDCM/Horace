@@ -8,3 +8,7 @@ if __name__ == "__main__":
     sys.exit(app.exec_())
 
 # TestTest!1
+# 1136, 884
+# self.parent.width()
+# self.parent.height()
+# self.parent.setWindowState(QtCore.Qt.WindowNoState)

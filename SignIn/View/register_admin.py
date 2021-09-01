@@ -164,7 +164,7 @@ class RegisterAdmin(QtWidgets.QDialog):
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_6.setSpacing(0)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
-        self.title_bar = TitleBar(self, True)
+        self.title_bar = TitleBar(self)
         self.title_bar.setMinimumSize(QtCore.QSize(0, 30))
         self.title_bar.setMaximumSize(QtCore.QSize(16777215, 30))
         self.title_bar.setStyleSheet("background: #102542")

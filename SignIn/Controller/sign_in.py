@@ -1,9 +1,8 @@
+from Admin.Controller.controller import Controller
 from SignIn.Misc.Functions.relative_path import relative_path
-import queue
-from PyQt5 import QtGui
-
-from PyQt5.QtCore import QThread, pyqtSignal
 from SignIn.Misc.Functions.is_blank import is_blank
+from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5 import QtGui
 
 
 class Operation(QThread):
@@ -18,6 +17,7 @@ class Operation(QThread):
         result = self.fn(self.val)
         self.operation.emit(result)
         self.quit()
+
 
 class Validate(QThread):
     operation = pyqtSignal()
@@ -36,6 +36,7 @@ class Validate(QThread):
             self.validation.emit()
         self.quit()
 
+
 class SignIn:
 
     def __init__(self, Controller):
@@ -44,7 +45,7 @@ class SignIn:
         self.Controller = Controller
 
         self.User = None
-
+        self.View.txt_input.setText("Admin")
         self.connect_signals()
 
         self.View.run()
@@ -87,9 +88,9 @@ class SignIn:
         self.get_user.start()
 
     def is_user_admin(self, user):
-        self.View.stop_loading_screen()
         self.User = user
         if not self.User:
+            self.View.stop_loading_screen()
             self.View.invalid_input("Username invalid or non-existent")
             return
 
@@ -100,8 +101,10 @@ class SignIn:
                 self.init_register_admin()
                 return
             self.View.lbl_forgot_password.show()
-            
+
         self.View.second_state()
+        self.View.stop_loading_screen()
+        self.View.txt_input.setText("TestTest!1")
 
     def input_password(self):
         password = self.View.txt_input.text()
@@ -109,7 +112,7 @@ class SignIn:
             self.View.invalid_input("Password must be filled")
             self.View.txt_input.clear()
             return
-        
+
         self.is_match.val = self.User.Salt, self.User.Hash, password
         self.is_match.start()
 
@@ -128,5 +131,5 @@ class SignIn:
         self.Controller.init_forgot_password()
 
     def init_admin(self):
-        print("Sign In Finished")
+        self.AdminController = Controller(self.Controller)
         self.View.close()

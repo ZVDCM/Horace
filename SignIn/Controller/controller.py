@@ -1,5 +1,5 @@
-from SignIn.View.view import View 
 from SignIn.Model.model import Model 
+from SignIn.View.view import View 
 from SignIn.Controller.sign_in import SignIn
 from SignIn.Controller.register_admin import RegisterAdmin
 from SignIn.Controller.forgot_password import ForgotPassword

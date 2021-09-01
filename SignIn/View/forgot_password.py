@@ -95,7 +95,7 @@ class ForgotPassword(QtWidgets.QDialog):
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_6.setSpacing(0)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
-        self.title_bar = TitleBar(Form, True)
+        self.title_bar = TitleBar(Form)
         self.title_bar.setMinimumSize(QtCore.QSize(0, 30))
         self.title_bar.setMaximumSize(QtCore.QSize(16777215, 30))
         self.title_bar.setStyleSheet("background: #102542")

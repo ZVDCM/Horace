@@ -1,4 +1,9 @@
+from Admin.View.admin import Admin
+
 class View:
 
     def __init__(self):
-        pass
+        self.init_admin()
+
+    def init_admin(self):
+        self.Admin = Admin(self)
