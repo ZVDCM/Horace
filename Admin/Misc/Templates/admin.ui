@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1188</width>
+    <width>1269</width>
     <height>884</height>
    </rect>
   </property>
@@ -1255,8 +1255,8 @@ border-bottom-right-radius: 5px;</string>
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>82</width>
-                         <height>30</height>
+                         <width>521</width>
+                         <height>703</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -1492,8 +1492,8 @@ QPushButton:hover{
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>82</width>
-                         <height>30</height>
+                         <width>521</width>
+                         <height>703</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_53">
@@ -1833,7 +1833,7 @@ QScrollBar::sub-page:vertical{
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_add_student">
+                     <widget class="QPushButton" name="btn_init_add_student">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -2289,7 +2289,7 @@ QPushButton:pressed {
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_add_section">
+                     <widget class="QPushButton" name="btn_init_add_section">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -2595,7 +2595,7 @@ QPushButton:pressed {
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_add_section_student">
+                     <widget class="QPushButton" name="btn_init_add_section_student">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -2678,7 +2678,7 @@ QPushButton:pressed {
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_clear_url_table_4">
+                     <widget class="QPushButton" name="btn_clear_section_student_table">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -3483,10 +3483,32 @@ border-bottom-right-radius: 5px;</string>
                           <number>15</number>
                          </property>
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_50" stretch="0,0">
+                          <layout class="QHBoxLayout" name="horizontalLayout_50" stretch="0,0,0">
                            <property name="spacing">
                             <number>0</number>
                            </property>
+                           <item>
+                            <widget class="QFrame" name="frame">
+                             <property name="minimumSize">
+                              <size>
+                               <width>30</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>30</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
+                             <property name="frameShape">
+                              <enum>QFrame::StyledPanel</enum>
+                             </property>
+                             <property name="frameShadow">
+                              <enum>QFrame::Raised</enum>
+                             </property>
+                            </widget>
+                           </item>
                            <item>
                             <spacer name="horizontalSpacer_20">
                              <property name="orientation">
@@ -3641,8 +3663,8 @@ border-bottom-right-radius: 5px;</string>
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>82</width>
-                         <height>30</height>
+                         <width>521</width>
+                         <height>703</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -3979,7 +4001,7 @@ QScrollBar::sub-page:vertical{
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_add_teacher">
+                     <widget class="QPushButton" name="btn_init_add_teacher">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -4425,7 +4447,7 @@ QPushButton:pressed {
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_clear_url_table_3">
+                     <widget class="QPushButton" name="btn_clear_attendance_table">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -4872,7 +4894,7 @@ QPushButton:pressed {
                 <item>
                  <widget class="QStackedWidget" name="sw_class">
                   <property name="currentIndex">
-                   <number>0</number>
+                   <number>1</number>
                   </property>
                   <widget class="QWidget" name="class_table">
                    <property name="styleSheet">
@@ -5009,7 +5031,7 @@ QScrollBar::sub-page:vertical{
                             <number>0</number>
                            </property>
                            <item>
-                            <widget class="QPushButton" name="btn_init_add_class_bulk">
+                            <widget class="QPushButton" name="btn_init_class_bulk">
                              <property name="minimumSize">
                               <size>
                                <width>30</width>
@@ -5194,8 +5216,8 @@ border-bottom-right-radius: 5px;</string>
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>82</width>
-                         <height>30</height>
+                         <width>575</width>
+                         <height>703</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_50">
@@ -5536,7 +5558,7 @@ QScrollBar::sub-page:vertical{
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_add_class">
+                     <widget class="QPushButton" name="btn_init_add_class">
                       <property name="minimumSize">
                        <size>
                         <width>30</width>
@@ -5567,7 +5589,7 @@ background-position: center center;</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_edit_class">
+                     <widget class="QPushButton" name="btn_init_edit_class">
                       <property name="minimumSize">
                        <size>
                         <width>30</width>
@@ -5900,7 +5922,7 @@ border-bottom-right-radius: 5px;</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QTimeEdit" name="te_class_start">
+                     <widget class="QTimeEdit" name="txt_class_start">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -5948,7 +5970,7 @@ border-bottom-right-radius: 5px;</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QTimeEdit" name="te_class_end">
+                     <widget class="QTimeEdit" name="txt_class_end">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -6123,7 +6145,7 @@ QPushButton:pressed {
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_add_class_student">
+                     <widget class="QPushButton" name="btn_init_add_class_student">
                       <property name="minimumSize">
                        <size>
                         <width>30</width>
@@ -6194,7 +6216,7 @@ QPushButton:pressed {
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_clear_url_table_2">
+                     <widget class="QPushButton" name="btn_clear_class_student_table">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -6627,7 +6649,7 @@ QScrollBar::sub-page:vertical{
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="btn_add_teacher_2">
+                     <widget class="QPushButton" name="btn_init_add_url">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>

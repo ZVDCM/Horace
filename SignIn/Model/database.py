@@ -28,7 +28,7 @@ class Database:
                     UNIQUE INDEX Section_UNIQUE (Section),
                     KEY Section (Section)) ENGINE = InnoDB;
 
-                CREATE TABLE Horace.Section_Members ( 
+                CREATE TABLE Horace.Section_Student ( 
                     ID INT NOT NULL AUTO_INCREMENT, 
                     Section VARCHAR(32) BINARY,
                     Student VARCHAR(32) BINARY,
@@ -59,7 +59,7 @@ class Database:
                     CONSTRAINT FK_Classes_Teacher FOREIGN KEY (Teacher) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE,
                     UNIQUE INDEX Code_UNIQUE (Code)) ENGINE = InnoDB;
 
-                CREATE TABLE Horace.Class_Members ( 
+                CREATE TABLE Horace.Class_Student ( 
                     ID INT NOT NULL AUTO_INCREMENT,
                     Code VARCHAR(32) BINARY,
                     Section VARCHAR(32) BINARY,
