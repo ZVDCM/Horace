@@ -3925,6 +3925,7 @@ class Admin(QtWidgets.QMainWindow):
 
             QStatusBar QLabel {
                 color: white;
+                padding-left: 3px;
             }
         """)
         self.status_bar.setObjectName("status_bar")
@@ -3934,8 +3935,8 @@ class Admin(QtWidgets.QMainWindow):
         font.setFamily("Barlow")
         font.setPointSize(9)
         self.lbl_database_status.setFont(font)
-        self.lbl_database_status.setIndent(2)
-        self.lbl_database_status.setAlignment(QtCore.Qt.AlignTop)
+        self.lbl_database_status.setMinimumSize(QtCore.QSize(200, 0))
+        self.lbl_database_status.setMaximumSize(QtCore.QSize(200, 20))
         MainWindow.setStatusBar(self.status_bar)
         self.retranslateUi(MainWindow)
         self.sw_all.setCurrentIndex(0)
