@@ -4,9 +4,10 @@ class ForgotPassword:
 
     def __init__(self, Model):
         self.Model = Model
+        self.Database = Model.Database
 
     def get_qna(self):
-        db = self.Model.Database.connect('horace')
+        db = self.Database.connect('horace')
         cursor = db.cursor()
 
         select_query = 'SELECT Question, Salt, Hash FROM Security_Questions'
@@ -27,7 +28,7 @@ class ForgotPassword:
         return check_password(password, hashed_password)
 
     def update_admin(self, password):
-        db = self.Model.Database.connect('horace')
+        db = self.Database.connect('horace')
         cursor = db.cursor()
 
         salt = generate_salt()

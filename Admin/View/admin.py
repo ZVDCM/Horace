@@ -3,6 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Admin.Misc.Widgets.admin_title_bar import TitleBar
 from Admin.Misc.Widgets.loading_screen import LoadingScreen
 from Admin.Misc.Widgets.active_overlay import ActiveOverlay
+from Admin.Misc.Widgets.pop_up import Popup
 from Admin.Misc.Functions.relative_path import relative_path
 
 
@@ -14,14 +15,23 @@ class Admin(QtWidgets.QMainWindow):
         self.setupUi(self)
         self.pressed = False
         self.side_navs = [self.lbl_students_and_sections, self.lbl_teachers_and_attendances, self.lbl_classes_and_members, self.lbl_blacklisted_url]
+        
+        self.Popup = Popup(self)
         # self.LoadingScreen = LoadingScreen(self.widget, relative_path(
         #     'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+
         self.hide_buttons()
         self.disable_student_inputs()
         self.disable_section_inputs()
         self.disable_teacher_inputs()
         self.disable_class_inputs()
         self.disable_url_inputs()
+
+        self.student_state = "read"
+        self.section_state = "read"
+        self.teacher_state = "read"
+        self.class_state = "read"
+        self.url_state = "read"
 
     def run(self):
         self.raise_()
@@ -4165,6 +4175,9 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_student_get_section.setDisabled(False)
         self.txt_student_password.setDisabled(False)
 
+    def set_student(self, value):
+        self.student_state = value
+
     # Section
     def disable_section_buttons(self):
         self.btn_init_add_section.setDisabled(True)
@@ -4181,6 +4194,9 @@ class Admin(QtWidgets.QMainWindow):
 
     def enable_section_inputs(self):
         self.txt_section_name.setDisabled(False)
+
+    def set_section(self, value):
+        self.section_state = value
 
     # Teacher
     def disable_teacher_buttons(self):
@@ -4200,6 +4216,9 @@ class Admin(QtWidgets.QMainWindow):
     def enable_teacher_inputs(self):
         self.txt_teacher_username.setDisabled(False)
         self.txt_teacher_password.setDisabled(False)
+
+    def set_teacher(self, value):
+        self.teacher_state = value
 
     # Class
     def disable_class_buttons(self):
@@ -4230,6 +4249,9 @@ class Admin(QtWidgets.QMainWindow):
         self.txt_class_start.setDisabled(False)
         self.txt_class_end.setDisabled(False)
 
+    def set_class(self, value):
+        self.class_state = value
+
     # URL
     def disable_url_buttons(self):
         self.btn_init_add_url.setDisabled(True)
@@ -4246,3 +4268,10 @@ class Admin(QtWidgets.QMainWindow):
 
     def enable_url_inputs(self):
         self.txt_url.setDisabled(False)
+
+    def set_url(self, value):
+        self.url_state = value
+    
+    def run_popup(self, message):
+        self.Popup.lbl_message.setText(message)
+        self.Popup.run()

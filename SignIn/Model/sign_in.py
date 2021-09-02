@@ -5,9 +5,10 @@ class SignIn:
 
     def __init__(self, Model):
         self.Model = Model
+        self.Database = Model.Database
 
     def get_user(self, username):
-        db = self.Model.Database.connect('horace')
+        db = self.Database.connect('horace')
         cursor = db.cursor()
 
         select_query = 'SELECT * FROM Users WHERE Username=%s'

@@ -17,18 +17,21 @@ class TeacherAttendance:
         )
         
         # Add
+        self.View.btn_init_add_teacher.clicked.connect(lambda: self.View.set_teacher("add"))
         self.View.btn_init_add_teacher.clicked.connect(self.View.disable_teacher_buttons)
         self.View.btn_init_add_teacher.clicked.connect(self.View.enable_teacher_inputs)
         self.View.btn_init_add_teacher.clicked.connect(lambda: self.View.btn_add_edit_teacher.setText("Add"))
         self.View.btn_init_add_teacher.clicked.connect(self.View.w_teacher_btn.show)
 
         # Edit
+        self.View.btn_init_edit_teacher.clicked.connect(lambda: self.View.set_teacher("edit"))
         self.View.btn_init_edit_teacher.clicked.connect(self.View.disable_teacher_buttons)
         self.View.btn_init_edit_teacher.clicked.connect(self.View.enable_teacher_inputs)
         self.View.btn_init_edit_teacher.clicked.connect(lambda: self.View.btn_add_edit_teacher.setText("Edit"))
         self.View.btn_init_edit_teacher.clicked.connect(self.View.w_teacher_btn.show)
         
         # Cancel
+        self.View.btn_cancel_teacher.clicked.connect(lambda: self.View.set_teacher("read"))
         self.View.btn_cancel_teacher.clicked.connect(self.View.w_teacher_btn.hide)
         self.View.btn_cancel_teacher.clicked.connect(self.View.disable_teacher_inputs)
         self.View.btn_cancel_teacher.clicked.connect(self.View.enable_teacher_buttons)

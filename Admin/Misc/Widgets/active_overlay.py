@@ -36,6 +36,5 @@ class ActiveOverlay(QWidget):
         self.setGeometry(0, 0, self.width, self.height)
         self.update()
 
-    def resize(self, event):
+    def resize(self, _):
         self.resized.emit()
-        super(self.parent.__class__, self.parent).resizeEvent(event)

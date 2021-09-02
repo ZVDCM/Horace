@@ -23,24 +23,24 @@ class Database:
                 
                 CREATE TABLE Horace.Sections ( 
                     ID INT NOT NULL AUTO_INCREMENT, 
-                    Section VARCHAR(32) BINARY, 
+                    Name VARCHAR(32) BINARY, 
                     PRIMARY KEY (ID),
-                    UNIQUE INDEX Section_UNIQUE (Section),
-                    KEY Section (Section)) ENGINE = InnoDB;
+                    UNIQUE INDEX Section_UNIQUE (Name),
+                    KEY Section (Name)) ENGINE = InnoDB;
 
                 CREATE TABLE Horace.Section_Student ( 
                     ID INT NOT NULL AUTO_INCREMENT, 
                     Section VARCHAR(32) BINARY,
                     Student VARCHAR(32) BINARY,
                     PRIMARY KEY (ID),
-                    CONSTRAINT FK_Section FOREIGN KEY (Section) REFERENCES Horace.Sections (Section) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT FK_Section FOREIGN KEY (Section) REFERENCES Horace.Sections (Name) ON DELETE CASCADE ON UPDATE CASCADE,
                     CONSTRAINT FK_Section_Student FOREIGN KEY (Student) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE
                     ) ENGINE = InnoDB;
 
                 CREATE TABLE Horace.Attendances (
                     ID INT NOT NULL AUTO_INCREMENT,
                     Teacher VARCHAR(32) BINARY,
-                    File_Name VARCHAR(54) NOT NULL,
+                    Name VARCHAR(54) NOT NULL,
                     File LONGBLOB NOT NULL,
                     Date DATETIME NOT NULL,
                     PRIMARY KEY (ID),
@@ -65,7 +65,7 @@ class Database:
                     Section VARCHAR(32) BINARY,
                     PRIMARY KEY (ID),
                     CONSTRAINT FK_Class_Code FOREIGN KEY (Code) REFERENCES Horace.Classes (Code) ON DELETE CASCADE ON UPDATE CASCADE,
-                    CONSTRAINT FK_Class_Section FOREIGN KEY (Section) REFERENCES Horace.Sections (Section) ON DELETE CASCADE ON UPDATE CASCADE
+                    CONSTRAINT FK_Class_Section FOREIGN KEY (Section) REFERENCES Horace.Sections (Name) ON DELETE CASCADE ON UPDATE CASCADE
                     ) ENGINE = InnoDB;
 
                 CREATE TABLE Horace.Security_Questions (

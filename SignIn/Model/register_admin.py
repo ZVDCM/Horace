@@ -5,9 +5,10 @@ class RegisterAdmin:
 
     def __init__(self, Model):
         self.Model = Model
+        self.Database = Model.Database
 
     def register_admin(self, password):
-        db = self.Model.Database.connect('horace')
+        db = self.Database.connect('horace')
         cursor = db.cursor()
 
         salt = generate_salt()
@@ -21,7 +22,7 @@ class RegisterAdmin:
         db.close()
 
     def register_admin_qna(self, qna):
-        db = self.Model.Database.connect('horace')
+        db = self.Database.connect('horace')
         cursor = db.cursor()
 
         for question, answer in qna.items():

@@ -7,7 +7,7 @@ from Admin.Controller.blacklist_url import BlacklistURL
 class Admin:
 
     def __init__(self, Controller):
-        self.Model = Controller.Model.Admin
+        self.Model = Controller.Model
         self.View = Controller.View.Admin
         self.Controller = Controller
 
