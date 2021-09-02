@@ -21,10 +21,15 @@ class StudentSection:
         # Add
         self.View.btn_init_add_student.clicked.connect(self.View.disable_student_buttons)
         self.View.btn_init_add_student.clicked.connect(self.View.enable_student_inputs)
+        self.View.btn_init_add_student.clicked.connect(lambda: self.View.btn_add_edit_student.setText("Add"))
         self.View.btn_init_add_student.clicked.connect(self.View.w_student_btn.show)
 
         # Edit
-        
+        self.View.btn_init_edit_student.clicked.connect(self.View.disable_student_buttons)
+        self.View.btn_init_edit_student.clicked.connect(self.View.enable_student_inputs)
+        self.View.btn_init_edit_student.clicked.connect(lambda: self.View.btn_add_edit_student.setText("Edit"))
+        self.View.btn_init_edit_student.clicked.connect(self.View.w_student_btn.show)
+
         # Cancel
         self.View.btn_cancel_student.clicked.connect(self.View.w_student_btn.hide)
         self.View.btn_cancel_student.clicked.connect(self.View.disable_student_inputs)
@@ -42,10 +47,15 @@ class StudentSection:
         # Add
         self.View.btn_init_add_section.clicked.connect(self.View.disable_section_buttons)
         self.View.btn_init_add_section.clicked.connect(self.View.enable_section_inputs)
+        self.View.btn_init_add_section.clicked.connect(lambda: self.View.btn_add_edit_section.setText("Add"))
         self.View.btn_init_add_section.clicked.connect(self.View.w_section_btn.show)
 
         # Edit
-        
+        self.View.btn_init_edit_section.clicked.connect(self.View.disable_section_buttons)
+        self.View.btn_init_edit_section.clicked.connect(self.View.enable_section_inputs)
+        self.View.btn_init_edit_section.clicked.connect(lambda: self.View.btn_add_edit_section.setText("Edit"))
+        self.View.btn_init_edit_section.clicked.connect(self.View.w_section_btn.show)
+
         # Cancel
         self.View.btn_cancel_section.clicked.connect(self.View.w_section_btn.hide)
         self.View.btn_cancel_section.clicked.connect(self.View.disable_section_inputs)
