@@ -81,16 +81,16 @@ class ForgotPassword:
         self.get_qna.operation.connect(self.set_questions)
 
         self.is_match = Validate(self.Model.is_match)
-        self.is_match.started.connect(self.View.run_loading_screen)
-        self.is_match.finished.connect(self.View.stop_loading_screen)
+        self.is_match.started.connect(self.View.LoadingScreen.show)
+        self.is_match.finished.connect(self.View.LoadingScreen.hide)
         self.is_match.operation.connect(self.increment_page)
         self.is_match.validation.connect(self.is_not_match)
 
         self.update_admin = Operation(self.Model.update_admin)
         self.update_admin.finished.connect(
-            self.Controller.View.SignIn.stop_loading_screen)
-        self.update_admin.finished.connect( lambda: self.Controller.View.SignIn.txt_input.clear())
-        self.update_admin.finished.connect( lambda: self.Controller.View.SignIn.switch_state())
+            self.Controller.View.SignIn.LoadingScreen.hide)
+        self.update_admin.finished.connect(self.Controller.View.SignIn.txt_input.clear)
+        self.update_admin.finished.connect(self.Controller.View.SignIn.btn_cancel.click)
 
     def increment_page(self):
         try:

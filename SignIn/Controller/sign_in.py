@@ -59,12 +59,12 @@ class SignIn:
             self.init_forgot_password)
 
         self.get_user = Operation(self.Model.get_user)
-        self.get_user.started.connect(self.View.run_loading_screen)
+        self.get_user.started.connect(self.View.LoadingScreen.show)
         self.get_user.operation.connect(self.is_user_admin)
 
         self.is_match = Validate(self.Model.is_match)
-        self.is_match.started.connect(self.View.run_loading_screen)
-        self.is_match.finished.connect(self.View.stop_loading_screen)
+        self.is_match.started.connect(self.View.LoadingScreen.show)
+        self.is_match.finished.connect(self.View.LoadingScreen.hide)
         self.is_match.operation.connect(self.init_admin)
         self.is_match.validation.connect(self.is_not_match)
 
@@ -90,7 +90,7 @@ class SignIn:
     def is_user_admin(self, user):
         self.User = user
         if not self.User:
-            self.View.stop_loading_screen()
+            self.View.LoadingScreen.hide()
             self.View.invalid_input("Username invalid or non-existent")
             return
 
@@ -103,7 +103,7 @@ class SignIn:
             self.View.lbl_forgot_password.show()
 
         self.View.second_state()
-        self.View.stop_loading_screen()
+        self.View.LoadingScreen.hide()
         self.View.txt_input.setText("TestTest!1")
 
     def input_password(self):
@@ -125,7 +125,7 @@ class SignIn:
         self.Controller.init_register_admin()
 
     def init_forgot_password(self):
-        self.View.run_loading_screen()
+        self.View.LoadingScreen.show()
         self.Controller.Model.init_forgot_password()
         self.Controller.View.init_forgot_password()
         self.Controller.init_forgot_password()

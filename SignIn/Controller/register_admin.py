@@ -48,7 +48,7 @@ class RegisterAdmin:
         self.register_admin = Operation(self.Model.register_admin)
         self.register_admin_qna = Operation(self.Model.register_admin_qna)
         self.register_admin_qna.finished.connect(
-            self.Controller.View.SignIn.stop_loading_screen)
+            self.Controller.View.SignIn.LoadingScreen.hide)
 
     def increment_page(self):
         try:

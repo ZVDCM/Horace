@@ -261,9 +261,3 @@ class SignIn(QtWidgets.QWidget):
         self.txt_input.setEchoMode(QtWidgets.QLineEdit.Password)
         self.btn_next.setText("Sign In")
         self.btn_cancel.show()
-
-    def run_loading_screen(self):
-        self.LoadingScreen.run()
-
-    def stop_loading_screen(self):
-        self.LoadingScreen.hide()

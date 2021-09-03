@@ -18,8 +18,36 @@ class Admin(QtWidgets.QMainWindow):
                           self.lbl_classes_and_members, self.lbl_blacklisted_url]
 
         self.Popup = Popup(self)
-        # self.LoadingScreen = LoadingScreen(self.widget, relative_path(
-        #     'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+
+        # Section Student
+        self.SectionLoadingScreen = LoadingScreen(self.w_section_input, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+        self.StudentLoadingScreen = LoadingScreen(self.w_student_input, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+        self.SectionStudentLoadingScreen = LoadingScreen(self.w_section_student, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+
+        # Teacher Attendance
+        self.TeacherLoadingScreen = LoadingScreen(self.w_section_student, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+        self.AttendanceLoadingScreen = LoadingScreen(self.w_attendance, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+        self.AttendanceStudentLoadingScreen = LoadingScreen(self.w_attendance_student, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+
+        # Class Member
+        self.ClassLoadingScreen = LoadingScreen(self.w_class_input, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+        self.ClassTeacherLoadingScreen = LoadingScreen(self.w_class_teacher, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+        self.ClassStudentLoadingScreen = LoadingScreen(self.w_class_student, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+
+        # URL
+        self.URLLoadingScreen = LoadingScreen(self.w_url_input, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+        self.URLSLoadingScreen = LoadingScreen(self.w_url, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         self.hide_buttons()
         self.disable_student_inputs()
@@ -3405,29 +3433,29 @@ class Admin(QtWidgets.QMainWindow):
         self.line_13.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_13.setObjectName("line_13")
         self.verticalLayout_45.addWidget(self.line_13)
-        self.w_teacher = QtWidgets.QWidget(self.widget_8)
-        self.w_teacher.setObjectName("w_teacher")
-        self.verticalLayout_44 = QtWidgets.QVBoxLayout(self.w_teacher)
+        self.w_class_teacher = QtWidgets.QWidget(self.widget_8)
+        self.w_class_teacher.setObjectName("w_class_teacher")
+        self.verticalLayout_44 = QtWidgets.QVBoxLayout(self.w_class_teacher)
         self.verticalLayout_44.setContentsMargins(15, 20, 15, 20)
         self.verticalLayout_44.setSpacing(15)
         self.verticalLayout_44.setObjectName("verticalLayout_44")
         self.horizontalLayout_32 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_32.setSpacing(6)
         self.horizontalLayout_32.setObjectName("horizontalLayout_32")
-        self.btn_section_students_status_4 = QtWidgets.QLabel(self.w_teacher)
+        self.lbl_class_teacher_status = QtWidgets.QLabel(self.w_class_teacher)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
-        self.btn_section_students_status_4.setFont(font)
-        self.btn_section_students_status_4.setAlignment(QtCore.Qt.AlignCenter)
-        self.btn_section_students_status_4.setIndent(1)
-        self.btn_section_students_status_4.setObjectName(
-            "btn_section_students_status_4")
-        self.horizontalLayout_32.addWidget(self.btn_section_students_status_4)
+        self.lbl_class_teacher_status.setFont(font)
+        self.lbl_class_teacher_status.setAlignment(QtCore.Qt.AlignCenter)
+        self.lbl_class_teacher_status.setIndent(1)
+        self.lbl_class_teacher_status.setObjectName(
+            "lbl_class_teacher_status")
+        self.horizontalLayout_32.addWidget(self.lbl_class_teacher_status)
         spacerItem25 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_32.addItem(spacerItem25)
-        self.btn_init_add_class_teacher = QtWidgets.QPushButton(self.w_teacher)
+        self.btn_init_add_class_teacher = QtWidgets.QPushButton(self.w_class_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3456,7 +3484,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_init_add_class_teacher.setObjectName(
             "btn_init_add_class_teacher")
         self.horizontalLayout_32.addWidget(self.btn_init_add_class_teacher)
-        self.btn_delete_class_teacher = QtWidgets.QPushButton(self.w_teacher)
+        self.btn_delete_class_teacher = QtWidgets.QPushButton(self.w_class_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3481,7 +3509,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_delete_class_teacher.setIconSize(QtCore.QSize(21, 21))
         self.btn_delete_class_teacher.setObjectName("btn_delete_class_teacher")
         self.horizontalLayout_32.addWidget(self.btn_delete_class_teacher)
-        self.btn_clear_class_teacher = QtWidgets.QPushButton(self.w_teacher)
+        self.btn_clear_class_teacher = QtWidgets.QPushButton(self.w_class_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3512,7 +3540,7 @@ class Admin(QtWidgets.QMainWindow):
             QtWidgets.QLayout.SetDefaultConstraint)
         self.horizontalLayout_60.setSpacing(0)
         self.horizontalLayout_60.setObjectName("horizontalLayout_60")
-        self.txt_search_class_teacher = QtWidgets.QLineEdit(self.w_teacher)
+        self.txt_search_class_teacher = QtWidgets.QLineEdit(self.w_class_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3532,7 +3560,7 @@ class Admin(QtWidgets.QMainWindow):
                                                     "border-bottom-left-radius: 5px;")
         self.txt_search_class_teacher.setObjectName("txt_search_class_teacher")
         self.horizontalLayout_60.addWidget(self.txt_search_class_teacher)
-        self.btn_search_class_teacher = QtWidgets.QPushButton(self.w_teacher)
+        self.btn_search_class_teacher = QtWidgets.QPushButton(self.w_class_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3558,11 +3586,11 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_search_class_teacher.setObjectName("btn_search_class_teacher")
         self.horizontalLayout_60.addWidget(self.btn_search_class_teacher)
         self.verticalLayout_44.addLayout(self.horizontalLayout_60)
-        self.lv_class_teacher = QtWidgets.QListView(self.w_teacher)
+        self.lv_class_teacher = QtWidgets.QListView(self.w_class_teacher)
         self.lv_class_teacher.setMaximumSize(QtCore.QSize(16777215, 125))
         self.lv_class_teacher.setObjectName("lv_class_teacher")
         self.verticalLayout_44.addWidget(self.lv_class_teacher)
-        self.verticalLayout_45.addWidget(self.w_teacher)
+        self.verticalLayout_45.addWidget(self.w_class_teacher)
         self.line_6 = QtWidgets.QFrame(self.widget_8)
         self.line_6.setStyleSheet("color: #0e4177;")
         self.line_6.setFrameShadow(QtWidgets.QFrame.Plain)
@@ -3724,6 +3752,7 @@ class Admin(QtWidgets.QMainWindow):
         self.lv_class_student.setObjectName("lv_class_student")
         self.verticalLayout_25.addWidget(self.lv_class_student)
         self.verticalLayout_45.addWidget(self.w_class_student)
+        self.verticalLayout_45.setStretch(4, 1)
         self.horizontalLayout_5.addWidget(self.widget_8)
         self.horizontalLayout_5.setStretch(0, 2)
         self.horizontalLayout_5.setStretch(1, 1)
@@ -4297,7 +4326,7 @@ class Admin(QtWidgets.QMainWindow):
         self.label_24.setText(_translate("MainWindow", "End"))
         self.btn_add_edit_class.setText(_translate("MainWindow", "Add"))
         self.btn_cancel_class.setText(_translate("MainWindow", "Cancel"))
-        self.btn_section_students_status_4.setText(
+        self.lbl_class_teacher_status.setText(
             _translate("MainWindow", "Teachers: 100"))
         self.lbl_class_student_status.setText(
             _translate("MainWindow", "Students: 100"))

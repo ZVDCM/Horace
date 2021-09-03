@@ -1,4 +1,4 @@
-from Admin.Controller.student_section import StudentSection
+from Admin.Controller.section_student import SectionStudent
 from Admin.Controller.teacher_attendance import TeacherAttendance
 from Admin.Controller.class_member import ClassMember
 from Admin.Controller.blacklist_url import BlacklistURL
@@ -12,8 +12,8 @@ class Admin:
         self.Controller = Controller
 
         self.connect_signals()
-        self.StudentSection = StudentSection(
-            self.Model, self.View, self.Controller)
+        self.SectionStudent = SectionStudent(
+            self.Model.SectionStudent, self.View, self.Controller)
         self.StudentSection = TeacherAttendance(
             self.Model, self.View, self.Controller)
         self.StudentSection = ClassMember(

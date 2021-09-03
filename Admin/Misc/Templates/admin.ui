@@ -408,7 +408,7 @@ QPushButton:hover{
             <string notr="true"/>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>2</number>
            </property>
            <widget class="QWidget" name="student_section">
             <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1">
@@ -6193,7 +6193,7 @@ QPushButton:pressed {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="w_teacher" native="true">
+                 <widget class="QWidget" name="w_class_teacher" native="true">
                   <layout class="QVBoxLayout" name="verticalLayout_44">
                    <property name="spacing">
                     <number>15</number>

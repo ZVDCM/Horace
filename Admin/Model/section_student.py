@@ -1,4 +1,4 @@
-class StudentSection:
+class SectionStudent:
 
     def __init__(self, Model):
         self.Model = Model
