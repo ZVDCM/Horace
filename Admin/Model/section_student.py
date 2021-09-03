@@ -60,4 +60,14 @@ class SectionStudent:
 
         cursor.close()
         db.close()
-        
+
+    def delete_section(self, section):
+        db = self.Database.connect()
+        cursor = db.cursor()
+
+        delete_query = "DELETE FROM Sections WHERE ID=%s"
+        cursor.execute(delete_query, (section.ID,))
+        db.commit()
+
+        cursor.close()
+        db.close()

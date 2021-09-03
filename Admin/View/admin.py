@@ -4272,7 +4272,7 @@ class Admin(QtWidgets.QMainWindow):
         self.status_bar.setObjectName("status_bar")
         self.lbl_database_status = QtWidgets.QLabel("Database Initialized", self.status_bar)
         self.lbl_database_status.setMinimumSize(QtCore.QSize(200, 20))
-        self.lbl_database_status.setMaximumSize(QtCore.QSize(200, 20))
+        self.lbl_database_status.setMaximumSize(QtCore.QSize(16777215, 20))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(9)
