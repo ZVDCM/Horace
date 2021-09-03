@@ -1,9 +1,9 @@
+from Admin.Misc.Functions.password import generate_password
 from Admin.Misc.Widgets.custom_label import SideNav
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Admin.Misc.Widgets.admin_title_bar import TitleBar
 from Admin.Misc.Widgets.loading_screen import LoadingScreen
 from Admin.Misc.Widgets.custom_table_view import TableView
-from Admin.Misc.Widgets.custom_lineedit import SearchTarget
 from Admin.Misc.Widgets.data_table import DataTable
 from Admin.Misc.Widgets.pop_up import Popup
 from Admin.Misc.Functions.relative_path import relative_path
@@ -1387,7 +1387,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_37 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_37.setSpacing(0)
         self.horizontalLayout_37.setObjectName("horizontalLayout_37")
-        self.txt_student_section = SearchTarget(self)
+        self.txt_student_section = QtWidgets.QLineEdit(self.w_student_input)
         self.txt_student_section.setEnabled(False)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Fixed)
@@ -1456,6 +1456,7 @@ class Admin(QtWidgets.QMainWindow):
         self.verticalLayout_9.addWidget(self.label_10)
         self.txt_student_password = QtWidgets.QLineEdit(self.w_student_input)
         self.txt_student_password.setEnabled(False)
+        self.txt_student_password.setReadOnly(True)
         self.txt_student_password.setMinimumSize(QtCore.QSize(0, 30))
         font = QtGui.QFont()
         font.setFamily("Barlow")
@@ -4362,7 +4363,34 @@ class Admin(QtWidgets.QMainWindow):
         self.w_teacher_btn.hide()
         self.w_url_btn.hide()
 
-    # Student
+    # ==Section
+    def clear_section_inputs(self):
+        self.txt_section_name.clear()
+
+    def disable_section_buttons(self):
+        self.btn_init_add_section.setDisabled(True)
+        self.btn_init_edit_section.setDisabled(True)
+        self.btn_delete_section.setDisabled(True)
+
+    def enable_section_buttons(self):
+        self.btn_init_add_section.setDisabled(False)
+        self.btn_init_edit_section.setDisabled(False)
+        self.btn_delete_section.setDisabled(False)
+
+    def disable_section_inputs(self):
+        self.txt_section_name.setDisabled(True)
+
+    def enable_section_inputs(self):
+        self.txt_section_name.setDisabled(False)
+
+    def set_section(self, value):
+        self.section_state = value
+
+    # ==Student
+    def clear_student_inputs(self):
+        self.txt_student_username.clear()
+        self.txt_student_section.clear()
+
     def disable_student_buttons(self):
         self.btn_init_add_student.setDisabled(True)
         self.btn_init_edit_student.setDisabled(True)
@@ -4388,27 +4416,7 @@ class Admin(QtWidgets.QMainWindow):
     def set_student(self, value):
         self.student_state = value
 
-    # Section
-    def disable_section_buttons(self):
-        self.btn_init_add_section.setDisabled(True)
-        self.btn_init_edit_section.setDisabled(True)
-        self.btn_delete_section.setDisabled(True)
-
-    def enable_section_buttons(self):
-        self.btn_init_add_section.setDisabled(False)
-        self.btn_init_edit_section.setDisabled(False)
-        self.btn_delete_section.setDisabled(False)
-
-    def disable_section_inputs(self):
-        self.txt_section_name.setDisabled(True)
-
-    def enable_section_inputs(self):
-        self.txt_section_name.setDisabled(False)
-
-    def set_section(self, value):
-        self.section_state = value
-
-    # Teacher
+    # ==Teacher
     def disable_teacher_buttons(self):
         self.btn_init_add_teacher.setDisabled(True)
         self.btn_init_edit_teacher.setDisabled(True)
@@ -4430,7 +4438,7 @@ class Admin(QtWidgets.QMainWindow):
     def set_teacher(self, value):
         self.teacher_state = value
 
-    # Class
+    # ==Class
     def disable_class_buttons(self):
         self.btn_init_add_class.setDisabled(True)
         self.btn_init_edit_class.setDisabled(True)
@@ -4496,3 +4504,6 @@ class Admin(QtWidgets.QMainWindow):
     def run_data_table(self, target_table, target_column, target_input, table_model):
         self.DataTable = DataTable(self, target_table, target_column, target_input, table_model)
         self.DataTable.run()
+
+    def set_password(self, target):
+        target.setText(generate_password())

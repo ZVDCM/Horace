@@ -28,7 +28,7 @@ class Database:
                     UNIQUE INDEX Section_UNIQUE (Name),
                     KEY Section (Name)) ENGINE = InnoDB;
 
-                CREATE TABLE Horace.Section_Student ( 
+                CREATE TABLE Horace.Section_Students ( 
                     ID INT NOT NULL AUTO_INCREMENT, 
                     Section VARCHAR(32) BINARY,
                     Student VARCHAR(32) BINARY,

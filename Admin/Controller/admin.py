@@ -14,7 +14,8 @@ class GetAll(QtCore.QThread):
 
     def run(self):
         res = self.fn()
-        self.operation.emit(res)
+        if res:
+            self.operation.emit(res)
         self.quit()
 
 class Admin:
@@ -47,8 +48,13 @@ class Admin:
         self.get_all_sections = GetAll(self.Model.SectionStudent.get_all_section)
         self.get_all_sections.started.connect(self.View.TableSectionStudentLoadingScreen.run)
         self.get_all_sections.operation.connect(self.set_section_tableview)
-        self.get_all_sections.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
 
+        self.get_all_students = GetAll(self.Model.SectionStudent.get_all_student)
+        self.get_all_students.operation.connect(self.set_student_tableview)
+        self.get_all_students.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
+
+        self.get_all_sections.finished.connect(self.get_all_students.start)
+        
     def change_page(self, index):
         for side_nav in self.View.side_navs:
             if side_nav.is_active:
@@ -72,6 +78,16 @@ class Admin:
         self.View.tv_sections.selectRow(index)
         self.SectionStudent.set_target_section(self.Model.Section(*section_model.getRowData(index)))
         self.SectionStudent.set_section_input_values()
+
+    def set_student_tableview(self, students):
+        student_model = self.Model.TableModel(self.View.tv_students, students, self.Model.Student.get_headers())
+        self.View.tv_students.setModel(student_model)
+        self.View.tv_students.horizontalHeader().setMinimumSectionSize(150)
+        self.View.tv_students.setFocus(True)
+        index = student_model.rowCount() - 2
+        self.View.tv_students.selectRow(index)
+        self.SectionStudent.set_target_student(self.Model.Student(*student_model.getRowData(index)))
+        self.SectionStudent.set_student_input_values()
 
     def resize(self, event):
         self.View.title_bar.resize_window()
