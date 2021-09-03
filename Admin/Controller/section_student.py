@@ -1,8 +1,9 @@
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 
-class GetUser(QtCore.QThread):
+class Get(QtCore.QThread):
     operation = QtCore.pyqtSignal()
+    validation = QtCore.pyqtSignal()
 
     def __init__(self, fn):
         super().__init__()
@@ -10,8 +11,22 @@ class GetUser(QtCore.QThread):
         self.val = None
 
     def run(self):
-        res = self.fn(self.val)
-        self.operation.emit(res)
+        is_exist = self.fn(self.val)
+        if not is_exist:
+            self.operation.emit()
+        else:
+            self.validation.emit()
+        self.quit()
+
+class Create(QtCore.QThread):
+
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+        self.val = None
+
+    def run(self):
+        self.fn(self.val)
         self.quit()
 
 
@@ -87,7 +102,13 @@ class SectionStudent:
         self.View.btn_cancel_student.clicked.connect(self.View.disable_student_inputs)
         self.View.btn_cancel_student.clicked.connect(self.View.enable_student_buttons)
         
-        self.get_section = GetUser(self.Model.get_section)
+        self.get_section = Get(self.Model.get_section)
+        self.get_section.started.connect(self.View.SectionLoadingScreen.show)
+        self.get_section.validation.connect(self.View.SectionLoadingScreen.hide)
+
+        self.add_section =  Create(self.Model.create_section)
+        self.add_section.finished.connect(self.View.SectionLoadingScreen.hide)
+        self.add_section.finished.connect(self.View.btn_cancel_section.click)
 
     def change_table_bulk(self, target, index):
         target.setCurrentIndex(index)
@@ -118,14 +139,18 @@ class SectionStudent:
             self.View.run_popup("Section fields must be filled")
             return
 
-    def add_section(self, name):
-        pass
+        self.get_section.val = name
+        self.get_section.operation.connect(self.add_section.start)
+        self.get_section.validation.connect(lambda: self.View.set_database_status(f'{name} exists'))
+        self.get_section.validation.connect(lambda: self.View.run_popup(f'{name} exists', 'warning'))
+        
+        self.add_section.val = name
+        self.add_section.finished.connect(lambda: self.View.set_database_status(f'{name} added successfully'))
+        
+        self.get_section.start()
 
     def edit_section_input(self):
         name = self.View.txt_section_name.text()
         if is_blank(name):
             self.View.run_popup("Section fields must be filled")
             return
-
-    def edit_section(self, name):
-        pass

@@ -4256,12 +4256,19 @@ class Admin(QtWidgets.QMainWindow):
                                       "\n"
                                       "QStatusBar QLabel {\n"
                                       "    color: white;\n"
+                                      "    padding-top: 4px;\n"
                                       "    padding-left: 3px;\n"
                                       "}")
         self.status_bar.setSizeGripEnabled(True)
         self.status_bar.setObjectName("status_bar")
+        self.lbl_database_status = QtWidgets.QLabel("Database Initialized", self.status_bar)
+        self.lbl_database_status.setMinimumSize(QtCore.QSize(200, 0))
+        self.lbl_database_status.setMaximumSize(QtCore.QSize(200, 15))
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(9)
+        self.lbl_database_status.setFont(font)
         MainWindow.setStatusBar(self.status_bar)
-
         self.retranslateUi(MainWindow)
         self.sw_all.setCurrentIndex(0)
         self.sw_student_section.setCurrentIndex(0)
@@ -4459,6 +4466,19 @@ class Admin(QtWidgets.QMainWindow):
     def set_url(self, value):
         self.url_state = value
 
-    def run_popup(self, message):
+    def run_popup(self, message, icon='information'):
+        if icon == 'question':
+            self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
+            'Admin', ['Misc', 'Resources'], 'question.png')))
+        elif icon == 'warning':
+            self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
+            'Admin', ['Misc', 'Resources'], 'warning.png')))
+        elif icon == 'critical':
+            self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
+            'Admin', ['Misc', 'Resources'], 'critical.png')))
+        
         self.Popup.lbl_message.setText(message)
         self.Popup.run()
+
+    def set_database_status(self, text):
+        self.lbl_database_status.setText(text)
