@@ -6,19 +6,19 @@ from Admin.Model.table_model import TableModel
 class Model:
 
     class Section:
-        def __init__(self, ID, Section):
+        def __init__(self, ID, Name):
             self.ID = ID
-            self.Section = Section
+            self.Name = Name
 
         def __str__(self):
-            return f"Section(ID={self.ID}, Section={self.Username})"
+            return f"Section(ID={self.ID}, Name={self.Name})"
 
         @staticmethod
         def get_headers():
-            return ("ID", "Section")
+            return ("ID", "Name")
 
         def get_values(self):
-            return (self.ID, self.Section)
+            return (self.ID, self.Name)
 
     class Student:
         def __init__(self, ID, Username, Salt, Hash):

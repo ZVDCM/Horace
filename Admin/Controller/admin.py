@@ -25,16 +25,18 @@ class Admin:
         self.Controller = Controller
 
         self.SectionStudent = SectionStudent(
-            self.Model.SectionStudent, self.View, self.Controller)
+            self.Model.SectionStudent, self.View, self)
         self.StudentSection = TeacherAttendance(
-            self.Model, self.View, self.Controller)
+            self.Model, self.View, self)
         self.StudentSection = ClassMember(
-            self.Model, self.View, self.Controller)
+            self.Model, self.View, self)
         self.StudentSection = BlacklistURL(
-            self.Model, self.View, self.Controller)
+            self.Model, self.View, self)
+
         self.connect_signals()
-        self.View.run()
         self.init_databases()
+
+        self.View.run()
 
     def connect_signals(self):
         for side_nav in self.View.side_navs:
@@ -62,13 +64,29 @@ class Admin:
         self.get_all_sections.start()
 
     def set_section_tableview(self, sections):
-        self.section_model = self.Model.TableModel(self.View.tv_sections, sections, self.Model.Section.get_headers())
-        self.View.tv_sections.setModel(self.section_model)
-        self.View.tv_sections.selectRow(
-            self.section_model.rowCount() - 2)
-        self.View.tv_sections.setFocus(True)
+        section_model = self.Model.TableModel(self.View.tv_sections, sections, self.Model.Section.get_headers())
+        self.View.tv_sections.setModel(section_model)
         self.View.tv_sections.horizontalHeader().setMinimumSectionSize(150)
+        self.View.tv_sections.setFocus(True)
+        index = section_model.rowCount() - 2
+        self.View.tv_sections.selectRow(index)
+        self.SectionStudent.set_target_section(self.Model.Section(*section_model.getRowData(index)))
+        self.SectionStudent.set_section_input_values()
 
     def resize(self, event):
         self.View.title_bar.resize_window()
+        self.View.TableSectionStudentLoadingScreen.resize_loader()
+        self.View.TableTeacherLoadingScreen.resize_loader()
+        self.View.TableClassLoadingScreen.resize_loader()
+        self.View.SectionLoadingScreen.resize_loader()
+        self.View.StudentLoadingScreen.resize_loader()
+        self.View.SectionStudentLoadingScreen.resize_loader()
+        self.View.TeacherLoadingScreen.resize_loader()
+        self.View.AttendanceLoadingScreen.resize_loader()
+        self.View.AttendanceStudentLoadingScreen.resize_loader()
+        self.View.ClassLoadingScreen.resize_loader()
+        self.View.ClassTeacherLoadingScreen.resize_loader()
+        self.View.ClassStudentLoadingScreen.resize_loader()
+        self.View.URLLoadingScreen.resize_loader()
+        self.View.URLSLoadingScreen.resize_loader()
         super(QMainWindow, self.View).resizeEvent(event)

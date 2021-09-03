@@ -2,6 +2,8 @@ class SectionStudent:
 
     def __init__(self, Model):
         self.Model = Model
+        self.Section = Model.Section
+        self.TableModel = Model.TableModel
         self.Database = Model.Database
 
     # Section
@@ -48,12 +50,12 @@ class SectionStudent:
         cursor.close()
         db.close()
 
-    def edit_section(self, name):
+    def edit_section(self, section):
         db = self.Database.connect()
         cursor = db.cursor()
 
         update_query = "UPDATE Sections SET Name=%s WHERE ID=%s"
-        cursor.execute(update_query, (name,))
+        cursor.execute(update_query, (section.Name, section.ID))
         db.commit()
 
         cursor.close()

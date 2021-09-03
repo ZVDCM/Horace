@@ -14,7 +14,6 @@ class Admin(QtWidgets.QMainWindow):
         super().__init__()
         self.View = View
         self.setupUi(self)
-        self.pressed = False
         self.side_navs = [self.lbl_students_and_sections, self.lbl_teachers_and_attendances,
                           self.lbl_classes_and_members, self.lbl_blacklisted_url]
 
@@ -4266,14 +4265,14 @@ class Admin(QtWidgets.QMainWindow):
                                       "\n"
                                       "QStatusBar QLabel {\n"
                                       "    color: white;\n"
-                                      "    padding-top: 4px;\n"
+                                      "    padding-top: 0px;\n"
                                       "    padding-left: 3px;\n"
                                       "}")
         self.status_bar.setSizeGripEnabled(True)
         self.status_bar.setObjectName("status_bar")
         self.lbl_database_status = QtWidgets.QLabel("Database Initialized", self.status_bar)
-        self.lbl_database_status.setMinimumSize(QtCore.QSize(200, 0))
-        self.lbl_database_status.setMaximumSize(QtCore.QSize(200, 15))
+        self.lbl_database_status.setMinimumSize(QtCore.QSize(200, 20))
+        self.lbl_database_status.setMaximumSize(QtCore.QSize(200, 20))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(9)
