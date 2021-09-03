@@ -3,7 +3,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Admin.Misc.Widgets.admin_title_bar import TitleBar
 from Admin.Misc.Widgets.loading_screen import LoadingScreen
 from Admin.Misc.Widgets.custom_table_view import TableView
-from Admin.Misc.Widgets.active_overlay import ActiveOverlay
+from Admin.Misc.Widgets.custom_lineedit import SearchTarget
+from Admin.Misc.Widgets.data_table import DataTable
 from Admin.Misc.Widgets.pop_up import Popup
 from Admin.Misc.Functions.relative_path import relative_path
 
@@ -1386,7 +1387,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_37 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_37.setSpacing(0)
         self.horizontalLayout_37.setObjectName("horizontalLayout_37")
-        self.txt_student_section = QtWidgets.QLineEdit(self.w_student_input)
+        self.txt_student_section = SearchTarget(self)
         self.txt_student_section.setEnabled(False)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Fixed)
@@ -4491,3 +4492,7 @@ class Admin(QtWidgets.QMainWindow):
 
     def set_database_status(self, text):
         self.lbl_database_status.setText(text)
+
+    def run_data_table(self, target_table, target_column, target_input, table_model):
+        self.DataTable = DataTable(self, target_table, target_column, target_input, table_model)
+        self.DataTable.run()

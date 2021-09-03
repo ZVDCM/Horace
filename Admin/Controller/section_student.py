@@ -50,7 +50,12 @@ class SectionStudent:
         self.connect_signals()
 
     def connect_signals(self):
-        # ==Section
+        self.section_signals()
+        self.section_operations()
+        self.student_signals()
+        self.student_operations()
+
+    def section_signals(self):
         self.View.btn_add_edit_section.clicked.connect(self.add_edit_section)
 
         self.View.btn_init_section_bulk.clicked.connect(
@@ -104,8 +109,31 @@ class SectionStudent:
 
         # Table
         self.View.tv_sections.clicked.connect(self.section_table_row_clicked)
+    
+    def section_operations(self):
+        self.get_section = Get(self.Model.get_section)
+        self.get_section.started.connect(self.View.SectionLoadingScreen.run)
+        self.get_section.validation.connect(
+            self.View.SectionLoadingScreen.hide)
 
-        # ==Student
+        self.add_section = Operation(self.Model.create_section, self.Model.get_all_section)
+        self.add_section.finished.connect(self.View.SectionLoadingScreen.hide)
+        self.add_section.operation.connect(self.reload_section_table)
+        self.add_section.finished.connect(self.View.btn_cancel_section.click)
+
+        self.edit_section = Operation(self.Model.edit_section, self.Model.get_all_section)
+        self.edit_section.started.connect(self.View.SectionLoadingScreen.run)
+        self.edit_section.operation.connect(self.reload_section_table)
+        self.edit_section.finished.connect(self.View.SectionLoadingScreen.hide)
+        self.edit_section.finished.connect(self.View.btn_cancel_section.click)
+
+        self.delete_section = Operation(self.Model.delete_section, self.Model.get_all_section)
+        self.delete_section.started.connect(self.View.SectionLoadingScreen.run)
+        self.delete_section.operation.connect(self.reload_section_table)
+        self.delete_section.finished.connect(self.View.SectionLoadingScreen.hide)
+
+    def student_signals(self):
+        self.View.btn_add_edit_student.clicked.connect(self.add_edit_student)
         self.View.btn_init_student_bulk.clicked.connect(
             lambda: self.change_table_bulk(self.View.sw_student_section, 1)
         )
@@ -148,27 +176,15 @@ class SectionStudent:
         self.View.btn_cancel_student.clicked.connect(
             self.View.enable_student_buttons)
 
-        # Section Operations
-        self.get_section = Get(self.Model.get_section)
-        self.get_section.started.connect(self.View.SectionLoadingScreen.run)
-        self.get_section.validation.connect(
-            self.View.SectionLoadingScreen.hide)
+        self.View.btn_student_get_section.clicked.connect(lambda: self.View.run_data_table("Section", 1, self.View.txt_student_section ,self.View.tv_sections.model()))
 
-        self.add_section = Operation(self.Model.create_section, self.Model.get_all_section)
-        self.add_section.finished.connect(self.View.SectionLoadingScreen.hide)
-        self.add_section.operation.connect(self.reload_section_table)
-        self.add_section.finished.connect(self.View.btn_cancel_section.click)
+        self.View.txt_student_section.returnPressed.connect(self.get_student_section)
+        self.View.txt_student_section.operation.connect(self.get_student_section)
 
-        self.edit_section = Operation(self.Model.edit_section, self.Model.get_all_section)
-        self.edit_section.started.connect(self.View.SectionLoadingScreen.run)
-        self.edit_section.operation.connect(self.reload_section_table)
-        self.edit_section.finished.connect(self.View.SectionLoadingScreen.hide)
-        self.edit_section.finished.connect(self.View.btn_cancel_section.click)
-
-        self.delete_section = Operation(self.Model.delete_section, self.Model.get_all_section)
-        self.delete_section.started.connect(self.View.SectionLoadingScreen.run)
-        self.delete_section.operation.connect(self.reload_section_table)
-        self.delete_section.finished.connect(self.View.SectionLoadingScreen.hide)
+    def student_operations(self):
+        self.get_student_section = Get(self.Model.get_section)
+        self.get_student_section.started.connect(self.View.StudentLoadingScreen.run)
+        self.get_student_section.finished.connect(self.View.StudentLoadingScreen.hide)
 
     def change_table_bulk(self, target, index):
         target.setCurrentIndex(index)
@@ -259,3 +275,29 @@ class SectionStudent:
 
     def set_section_input_values(self):
         self.View.txt_section_name.setText(self.TargetSection.Name)
+
+    # Student
+    def add_edit_student(self):
+        if self.View.student_state == "add":
+            self.add_student_input()
+        else:
+            self.edit_student_input()
+
+    def add_student_input(self):
+        username = self.View.txt_student_username.text()
+        section = self.View.txt_student_section.text()
+        password = self.View.txt_student_password.text()
+        if is_blank(username) or is_blank(section) or is_blank(password):
+            self.View.run_popup("Student fields must be filled")
+            return
+
+    def get_student_section(self):
+        section = self.View.txt_student_section.text()
+        if not section:
+            return
+        self.get_student_section.val = section
+        self.get_student_section.operation.connect(lambda: self.View.run_popup(f'{section} does not exist', 'warning'))
+        self.get_student_section.start()
+
+    def edit_student_input(self):
+        print(2)

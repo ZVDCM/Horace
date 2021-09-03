@@ -20,6 +20,7 @@ class SignIn(QtWidgets.QWidget):
 
         self.LoadingScreen = LoadingScreen(self.widget, relative_path('SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.ActiveOverlay = ActiveOverlay(self)
+        self.ActiveOverlay.show()
         
     def run(self):
         self.raise_()
@@ -27,9 +28,7 @@ class SignIn(QtWidgets.QWidget):
 
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(337, 455)
-        Form.setMinimumSize(QtCore.QSize(337, 455))
-        Form.setMaximumSize(QtCore.QSize(337, 455))
+        Form.setFixedSize(337, 455)
         Form.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         Form.setStyleSheet("QWidget{\n"
                            "    background: #102542; color: white\n"
@@ -236,9 +235,11 @@ class SignIn(QtWidgets.QWidget):
 
     def on_focus_change(self):
         if self.isActiveWindow():
-            self.ActiveOverlay.show()
+            self.ActiveOverlay.is_focused = True
+            self.ActiveOverlay.update()
         else:
-            self.ActiveOverlay.hide()
+            self.ActiveOverlay.is_focused = False
+            self.ActiveOverlay.update()
 
     def invalid_input(self, message):
         self.lbl_validation.setText(message)

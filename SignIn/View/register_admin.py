@@ -15,6 +15,7 @@ class RegisterAdmin(QtWidgets.QDialog):
 
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
+        self.ActiveOverlay.show()
         self.dots = [self.dot_1, self.dot_2, self.dot_3, self.dot_4]
         self.validations = ["Password requirements:\n",
                             "        🗴  Password must be at least 8 characters in length.\n",
@@ -737,7 +738,7 @@ class RegisterAdmin(QtWidgets.QDialog):
 
     def closeEvent(self, event):
         if self.is_cancelled:
-            self.View.SignIn.stop_loading_screen()
+            self.View.SignIn.LoadingScreen.hide()
         super().closeEvent(event)
 
     def showEvent(self, event):
@@ -746,9 +747,11 @@ class RegisterAdmin(QtWidgets.QDialog):
 
     def on_focus_change(self):
         if self.isActiveWindow():
-            self.ActiveOverlay.show()
+            self.ActiveOverlay.is_focused = True
+            self.ActiveOverlay.update()
         else:
-            self.ActiveOverlay.hide()
+            self.ActiveOverlay.is_focused = False
+            self.ActiveOverlay.update()
 
     def reveal_password(self):
         icon = QtGui.QIcon()
