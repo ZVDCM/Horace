@@ -1,4 +1,20 @@
 from Admin.Misc.Functions.is_blank import is_blank
+from PyQt5 import QtCore
+
+class GetUser(QtCore.QThread):
+    operation = QtCore.pyqtSignal()
+
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+        self.val = None
+
+    def run(self):
+        res = self.fn(self.val)
+        self.operation.emit(res)
+        self.quit()
+
+
 
 class StudentSection:
 
@@ -72,6 +88,8 @@ class StudentSection:
         self.View.btn_cancel_section.clicked.connect(self.View.disable_section_inputs)
         self.View.btn_cancel_section.clicked.connect(self.View.enable_section_buttons)
 
+        self.get_section = GetUser(self.Model.get_section)
+
     def change_table_bulk(self, target, index):
         target.setCurrentIndex(index)
 
@@ -91,18 +109,24 @@ class StudentSection:
     # Section
     def add_edit_section(self):
         if self.View.section_state == "add":
-            self.add_section()
+            self.add_section_input()
         else:
-            self.edit_section()
+            self.edit_section_input()
 
-    def add_section(self):
+    def add_section_input(self):
         name = self.View.txt_section_name.text()
         if is_blank(name):
             self.View.run_popup("Section fields must be filled")
             return
 
-    def edit_section(self):
+    def add_section(self, name):
+        pass
+
+    def edit_section_input(self):
         name = self.View.txt_section_name.text()
         if is_blank(name):
             self.View.run_popup("Section fields must be filled")
             return
+
+    def edit_section(self, name):
+        pass

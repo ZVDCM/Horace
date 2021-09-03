@@ -59,13 +59,15 @@ class Database:
                     CONSTRAINT FK_Classes_Teacher FOREIGN KEY (Teacher) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE,
                     UNIQUE INDEX Code_UNIQUE (Code)) ENGINE = InnoDB;
 
-                CREATE TABLE Horace.Class_Student ( 
+                CREATE TABLE Horace.Class_Members ( 
                     ID INT NOT NULL AUTO_INCREMENT,
                     Code VARCHAR(32) BINARY,
-                    Section VARCHAR(32) BINARY,
+                    Username VARCHAR(32) BINARY,
+                    Privilege VARCHAR(32) NOT NULL,
                     PRIMARY KEY (ID),
                     CONSTRAINT FK_Class_Code FOREIGN KEY (Code) REFERENCES Horace.Classes (Code) ON DELETE CASCADE ON UPDATE CASCADE,
-                    CONSTRAINT FK_Class_Section FOREIGN KEY (Section) REFERENCES Horace.Sections (Name) ON DELETE CASCADE ON UPDATE CASCADE
+                    CONSTRAINT FK_Class_Username FOREIGN KEY (Username) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT FK_Class_Member_Privilege FOREIGN KEY (Privilege) REFERENCES Horace.Users (Privilege) ON DELETE CASCADE ON UPDATE CASCADE
                     ) ENGINE = InnoDB;
 
                 CREATE TABLE Horace.Security_Questions (

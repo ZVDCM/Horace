@@ -34,8 +34,8 @@ class StudentSection:
         db.close()
 
         if section:
-            return True
-        return False
+            return self.Model.Section(*section)
+        return None
 
     def create_section(self, name):
         db = self.Database.connect()
