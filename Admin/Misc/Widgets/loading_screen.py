@@ -5,15 +5,11 @@ from PyQt5.QtGui import QMovie, QPainter
 
 
 class LoadingScreen(QWidget):
-    resized = pyqtSignal()
 
     def __init__(self, parent, photo):
         super().__init__(parent=parent)
         self.parent = parent
         self.setupUi(photo)
-
-        self.parent.resizeEvent = self.resizeEvent
-        self.resized.connect(self.resize_loader)
 
     def setupUi(self, photo):
         self.vbox = QHBoxLayout()
@@ -40,7 +36,7 @@ class LoadingScreen(QWidget):
 
     def showEvent(self, event):
         self.loading_animation.start()
-        self.resized.emit()
+        self.resize_loader()
         self.parent.setEnabled(False)
         super().showEvent(event)
 
@@ -58,12 +54,7 @@ class LoadingScreen(QWidget):
 
         super().paintEvent(event)
 
-    @QtCore.pyqtSlot()
     def resize_loader(self):
         width, height = self.parent.frameGeometry(
         ).width(), self.parent.frameGeometry().height()
         self.setGeometry(-1, -1, width+1, height+1)
-
-    def resizeEvent(self, event):
-        self.resized.emit()
-        super().resizeEvent(event)

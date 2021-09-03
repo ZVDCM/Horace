@@ -9,7 +9,7 @@ class SectionStudent:
         db = self.Database.connect()
         cursor = db.cursor()
 
-        select_query = "SELECT * FROM Sections"
+        select_query = "SELECT * FROM Sections ORDER BY ID"
         cursor.execute(select_query)
 
         sections = cursor.fetchall()

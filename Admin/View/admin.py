@@ -2,6 +2,7 @@ from Admin.Misc.Widgets.custom_label import SideNav
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Admin.Misc.Widgets.admin_title_bar import TitleBar
 from Admin.Misc.Widgets.loading_screen import LoadingScreen
+from Admin.Misc.Widgets.custom_table_view import TableView
 from Admin.Misc.Widgets.active_overlay import ActiveOverlay
 from Admin.Misc.Widgets.pop_up import Popup
 from Admin.Misc.Functions.relative_path import relative_path
@@ -19,6 +20,14 @@ class Admin(QtWidgets.QMainWindow):
 
         self.Popup = Popup(self)
 
+        # Table
+        self.TableSectionStudentLoadingScreen = LoadingScreen(self.w_table_section_student, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+        self.TableTeacherLoadingScreen = LoadingScreen(self.w_table_teacher, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+        self.TableClassLoadingScreen = LoadingScreen(self.w_table_class, relative_path(
+            'SignIn', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+        
         # Section Student
         self.SectionLoadingScreen = LoadingScreen(self.w_section_input, relative_path(
             'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
@@ -277,15 +286,15 @@ class Admin(QtWidgets.QMainWindow):
         self.sw_all.setSizePolicy(sizePolicy)
         self.sw_all.setStyleSheet("")
         self.sw_all.setObjectName("sw_all")
-        self.student_section = QtWidgets.QWidget()
-        self.student_section.setObjectName("student_section")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.student_section)
+        self.section_student = QtWidgets.QWidget()
+        self.section_student.setObjectName("section_student")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.section_student)
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3.setSpacing(15)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.widget_4 = QtWidgets.QWidget(self.student_section)
-        self.widget_4.setMinimumSize(QtCore.QSize(377, 0))
-        self.widget_4.setStyleSheet("QWidget{\n"
+        self.w_table_section_student = QtWidgets.QWidget(self.section_student)
+        self.w_table_section_student.setMinimumSize(QtCore.QSize(377, 0))
+        self.w_table_section_student.setStyleSheet("QWidget{\n"
                                     "    background: #102542;\n"
                                     "}\n"
                                     "\n"
@@ -348,8 +357,8 @@ class Admin(QtWidgets.QMainWindow):
                                     "    border-top-right-radius: 4px;\n"
                                     "    margin-bottom: -3px;\n"
                                     "}")
-        self.widget_4.setObjectName("widget_4")
-        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.widget_4)
+        self.w_table_section_student.setObjectName("w_table_section_student")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.w_table_section_student)
         self.verticalLayout_6.setContentsMargins(15, 15, 15, 15)
         self.verticalLayout_6.setSpacing(5)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
@@ -357,7 +366,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_8.setContentsMargins(-1, -1, -1, 10)
         self.horizontalLayout_8.setSpacing(6)
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
-        self.lbl_sections_table_status = QtWidgets.QLabel(self.widget_4)
+        self.lbl_sections_table_status = QtWidgets.QLabel(self.w_table_section_student)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
@@ -367,14 +376,14 @@ class Admin(QtWidgets.QMainWindow):
         self.lbl_sections_table_status.setObjectName(
             "lbl_sections_table_status")
         self.horizontalLayout_8.addWidget(self.lbl_sections_table_status)
-        self.line_8 = QtWidgets.QFrame(self.widget_4)
+        self.line_8 = QtWidgets.QFrame(self.w_table_section_student)
         self.line_8.setStyleSheet("color: #083654;")
         self.line_8.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line_8.setLineWidth(2)
         self.line_8.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_8.setObjectName("line_8")
         self.horizontalLayout_8.addWidget(self.line_8)
-        self.lbl_students_table_status = QtWidgets.QLabel(self.widget_4)
+        self.lbl_students_table_status = QtWidgets.QLabel(self.w_table_section_student)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
@@ -388,7 +397,7 @@ class Admin(QtWidgets.QMainWindow):
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_8.addItem(spacerItem3)
         self.btn_import_students_sections = QtWidgets.QPushButton(
-            self.widget_4)
+            self.w_table_section_student)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -410,7 +419,7 @@ class Admin(QtWidgets.QMainWindow):
             "btn_import_students_sections")
         self.horizontalLayout_8.addWidget(self.btn_import_students_sections)
         self.btn_export_students_sections = QtWidgets.QPushButton(
-            self.widget_4)
+            self.w_table_section_student)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -432,7 +441,7 @@ class Admin(QtWidgets.QMainWindow):
             "btn_export_students_sections")
         self.horizontalLayout_8.addWidget(self.btn_export_students_sections)
         self.btn_clear_students_sections_table = QtWidgets.QPushButton(
-            self.widget_4)
+            self.w_table_section_student)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -466,14 +475,14 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_8.addWidget(
             self.btn_clear_students_sections_table)
         self.verticalLayout_6.addLayout(self.horizontalLayout_8)
-        self.line = QtWidgets.QFrame(self.widget_4)
+        self.line = QtWidgets.QFrame(self.w_table_section_student)
         self.line.setStyleSheet("color: #083654;")
         self.line.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line.setLineWidth(2)
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
         self.line.setObjectName("line")
         self.verticalLayout_6.addWidget(self.line)
-        self.sw_student_section = QtWidgets.QStackedWidget(self.widget_4)
+        self.sw_student_section = QtWidgets.QStackedWidget(self.w_table_section_student)
         self.sw_student_section.setObjectName("sw_student_section")
         self.student_section_table = QtWidgets.QWidget()
         self.student_section_table.setStyleSheet("QHeaderView::section {\n"
@@ -655,7 +664,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_47.addWidget(self.btn_search_sections)
         self.horizontalLayout_46.addLayout(self.horizontalLayout_47)
         self.verticalLayout_8.addLayout(self.horizontalLayout_46)
-        self.tv_sections = QtWidgets.QTableView(self.groupBox_2)
+        self.tv_sections = TableView(self.groupBox_2)
         self.tv_sections.setObjectName("tv_sections")
         self.verticalLayout_8.addWidget(self.tv_sections)
         self.horizontalLayout_11.addWidget(self.groupBox_2)
@@ -743,7 +752,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_45.addWidget(self.btn_search_students)
         self.horizontalLayout_44.addLayout(self.horizontalLayout_45)
         self.verticalLayout_7.addLayout(self.horizontalLayout_44)
-        self.tv_students = QtWidgets.QTableView(self.groupBox)
+        self.tv_students = TableView(self.groupBox)
         self.tv_students.setObjectName("tv_students")
         self.verticalLayout_7.addWidget(self.tv_students)
         self.horizontalLayout_11.addWidget(self.groupBox)
@@ -970,8 +979,8 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_9.addLayout(self.verticalLayout_52)
         self.sw_student_section.addWidget(self.student_section_section_bulk)
         self.verticalLayout_6.addWidget(self.sw_student_section)
-        self.horizontalLayout_3.addWidget(self.widget_4)
-        self.widget_5 = QtWidgets.QWidget(self.student_section)
+        self.horizontalLayout_3.addWidget(self.w_table_section_student)
+        self.widget_5 = QtWidgets.QWidget(self.section_student)
         self.widget_5.setMinimumSize(QtCore.QSize(234, 0))
         self.widget_5.setMaximumSize(QtCore.QSize(380, 16777215))
         self.widget_5.setStyleSheet("QWidget{\n"
@@ -1679,16 +1688,16 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_3.addWidget(self.widget_5)
         self.horizontalLayout_3.setStretch(0, 2)
         self.horizontalLayout_3.setStretch(1, 1)
-        self.sw_all.addWidget(self.student_section)
+        self.sw_all.addWidget(self.section_student)
         self.teacher = QtWidgets.QWidget()
         self.teacher.setObjectName("teacher")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.teacher)
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_4.setSpacing(15)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.widget_6 = QtWidgets.QWidget(self.teacher)
-        self.widget_6.setMinimumSize(QtCore.QSize(377, 0))
-        self.widget_6.setStyleSheet("QWidget{\n"
+        self.w_table_teacher = QtWidgets.QWidget(self.teacher)
+        self.w_table_teacher.setMinimumSize(QtCore.QSize(377, 0))
+        self.w_table_teacher.setStyleSheet("QWidget{\n"
                                     "    background: #102542;\n"
                                     "}\n"
                                     "\n"
@@ -1751,8 +1760,8 @@ class Admin(QtWidgets.QMainWindow):
                                     "    border-top-right-radius: 4px;\n"
                                     "    margin-bottom: -3px;\n"
                                     "}")
-        self.widget_6.setObjectName("widget_6")
-        self.verticalLayout_16 = QtWidgets.QVBoxLayout(self.widget_6)
+        self.w_table_teacher.setObjectName("w_table_teacher")
+        self.verticalLayout_16 = QtWidgets.QVBoxLayout(self.w_table_teacher)
         self.verticalLayout_16.setContentsMargins(15, 15, 15, 15)
         self.verticalLayout_16.setSpacing(5)
         self.verticalLayout_16.setObjectName("verticalLayout_16")
@@ -1760,7 +1769,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_14.setContentsMargins(-1, -1, -1, 10)
         self.horizontalLayout_14.setSpacing(6)
         self.horizontalLayout_14.setObjectName("horizontalLayout_14")
-        self.lbl_teachers_table_status = QtWidgets.QLabel(self.widget_6)
+        self.lbl_teachers_table_status = QtWidgets.QLabel(self.w_table_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -1777,7 +1786,7 @@ class Admin(QtWidgets.QMainWindow):
         self.lbl_teachers_table_status.setObjectName(
             "lbl_teachers_table_status")
         self.horizontalLayout_14.addWidget(self.lbl_teachers_table_status)
-        self.line_9 = QtWidgets.QFrame(self.widget_6)
+        self.line_9 = QtWidgets.QFrame(self.w_table_teacher)
         self.line_9.setStyleSheet("color: #083654;")
         self.line_9.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line_9.setLineWidth(2)
@@ -1787,7 +1796,7 @@ class Admin(QtWidgets.QMainWindow):
         spacerItem13 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_14.addItem(spacerItem13)
-        self.btn_import_teachers = QtWidgets.QPushButton(self.widget_6)
+        self.btn_import_teachers = QtWidgets.QPushButton(self.w_table_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -1807,7 +1816,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_import_teachers.setIconSize(QtCore.QSize(20, 20))
         self.btn_import_teachers.setObjectName("btn_import_teachers")
         self.horizontalLayout_14.addWidget(self.btn_import_teachers)
-        self.btn_export_teachers = QtWidgets.QPushButton(self.widget_6)
+        self.btn_export_teachers = QtWidgets.QPushButton(self.w_table_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -1824,7 +1833,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_export_teachers.setIconSize(QtCore.QSize(20, 20))
         self.btn_export_teachers.setObjectName("btn_export_teachers")
         self.horizontalLayout_14.addWidget(self.btn_export_teachers)
-        self.btn_clear_teachers_table = QtWidgets.QPushButton(self.widget_6)
+        self.btn_clear_teachers_table = QtWidgets.QPushButton(self.w_table_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -1850,14 +1859,14 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_clear_teachers_table.setObjectName("btn_clear_teachers_table")
         self.horizontalLayout_14.addWidget(self.btn_clear_teachers_table)
         self.verticalLayout_16.addLayout(self.horizontalLayout_14)
-        self.line_2 = QtWidgets.QFrame(self.widget_6)
+        self.line_2 = QtWidgets.QFrame(self.w_table_teacher)
         self.line_2.setStyleSheet("color: #083654;")
         self.line_2.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line_2.setLineWidth(2)
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_2.setObjectName("line_2")
         self.verticalLayout_16.addWidget(self.line_2)
-        self.sw_teacher_attendance = QtWidgets.QStackedWidget(self.widget_6)
+        self.sw_teacher_attendance = QtWidgets.QStackedWidget(self.w_table_teacher)
         self.sw_teacher_attendance.setObjectName("sw_teacher_attendance")
         self.teacher_table = QtWidgets.QWidget()
         self.teacher_table.setStyleSheet("QHeaderView::section {\n"
@@ -2033,7 +2042,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_49.addWidget(self.btn_reveal_password_13)
         self.horizontalLayout_48.addLayout(self.horizontalLayout_49)
         self.verticalLayout_17.addLayout(self.horizontalLayout_48)
-        self.tv_teachers = QtWidgets.QTableView(self.groupBox_3)
+        self.tv_teachers = TableView(self.groupBox_3)
         self.tv_teachers.setObjectName("tv_teachers")
         self.verticalLayout_17.addWidget(self.tv_teachers)
         self.horizontalLayout_17.addWidget(self.groupBox_3)
@@ -2142,7 +2151,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_29.addLayout(self.verticalLayout_34)
         self.sw_teacher_attendance.addWidget(self.teacher_teacher_bulk)
         self.verticalLayout_16.addWidget(self.sw_teacher_attendance)
-        self.horizontalLayout_4.addWidget(self.widget_6)
+        self.horizontalLayout_4.addWidget(self.w_table_teacher)
         self.widget_7 = QtWidgets.QWidget(self.teacher)
         self.widget_7.setMinimumSize(QtCore.QSize(234, 0))
         self.widget_7.setMaximumSize(QtCore.QSize(380, 16777215))
@@ -2702,9 +2711,9 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_5.setSpacing(15)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
-        self.widget_9 = QtWidgets.QWidget(self.class_member)
-        self.widget_9.setMinimumSize(QtCore.QSize(377, 0))
-        self.widget_9.setStyleSheet("QWidget{\n"
+        self.w_table_class = QtWidgets.QWidget(self.class_member)
+        self.w_table_class.setMinimumSize(QtCore.QSize(377, 0))
+        self.w_table_class.setStyleSheet("QWidget{\n"
                                     "    background: #102542;\n"
                                     "}\n"
                                     "\n"
@@ -2767,8 +2776,8 @@ class Admin(QtWidgets.QMainWindow):
                                     "    border-top-right-radius: 4px;\n"
                                     "    margin-bottom: -3px;\n"
                                     "}")
-        self.widget_9.setObjectName("widget_9")
-        self.verticalLayout_29 = QtWidgets.QVBoxLayout(self.widget_9)
+        self.w_table_class.setObjectName("w_table_class")
+        self.verticalLayout_29 = QtWidgets.QVBoxLayout(self.w_table_class)
         self.verticalLayout_29.setContentsMargins(15, 15, 15, 15)
         self.verticalLayout_29.setSpacing(5)
         self.verticalLayout_29.setObjectName("verticalLayout_29")
@@ -2776,7 +2785,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_23.setContentsMargins(-1, -1, -1, 10)
         self.horizontalLayout_23.setSpacing(6)
         self.horizontalLayout_23.setObjectName("horizontalLayout_23")
-        self.lbl_class_table_status = QtWidgets.QLabel(self.widget_9)
+        self.lbl_class_table_status = QtWidgets.QLabel(self.w_table_class)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -2795,7 +2804,7 @@ class Admin(QtWidgets.QMainWindow):
         spacerItem20 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_23.addItem(spacerItem20)
-        self.btn_import_class = QtWidgets.QPushButton(self.widget_9)
+        self.btn_import_class = QtWidgets.QPushButton(self.w_table_class)
         self.btn_import_class.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_import_class.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_import_class.setCursor(
@@ -2805,7 +2814,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_import_class.setIconSize(QtCore.QSize(20, 20))
         self.btn_import_class.setObjectName("btn_import_class")
         self.horizontalLayout_23.addWidget(self.btn_import_class)
-        self.btn_export_class = QtWidgets.QPushButton(self.widget_9)
+        self.btn_export_class = QtWidgets.QPushButton(self.w_table_class)
         self.btn_export_class.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_export_class.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_export_class.setCursor(
@@ -2815,7 +2824,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_export_class.setIconSize(QtCore.QSize(20, 20))
         self.btn_export_class.setObjectName("btn_export_class")
         self.horizontalLayout_23.addWidget(self.btn_export_class)
-        self.btn_clear_class_table = QtWidgets.QPushButton(self.widget_9)
+        self.btn_clear_class_table = QtWidgets.QPushButton(self.w_table_class)
         self.btn_clear_class_table.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_clear_class_table.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_clear_class_table.setCursor(
@@ -2834,14 +2843,14 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_clear_class_table.setObjectName("btn_clear_class_table")
         self.horizontalLayout_23.addWidget(self.btn_clear_class_table)
         self.verticalLayout_29.addLayout(self.horizontalLayout_23)
-        self.line_7 = QtWidgets.QFrame(self.widget_9)
+        self.line_7 = QtWidgets.QFrame(self.w_table_class)
         self.line_7.setStyleSheet("color: #083654;")
         self.line_7.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line_7.setLineWidth(2)
         self.line_7.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_7.setObjectName("line_7")
         self.verticalLayout_29.addWidget(self.line_7)
-        self.sw_class = QtWidgets.QStackedWidget(self.widget_9)
+        self.sw_class = QtWidgets.QStackedWidget(self.w_table_class)
         self.sw_class.setObjectName("sw_class")
         self.class_table = QtWidgets.QWidget()
         self.class_table.setStyleSheet("QHeaderView::section {\n"
@@ -2851,6 +2860,7 @@ class Admin(QtWidgets.QMainWindow):
                                        "    border-right: 1px solid #97b9f4;\n"
                                        "}\n"
                                        "\n"
+                                       "QWidget,"
                                        "QTableView {\n"
                                        "    border: 1px solid #0e4884;\n"
                                        "    border-radius: 5px;\n"
@@ -3009,7 +3019,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_53.addWidget(self.btn_search_class)
         self.horizontalLayout_52.addLayout(self.horizontalLayout_53)
         self.verticalLayout_31.addLayout(self.horizontalLayout_52)
-        self.tv_class = QtWidgets.QTableView(self.groupBox_5)
+        self.tv_class = TableView(self.groupBox_5)
         self.tv_class.setObjectName("tv_class")
         self.verticalLayout_31.addWidget(self.tv_class)
         self.horizontalLayout_26.addWidget(self.groupBox_5)
@@ -3116,7 +3126,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_30.addLayout(self.verticalLayout_35)
         self.sw_class.addWidget(self.class_class_bulk)
         self.verticalLayout_29.addWidget(self.sw_class)
-        self.horizontalLayout_5.addWidget(self.widget_9)
+        self.horizontalLayout_5.addWidget(self.w_table_class)
         self.widget_8 = QtWidgets.QWidget(self.class_member)
         self.widget_8.setMinimumSize(QtCore.QSize(234, 0))
         self.widget_8.setMaximumSize(QtCore.QSize(380, 16777215))

@@ -59,11 +59,11 @@ class SignIn:
             self.init_forgot_password)
 
         self.get_user = Operation(self.Model.get_user)
-        self.get_user.started.connect(self.View.LoadingScreen.show)
+        self.get_user.started.connect(self.View.LoadingScreen.run)
         self.get_user.operation.connect(self.is_user_admin)
 
         self.is_match = Validate(self.Model.is_match)
-        self.is_match.started.connect(self.View.LoadingScreen.show)
+        self.is_match.started.connect(self.View.LoadingScreen.run)
         self.is_match.finished.connect(self.View.LoadingScreen.hide)
         self.is_match.operation.connect(self.init_admin)
         self.is_match.validation.connect(self.is_not_match)

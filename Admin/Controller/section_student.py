@@ -103,8 +103,7 @@ class SectionStudent:
         self.View.btn_cancel_student.clicked.connect(self.View.enable_student_buttons)
         
         self.get_section = Get(self.Model.get_section)
-        self.get_section.started.connect(self.View.SectionLoadingScreen.show)
-        self.get_section.validation.connect(self.View.SectionLoadingScreen.hide)
+        self.get_section.started.connect(self.View.SectionLoadingScreen.run)
 
         self.add_section =  Create(self.Model.create_section)
         self.add_section.finished.connect(self.View.SectionLoadingScreen.hide)
@@ -143,6 +142,7 @@ class SectionStudent:
         self.get_section.operation.connect(self.add_section.start)
         self.get_section.validation.connect(lambda: self.View.set_database_status(f'{name} exists'))
         self.get_section.validation.connect(lambda: self.View.run_popup(f'{name} exists', 'warning'))
+        self.get_section.validation.connect(self.View.SectionLoadingScreen.hide)
         
         self.add_section.val = name
         self.add_section.finished.connect(lambda: self.View.set_database_status(f'{name} added successfully'))

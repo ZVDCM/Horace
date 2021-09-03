@@ -3,7 +3,6 @@ from Admin.Misc.Functions.relative_path import relative_path
 
 
 class TitleBar(QtWidgets.QWidget):
-    resize = QtCore.pyqtSignal()
 
     def __init__(self, parent):
         super().__init__(parent=parent)
@@ -149,16 +148,10 @@ class TitleBar(QtWidgets.QWidget):
         Form.setWindowTitle(_translate("Form", "Form"))
 
     def connect_signals(self):
-        self.resize.connect(self.resize_window)
-        self.parent.resizeEvent = self.resizeEvent
         self.btn_minimize.clicked.connect(self.minimize_clicked)
         self.btn_maximize_restore.clicked.connect(
             self.maximize_restore_clicked)
         self.btn_close.clicked.connect(self.close_clicked)
-
-    def resizeEvent(self, event):
-        self.resize.emit()
-        super(self.parent.__class__, self.parent).resizeEvent(event)
 
     def resize_window(self):
         self.setFixedWidth(self.parent.width())

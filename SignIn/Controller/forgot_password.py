@@ -81,7 +81,7 @@ class ForgotPassword:
         self.get_qna.operation.connect(self.set_questions)
 
         self.is_match = Validate(self.Model.is_match)
-        self.is_match.started.connect(self.View.LoadingScreen.show)
+        self.is_match.started.connect(self.View.LoadingScreen.run)
         self.is_match.finished.connect(self.View.LoadingScreen.hide)
         self.is_match.operation.connect(self.increment_page)
         self.is_match.validation.connect(self.is_not_match)
