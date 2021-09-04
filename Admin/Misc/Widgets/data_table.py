@@ -7,13 +7,12 @@ from Admin.Misc.Functions.relative_path import relative_path
 
 class DataTable(QtWidgets.QDialog):
 
-    def __init__(self, parent, target_table, target_column, target_input, table_model):
+    def __init__(self, parent, target_table, target_column, table_model):
         super().__init__()
         self.setupUi(self)
         self.parent = parent
         self.target_table = target_table
         self.target_column = target_column
-        self.target_input = target_input
         self.table_model = table_model
         self.target_row = self.table_model.rowCount() - 2
 
@@ -22,6 +21,8 @@ class DataTable(QtWidgets.QDialog):
         self.tv_target_data.horizontalHeader().setMinimumSectionSize(150)
         self.tv_target_data.setFocus(True)
         self.tv_target_data.selectRow(self.target_row)
+
+        self.remove_null_row()
 
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
 
@@ -72,91 +73,7 @@ class DataTable(QtWidgets.QDialog):
                            "  background-color: #072f49;\n"
                            "}\n"
                            "\n"
-                           "QTableView{\n"
-                           "    border: 1px solid #0e4884;\n"
-                           "    border-radius: 5px;\n"
-                           "}\n"
-                           "\n"
-                           "QHeaderView::section {\n"
-                           "    background-color: #0d3c6e;\n"
-                           "    border-top: 0px solid #97b9f4;\n"
-                           "    border-bottom: 1px solid #97b9f4;\n"
-                           "    border-right: 1px solid #97b9f4;\n"
-                           "}\n"
-                           "\n"
-                           "QTableView {\n"
-                           "    gridline-color: #97b9f4;\n"
-                           "}\n"
-                           "\n"
-                           "QTableCornerButton::section{\n"
-                           "    background-color: #0d3c6e;\n"
-                           "    border-top: 0px solid #97b9f4;\n"
-                           "    border-bottom: 1px solid #97b9f4;\n"
-                           "    border-right: 1px solid #97b9f4;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar:horizontal{\n"
-                           "    height: 9px;\n"
-                           "    border-radius: 5px;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar:vertical{\n"
-                           "    width: 9px;\n"
-                           "    margin: 0;\n"
-                           "    border-radius: 5px;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::handle:vertical{\n"
-                           "    background-color: #97b9f4;    \n"
-                           "    width: 18px;\n"
-                           "    border-radius: 4px;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::handle:horizontal{\n"
-                           "    background-color: #97b9f4;    \n"
-                           "    min-width: 5px;\n"
-                           "    border-radius: 4px;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::sub-line:horizontal,\n"
-                           "QScrollBar::sub-line:vertical{\n"
-                           "    height: 0;\n"
-                           "    width: 0;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::add-line:horizontal,\n"
-                           "QScrollBar::add-line:vertical{\n"
-                           "    height: 0;\n"
-                           "    width: 0;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::add-page:horizontal{\n"
-                           "    background: #102542;\n"
-                           "    border-top-right-radius: 4px;\n"
-                           "    border-bottom-right-radius: 4px;\n"
-                           "    margin-left: -3px;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::add-page:vertical{\n"
-                           "    background: #102542;\n"
-                           "    border-bottom-left-radius: 4px;\n"
-                           "    border-bottom-right-radius: 4px;\n"
-                           "    margin-top: -3px;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::sub-page:horizontal{\n"
-                           "    background: #102542;\n"
-                           "    border-bottom-left-radius: 4px;\n"
-                           "    margin-right: -3px;\n"
-                           "}\n"
-                           "\n"
-                           "QScrollBar::sub-page:vertical{\n"
-                           "    background: #102542;\n"
-                           "    border-top-left-radius: 0;\n"
-                           "    border-top-right-radius: 4px;\n"
-                           "    margin-bottom: -3px;\n"
-                           "}\n"
-                           "")
+                           )
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setSpacing(0)
@@ -295,13 +212,14 @@ class DataTable(QtWidgets.QDialog):
     def connect_signals(self):
         self.tv_target_data.clicked.connect(self.table_clicked)
         self.btn_cancel.clicked.connect(self.close)
-        self.btn_set.clicked.connect(self.set_target)
 
     def table_clicked(self, item):
         self.target_row = item.row()
 
-    def set_target(self):
-        self.close()
-        data = self.tv_target_data.model().getRowData(self.target_row)
-        self.target_input.setText(data[self.target_column])
+    def remove_null_row(self):
+        table_model = self.tv_target_data.model()
+        last_row_index = table_model.rowCount() - 1
+        self.tv_target_data.setRowHidden(last_row_index, True)
+
+
 

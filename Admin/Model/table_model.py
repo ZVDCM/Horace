@@ -10,7 +10,7 @@ class TableModel(QAbstractTableModel):
 
         self.data = [["NULL" for i in range(len(self.headers))]]
         if len(data) != 0:
-            for index, datum in enumerate(data):
+            for datum in data:
                 self.data.insert(len(self.data)-1, datum.get_values())
 
     def rowCount(self, parent=None):
@@ -19,12 +19,10 @@ class TableModel(QAbstractTableModel):
     def columnCount(self, parent=None):
         return len(self.data[0])
 
-    def findRow(self, text, pos):
-        indices = []
+    def findRow(self, text):
         for index, user in enumerate(self.data):
-            if text in user and user.index(text) == pos:
-                indices.append(index)
-        return indices
+            if text in user:
+                return index
 
     def flags(self, index):
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
