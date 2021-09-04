@@ -24,7 +24,7 @@ class SectionStudent:
 
         if sections:
             return [self.Model.Section(*section) for section in sections]
-        return None
+        return []
     
     def get_section(self, name):
         db = self.Database.connect()
@@ -89,6 +89,22 @@ class SectionStudent:
 
         if students:
             return [self.Model.Student(*student) for student in students]
+        return []
+
+    def get_student_section(self, username):
+        db = self.Database.connect()
+        cursor = db.cursor()
+
+        select_query = "SELECT Section FROM Section_Students WHERE Student=%s"
+        cursor.execute(select_query, (username,))
+
+        student_section = cursor.fetchone()
+
+        cursor.close()
+        db.close()
+
+        if student_section:
+            return student_section[0]
         return None
     
     def get_student(self, username):
@@ -132,15 +148,29 @@ class SectionStudent:
         cursor.close()
         db.close()
 
-    def edit_student(self, Student, password):
+    def edit_student(self, UserID, Username, Salt, Hash, password):
         db = self.Database.connect()
         cursor = db.cursor()
 
-        salt = generate_salt()
-        hashed_password = get_hashed_password(password, salt)
+        salt = Salt
+        hash = Hash
+        if password != str(salt + hash):
+            salt = generate_salt()
+            hash = get_hashed_password(password, salt)
 
         update_query = "UPDATE Users SET Username=%s, Salt=%s, Hash=%s WHERE UserID=%s AND Privilege=%s"
-        cursor.execute(update_query, (Student.Username, salt, hashed_password))
+        cursor.execute(update_query, (Username, salt, hash, UserID, "Student"))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+    def edit_student_section(self, section, username):
+        db = self.Database.connect()
+        cursor = db.cursor()
+
+        update_query = "UPDATE Section_Students SET Section=%s WHERE Student=%s"
+        cursor.execute(update_query, (section, username))
         db.commit()
 
         cursor.close()

@@ -408,9 +408,9 @@ QPushButton:hover{
             <string notr="true"/>
            </property>
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
-           <widget class="QWidget" name="student_section">
+           <widget class="QWidget" name="section_student">
             <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1">
              <property name="spacing">
               <number>15</number>
@@ -428,7 +428,7 @@ QPushButton:hover{
               <number>0</number>
              </property>
              <item>
-              <widget class="QWidget" name="widget_4" native="true">
+              <widget class="QWidget" name="w_table_section_student" native="true">
                <property name="minimumSize">
                 <size>
                  <width>377</width>
@@ -2965,7 +2965,7 @@ border-bottom-right-radius: 5px;</string>
               <number>0</number>
              </property>
              <item>
-              <widget class="QWidget" name="widget_6" native="true">
+              <widget class="QWidget" name="w_table_teacher" native="true">
                <property name="minimumSize">
                 <size>
                  <width>377</width>
@@ -4826,7 +4826,7 @@ border-bottom-right-radius: 5px;</string>
               <number>0</number>
              </property>
              <item>
-              <widget class="QWidget" name="widget_9" native="true">
+              <widget class="QWidget" name="w_table_class" native="true">
                <property name="minimumSize">
                 <size>
                  <width>377</width>
@@ -5703,7 +5703,7 @@ QScrollBar::sub-page:vertical{
 	margin-bottom: -3px;
 }</string>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_45">
+               <layout class="QVBoxLayout" name="verticalLayout_45" stretch="0,0,0,0,1">
                 <property name="spacing">
                  <number>0</number>
                 </property>
@@ -6216,7 +6216,7 @@ QPushButton:pressed {
                       <number>6</number>
                      </property>
                      <item>
-                      <widget class="QLabel" name="btn_section_students_status_4">
+                      <widget class="QLabel" name="lbl_class_teacher_status">
                        <property name="font">
                         <font>
                          <family>Barlow</family>

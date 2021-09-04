@@ -21,21 +21,22 @@ class Model:
             return (self.ID, self.Name)
 
     class Student:
-        def __init__(self, ID, Username, Salt, Hash):
-            self.ID = ID
+        def __init__(self, UserID, Username, Salt, Hash):
+            self.UserID = UserID
             self.Username = Username
             self.Salt = Salt
             self.Hash = Hash
+            self.Section = None
 
         def __str__(self):
-            return f"Student(ID={self.ID}, Username={self.Username}, Salt={self.Salt}, Hash={self.Hash})"
+            return f"Student(ID={self.UserID}, Username={self.Username}, Salt={self.Salt}, Hash={self.Hash}, Section={self.Section})"
         
         @staticmethod
         def get_headers():
             return ("ID", "Username", "Salt", "Hash")
 
         def get_values(self):
-            return (self.ID, self.Username, self.Salt, self.Hash)
+            return (self.UserID, self.Username, self.Salt, self.Hash)
 
     def __init__(self):
         self.TableModel = TableModel

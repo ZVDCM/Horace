@@ -74,9 +74,9 @@ class Admin:
         self.View.tv_sections.setModel(section_model)
         self.View.tv_sections.horizontalHeader().setMinimumSectionSize(150)
         self.View.tv_sections.setFocus(True)
-        index = section_model.rowCount() - 2
-        self.View.tv_sections.selectRow(index)
-        self.SectionStudent.set_target_section(self.Model.Section(*section_model.getRowData(index)))
+        self.SectionStudent.target_section_row = section_model.rowCount() - 2
+        self.View.tv_sections.selectRow(self.SectionStudent.target_section_row)
+        self.SectionStudent.set_target_section(self.Model.Section(*section_model.getRowData(self.SectionStudent.target_section_row)))
         self.SectionStudent.set_section_input_values()
 
     def set_student_tableview(self, students):
@@ -84,9 +84,9 @@ class Admin:
         self.View.tv_students.setModel(student_model)
         self.View.tv_students.horizontalHeader().setMinimumSectionSize(150)
         self.View.tv_students.setFocus(True)
-        index = student_model.rowCount() - 2
-        self.View.tv_students.selectRow(index)
-        self.SectionStudent.set_target_student(self.Model.Student(*student_model.getRowData(index)))
+        self.SectionStudent.target_student_row = student_model.rowCount() - 2
+        self.View.tv_students.selectRow(self.SectionStudent.target_student_row)
+        self.SectionStudent.set_target_student(self.Model.Student(*student_model.getRowData(self.SectionStudent.target_student_row)))
         self.SectionStudent.set_student_input_values()
 
     def resize(self, event):

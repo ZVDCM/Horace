@@ -2,6 +2,7 @@ from Admin.Misc.Functions.password import generate_password
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 
+
 class Get(QtCore.QThread):
     operation = QtCore.pyqtSignal()
     validation = QtCore.pyqtSignal()
@@ -19,6 +20,7 @@ class Get(QtCore.QThread):
             self.validation.emit()
         self.quit()
 
+
 class SectionOperation(QtCore.QThread):
     operation = QtCore.pyqtSignal(list)
 
@@ -34,6 +36,7 @@ class SectionOperation(QtCore.QThread):
         if res:
             self.operation.emit(res)
         self.quit()
+
 
 class ValidateStudentSection(QtCore.QThread):
     operation = QtCore.pyqtSignal()
@@ -52,6 +55,22 @@ class ValidateStudentSection(QtCore.QThread):
             self.validation.emit()
         self.quit()
 
+
+class StudentSectionOperation(QtCore.QThread):
+    operation = QtCore.pyqtSignal(str)
+
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+        self.val = ()
+
+    def run(self):
+        res = self.fn(*self.val)
+        if res:
+            self.operation.emit(res)
+        self.quit()
+
+
 class StudentOperation(QtCore.QThread):
     operation = QtCore.pyqtSignal(list)
 
@@ -68,6 +87,7 @@ class StudentOperation(QtCore.QThread):
             self.operation.emit(res)
         self.quit()
 
+
 class Register(QtCore.QThread):
 
     def __init__(self, fn):
@@ -78,6 +98,7 @@ class Register(QtCore.QThread):
     def run(self):
         self.fn(*self.val)
         self.quit()
+
 
 class SectionStudent:
 
@@ -153,28 +174,34 @@ class SectionStudent:
 
         # Table
         self.View.tv_sections.clicked.connect(self.section_table_row_clicked)
-    
+
     def section_operations(self):
         self.get_section = Get(self.Model.get_section)
         self.get_section.started.connect(self.View.SectionLoadingScreen.run)
         self.get_section.validation.connect(
             self.View.SectionLoadingScreen.hide)
 
-        self.add_section = SectionOperation(self.Model.create_section, self.Model.get_all_section)
+        self.add_section = SectionOperation(
+            self.Model.create_section, self.Model.get_all_section)
         self.add_section.operation.connect(self.reload_section_table)
         self.add_section.finished.connect(self.View.SectionLoadingScreen.hide)
         self.add_section.finished.connect(self.View.btn_cancel_section.click)
 
-        self.edit_section = SectionOperation(self.Model.edit_section, self.Model.get_all_section)
+        self.get_section.operation.connect(self.add_section.start)
+
+        self.edit_section = SectionOperation(
+            self.Model.edit_section, self.Model.get_all_section)
         self.edit_section.started.connect(self.View.SectionLoadingScreen.run)
         self.edit_section.operation.connect(self.reload_section_table)
         self.edit_section.finished.connect(self.View.SectionLoadingScreen.hide)
         self.edit_section.finished.connect(self.View.btn_cancel_section.click)
 
-        self.delete_section = SectionOperation(self.Model.delete_section, self.Model.get_all_section)
+        self.delete_section = SectionOperation(
+            self.Model.delete_section, self.Model.get_all_section)
         self.delete_section.started.connect(self.View.SectionLoadingScreen.run)
         self.delete_section.operation.connect(self.reload_section_table)
-        self.delete_section.finished.connect(self.View.SectionLoadingScreen.hide)
+        self.delete_section.finished.connect(
+            self.View.SectionLoadingScreen.hide)
 
     def student_signals(self):
         self.View.btn_add_edit_student.clicked.connect(self.add_edit_student)
@@ -222,29 +249,50 @@ class SectionStudent:
         self.View.btn_cancel_student.clicked.connect(
             self.View.disable_student_inputs)
         self.View.btn_cancel_student.clicked.connect(
-            self.View.txt_student_password.clear)
+            self.set_student_input_values)
         self.View.btn_cancel_student.clicked.connect(
             self.View.enable_student_buttons)
 
         # Table
         self.View.tv_students.clicked.connect(self.student_table_row_clicked)
 
-        self.View.btn_student_get_section.clicked.connect(lambda: self.View.run_data_table("Section", 1, self.View.txt_student_section ,self.View.tv_sections.model()))
+        self.View.btn_student_get_section.clicked.connect(lambda: self.View.run_data_table(
+            "Section", 1, self.View.txt_student_section, self.View.tv_sections.model()))
 
     def student_operations(self):
-        self.get_student_section = ValidateStudentSection(self.Model.get_section)
-        self.get_student_section.started.connect(self.View.StudentLoadingScreen.run)
+        self.validate_student_section = ValidateStudentSection(
+            self.Model.get_section)
+        self.validate_student_section.started.connect(
+            self.View.StudentLoadingScreen.run)
 
         self.get_student = Get(self.Model.get_student)
 
-        self.add_student = StudentOperation(self.Model.create_student, self.Model.get_all_student)
+        self.add_student = StudentOperation(
+            self.Model.create_student, self.Model.get_all_student)
         self.add_student.operation.connect(self.reload_student_table)
 
-        self.register_student_section = Register(self.Model.register_student_section)
-        self.register_student_section.finished.connect(self.View.StudentLoadingScreen.hide)
-        self.register_student_section.finished.connect(self.View.btn_cancel_student.click)
+        self.register_student_section = Register(
+            self.Model.register_student_section)
+        self.register_student_section.finished.connect(
+            self.View.StudentLoadingScreen.hide)
+        self.register_student_section.finished.connect(
+            self.View.btn_cancel_student.click)
 
         self.add_student.finished.connect(self.register_student_section.start)
+
+        self.get_student_section = StudentSectionOperation(
+            self.Model.get_student_section)
+        self.get_student_section.started.connect(
+            self.View.StudentLoadingScreen.run)
+        self.get_student_section.finished.connect(
+            self.View.StudentLoadingScreen.hide)
+
+        self.edit_student = StudentOperation(self.Model.edit_student, self.Model.get_all_student)
+        self.edit_student.operation.connect(self.reload_student_table)
+
+        self.edit_student_section = StudentSectionOperation(self.Model.edit_student_section)
+        self.edit_student_section.finished.connect(self.View.StudentLoadingScreen.hide)
+        self.edit_student_section.finished.connect(self.View.btn_cancel_student.click)
 
     def change_table_bulk(self, target, index):
         target.setCurrentIndex(index)
@@ -263,7 +311,6 @@ class SectionStudent:
             return
 
         self.get_section.val = name
-        self.get_section.operation.connect(self.add_section.start)
         self.get_section.validation.connect(
             lambda: self.View.set_database_status(f'{name} exists'))
         self.get_section.validation.connect(
@@ -287,11 +334,12 @@ class SectionStudent:
             self.View.set_database_status(f'No changes with {name}')
             return
 
+        self.edit_section.finished.connect(
+            lambda: self.View.set_database_status(f'Section {self.TargetSection.Name} updated to {name} successfully'))
         self.TargetSection.Name = name
         self.edit_section.val = self.TargetSection
         self.edit_section.finished.connect(
-            lambda: self.View.set_database_status(f'{name} updated successfully'))
-        self.edit_section.finished.connect(lambda: self.View.tv_sections.selectRow(self.target_section_row))
+            lambda: self.View.tv_sections.selectRow(self.target_section_row))
         self.edit_section.start()
 
     def delete_section_input(self):
@@ -307,7 +355,7 @@ class SectionStudent:
         self.View.tv_sections.setModel(section_model)
         self.View.tv_sections.horizontalHeader().setMinimumSectionSize(150)
         self.View.tv_sections.setFocus(True)
-       
+
     def select_last_section_row(self):
         section_model = self.View.tv_sections.model()
         self.target_section_row = section_model.rowCount() - 2
@@ -322,7 +370,7 @@ class SectionStudent:
         if index == section_model.rowCount() - 1:
             self.View.btn_init_add_section.click()
             return
-        
+
         if self.View.section_state == "add" or self.View.section_state == "edit":
             self.View.btn_cancel_section.click()
 
@@ -355,14 +403,18 @@ class SectionStudent:
             self.View.run_popup("Student fields must be filled")
             return
 
-        self.get_student_section.val = section
-        self.get_student_section.operation.connect(self.get_student.start)
-        self.get_student_section.validation.connect(lambda: self.View.run_popup(f'{section} does not exist', 'warning'))
-        self.get_student_section.validation.connect(self.View.StudentLoadingScreen.hide)
-        self.get_student_section.finished.connect(
-            lambda: self.View.set_database_status(f'{username} creation failed')
+        self.validate_student_section.val = section
+        self.validate_student_section.operation.connect(
+            self.get_student.start)
+        self.validate_student_section.validation.connect(
+            lambda: self.View.run_popup(f'{section} does not exist', 'warning'))
+        self.validate_student_section.validation.connect(
+            self.View.StudentLoadingScreen.hide)
+        self.validate_student_section.validation.connect(
+            lambda: self.View.set_database_status(
+                f'{username} creation failed')
         )
-        
+
         self.get_student.val = username
         self.get_student.operation.connect(self.add_student.start)
         self.get_student.validation.connect(
@@ -377,12 +429,66 @@ class SectionStudent:
         self.register_student_section.val = section, username
         self.register_student_section.finished.connect(
             lambda: self.View.set_database_status(f'{username} added to {section}'))
-        self.register_student_section.finished.connect(self.select_last_student_row)
-        
-        self.get_student_section.start()
+        self.register_student_section.finished.connect(
+            self.select_last_student_row)
+
+        self.validate_student_section.start()
 
     def edit_student_input(self):
-        print(2)
+        username = self.View.txt_student_username.text()
+        section = self.View.txt_student_section.text()
+        password = self.View.txt_student_password.text()
+        if is_blank(username) or is_blank(section) or is_blank(password):
+            self.View.run_popup("Student fields must be filled")
+            return
+
+        if username == self.TargetStudent.Username and section == self.TargetStudent.Section and password == str(self.TargetStudent.Salt + self.TargetStudent.Hash):
+            self.View.btn_cancel_student.click()
+            self.View.set_database_status(f'No changes with {username}')
+            return
+
+        self.validate_student_section.val = section
+        self.validate_student_section.operation.connect(
+            self.edit_student.start)
+        self.validate_student_section.validation.connect(
+            lambda: self.View.run_popup(f'{section} does not exist', 'warning'))
+        self.validate_student_section.validation.connect(
+            self.View.StudentLoadingScreen.hide)
+        self.validate_student_section.validation.connect(
+            lambda: self.View.set_database_status(
+                f'{username} update failed')
+        )
+        
+        if username != self.TargetStudent.Username:
+            self.edit_student.finished.connect(
+                lambda: self.View.set_database_status(f'Student {self.TargetStudent.Username} updated to {username} successfully'))
+            self.edit_student.finished.connect(
+                lambda: self.set_target_student_username(username))
+        self.edit_student.val = self.TargetStudent.UserID, username, self.TargetStudent.Salt, self.TargetStudent.Hash, password
+        self.edit_student.finished.connect(
+            lambda: self.View.tv_students.selectRow(self.target_student_row))
+
+        if section != self.TargetStudent.Section:
+            self.edit_student.finished.connect(self.edit_student_section.start)
+
+            self.edit_student_section.finished.connect(
+                lambda: self.View.set_database_status(f'Student {self.TargetStudent.Username}\'s section {self.TargetStudent.Section} updated to {section} successfully'))
+            self.edit_student_section.finished.connect(lambda: self.set_target_student_section(section))
+            self.edit_student_section.val = section, self.TargetStudent.Username
+            
+            if password != str(self.TargetStudent.Salt + self.TargetStudent.Hash):
+                self.edit_student_section.finished.connect(
+                    lambda: self.View.set_database_status(f'Student {self.TargetStudent.Username}\'s password updated successfully'))
+
+        else:
+            self.edit_student.finished.connect(self.View.StudentLoadingScreen.hide)
+            self.edit_student.finished.connect(self.View.btn_cancel_student.click)
+
+            if password != str(self.TargetStudent.Salt + self.TargetStudent.Hash):
+                self.edit_student.finished.connect(
+                    lambda: self.View.set_database_status(f'Student {self.TargetStudent.Username}\'s password updated successfully'))
+
+        self.validate_student_section.start()
 
     def reload_student_table(self, students):
         student_model = self.Model.TableModel(
@@ -397,7 +503,7 @@ class SectionStudent:
         if index == student_model.rowCount() - 1:
             self.View.btn_init_add_student.click()
             return
-        
+
         if self.View.student_state == "add" or self.View.student_state == "edit":
             self.View.btn_cancel_student.click()
 
@@ -416,8 +522,21 @@ class SectionStudent:
 
     def set_target_student(self, new_student):
         self.TargetStudent = new_student
+        self.get_student_section.val = self.TargetStudent.Username,
+        self.get_student_section.operation.connect(
+            self.set_target_student_section)
+        self.get_student_section.start()
+
+    def set_target_student_username(self, username):
+        self.TargetStudent.Username = username
+
+    def set_target_student_section(self, section):
+        self.TargetStudent.Section = section
+        self.View.txt_student_section.setText(self.TargetStudent.Section)
 
     def set_student_input_values(self):
         self.View.txt_student_username.setText(self.TargetStudent.Username)
-        self.View.txt_student_password.setText(str(self.TargetStudent.Salt + self.TargetStudent.Hash))
+        self.View.txt_student_password.setText(
+            str(self.TargetStudent.Salt + self.TargetStudent.Hash))
         self.View.txt_student_password.setCursorPosition(0)
+        self.View.txt_student_section.setText(self.TargetStudent.Section)

@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Admin.Misc.Widgets.admin_title_bar import TitleBar
 from Admin.Misc.Widgets.loading_screen import LoadingScreen
 from Admin.Misc.Widgets.custom_table_view import TableView
+from Admin.Misc.Widgets.custom_lineedit import PasswordGenerator
 from Admin.Misc.Widgets.data_table import DataTable
 from Admin.Misc.Widgets.pop_up import Popup
 from Admin.Misc.Functions.relative_path import relative_path
@@ -541,27 +542,27 @@ class Admin(QtWidgets.QMainWindow):
                                                  "}\n"
                                                  "\n"
                                                  "QScrollBar::add-page:horizontal{\n"
-                                                 "    background: #102542;\n"
+                                                 "    background: #0B1A30;\n"
                                                  "    border-top-right-radius: 4px;\n"
                                                  "    border-bottom-right-radius: 4px;\n"
                                                  "    margin-left: -3px;\n"
                                                  "}\n"
                                                  "\n"
                                                  "QScrollBar::add-page:vertical{\n"
-                                                 "    background: #102542;\n"
+                                                 "    background: #0B1A30;\n"
                                                  "    border-bottom-left-radius: 4px;\n"
                                                  "    border-bottom-right-radius: 4px;\n"
                                                  "    margin-top: -3px;\n"
                                                  "}\n"
                                                  "\n"
                                                  "QScrollBar::sub-page:horizontal{\n"
-                                                 "    background: #102542;\n"
+                                                 "    background: #0B1A30;\n"
                                                  "    border-bottom-left-radius: 4px;\n"
                                                  "    margin-right: -3px;\n"
                                                  "}\n"
                                                  "\n"
                                                  "QScrollBar::sub-page:vertical{\n"
-                                                 "    background: #102542;\n"
+                                                 "    background: #0B1A30;\n"
                                                  "    border-top-left-radius: 0;\n"
                                                  "    border-top-right-radius: 4px;\n"
                                                  "    margin-bottom: -3px;\n"
@@ -1454,7 +1455,7 @@ class Admin(QtWidgets.QMainWindow):
         self.label_10.setIndent(1)
         self.label_10.setObjectName("label_10")
         self.verticalLayout_9.addWidget(self.label_10)
-        self.txt_student_password = QtWidgets.QLineEdit(self.w_student_input)
+        self.txt_student_password = PasswordGenerator(self.w_student_input)
         self.txt_student_password.setEnabled(False)
         self.txt_student_password.setReadOnly(True)
         self.txt_student_password.setMinimumSize(QtCore.QSize(0, 30))
@@ -1926,27 +1927,27 @@ class Admin(QtWidgets.QMainWindow):
                                          "}\n"
                                          "\n"
                                          "QScrollBar::add-page:horizontal{\n"
-                                         "    background: #102542;\n"
+                                         "    background: #0B1A30;\n"
                                          "    border-top-right-radius: 4px;\n"
                                          "    border-bottom-right-radius: 4px;\n"
                                          "    margin-left: -3px;\n"
                                          "}\n"
                                          "\n"
                                          "QScrollBar::add-page:vertical{\n"
-                                         "    background: #102542;\n"
+                                         "    background: #0B1A30;\n"
                                          "    border-bottom-left-radius: 4px;\n"
                                          "    border-bottom-right-radius: 4px;\n"
                                          "    margin-top: -3px;\n"
                                          "}\n"
                                          "\n"
                                          "QScrollBar::sub-page:horizontal{\n"
-                                         "    background: #102542;\n"
+                                         "    background: #0B1A30;\n"
                                          "    border-bottom-left-radius: 4px;\n"
                                          "    margin-right: -3px;\n"
                                          "}\n"
                                          "\n"
                                          "QScrollBar::sub-page:vertical{\n"
-                                         "    background: #102542;\n"
+                                         "    background: #0B1A30;\n"
                                          "    border-top-left-radius: 0;\n"
                                          "    border-top-right-radius: 4px;\n"
                                          "    margin-bottom: -3px;\n"
@@ -2911,27 +2912,27 @@ class Admin(QtWidgets.QMainWindow):
                                        "}\n"
                                        "\n"
                                        "QScrollBar::add-page:horizontal{\n"
-                                       "    background: #102542;\n"
+                                       "    background: #0B1A30;\n"
                                        "    border-top-right-radius: 4px;\n"
                                        "    border-bottom-right-radius: 4px;\n"
                                        "    margin-left: -3px;\n"
                                        "}\n"
                                        "\n"
                                        "QScrollBar::add-page:vertical{\n"
-                                       "    background: #102542;\n"
+                                       "    background: #0B1A30;\n"
                                        "    border-bottom-left-radius: 4px;\n"
                                        "    border-bottom-right-radius: 4px;\n"
                                        "    margin-top: -3px;\n"
                                        "}\n"
                                        "\n"
                                        "QScrollBar::sub-page:horizontal{\n"
-                                       "    background: #102542;\n"
+                                       "    background: #0B1A30;\n"
                                        "    border-bottom-left-radius: 4px;\n"
                                        "    margin-right: -3px;\n"
                                        "}\n"
                                        "\n"
                                        "QScrollBar::sub-page:vertical{\n"
-                                       "    background: #102542;\n"
+                                       "    background: #0B1A30;\n"
                                        "    border-top-left-radius: 0;\n"
                                        "    border-top-right-radius: 4px;\n"
                                        "    margin-bottom: -3px;\n"
@@ -4273,7 +4274,14 @@ class Admin(QtWidgets.QMainWindow):
         self.status_bar.setSizeGripEnabled(True)
         self.status_bar.setObjectName("status_bar")
         self.lbl_database_status = QtWidgets.QLabel("Database Initialized", self.status_bar)
-        self.lbl_database_status.setMinimumSize(QtCore.QSize(200, 20))
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.lbl_database_status.sizePolicy().hasHeightForWidth())
+        self.lbl_database_status.setSizePolicy(sizePolicy)
+        self.lbl_database_status.setMinimumSize(QtCore.QSize(500, 20))
         self.lbl_database_status.setMaximumSize(QtCore.QSize(16777215, 20))
         font = QtGui.QFont()
         font.setFamily("Barlow")
