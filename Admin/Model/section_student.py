@@ -230,3 +230,5 @@ class SectionStudent:
 
         cursor.close()
         db.close()
+
+        return 'successful'
