@@ -4,9 +4,9 @@ class SectionStudent:
 
     def __init__(self, Model):
         self.Model = Model
-        self.SectionStudent = Model.SectionStudentModel
-        self.Section = Model.SectionModel
-        self.Student = Model.StudentModel
+        self.SectionStudent = Model.SectionStudent
+        self.Section = Model.Section
+        self.Student = Model.Student
         self.TableModel = Model.TableModel
         self.ListModel = Model.ListModel
         self.Database = Model.Database
@@ -16,7 +16,7 @@ class SectionStudent:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT Student FROM Section_Students WHERE Section=%s ORDER BY ID DESC"
+        select_query = "SELECT * FROM Section_Students WHERE Section=%s ORDER BY ID DESC"
         cursor.execute(select_query, (Section.Name,))
 
         section_students = cursor.fetchall()
@@ -25,7 +25,7 @@ class SectionStudent:
         db.close()
 
         if section_students:
-            return [section_student[0] for section_student in section_students]
+            return [self.SectionStudent(*section_student) for section_student in section_students]
         return ()
 
     def get_section_student(self, Section):
@@ -41,23 +41,29 @@ class SectionStudent:
         db.close()
 
         if section_student:
-            return section_student
+            return self.SectionStudent(*section_student)
         return ()
     
-    def get_student_section(self, username):
+    def get_student_section(self, Student):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT Section FROM Section_Students WHERE Student=%s"
-        cursor.execute(select_query, (username,))
+        select_query = "SELECT * FROM Section_Students WHERE Student=%s"
+        cursor.execute(select_query, (Student.Username,))
 
-        student_section = cursor.fetchone()
+        section_student = cursor.fetchone()
+        section = None
+
+        if section_student:
+            select_query = "SELECT * FROM Sections WHERE Name=%s"
+            cursor.execute(select_query, (section_student[1],))
+            section = cursor.fetchone()
 
         cursor.close()
         db.close()
-
-        if student_section:
-            return student_section[0]
+        
+        if section:
+            return self.Section(*section)
         return None
 
     # Section

@@ -4,7 +4,7 @@ from Admin.Model.table_model import TableModel
 from Admin.Model.list_model import ListModel
 
 
-class SectionStudentModel:
+class _SectionStudent:
     def __init__(self, ID, Section, Student):
         self.ID = ID
         self.Section = Section
@@ -20,8 +20,11 @@ class SectionStudentModel:
     def get_values(self):
         return (self.ID, self.Section, self.Student)
 
+    def get_display(self):
+        return self.Student
 
-class SectionModel:
+
+class Section:
     def __init__(self, ID, Name):
         self.ID = ID
         self.Name = Name
@@ -37,16 +40,15 @@ class SectionModel:
         return (self.ID, self.Name)
 
 
-class StudentModel:
+class Student:
     def __init__(self, UserID, Username, Salt, Hash):
         self.UserID = UserID
         self.Username = Username
         self.Salt = Salt
         self.Hash = Hash
-        self.Section = None
 
     def __str__(self):
-        return f"Student(ID={self.UserID}, Username={self.Username}, Salt={self.Salt}, Hash={self.Hash}, Section={self.Section})"
+        return f"Student(ID={self.UserID}, Username={self.Username}, Salt={self.Salt}, Hash={self.Hash})"
 
     @staticmethod
     def get_headers():
@@ -61,9 +63,9 @@ class Model:
     def __init__(self):
         self.TableModel = TableModel
         self.ListModel = ListModel
-        self.SectionStudentModel = SectionStudentModel
-        self.SectionModel = SectionModel
-        self.StudentModel = StudentModel
+        self.SectionStudent = _SectionStudent
+        self.Section = Section
+        self.Student = Student
         self.Database = Database()
         self.init_section_student()
 

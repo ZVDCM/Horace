@@ -9,7 +9,7 @@ class ListModel(QAbstractListModel):
         self.data = []
         if len(data) != 0:
             for datum in data:
-                self.data.insert(len(self.data)-1, datum)
+                self.data.insert(len(self.data)-1, datum.get_display())
 
     def rowCount(self, parent=None):
         return len(self.data)
@@ -23,6 +23,9 @@ class ListModel(QAbstractListModel):
 
     def flags(self, index):
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
+
+    def getRowData(self, index):
+        return self.data[index]
 
     def findRow(self, text):
         for index, datum in enumerate(self.data):

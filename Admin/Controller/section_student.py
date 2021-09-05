@@ -3,6 +3,37 @@ from PyQt5.QtWidgets import QDialog
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 
+
+class GetTargetSectionStudent(QtCore.QThread):
+    operation = QtCore.pyqtSignal(object)
+
+    def __init__(self, SectionStudents):
+        super().__init__()
+        self.SectionStudents = SectionStudents
+        self.value = ()
+
+    def run(self):
+        SectionStudents = self.SectionStudents(*self.value)
+        self.operation.emit(SectionStudents)
+        self.quit()
+
+
+class GetTargetStudentSection(QtCore.QThread):
+    operation = QtCore.pyqtSignal(object, object)
+
+    def __init__(self, StudentSection, SectionStudents):
+        super().__init__()
+        self.StudentSection = StudentSection
+        self.SectionStudents = SectionStudents
+        self.value = ()
+
+    def run(self):
+        StudentSection = self.StudentSection(*self.value)
+        SectionStudents = self.SectionStudents(StudentSection)
+        self.operation.emit(StudentSection, SectionStudents)
+        self.quit()
+
+
 class Get(QtCore.QThread):
     operation = QtCore.pyqtSignal(object)
 
@@ -15,6 +46,7 @@ class Get(QtCore.QThread):
         res = self.fn(*self.val)
         self.operation.emit(res)
         self.quit()
+
 
 class Operation(QtCore.QThread):
     operation = QtCore.pyqtSignal()
@@ -33,6 +65,7 @@ class Operation(QtCore.QThread):
             self.error.emit()
         self.quit()
 
+
 class SectionStudent:
 
     def __init__(self, Model, View, Admin):
@@ -47,141 +80,150 @@ class SectionStudent:
         self.target_section_student_row = None
         self.TargetSectionStudent = None
 
-        # self.connect_signals()
+        self.connect_signals()
 
-    # def connect_signals(self):
-    #     self.section_signals()
-    #     self.section_operations()
-    #     self.student_signals()
-    #     self.student_operations()
+    def connect_signals(self):
+        self.section_signals()
+        self.section_operations()
+        self.student_signals()
+        self.student_operations()
+        self.sectionstudent_signals()
+        self.sectionstudent_operations()
+    
+    # SectionStudent
+    def sectionstudent_signals(self):
+        self.View.lv_section_student.clicked.connect(self.list_sectionstudent_clicked)
 
-    # def section_signals(self):
-    #     self.View.btn_init_section_bulk.clicked.connect(
-    #         lambda: self.change_table_bulk(self.View.sw_student_section, 2)
-    #     )
-    #     self.View.btn_back_section_bulk.clicked.connect(
-    #         lambda: self.change_table_bulk(self.View.sw_student_section, 0)
-    #     )
+    def sectionstudent_operations(self):
+        pass
 
-    #     # Table
-    #     self.View.tv_sections.clicked.connect(self.tables_section_row_clicked)
+    def list_sectionstudent_clicked(self, index):
+        row = index.row()
+        self.set_target_section_student(self.Model.SectionStudent(None, self.View.txt_section_name.text(), self.View.lv_section_student.model().getRowData(row)))
+        student_model = self.View.tv_students.model()
+        self.set_target_student(self.Model.Student(*student_model.getRowData(student_model.findRow(self.TargetSectionStudent.Student))))
 
-    #     self.View.btn_init_add_section_student.clicked.connect(lambda: self.run_data_table("Students", 1, self.View.tv_students.model()))
+    # Section
+    def section_signals(self):
+        self.View.tv_sections.clicked.connect(self.table_section_clicked)
 
-    # def section_operations(self):
-    #     self.get_section_student = Get(self.Model.get_section_student)
-    #     self.get_section_student.started.connect(self.View.StudentLoadingScreen.run)
-    #     self.get_section_student.operation.connect(self.set_target_section_student)
-    #     self.get_section_student.finished.connect(self.View.StudentLoadingScreen.hide)
-        
-    #     self.get_all_section_student = Get(self.Model.get_all_section_student)
-    #     self.get_all_section_student.started.connect(self.View.SectionStudentLoadingScreen.run)
-    #     self.get_all_section_student.operation.connect(self.set_target_section_students)
-    #     self.get_all_section_student.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+    def section_operations(self):
+        self.GetTargetSectionStudent = GetTargetSectionStudent(
+            self.Model.get_all_section_student)
+        self.GetTargetSectionStudent.started.connect(
+            self.View.TableSectionStudentLoadingScreen.run)
+        self.GetTargetSectionStudent.started.connect(
+            self.View.SectionStudentLoadingScreen.run)
+        self.GetTargetSectionStudent.operation.connect(
+            self.get_target_section_student)
+        self.GetTargetSectionStudent.finished.connect(
+            self.View.TableSectionStudentLoadingScreen.hide)
+        self.GetTargetSectionStudent.finished.connect(
+            self.View.SectionStudentLoadingScreen.hide)
 
-    #     self.get_section_student.operation.connect(self.get_all_section_student.start)
+    def table_section_clicked(self, index):
+        row = index.row()
+        section_model = self.View.tv_sections.model()
+        if row == section_model.rowCount() - 1:
+            return
 
-    #     self.register_section_student = Operation(self.Model.register_student_section)
-    #     self.register_section_student.started.connect(self.View.SectionStudentLoadingScreen.run)
-    #     self.register_section_student.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+        self.set_target_section(self.Model.Section(
+            *section_model.getRowData(row)))
+        self.GetTargetSectionStudent.value = self.TargetSection,
+        self.GetTargetSectionStudent.start()
 
+    def get_target_section_student(self, sectionstudents):
+        target_section_student = sectionstudents[-1]
+        student_model = self.View.tv_students.model()
+        target_student = self.Model.Student(
+            *student_model.getRowData(student_model.findRow(target_section_student.Student)))
 
-    # def student_signals(self):
-    #     self.View.btn_init_student_bulk.clicked.connect(
-    #         lambda: self.change_table_bulk(self.View.sw_student_section, 1)
-    #     )
-    #     self.View.btn_back_student_bulk.clicked.connect(
-    #         lambda: self.change_table_bulk(self.View.sw_student_section, 0)
-    #     )
+        self.set_section_student_list(sectionstudents)
+        self.set_target_section_student(target_section_student)
+        self.set_target_student(target_student)
 
-    # def student_operations(self):
-    #     pass
-
-    # def change_table_bulk(self, target, index):
-    #     target.setCurrentIndex(index)
-
-    # def tables_section_row_clicked(self, item):
-    #     index = item.row()
-    #     section_model = self.View.tv_sections.model()
-    #     if index == section_model.rowCount() - 1:
-    #         self.View.btn_init_add_section.click()
-    #         return
-
-    #     if self.View.section_state == "add" or self.View.section_state == "edit":
-    #         self.View.btn_cancel_section.click()
-
-    #     self.target_section_row = index
-    #     self.set_target_section(self.Model.Section(
-    #         *section_model.getRowData(self.target_section_row)))
-    #     self.set_section_input_values()
-        
-    #     self.get_section_student.val = self.TargetSection,
-    #     self.get_all_section_student.val = self.TargetSection,
-    #     self.get_section_student.start()
-
-    # def set_target_section(self, Section):
-    #     self.TargetSection = Section
-
-    # def set_section_input_values(self):
-    #     self.View.txt_section_name.setText(self.TargetSection.Name)
-
-    # def set_target_section_student(self, student):
-    #     student_model = self.View.tv_students.model()
-    #     student = student[2]
-    #     self.target_student_row = student_model.findRow(student)
-    #     self.View.tv_students.selectRow(self.target_student_row)
-    #     self.TargetStudent = self.Model.Student(*student_model.getRowData(self.target_student_row))
-    #     self.set_target_section_student_input()
-
-    # def set_target_section_student_input(self):
-    #     self.View.txt_student_username.setText(self.TargetStudent.Username)
-    #     self.View.txt_student_password.setText(str(self.TargetStudent.Salt + self.TargetStudent.Hash))
-    #     self.View.txt_student_password.setCursorPosition(0)
-
-    # def set_target_section_students(self, students):
-    #     section_student_model = self.Model.ListModel(self.View.lv_section_student, students)
-    #     self.View.lv_section_student.setModel(section_student_model)
-    #     index = section_student_model.createIndex(0,0)
-    #     self.View.lv_section_student.setCurrentIndex(index)
-
-    # def run_data_table(self, target_table, target_column, table_model):
-    #     self.DataTable = DataTable(self.View, target_table, target_column, table_model)
-    #     table_model.parent = self.DataTable.tv_target_data
-    #     self.DataTable.btn_set.clicked.connect(self.add_data_table_section_student)
-    #     self.DataTable.run()
-
-    # def add_data_table_section_student(self):
-    #     table_model = self.DataTable.tv_target_data.model()
-    #     Student = self.Model.Student(*table_model.getRowData(self.DataTable.target_row))
-    #     section = self.View.txt_section_name.text()
-
-    #     self.register_section_student.val = section, Student.Username
-    #     self.register_section_student.operation.connect(self.get_all_section_student.start)
-    #     self.register_section_student.operation.connect(lambda: self.View.set_database_status(f"Student {Student.Username} is registered to {section} successfully"))
-    #     self.get_all_section_student.val = self.TargetSection,
-    #     self.register_section_student.error.connect(lambda: self.View.run_popup(f"Student {Student.Username} is already registered to {section}", "warning"))
-    #     self.register_section_student.error.connect(lambda: self.View.set_database_status(f"Student {Student.Username} is already registered to {section}"))
-
-    #     self.register_section_student.start()
-    #     self.DataTable.close()
+    def set_target_section(self, Section):
+        self.TargetSection = Section
+        self.select_target_section_row()
 
     def select_target_section_row(self):
         section_model = self.View.tv_sections.model()
-        self.target_section_row = section_model.findRow(self.TargetSection.Name)
-        self.View.tv_section.selectRow(self.target_section_row)
+        self.target_section_row = section_model.findRow(
+            self.TargetSection.Name)
+        self.set_section_inputs()
 
+    def set_section_inputs(self):
+        self.View.tv_sections.selectRow(self.target_section_row)
         self.View.txt_section_name.setText(self.TargetSection.Name)
+
+    # Student
+    def student_signals(self):
+        self.View.tv_students.clicked.connect(self.table_student_clicked)
+
+    def student_operations(self):
+        self.GetTargetStudentSection = GetTargetStudentSection(
+            self.Model.get_student_section, self.Model.get_all_section_student)
+        self.GetTargetStudentSection.started.connect(
+            self.View.TableSectionStudentLoadingScreen.run)
+        self.GetTargetStudentSection.started.connect(
+            self.View.SectionStudentLoadingScreen.run)
+        self.GetTargetStudentSection.operation.connect(
+            self.get_target_student_section)
+        self.GetTargetStudentSection.finished.connect(
+            self.View.TableSectionStudentLoadingScreen.hide)
+        self.GetTargetStudentSection.finished.connect(
+            self.View.SectionStudentLoadingScreen.hide)
+
+    def table_student_clicked(self, index):
+        row = index.row()
+        student_model = self.View.tv_students.model()
+        if row == student_model.rowCount() - 1:
+            return
+
+        self.set_target_student(self.Model.Student(
+            *student_model.getRowData(row)))
+        self.GetTargetStudentSection.value = self.TargetStudent,
+        self.GetTargetStudentSection.start()
+
+    def get_target_student_section(self, Section, sectionstudents):
+        for sectionstudent in sectionstudents:
+            if sectionstudent.Student == self.TargetStudent.Username:
+                target_section_student = sectionstudent
+                break
+        self.set_target_section(Section)
+        self.set_section_student_list(sectionstudents)
+        self.set_target_section_student(target_section_student)
+
+    def set_target_student(self, Student):
+        self.TargetStudent = Student
+        self.select_target_student_row()
 
     def select_target_student_row(self):
         student_model = self.View.tv_students.model()
-        self.target_student_row = student_model.findRow(self.TargetStudent.Username)
+        self.target_student_row = student_model.findRow(
+            self.TargetStudent.Username)
         self.View.tv_students.selectRow(self.target_student_row)
+        self.set_student_inputs()
 
+    def set_student_inputs(self):
         self.View.txt_student_username.setText(self.TargetStudent.Username)
-        self.View.txt_student_password.setText(str(self.TargetStudent.Salt + self.TargetStudent.Hash))
+        self.View.txt_student_password.setText(
+            str(self.TargetStudent.Salt + self.TargetStudent.Hash))
         self.View.txt_student_password.setCursorPosition(0)
 
-    def select_target_section_row(self):
+    # SectionStudent
+    def set_target_section_student(self, SectionStudent):
+        self.TargetSectionStudent = SectionStudent
+        self.select_target_section_student_row()
+
+    def select_target_section_student_row(self):
         section_student_model = self.View.lv_section_student.model()
-        self.target_section_student_row = section_student_model.createIndex(section_student_model.findRow(self.TargetStudentSection.Student), 0)
-        self.View.lv_section_student.setCurrentIndex(self.target_section_student_row)
+        self.target_section_student_row = section_student_model.createIndex(
+            section_student_model.findRow(self.TargetSectionStudent.Student), 0)
+        self.View.lv_section_student.setCurrentIndex(
+            self.target_section_student_row)
+
+    def set_section_student_list(self, sectionstudents):
+        section_student_model = self.Model.ListModel(
+            self.View.lv_section_student, sectionstudents)
+        self.View.lv_section_student.setModel(section_student_model)

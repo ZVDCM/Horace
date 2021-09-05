@@ -65,21 +65,15 @@ class Admin:
         self.get_all_sections_and_students.started.connect(self.View.TableSectionStudentLoadingScreen.run)
         self.get_all_sections_and_students.section_operation.connect(self.set_section_tableview)
         self.get_all_sections_and_students.student_operation.connect(self.set_student_tableview)
-
-        self.get_latest_section_student = Get(self.Model.SectionStudent.get_section_student)
-        self.get_latest_section_student.operation.connect(self.select_latest_targets)
-        self.get_latest_section_student.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
-        
+        self.get_all_sections_and_students.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
         self.get_all_sections_and_students.finished.connect(self.get_model_latest_section)
 
-        self.get_all_section_students = Get(self.Model.SectionStudent.get_all_section_student)
-        self.get_all_section_students.started.connect(self.View.SectionStudentLoadingScreen.run)
-        self.get_all_section_students.operation.connect(self.set_section_student_listview)
-        self.get_all_section_students.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+        self.get_all_section_student = Get(self.Model.SectionStudent.get_all_section_student)
+        self.get_all_section_student.started.connect(self.View.SectionStudentLoadingScreen.run)
+        self.get_all_section_student.operation.connect(self.set_section_student_listview)
+        self.get_all_section_student.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+        self.get_all_section_student.finished.connect(self.select_latest_targets)
 
-        self.get_latest_section_student.finished.connect(self.get_model_section_students)
-
-        
     def change_page(self, index):
         for side_nav in self.View.side_navs:
             if side_nav.is_active:
@@ -95,13 +89,13 @@ class Admin:
         self.get_all_sections_and_students.start()
 
     def set_section_tableview(self, sections):
-        section_model = self.Model.TableModel(self.View.tv_sections, sections, self.Model.SectionModel.get_headers())
+        section_model = self.Model.TableModel(self.View.tv_sections, sections, self.Model.Section.get_headers())
         self.View.tv_sections.setModel(section_model)
         self.View.tv_sections.horizontalHeader().setMinimumSectionSize(150)
         self.View.tv_sections.setFocus(True)
 
     def set_student_tableview(self, students):
-        student_model = self.Model.TableModel(self.View.tv_students, students, self.Model.StudentModel.get_headers())
+        student_model = self.Model.TableModel(self.View.tv_students, students, self.Model.Student.get_headers())
         self.View.tv_students.setModel(student_model)
         self.View.tv_students.horizontalHeader().setMinimumSectionSize(150)
         self.View.tv_students.setFocus(True)
@@ -112,30 +106,28 @@ class Admin:
         index = section_student_model.createIndex(0,0)
         self.View.lv_section_student.setCurrentIndex(index)
 
-    def get_model_section_students(self):
-        self.get_all_section_students.val = self.SectionStudent.TargetSection,
-        self.get_all_section_students.start()
-
     def get_model_latest_section(self):
         section_model = self.View.tv_sections.model()
         if section_model.rowCount() <= 1:
             self.View.TableSectionStudentLoadingScreen.hide()
             return
+
         self.SectionStudent.target_section_row = section_model.rowCount() - 2
-        self.SectionStudent.TargetSection = self.Model.SectionModel(*section_model.getRowData(self.SectionStudent.target_section_row))
+        self.SectionStudent.TargetSection = self.Model.Section(*section_model.getRowData(self.SectionStudent.target_section_row))
+        
+        self.get_all_section_student.val = self.SectionStudent.TargetSection,
+        self.get_all_section_student.start()
 
-        self.get_latest_section_student.val = self.SectionStudent.TargetSection,
-        self.get_latest_section_student.start()
-
-    def select_latest_targets(self, section_student):
+    def select_latest_targets(self):
         self.View.tv_sections.selectRow(self.SectionStudent.target_section_row)
+        section_student = self.View.lv_section_student.model().getData()[0]
         self.set_latest_section_inputs()
 
         if section_student != ():
             student_model = self.View.tv_students.model()
-            student = section_student[2]
+            student = section_student
             self.SectionStudent.target_student_row = student_model.findRow(student)
-            self.SectionStudent.TargetStudent = self.Model.StudentModel(*student_model.getRowData(self.SectionStudent.target_student_row))
+            self.SectionStudent.TargetStudent = self.Model.Student(*student_model.getRowData(self.SectionStudent.target_student_row))
             self.SectionStudent.TargetStudent.Section = self.SectionStudent.TargetSection.Name
 
             self.View.tv_students.selectRow(self.SectionStudent.target_student_row)
