@@ -108,6 +108,7 @@ class SectionStudent:
         self.View.btn_init_edit_section.clicked.connect(self.init_edit_section)
         self.View.btn_add_edit_section.clicked.connect(self.init_add_edit_section)
         self.View.btn_cancel_section.clicked.connect(self.cancel_section)
+        self.View.btn_delete_section.clicked.connect(self.delete_section)
 
     # Section Operations
     def GetTargetSectionStudent(self):
@@ -139,6 +140,13 @@ class SectionStudent:
         handler.error.connect(self.section_error)
         handler.finished.connect(self.View.SectionLoadingScreen.hide)
         handler.finished.connect(self.View.btn_cancel_section.click)
+        return handler
+
+    def DeleteSection(self):
+        handler = Operation(self.Model.delete_section)
+        handler.started.connect(self.View.SectionLoadingScreen.run)
+        handler.finished.connect(self.View.SectionLoadingScreen.hide)
+        handler.finished.connect(self.View.clear_section_inputs)
         return handler
 
     # Table
@@ -242,7 +250,7 @@ class SectionStudent:
         self.get_all_section_handler.finished.connect(lambda: self.View.lv_section_student.model().removeRows(0, self.View.lv_section_student.model().rowCount()))
         self.add_section_handler.start()
 
-
+    # Section Edit
     def edit_section(self):
         section = self.View.txt_section_name.text()
         if is_blank(section):
@@ -261,6 +269,16 @@ class SectionStudent:
 
         self.get_all_section_handler.finished.connect(lambda: self.select_latest_section(section))
         self.edit_section_handler.start()
+
+    # Section Delete
+    def delete_section(self):
+        self.get_all_section_handler = self.GetAllSection()
+        self.delete_section_handler = self.DeleteSection()
+
+        self.delete_section_handler.val = self.TargetSection,
+        self.delete_section_handler.operation.connect(self.get_all_section_handler.start)
+
+        self.delete_section_handler.start()
 
     # *Student
     def student_signals(self):

@@ -154,6 +154,8 @@ class SectionStudent:
         cursor.close()
         db.close()
 
+        return 'successful'
+
     # Student
     def get_all_student(self):
         db = self.Database.connect()
