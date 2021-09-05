@@ -1,6 +1,3 @@
-from os import error
-from Admin.Misc.Widgets.data_table import DataTable
-from PyQt5.QtWidgets import QDialog
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 
@@ -92,6 +89,23 @@ class SectionStudent:
     def sectionstudent_signals(self):
         self.View.lv_section_student.clicked.connect(
             self.list_sectionstudent_clicked)
+
+    # List
+    def set_target_section_student(self, SectionStudent):
+        self.TargetSectionStudent = SectionStudent
+        self.select_target_section_student_row()
+
+    def select_target_section_student_row(self):
+        section_student_model = self.View.lv_section_student.model()
+        self.target_section_student_row = section_student_model.createIndex(
+            section_student_model.findRow(self.TargetSectionStudent.Student), 0)
+        self.View.lv_section_student.setCurrentIndex(
+            self.target_section_student_row)
+            
+    def set_section_student_list(self, sectionstudents):
+        section_student_model = self.Model.ListModel(
+            self.View.lv_section_student, sectionstudents)
+        self.View.lv_section_student.setModel(section_student_model)
 
     def list_sectionstudent_clicked(self, index):
         row = index.row()
@@ -502,21 +516,3 @@ class SectionStudent:
 
         self.get_all_section_student_handler.finished.connect(self.get_latest_section_student)
         self.delete_student_handler.start()
-
-    # *SectionStudent
-    def set_target_section_student(self, SectionStudent):
-        self.TargetSectionStudent = SectionStudent
-        self.select_target_section_student_row()
-
-    def select_target_section_student_row(self):
-        section_student_model = self.View.lv_section_student.model()
-        self.target_section_student_row = section_student_model.createIndex(
-            section_student_model.findRow(self.TargetSectionStudent.Student), 0)
-        self.View.lv_section_student.setCurrentIndex(
-            self.target_section_student_row)
-
-    # List
-    def set_section_student_list(self, sectionstudents):
-        section_student_model = self.Model.ListModel(
-            self.View.lv_section_student, sectionstudents)
-        self.View.lv_section_student.setModel(section_student_model)

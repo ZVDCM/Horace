@@ -5,20 +5,24 @@ from Admin.Controller.teacher_attendance import TeacherAttendance
 from Admin.Controller.class_member import ClassMember
 from Admin.Controller.blacklist_url import BlacklistURL
 
-class GetAllSectionAndStudent(QtCore.QThread):
+class GetAll(QtCore.QThread):
     section_operation = QtCore.pyqtSignal(list)
     student_operation = QtCore.pyqtSignal(list)
+    teacher_operation = QtCore.pyqtSignal(list)
 
-    def __init__(self, get_all_section, get_all_student):
+    def __init__(self, get_all_section, get_all_student, get_all_teacher):
         super().__init__()
         self.get_all_section = get_all_section
         self.get_all_student = get_all_student
+        self.get_all_teacher = get_all_teacher
 
     def run(self):
         res = self.get_all_section()
         self.section_operation.emit(res)
         res = self.get_all_student()
         self.student_operation.emit(res)
+        res = self.get_all_teacher()
+        self.teacher_operation.emit(res)
         self.quit()
 
 class Get(QtCore.QThread):
@@ -43,11 +47,11 @@ class Admin:
 
         self.SectionStudent = SectionStudent(
             self.Model.SectionStudent, self.View, self)
-        self.StudentSection = TeacherAttendance(
+        self.TeacherAttendance = TeacherAttendance(
+            self.Model.TeacherAttendance, self.View, self)
+        self.ClassMember = ClassMember(
             self.Model, self.View, self)
-        self.StudentSection = ClassMember(
-            self.Model, self.View, self)
-        self.StudentSection = BlacklistURL(
+        self.BlacklistURL = BlacklistURL(
             self.Model, self.View, self)
 
         self.connect_signals()
@@ -61,12 +65,13 @@ class Admin:
 
         self.View.resizeEvent = self.resize
 
-        self.get_all_sections_and_students = GetAllSectionAndStudent(self.Model.SectionStudent.get_all_section, self.Model.SectionStudent.get_all_student)
-        self.get_all_sections_and_students.started.connect(self.View.TableSectionStudentLoadingScreen.run)
-        self.get_all_sections_and_students.section_operation.connect(self.SectionStudent.set_section_table)
-        self.get_all_sections_and_students.student_operation.connect(self.SectionStudent.set_student_table)
-        self.get_all_sections_and_students.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
-        self.get_all_sections_and_students.finished.connect(self.get_model_latest_section)
+        self.get_all = GetAll(self.Model.SectionStudent.get_all_section, self.Model.SectionStudent.get_all_student, self.Model.TeacherAttendance.get_all_teacher)
+        self.get_all.started.connect(self.View.TableSectionStudentLoadingScreen.run)
+        self.get_all.section_operation.connect(self.SectionStudent.set_section_table)
+        self.get_all.student_operation.connect(self.SectionStudent.set_student_table)
+        self.get_all.teacher_operation.connect(self.TeacherAttendance.set_teacher_table)
+        self.get_all.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
+        self.get_all.finished.connect(self.get_model_latest_section)
 
         self.get_all_section_student = Get(self.Model.SectionStudent.get_all_section_student)
         self.get_all_section_student.started.connect(self.View.SectionStudentLoadingScreen.run)
@@ -86,7 +91,7 @@ class Admin:
         target.setCurrentIndex(index)
 
     def init_databases(self):
-        self.get_all_sections_and_students.start()
+        self.get_all.start()
 
     def set_section_student_listview(self, students):
         section_student_model = self.Model.ListModel(self.View.lv_section_student, students)
