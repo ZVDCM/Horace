@@ -3976,11 +3976,13 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_init_add_section.setDisabled(True)
         self.btn_init_edit_section.setDisabled(True)
         self.btn_delete_section.setDisabled(True)
+        self.w_section_btn.show()
 
     def enable_section_buttons(self):
         self.btn_init_add_section.setDisabled(False)
         self.btn_init_edit_section.setDisabled(False)
         self.btn_delete_section.setDisabled(False)
+        self.w_section_btn.hide()
 
     def disable_section_inputs(self):
         self.txt_section_name.setDisabled(True)
@@ -3990,6 +3992,7 @@ class Admin(QtWidgets.QMainWindow):
 
     def set_section(self, value):
         self.section_state = value
+        self.btn_add_edit_section.setText(value)
 
     # ==Student
     def clear_student_inputs(self):

@@ -104,12 +104,23 @@ class SectionStudent:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        insert_query = "INSERT INTO Sections (Name) VALUES (%s)"
-        cursor.execute(insert_query, (name,))
-        db.commit()
+        select_query = "SELECT * FROM Sections WHERE Name=%s"
+        cursor.execute(select_query, (name,))
+
+        section_exists = cursor.fetchone()
+        res = "exists"
+
+        if not section_exists:
+            insert_query = "INSERT INTO Sections (Name) VALUES (%s)"
+            cursor.execute(insert_query, (name,))
+            db.commit()
+
+            res = 'successful'
 
         cursor.close()
         db.close()
+
+        return res
 
     def edit_section(self, Section):
         db = self.Database.connect()

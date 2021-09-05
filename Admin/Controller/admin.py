@@ -63,7 +63,7 @@ class Admin:
 
         self.get_all_sections_and_students = GetAllSectionAndStudent(self.Model.SectionStudent.get_all_section, self.Model.SectionStudent.get_all_student)
         self.get_all_sections_and_students.started.connect(self.View.TableSectionStudentLoadingScreen.run)
-        self.get_all_sections_and_students.section_operation.connect(self.set_section_tableview)
+        self.get_all_sections_and_students.section_operation.connect(self.SectionStudent.set_section_table)
         self.get_all_sections_and_students.student_operation.connect(self.SectionStudent.set_student_table)
         self.get_all_sections_and_students.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
         self.get_all_sections_and_students.finished.connect(self.get_model_latest_section)
@@ -87,12 +87,6 @@ class Admin:
 
     def init_databases(self):
         self.get_all_sections_and_students.start()
-
-    def set_section_tableview(self, sections):
-        section_model = self.Model.TableModel(self.View.tv_sections, sections, self.Model.Section.get_headers())
-        self.View.tv_sections.setModel(section_model)
-        self.View.tv_sections.horizontalHeader().setMinimumSectionSize(150)
-        self.View.tv_sections.setFocus(True)
 
     def set_section_student_listview(self, students):
         section_student_model = self.Model.ListModel(self.View.lv_section_student, students)

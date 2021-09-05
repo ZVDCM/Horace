@@ -104,6 +104,10 @@ class SectionStudent:
     # *Section
     def section_signals(self):
         self.View.tv_sections.clicked.connect(self.table_section_clicked)
+        self.View.btn_init_add_section.clicked.connect(self.init_add_section)
+        self.View.btn_init_edit_section.clicked.connect(self.init_edit_section)
+        self.View.btn_add_edit_section.clicked.connect(self.init_add_edit_section)
+        self.View.btn_cancel_section.clicked.connect(self.cancel_section)
 
     # Section Operations
     def GetTargetSectionStudent(self):
@@ -113,6 +117,23 @@ class SectionStudent:
             self.get_target_section_student)
         return handler
 
+    def GetAllSection(self):
+        handler = Get(self.Model.get_all_section)
+        handler.started.connect(self.View.TableSectionStudentLoadingScreen.run)
+        handler.operation.connect(self.set_section_table)
+        handler.finished.connect(
+            self.View.TableSectionStudentLoadingScreen.hide)
+        return handler
+
+    def AddSection(self):
+        handler = Operation(self.Model.create_section)
+        handler.started.connect(self.View.TableSectionStudentLoadingScreen.run)
+        handler.error.connect(self.section_error)
+        handler.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
+        handler.finished.connect(self.View.btn_cancel_section.click)
+        return handler
+
+    # Table
     def table_section_clicked(self, index):
         row = index.row()
         section_model = self.View.tv_sections.model()
@@ -126,14 +147,19 @@ class SectionStudent:
         self.get_target_section_student_handler.start()
 
     def get_target_section_student(self, sectionstudents):
-        target_section_student = sectionstudents[-1]
-        student_model = self.View.tv_students.model()
-        target_student = self.Model.Student(
-            *student_model.getRowData(student_model.findRow(target_section_student.Student)))
+        if sectionstudents != ():
+            target_section_student = sectionstudents[-1]
+            student_model = self.View.tv_students.model()
+            target_student = self.Model.Student(
+                *student_model.getRowData(student_model.findRow(target_section_student.Student)))
 
-        self.set_section_student_list(sectionstudents)
-        self.set_target_section_student(target_section_student)
-        self.set_target_student(target_student)
+            self.set_section_student_list(sectionstudents)
+            self.set_target_section_student(target_section_student)
+            self.set_target_student(target_student)
+        else:
+            self.View.tv_students.clearSelection()
+            self.View.clear_student_inputs()
+            self.View.lv_section_student.model().removeRows(0, self.View.lv_section_student.model().rowCount())
 
     def set_target_section(self, Section):
         self.TargetSection = Section
@@ -149,13 +175,75 @@ class SectionStudent:
         self.View.tv_sections.selectRow(self.target_section_row)
         self.View.txt_section_name.setText(self.TargetSection.Name)
 
+    def set_section_table(self, sections):
+        section_model = self.Model.TableModel(self.View.tv_sections, sections, self.Model.Section.get_headers())
+        self.View.tv_sections.setModel(section_model)
+        self.View.tv_sections.horizontalHeader().setMinimumSectionSize(150)
+        self.View.tv_sections.setFocus(True)
+
+    def select_latest_section(self, section):
+        section_model = self.View.tv_sections.model()
+        self.set_target_section(self.Model.Section(
+            *section_model.getRowData(section_model.findRow(section))))
+
+    # Buttons
+    def init_add_section(self):
+        self.View.clear_section_inputs()
+        self.View.disable_section_buttons()
+        self.View.enable_section_inputs()
+        self.View.set_section('Add')
+
+    def init_edit_section(self):
+        self.View.disable_section_buttons()
+        self.View.enable_section_inputs()
+        self.View.set_section('Edit')
+
+    def cancel_section(self):
+        self.select_target_section_row()
+        self.View.enable_section_buttons()
+        self.View.disable_section_inputs()
+        self.View.set_section('Read')
+
+    def init_add_edit_section(self):
+        if self.View.section_state == "Add":
+            self.add_section()
+        elif self.View.section_state == "Edit":
+            self.edit_section()
+    
+    # Section Error
+    def section_error(self, error):
+        if error == 'exists':
+            self.View.run_popup(f'Section exists')
+    
+    # Section Add
+    def add_section(self):
+        section = self.View.txt_section_name.text()
+        if is_blank(section):
+            self.View.run_pop('Section fields must be filled')
+            return
+        
+        self.get_all_section_handler = self.GetAllSection()
+        self.add_section_handler = self.AddSection()
+
+        self.add_section_handler.val = section,
+        self.add_section_handler.operation.connect(self.get_all_section_handler.start)
+
+        self.get_all_section_handler.finished.connect(lambda: self.select_latest_section(section))
+        self.get_all_section_handler.finished.connect(self.View.tv_students.clearSelection)
+        self.get_all_section_handler.finished.connect(self.View.clear_student_inputs)
+        self.get_all_section_handler.finished.connect(lambda: self.View.lv_section_student.model().removeRows(0, self.View.lv_section_student.model().rowCount()))
+        self.add_section_handler.start()
+
+
+    def edit_section(self):
+        print(2)
+
     # *Student
     def student_signals(self):
         self.View.tv_students.clicked.connect(self.table_student_clicked)
         self.View.btn_init_add_student.clicked.connect(self.init_add_student)
         self.View.btn_init_edit_student.clicked.connect(self.init_edit_student)
-        self.View.btn_add_edit_student.clicked.connect(
-            self.init_add_edit_student)
+        self.View.btn_add_edit_student.clicked.connect(self.init_add_edit_student)
         self.View.btn_cancel_student.clicked.connect(self.cancel_student)
         self.View.btn_delete_student.clicked.connect(self.init_delete_student)
 
@@ -242,7 +330,6 @@ class SectionStudent:
             str(self.TargetStudent.Salt + self.TargetStudent.Hash))
         self.View.txt_student_password.setCursorPosition(0)
 
-    # Table
     def set_student_table(self, students):
         student_model = self.Model.TableModel(
             self.View.tv_students, students, self.Model.Student.get_headers())
@@ -279,6 +366,7 @@ class SectionStudent:
         elif self.View.student_state == "Edit":
             self.edit_student()
 
+    # Student Error
     def student_error(self, error):
         if error == 'exists':
             self.View.run_popup(f'Student exists')
