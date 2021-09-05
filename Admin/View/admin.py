@@ -1,4 +1,3 @@
-from Admin.Misc.Functions.password import generate_password
 from Admin.Misc.Widgets.custom_label import SideNav
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Admin.Misc.Widgets.admin_title_bar import TitleBar
@@ -2139,7 +2138,7 @@ class Admin(QtWidgets.QMainWindow):
         self.label_18.setIndent(1)
         self.label_18.setObjectName("label_18")
         self.verticalLayout_21.addWidget(self.label_18)
-        self.txt_teacher_password = QtWidgets.QLineEdit(self.w_teacher_input)
+        self.txt_teacher_password = PasswordGenerator(self.w_teacher_input)
         self.txt_teacher_password.setEnabled(False)
         self.txt_teacher_password.setMinimumSize(QtCore.QSize(0, 30))
         font = QtGui.QFont()
@@ -4108,5 +4107,3 @@ class Admin(QtWidgets.QMainWindow):
     def set_database_status(self, text):
         self.lbl_database_status.setText(text)
         
-    def set_password(self, target):
-        target.setText(generate_password())

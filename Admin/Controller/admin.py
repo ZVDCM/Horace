@@ -67,11 +67,14 @@ class Admin:
 
         self.get_all = GetAll(self.Model.SectionStudent.get_all_section, self.Model.SectionStudent.get_all_student, self.Model.TeacherAttendance.get_all_teacher)
         self.get_all.started.connect(self.View.TableSectionStudentLoadingScreen.run)
+        self.get_all.started.connect(self.View.TableTeacherLoadingScreen.run)
         self.get_all.section_operation.connect(self.SectionStudent.set_section_table)
         self.get_all.student_operation.connect(self.SectionStudent.set_student_table)
         self.get_all.teacher_operation.connect(self.TeacherAttendance.set_teacher_table)
         self.get_all.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
+        self.get_all.finished.connect(self.View.TableTeacherLoadingScreen.hide)
         self.get_all.finished.connect(self.get_model_latest_section)
+        self.get_all.finished.connect(self.get_model_latest_teacher)
 
         self.get_all_section_student = Get(self.Model.SectionStudent.get_all_section_student)
         self.get_all_section_student.started.connect(self.View.SectionStudentLoadingScreen.run)
@@ -93,6 +96,7 @@ class Admin:
     def init_databases(self):
         self.get_all.start()
 
+    # *SectionStudent
     def set_section_student_listview(self, students):
         section_student_model = self.Model.ListModel(self.View.lv_section_student, students)
         self.View.lv_section_student.setModel(section_student_model)
@@ -135,6 +139,26 @@ class Admin:
         self.View.txt_student_username.setText(Student.Username)
         self.View.txt_student_password.setText(str(Student.Salt + Student.Hash))
         self.View.txt_student_password.setCursorPosition(0)
+
+    # *Teacher
+    def get_model_latest_teacher(self):
+        teacher_model = self.View.tv_teachers.model()
+        if teacher_model.rowCount() <= 1:
+            self.View.TableTeacherLoadingScreen.hide()
+            return
+
+        self.TeacherAttendance.target_teacher_row = teacher_model.rowCount() - 2
+        self.TeacherAttendance.TargetTeacher = self.Model.Teacher(*teacher_model.getRowData(self.TeacherAttendance.target_teacher_row))
+        self.View.tv_teachers.selectRow(self.TeacherAttendance.target_teacher_row)
+
+        self.set_latest_teacher_inputs()
+
+    def set_latest_teacher_inputs(self):
+        Teacher = self.TeacherAttendance.TargetTeacher
+        self.View.txt_teacher_username.setText(Teacher.Username)
+        self.View.txt_teacher_password.setText(str(Teacher.Salt + Teacher.Hash))
+        self.View.txt_teacher_password.setCursorPosition(0)
+    
 
     def resize(self, event):
         self.View.title_bar.resize_window()

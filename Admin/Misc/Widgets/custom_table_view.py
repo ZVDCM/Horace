@@ -13,9 +13,9 @@ class TableView(QTableView):
         self.setWordWrap(False)
         self.setStyleSheet("""
             QTableView {
+                outline: 0;
                 border: 1px solid #0e4884;
                 gridline-color: #97b9f4;
-                outline: 0;
             }
 
             QTableView::item:selected:active {
