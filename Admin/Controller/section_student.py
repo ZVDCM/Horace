@@ -127,9 +127,17 @@ class SectionStudent:
 
     def AddSection(self):
         handler = Operation(self.Model.create_section)
-        handler.started.connect(self.View.TableSectionStudentLoadingScreen.run)
+        handler.started.connect(self.View.SectionLoadingScreen.run)
         handler.error.connect(self.section_error)
-        handler.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
+        handler.finished.connect(self.View.SectionLoadingScreen.hide)
+        handler.finished.connect(self.View.btn_cancel_section.click)
+        return handler
+
+    def EditSection(self):
+        handler = Operation(self.Model.edit_section)
+        handler.started.connect(self.View.SectionLoadingScreen.run)
+        handler.error.connect(self.section_error)
+        handler.finished.connect(self.View.SectionLoadingScreen.hide)
         handler.finished.connect(self.View.btn_cancel_section.click)
         return handler
 
@@ -236,7 +244,23 @@ class SectionStudent:
 
 
     def edit_section(self):
-        print(2)
+        section = self.View.txt_section_name.text()
+        if is_blank(section):
+            self.View.run_pop('Section fields must be filled')
+            return
+
+        if section == self.TargetSection.Name:
+            self.View.btn_cancel_section.click()
+            return
+
+        self.get_all_section_handler = self.GetAllSection()
+        self.edit_section_handler = self.EditSection()
+
+        self.edit_section_handler.val = self.TargetSection.ID, section
+        self.edit_section_handler.operation.connect(self.get_all_section_handler.start)
+
+        self.get_all_section_handler.finished.connect(lambda: self.select_latest_section(section))
+        self.edit_section_handler.start()
 
     # *Student
     def student_signals(self):
@@ -281,6 +305,7 @@ class SectionStudent:
     def EditStudent(self):
         handler = Operation(self.Model.edit_student)
         handler.started.connect(self.View.StudentLoadingScreen.run)
+        handler.error.connect(self.student_error)
         handler.finished.connect(self.View.StudentLoadingScreen.hide)
         handler.finished.connect(self.View.btn_cancel_student.click)
         return handler

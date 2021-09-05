@@ -122,16 +122,26 @@ class SectionStudent:
 
         return res
 
-    def edit_section(self, Section):
+    def edit_section(self, id, section):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        update_query = "UPDATE Sections SET Name=%s WHERE ID=%s"
-        cursor.execute(update_query, (Section.Name, Section.ID))
-        db.commit()
+        select_query = "SELECT * FROM Sections WHERE Name=%s"
+        cursor.execute(select_query, (section,))
 
-        cursor.close()
-        db.close()
+        section_exists = cursor.fetchone()
+        res = "exists"
+
+        if not section_exists:
+            update_query = "UPDATE Sections SET Name=%s WHERE ID=%s"
+            cursor.execute(update_query, (section, id))
+            db.commit()
+
+            cursor.close()
+            db.close()
+            res = "successful"
+
+        return res
 
     def delete_section(self, Section):
         db = self.Database.connect()
@@ -218,18 +228,27 @@ class SectionStudent:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        if password != str(salt + hash):
-            salt = generate_salt()
-            hash = get_hashed_password(password, salt)
+        select_query = "SELECT * FROM Users WHERE Username=%s AND Privilege=%s"
+        cursor.execute(select_query, (username, 'Student'))
 
-        update_query = "UPDATE Users SET Username=%s, Salt=%s, Hash=%s WHERE UserID=%s AND Privilege=%s"
-        cursor.execute(update_query, (username, salt, hash, userid, "Student"))
-        db.commit()
+        student_exist = cursor.fetchone()
+        res = "exists"
+
+        if not student_exist:
+            if password != str(salt + hash):
+                salt = generate_salt()
+                hash = get_hashed_password(password, salt)
+
+            update_query = "UPDATE Users SET Username=%s, Salt=%s, Hash=%s WHERE UserID=%s AND Privilege=%s"
+            cursor.execute(update_query, (username, salt, hash, userid, "Student"))
+            db.commit()
+
+            res = 'successful'
 
         cursor.close()
         db.close()
 
-        return 'successful'
+        return res
 
     def delete_student(self, Student):
         db = self.Database.connect()
