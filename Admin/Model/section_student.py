@@ -203,33 +203,22 @@ class SectionStudent:
 
         return res
 
-    def edit_student(self, UserID, Username, Salt, Hash, password):
+    def edit_student(self, userid, username, salt, hash, password):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        salt = Salt
-        hash = Hash
         if password != str(salt + hash):
             salt = generate_salt()
             hash = get_hashed_password(password, salt)
 
         update_query = "UPDATE Users SET Username=%s, Salt=%s, Hash=%s WHERE UserID=%s AND Privilege=%s"
-        cursor.execute(update_query, (Username, salt, hash, UserID, "Student"))
+        cursor.execute(update_query, (username, salt, hash, userid, "Student"))
         db.commit()
 
         cursor.close()
         db.close()
 
-    def edit_student_section(self, section, username):
-        db = self.Database.connect()
-        cursor = db.cursor(buffered=True)
-
-        update_query = "UPDATE Section_Students SET Section=%s WHERE Student=%s"
-        cursor.execute(update_query, (section, username))
-        db.commit()
-
-        cursor.close()
-        db.close()
+        return 'successful'
 
     def delete_student(self, Student):
         db = self.Database.connect()

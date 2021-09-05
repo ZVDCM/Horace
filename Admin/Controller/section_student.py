@@ -85,19 +85,13 @@ class SectionStudent:
 
     def connect_signals(self):
         self.section_signals()
-        self.section_operations()
         self.student_signals()
-        self.student_operations()
         self.sectionstudent_signals()
-        self.sectionstudent_operations()
 
     # *SectionStudent
     def sectionstudent_signals(self):
         self.View.lv_section_student.clicked.connect(
             self.list_sectionstudent_clicked)
-
-    def sectionstudent_operations(self):
-        pass
 
     def list_sectionstudent_clicked(self, index):
         row = index.row()
@@ -111,11 +105,13 @@ class SectionStudent:
     def section_signals(self):
         self.View.tv_sections.clicked.connect(self.table_section_clicked)
 
-    def section_operations(self):
-        self.GetTargetSectionStudent = GetTargetSectionStudent(
+    # Section Operations
+    def GetTargetSectionStudent(self):
+        handler = GetTargetSectionStudent(
             self.Model.get_all_section_student)
-        self.GetTargetSectionStudent.operation.connect(
+        handler.operation.connect(
             self.get_target_section_student)
+        return handler
        
     def table_section_clicked(self, index):
         row = index.row()
@@ -123,10 +119,11 @@ class SectionStudent:
         if row == section_model.rowCount() - 1:
             return
 
+        self.handler = self.GetTargetSectionStudent()
         self.set_target_section(self.Model.Section(
             *section_model.getRowData(row)))
-        self.GetTargetSectionStudent.value = self.TargetSection,
-        self.GetTargetSectionStudent.start()
+        self.handler.value = self.TargetSection,
+        self.handler.start()
 
     def get_target_section_student(self, sectionstudents):
         target_section_student = sectionstudents[-1]
@@ -161,41 +158,55 @@ class SectionStudent:
             self.init_add_edit_student)
         self.View.btn_cancel_student.clicked.connect(self.cancel_student)
 
-    def student_operations(self):
-        self.GetTargetStudentSection = GetTargetStudentSection(
+    # Student Operations
+    def GetTargetStudentSection(self):
+        handler = GetTargetStudentSection(
             self.Model.get_student_section, self.Model.get_all_section_student)
-        self.GetTargetStudentSection.operation.connect(
+        handler.operation.connect(
             self.get_target_student_section)
+        return handler
 
-        self.GetAllStudents = Get(self.Model.get_all_student)
-        self.GetAllStudents.started.connect(self.View.TableSectionStudentLoadingScreen.run)
-        self.GetAllStudents.operation.connect(self.set_student_table)
-        self.GetAllStudents.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
+    def GetAllStudents(self):
+        handler = Get(self.Model.get_all_student)
+        handler.started.connect(self.View.TableSectionStudentLoadingScreen.run)
+        handler.operation.connect(self.set_student_table)
+        handler.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
+        return handler
 
-        self.GetAllSectionStudents = Get(self.Model.get_all_section_student)
-        self.GetAllSectionStudents.finished.connect(self.View.SectionStudentLoadingScreen.run)
-        self.GetAllSectionStudents.operation.connect(self.set_section_student_list)
-        self.GetAllSectionStudents.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+    def GetAllSectionStudents(self):
+        handler = Get(self.Model.get_all_section_student)
+        handler.finished.connect(self.View.SectionStudentLoadingScreen.run)
+        handler.operation.connect(self.set_section_student_list)
+        handler.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+        return handler
 
-        self.AddStudent = Operation(self.Model.create_student)
-        self.AddStudent.started.connect(self.View.StudentLoadingScreen.run)
-        self.AddStudent.operation.connect(self.GetAllStudents.start)
-        self.AddStudent.error.connect(self.student_error)
-        self.AddStudent.finished.connect(self.View.StudentLoadingScreen.hide)
-        self.AddStudent.finished.connect(self.View.btn_cancel_student.click)
+    def AddStudent(self):
+        handler = Operation(self.Model.create_student)
+        handler.started.connect(self.View.StudentLoadingScreen.run)
+        handler.error.connect(self.student_error)
+        handler.finished.connect(self.View.StudentLoadingScreen.hide)
+        handler.finished.connect(self.View.btn_cancel_student.click)
+        return handler
 
-        self.GetAllStudents.finished.connect(self.GetAllSectionStudents.start)
+    def EditStudent(self):
+        handler = Operation(self.Model.edit_student)
+        handler.started.connect(self.View.StudentLoadingScreen.run)
+        handler.finished.connect(self.View.StudentLoadingScreen.hide)
+        handler.finished.connect(self.View.btn_cancel_student.click)
+        return handler
 
+    # Table
     def table_student_clicked(self, index):
         row = index.row()
         student_model = self.View.tv_students.model()
         if row == student_model.rowCount() - 1:
             return
 
+        self.handler = self.GetTargetStudentSection()
         self.set_target_student(self.Model.Student(
             *student_model.getRowData(row)))
-        self.GetTargetStudentSection.value = self.TargetStudent,
-        self.GetTargetStudentSection.start()
+        self.handler.value = self.TargetStudent,
+        self.handler.start()
 
     def get_target_student_section(self, Section, sectionstudents):
         for sectionstudent in sectionstudents:
@@ -265,13 +276,19 @@ class SectionStudent:
         if is_blank(username) or is_blank(password):
             self.View.run_pop('Student fields must be filled')
             return
+
+        self.handler = self.GetAllStudents()
+        self.handler2 = self.GetAllSectionStudents()
+        self.handler3 = self.AddStudent()
         
-        self.AddStudent.val = self.TargetSection.Name, username, password
-        
-        self.GetAllStudents.finished.connect(lambda: self.select_latest_student(username))
-        self.GetAllSectionStudents.val = self.TargetSection,
-        self.GetAllSectionStudents.finished.connect(lambda: self.set_target_section_student(self.Model.SectionStudent(None, self.TargetSection.Name, username)))
-        self.AddStudent.start()
+        self.handler3.val = self.TargetSection.Name, username, password
+        self.handler3.operation.connect(self.handler.start)
+        self.handler.finished.connect(self.handler2.start)
+        self.handler.finished.connect(lambda: self.select_latest_student(username))
+
+        self.handler2.val = self.TargetSection,
+        self.handler2.finished.connect(lambda: self.set_target_section_student(self.Model.SectionStudent(None, self.TargetSection.Name, username)))
+        self.handler3.start()
 
     def student_error(self, error):
         if error == 'exists':
@@ -281,7 +298,30 @@ class SectionStudent:
 
     # Student Edit
     def edit_student(self):
-        pass
+        username = self.View.txt_student_username.text()
+        password = self.View.txt_student_password.text()
+
+        if is_blank(username) or is_blank(password):
+            self.View.run_pop('Student fields must be filled')
+            self.View.btn_cancel_student.click()
+            return
+
+        if username == self.TargetStudent.Username and password == str(self.TargetStudent.Salt + self.TargetStudent.Hash):
+            self.View.btn_cancel_student.click()
+            return
+
+        self.handler = self.GetAllStudents()
+        self.handler2 = self.GetAllSectionStudents()
+        self.handler3 = self.EditStudent()
+
+        self.handler3.val = self.TargetStudent.UserID, username, self.TargetStudent.Salt, self.TargetStudent.Hash, password
+        self.handler3.operation.connect(self.handler.start)
+
+        self.handler2.val = self.TargetSection,
+        self.handler2.finished.connect(lambda: self.set_target_section_student(self.Model.SectionStudent(None, self.TargetSection.Name, username)))
+        self.handler.finished.connect(self.handler2.start)
+        self.handler.finished.connect(lambda: self.select_latest_student(username))
+        self.handler3.start()
 
     # *SectionStudent
     def set_target_section_student(self, SectionStudent):
