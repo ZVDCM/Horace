@@ -66,11 +66,11 @@ class Admin(QtWidgets.QMainWindow):
         self.disable_class_inputs()
         self.disable_url_inputs()
 
-        self.student_state = "read"
-        self.section_state = "read"
-        self.teacher_state = "read"
-        self.class_state = "read"
-        self.url_state = "read"
+        self.student_state = "Read"
+        self.section_state = "Read"
+        self.teacher_state = "Read"
+        self.class_state = "Read"
+        self.url_state = "Read"
 
     def run(self):
         self.raise_()
@@ -3994,16 +3994,19 @@ class Admin(QtWidgets.QMainWindow):
     # ==Student
     def clear_student_inputs(self):
         self.txt_student_username.clear()
+        self.txt_student_password.operation.emit()
 
     def disable_student_buttons(self):
         self.btn_init_add_student.setDisabled(True)
         self.btn_init_edit_student.setDisabled(True)
         self.btn_delete_student.setDisabled(True)
+        self.w_student_btn.show()
 
     def enable_student_buttons(self):
         self.btn_init_add_student.setDisabled(False)
         self.btn_init_edit_student.setDisabled(False)
         self.btn_delete_student.setDisabled(False)
+        self.w_student_btn.hide()
 
     def disable_student_inputs(self):
         self.txt_student_username.setDisabled(True)
@@ -4015,6 +4018,7 @@ class Admin(QtWidgets.QMainWindow):
 
     def set_student(self, value):
         self.student_state = value
+        self.btn_add_edit_student.setText(value)
 
     # ==Teacher
     def disable_teacher_buttons(self):

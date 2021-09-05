@@ -64,7 +64,7 @@ class Admin:
         self.get_all_sections_and_students = GetAllSectionAndStudent(self.Model.SectionStudent.get_all_section, self.Model.SectionStudent.get_all_student)
         self.get_all_sections_and_students.started.connect(self.View.TableSectionStudentLoadingScreen.run)
         self.get_all_sections_and_students.section_operation.connect(self.set_section_tableview)
-        self.get_all_sections_and_students.student_operation.connect(self.set_student_tableview)
+        self.get_all_sections_and_students.student_operation.connect(self.SectionStudent.set_student_table)
         self.get_all_sections_and_students.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
         self.get_all_sections_and_students.finished.connect(self.get_model_latest_section)
 
@@ -94,12 +94,6 @@ class Admin:
         self.View.tv_sections.horizontalHeader().setMinimumSectionSize(150)
         self.View.tv_sections.setFocus(True)
 
-    def set_student_tableview(self, students):
-        student_model = self.Model.TableModel(self.View.tv_students, students, self.Model.Student.get_headers())
-        self.View.tv_students.setModel(student_model)
-        self.View.tv_students.horizontalHeader().setMinimumSectionSize(150)
-        self.View.tv_students.setFocus(True)
-
     def set_section_student_listview(self, students):
         section_student_model = self.Model.ListModel(self.View.lv_section_student, students)
         self.View.lv_section_student.setModel(section_student_model)
@@ -120,12 +114,12 @@ class Admin:
 
     def select_latest_targets(self):
         self.View.tv_sections.selectRow(self.SectionStudent.target_section_row)
-        section_student = self.View.lv_section_student.model().getData()[0]
         self.set_latest_section_inputs()
+        section_student = self.View.lv_section_student.model().getData()
 
-        if section_student != ():
+        if section_student != []:
             student_model = self.View.tv_students.model()
-            student = section_student
+            student = section_student[0]
             self.SectionStudent.target_student_row = student_model.findRow(student)
             self.SectionStudent.TargetStudent = self.Model.Student(*student_model.getRowData(self.SectionStudent.target_student_row))
             self.SectionStudent.TargetStudent.Section = self.SectionStudent.TargetSection.Name

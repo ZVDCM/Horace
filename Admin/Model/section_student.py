@@ -1,5 +1,6 @@
 from Admin.Misc.Functions.hash import *
 
+
 class SectionStudent:
 
     def __init__(self, Model):
@@ -43,7 +44,7 @@ class SectionStudent:
         if section_student:
             return self.SectionStudent(*section_student)
         return ()
-    
+
     def get_student_section(self, Student):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
@@ -61,7 +62,7 @@ class SectionStudent:
 
         cursor.close()
         db.close()
-        
+
         if section:
             return self.Section(*section)
         return None
@@ -82,7 +83,7 @@ class SectionStudent:
         if sections:
             return [self.Section(*section) for section in sections]
         return []
-    
+
     def get_section(self, name):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
@@ -148,7 +149,7 @@ class SectionStudent:
         if students:
             return [self.Student(*student) for student in students]
         return []
-    
+
     def get_student(self, username):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
@@ -165,37 +166,37 @@ class SectionStudent:
             return self.Student(*student)
         return None
 
-    def create_student(self, username, password):
+    def create_student(self, section, username, password):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        salt = generate_salt()
-        hashed_password = get_hashed_password(password, salt)
+        select_query = "SELECT * FROM Users WHERE Username=%s AND Privilege=%s"
+        cursor.execute(select_query, (username, 'Student'))
 
-        insert_query = "INSERT INTO Users (Username, Privilege, Salt, Hash) VALUES (%s,%s,%s,%s)"
-        cursor.execute(insert_query, (username, 'Student', salt, hashed_password))
-        db.commit()
+        student_exist = cursor.fetchone()
+        res = "exists"
 
-        cursor.close()
-        db.close()
+        if not student_exist:
+            select_query = "SELECT * FROM Section_Students WHERE Student=%s"
+            cursor.execute(select_query, (username,))
 
-    def register_student_section(self, section, username):
-        db = self.Database.connect()
-        cursor = db.cursor(buffered=True)
+            student_in_section = cursor.fetchone()
+            res = "section exists"
 
-        select_query = "SELECT * FROM Section_Students WHERE Student=%s"
-        cursor.execute(select_query, (username,))
+            if not student_in_section:
+                salt = generate_salt()
+                hashed_password = get_hashed_password(password, salt)
 
-        student = cursor.fetchone()
+                insert_query = "INSERT INTO Users (Username, Privilege, Salt, Hash) VALUES (%s,%s,%s,%s)"
+                cursor.execute(
+                    insert_query, (username, 'Student', salt, hashed_password))
+                db.commit()
 
-        if not student:
-            insert_query = "INSERT INTO Section_Students (Section, Student) VALUES (%s,%s)"
-            cursor.execute(insert_query, (section, username))
-            db.commit()
+                insert_query = "INSERT INTO Section_Students (Section, Student) VALUES (%s,%s)"
+                cursor.execute(insert_query, (section, username))
+                db.commit()
 
-            res = True
-        else:
-            res = False
+                res = "successful"
 
         cursor.close()
         db.close()
