@@ -202,6 +202,13 @@ class SectionStudent:
         self.set_target_section(self.Model.Section(
             *section_model.getRowData(section_model.findRow(section))))
 
+    def get_latest_target_section_student(self):
+        section_model = self.View.tv_sections.model()
+        self.set_target_section(self.Model.Section(
+            *section_model.getRowData(section_model.rowCount() - 2)))
+        self.get_target_section_student_handler.value = self.TargetSection,
+        self.get_target_section_student_handler.start()
+
     # Buttons
     def init_add_section(self):
         self.View.clear_section_inputs()
@@ -278,6 +285,7 @@ class SectionStudent:
         self.delete_section_handler.val = self.TargetSection,
         self.delete_section_handler.operation.connect(self.get_all_section_handler.start)
 
+        self.get_all_section_handler.finished.connect(self.get_latest_target_section_student)
         self.delete_section_handler.start()
 
     # *Student
@@ -385,6 +393,12 @@ class SectionStudent:
         self.set_target_student(self.Model.Student(
             *student_model.getRowData(student_model.findRow(username))))
 
+    def get_latest_section_student(self):
+        section_model = self.View.lv_section_student.model()
+        self.set_target_section_student(self.Model.SectionStudent(None, self.TargetSection.Name, section_model.getData()[0]))
+        student_model = self.View.tv_students.model()
+        self.set_target_student(self.Model.Student(*student_model.getRowData(student_model.findRow(self.TargetSectionStudent.Student))))
+
     # Buttons
     def init_add_student(self):
         self.View.clear_student_inputs()
@@ -485,6 +499,8 @@ class SectionStudent:
         self.get_all_section_student_handler.val = self.TargetSection,
         self.get_all_student_handler.finished.connect(
             self.get_all_section_student_handler.start)
+
+        self.get_all_section_student_handler.finished.connect(self.get_latest_section_student)
         self.delete_student_handler.start()
 
     # *SectionStudent
