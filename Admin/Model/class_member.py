@@ -25,3 +25,6 @@ class ClassMember:
         if classes:
             return [self.Class(*_class) for _class in classes]
         return []
+
+    def create_class(self):
+        pass

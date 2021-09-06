@@ -89,21 +89,26 @@ class Class:
         self.Code = Code
         self.Name = Name
         self.HostAddress = HostAddress
-        self.Start = Start
-        self.End = End
+        self._Start = Start
+        self._End = End
 
     def __str__(self):
-        return f"Class(ID={self.UserID}, Name={self.Name}, HostAddress={self.HostAddress}, Start={self.Start}, End={self.End})"
+        return f"Class(ID={self.UserID}, Name={self.Name}, HostAddress={self.HostAddress}, Start={self._Start}, End={self._End})"
 
     @staticmethod
     def get_headers():
         return ("ID", "Code", "Name", "HostAddress", "Start", "End")
+    
+    @property
+    def Start(self):
+        return [int(i) for i in str(self._Start).split(':')]
+
+    @property
+    def End(self):
+        return [int(i) for i in str(self._End).split(':')]
 
     def get_values(self):
-        return (self.ID, self.Code, self.Name, self.HostAddress, self.Start, self.End)
-
-    def get_hour_min_sec(self, time):
-        return [int(i) for i in str(time).split(':')]
+        return (self.ID, self.Code, self.Name, self.HostAddress, self._Start, self._End)
 
 class Model:
 

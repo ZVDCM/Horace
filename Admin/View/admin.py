@@ -4051,15 +4051,23 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_add_edit_teacher.setText(value)
 
     # ==Class
+    def clear_class_inputs(self):
+        self.txt_class_code.clear()
+        self.txt_class_name.clear()
+        self.txt_class_start.setTime(QtCore.QTime(7, 0, 0))
+        self.txt_class_end.setTime(QtCore.QTime(7, 0, 0))
+
     def disable_class_buttons(self):
         self.btn_init_add_class.setDisabled(True)
         self.btn_init_edit_class.setDisabled(True)
         self.btn_delete_class.setDisabled(True)
+        self.w_class_btn.show()
 
     def enable_class_buttons(self):
         self.btn_init_add_class.setDisabled(False)
         self.btn_init_edit_class.setDisabled(False)
         self.btn_delete_class.setDisabled(False)
+        self.w_class_btn.hide()
 
     def disable_class_inputs(self):
         self.txt_class_code.setDisabled(True)
@@ -4075,6 +4083,7 @@ class Admin(QtWidgets.QMainWindow):
 
     def set_class(self, value):
         self.class_state = value
+        self.btn_add_edit_class.setText(value)
 
     # URL
     def disable_url_buttons(self):

@@ -185,8 +185,8 @@ class Admin:
         Class = self.ClassMember.TargetClass
         self.View.txt_class_code.setText(Class.Code)
         self.View.txt_class_name.setText(Class.Name)
-        self.View.txt_class_start.setTime(QtCore.QTime(*Class.get_hour_min_sec(Class.Start)))
-        self.View.txt_class_end.setTime(QtCore.QTime(*Class.get_hour_min_sec(Class.End)))
+        self.View.txt_class_start.setTime(QtCore.QTime(*Class.Start))
+        self.View.txt_class_end.setTime(QtCore.QTime(*Class.End))
     
 
     def resize(self, event):
