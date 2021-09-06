@@ -53,6 +53,7 @@ class BlacklistURL:
         self.View.btn_add_edit_url.clicked.connect(
             self.init_add_edit_url)
         self.View.btn_cancel_url.clicked.connect(self.cancel_url)
+        self.View.btn_delete_url.clicked.connect(self.delete_url)
 
     # Operations
     def GetAllURL(self):
@@ -76,6 +77,12 @@ class BlacklistURL:
         handler.error.connect(self.url_error)
         handler.finished.connect(self.View.URLLoadingScreen.hide)
         handler.finished.connect(self.View.btn_cancel_url.click)
+        return handler
+
+    def DeleteURL(self):
+        handler = Operation(self.Model.delete_url)
+        handler.started.connect(self.View.URLLoadingScreen.run)
+        handler.finished.connect(self.View.URLLoadingScreen.hide)
         return handler
 
     # List
@@ -109,6 +116,11 @@ class BlacklistURL:
         url_model = self.View.lv_url.model()
         self.set_target_url(self.Model.Url(
             None, url_model.getRowData(url_model.findRow(domain))))
+
+    def get_latest_url(self):
+        class_model = self.View.lv_url.model()
+        self.set_target_url(self.Model.Url(
+            None, class_model.getRowData(0)))
 
     # Buttons
     def init_add_url(self):
@@ -174,3 +186,14 @@ class BlacklistURL:
 
         self.get_all_url_handler.finished.connect(lambda: self.select_latest_url(domain))
         self.edit_url_handler.start()
+
+    # URL Delete
+    def delete_url(self):
+        self.get_all_url_handler = self.GetAllURL()
+        self.delete_url_handler = self.DeleteURL()
+
+        self.delete_url_handler.val = self.TargetUrl,
+        self.delete_url_handler.operation.connect(self.get_all_url_handler.start)
+
+        self.get_all_url_handler.finished.connect(self.get_latest_url)
+        self.delete_url_handler.start()

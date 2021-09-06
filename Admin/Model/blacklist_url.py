@@ -70,3 +70,16 @@ class BlacklistURL:
         db.close()
 
         return res
+
+    def delete_url(self, Url):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Urls WHERE Domain=%s"
+        cursor.execute(delete_query, (Url.Domain,))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'

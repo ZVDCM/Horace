@@ -81,7 +81,6 @@ class ClassMember:
     def DeleteClass(self):
         handler = Operation(self.Model.delete_class)
         handler.started.connect(self.View.ClassLoadingScreen.run)
-        handler.error.connect(self.class_error)
         handler.finished.connect(self.View.ClassLoadingScreen.hide)
         return handler 
 
