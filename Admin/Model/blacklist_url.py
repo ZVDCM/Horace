@@ -25,3 +25,26 @@ class BlacklistURL:
         if Urls:
             return [self.Url(*url) for url in Urls]
         return []
+
+    def create_url(self, domain):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = "SELECT * FROM Urls WHERE Domain=%s"
+        cursor.execute(select_query, (domain,))
+
+        domain_exist = cursor.fetchone()
+        res = "exists"
+
+        if not domain_exist:
+            insert_query = "INSERT INTO Urls (Domain) VALUES (%s)"
+            cursor.execute(
+                insert_query, (domain,))
+            db.commit()
+
+            res = "successful"
+
+        cursor.close()
+        db.close()
+
+        return res

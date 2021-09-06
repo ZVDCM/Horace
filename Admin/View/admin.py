@@ -4086,15 +4086,20 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_add_edit_class.setText(value)
 
     # URL
+    def clear_url_inputs(self):
+        self.txt_url.clear()
+
     def disable_url_buttons(self):
         self.btn_init_add_url.setDisabled(True)
         self.btn_init_edit_url.setDisabled(True)
         self.btn_delete_url.setDisabled(True)
+        self.w_url_btn.show()
 
     def enable_url_buttons(self):
         self.btn_init_add_url.setDisabled(False)
         self.btn_init_edit_url.setDisabled(False)
         self.btn_delete_url.setDisabled(False)
+        self.w_url_btn.hide()
 
     def disable_url_inputs(self):
         self.txt_url.setDisabled(True)
@@ -4104,6 +4109,7 @@ class Admin(QtWidgets.QMainWindow):
 
     def set_url(self, value):
         self.url_state = value
+        self.btn_add_edit_url.setText(value)
 
     def run_popup(self, message, icon='information'):
         if icon == 'question':

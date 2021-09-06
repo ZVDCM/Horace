@@ -30,6 +30,8 @@ class LoadingScreen(QWidget):
 
         self.hide()
 
+        self.parent.resizeEvent = self.parent_resized
+
     def run(self):
         self.raise_()
         self.show()
@@ -58,3 +60,6 @@ class LoadingScreen(QWidget):
         width, height = self.parent.frameGeometry(
         ).width(), self.parent.frameGeometry().height()
         self.setGeometry(-1, -1, width+1, height+1)
+
+    def parent_resized(self, event):
+        self.resize_loader()
