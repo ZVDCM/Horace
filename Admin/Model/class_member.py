@@ -70,3 +70,16 @@ class ClassMember:
         db.close()
 
         return res
+
+    def delete_class(self, Class):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Classes WHERE ID=%s AND Code=%s"
+        cursor.execute(delete_query, (Class.ID, Class.Code))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'

@@ -52,6 +52,7 @@ class ClassMember:
         self.View.btn_init_edit_class.clicked.connect(self.init_edit_class)
         self.View.btn_add_edit_class.clicked.connect(self.init_add_edit_class)
         self.View.btn_cancel_class.clicked.connect(self.cancel_class)
+        self.View.btn_delete_class.clicked.connect(self.delete_class)
 
     # Operations
     def GetAllClass(self):
@@ -75,6 +76,13 @@ class ClassMember:
         handler.error.connect(self.class_error)
         handler.finished.connect(self.View.ClassLoadingScreen.hide)
         handler.finished.connect(self.View.btn_cancel_class.click)
+        return handler
+
+    def DeleteClass(self):
+        handler = Operation(self.Model.delete_class)
+        handler.started.connect(self.View.ClassLoadingScreen.run)
+        handler.error.connect(self.class_error)
+        handler.finished.connect(self.View.ClassLoadingScreen.hide)
         return handler 
 
     # Table
@@ -116,6 +124,11 @@ class ClassMember:
         class_model = self.View.tv_class.model()
         self.set_target_class(self.Model.Class(
             *class_model.getRowData(class_model.findRow(_class))))
+
+    def get_latest_class(self):
+        class_model = self.View.tv_class.model()
+        self.set_target_class(self.Model.Class(
+            *class_model.getRowData(class_model.rowCount() - 2)))
 
     # Buttons
     def init_add_class(self):
@@ -197,3 +210,14 @@ class ClassMember:
 
         self.get_all_class_handler.finished.connect(lambda: self.select_latest_class(code))
         self.edit_class_handler.start()
+
+    # Class Delete
+    def delete_class(self):
+        self.get_all_class_handler = self.GetAllClass()
+        self.delete_class_handler = self.DeleteClass()
+
+        self.delete_class_handler.val = self.TargetClass,
+        self.delete_class_handler.operation.connect(self.get_all_class_handler.start)
+
+        self.get_all_class_handler.finished.connect(self.get_latest_class)
+        self.delete_class_handler.start()
