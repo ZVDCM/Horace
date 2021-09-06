@@ -64,9 +64,17 @@ class BlacklistURL:
 
     def AddURL(self):
         handler = Operation(self.Model.create_url)
-        handler.started.connect(self.View.URLSLoadingScreen.run)
+        handler.started.connect(self.View.URLLoadingScreen.run)
         handler.error.connect(self.url_error)
-        handler.finished.connect(self.View.URLSLoadingScreen.hide)
+        handler.finished.connect(self.View.URLLoadingScreen.hide)
+        handler.finished.connect(self.View.btn_cancel_url.click)
+        return handler
+
+    def EditURL(self):
+        handler = Operation(self.Model.edit_url)
+        handler.started.connect(self.View.URLLoadingScreen.run)
+        handler.error.connect(self.url_error)
+        handler.finished.connect(self.View.URLLoadingScreen.hide)
         handler.finished.connect(self.View.btn_cancel_url.click)
         return handler
 
@@ -149,4 +157,20 @@ class BlacklistURL:
 
     # URL Edit
     def edit_url(self):
-        pass
+        domain = self.View.txt_url.text()
+        if is_blank(domain):
+            self.View.run_popup(f'URL fields must be filled')
+            return
+
+        if domain == self.TargetUrl.Domain:
+            self.View.btn_cancel_url.click()
+            return
+
+        self.get_all_url_handler = self.GetAllURL()
+        self.edit_url_handler = self.EditURL()
+        
+        self.edit_url_handler.val = self.TargetUrl.Domain, domain
+        self.edit_url_handler.operation.connect(self.get_all_url_handler.start)
+
+        self.get_all_url_handler.finished.connect(lambda: self.select_latest_url(domain))
+        self.edit_url_handler.start()
