@@ -55,9 +55,6 @@ class TeacherAttendance:
         self.View.btn_cancel_teacher.clicked.connect(self.cancel_teacher)
         self.View.btn_delete_teacher.clicked.connect(self.delete_teacher)
 
-    def change_table_bulk(self, target, index):
-        target.setCurrentIndex(index)
-
     # Operations
     def GetAllTeacher(self):
         handler = Get(self.Model.get_all_teacher)

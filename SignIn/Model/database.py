@@ -52,12 +52,10 @@ class Database:
                     ID INT NOT NULL AUTO_INCREMENT,
                     Code VARCHAR(32) BINARY,
                     Name VARCHAR(54) NOT NULL,
-                    Teacher VARCHAR(32) BINARY,
                     Host_Address int(4) UNSIGNED NULL,
                     Start TIME NOT NULL,
                     End TIME NOT NULL,
                     PRIMARY KEY (ID),
-                    CONSTRAINT FK_Classes_Teacher FOREIGN KEY (Teacher) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE,
                     UNIQUE INDEX Code_UNIQUE (Code)) ENGINE = InnoDB;
 
                 CREATE TABLE Horace.Class_Members ( 

@@ -1,6 +1,7 @@
 from Admin.Model.database import Database
 from Admin.Model.section_student import SectionStudent
 from Admin.Model.teacher_attendance import TeacherAttendance
+from Admin.Model.class_member import ClassMember
 from Admin.Model.table_model import TableModel
 from Admin.Model.list_model import ListModel
 
@@ -82,6 +83,28 @@ class Attendance:
         return self.Name
 
 
+class Class:
+    def __init__(self, ID, Code, Name, HostAddress, Start, End):
+        self.ID = ID
+        self.Code = Code
+        self.Name = Name
+        self.HostAddress = HostAddress
+        self.Start = Start
+        self.End = End
+
+    def __str__(self):
+        return f"Class(ID={self.UserID}, Name={self.Name}, HostAddress={self.HostAddress}, Start={self.Start}, End={self.End})"
+
+    @staticmethod
+    def get_headers():
+        return ("ID", "Code", "Name", "HostAddress", "Start", "End")
+
+    def get_values(self):
+        return (self.ID, self.Code, self.Name, self.HostAddress, self.Start, self.End)
+
+    def get_hour_min_sec(self, time):
+        return [int(i) for i in str(time).split(':')]
+
 class Model:
 
     def __init__(self):
@@ -92,7 +115,9 @@ class Model:
         self.Student = User
         self.Teacher = User
         self.Attendance = Attendance
+        self.Class = Class
         self.Database = Database()
 
         self.SectionStudent = SectionStudent(self)
         self.TeacherAttendance = TeacherAttendance(self)
+        self.ClassMember = ClassMember(self)

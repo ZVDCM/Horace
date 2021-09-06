@@ -1,3 +1,4 @@
+from Admin.Model.model import Class
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMainWindow
 from Admin.Controller.section_student import SectionStudent
@@ -9,12 +10,14 @@ class GetAll(QtCore.QThread):
     section_operation = QtCore.pyqtSignal(list)
     student_operation = QtCore.pyqtSignal(list)
     teacher_operation = QtCore.pyqtSignal(list)
+    class_operation = QtCore.pyqtSignal(list)
 
-    def __init__(self, get_all_section, get_all_student, get_all_teacher):
+    def __init__(self, get_all_section, get_all_student, get_all_teacher, get_all_class):
         super().__init__()
         self.get_all_section = get_all_section
         self.get_all_student = get_all_student
         self.get_all_teacher = get_all_teacher
+        self.get_all_class = get_all_class
 
     def run(self):
         res = self.get_all_section()
@@ -23,6 +26,8 @@ class GetAll(QtCore.QThread):
         self.student_operation.emit(res)
         res = self.get_all_teacher()
         self.teacher_operation.emit(res)
+        res = self.get_all_class()
+        self.class_operation.emit(res)
         self.quit()
 
 class Get(QtCore.QThread):
@@ -50,7 +55,7 @@ class Admin:
         self.TeacherAttendance = TeacherAttendance(
             self.Model.TeacherAttendance, self.View, self)
         self.ClassMember = ClassMember(
-            self.Model, self.View, self)
+            self.Model.ClassMember, self.View, self)
         self.BlacklistURL = BlacklistURL(
             self.Model, self.View, self)
 
@@ -65,16 +70,20 @@ class Admin:
 
         self.View.resizeEvent = self.resize
 
-        self.get_all = GetAll(self.Model.SectionStudent.get_all_section, self.Model.SectionStudent.get_all_student, self.Model.TeacherAttendance.get_all_teacher)
+        self.get_all = GetAll(self.Model.SectionStudent.get_all_section, self.Model.SectionStudent.get_all_student, self.Model.TeacherAttendance.get_all_teacher, self.Model.ClassMember.get_all_class)
         self.get_all.started.connect(self.View.TableSectionStudentLoadingScreen.run)
         self.get_all.started.connect(self.View.TableTeacherLoadingScreen.run)
+        self.get_all.started.connect(self.View.TableClassLoadingScreen.run)
         self.get_all.section_operation.connect(self.SectionStudent.set_section_table)
         self.get_all.student_operation.connect(self.SectionStudent.set_student_table)
         self.get_all.teacher_operation.connect(self.TeacherAttendance.set_teacher_table)
+        self.get_all.class_operation.connect(self.ClassMember.set_class_table)
         self.get_all.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
         self.get_all.finished.connect(self.View.TableTeacherLoadingScreen.hide)
+        self.get_all.finished.connect(self.View.TableClassLoadingScreen.hide)
         self.get_all.finished.connect(self.get_model_latest_section)
         self.get_all.finished.connect(self.get_model_latest_teacher)
+        self.get_all.finished.connect(self.get_model_latest_class)
 
         self.get_all_section_student = Get(self.Model.SectionStudent.get_all_section_student)
         self.get_all_section_student.started.connect(self.View.SectionStudentLoadingScreen.run)
@@ -158,6 +167,26 @@ class Admin:
         self.View.txt_teacher_username.setText(Teacher.Username)
         self.View.txt_teacher_password.setText(str(Teacher.Salt + Teacher.Hash))
         self.View.txt_teacher_password.setCursorPosition(0)
+    
+    # *Class
+    def get_model_latest_class(self):
+        class_model = self.View.tv_class.model()
+        if class_model.rowCount() <= 1:
+            self.View.TableClassLoadingScreen.hide()
+            return
+        
+        self.ClassMember.target_class_row = class_model.rowCount() - 2
+        self.ClassMember.TargetClass = self.Model.Class(*class_model.getRowData(self.ClassMember.target_class_row))
+        self.View.tv_class.selectRow(self.ClassMember.target_class_row)
+
+        self.set_latest_class_inputs()
+
+    def set_latest_class_inputs(self):
+        Class = self.ClassMember.TargetClass
+        self.View.txt_class_code.setText(Class.Code)
+        self.View.txt_class_name.setText(Class.Name)
+        self.View.txt_class_start.setTime(QtCore.QTime(*Class.get_hour_min_sec(Class.Start)))
+        self.View.txt_class_end.setTime(QtCore.QTime(*Class.get_hour_min_sec(Class.End)))
     
 
     def resize(self, event):
