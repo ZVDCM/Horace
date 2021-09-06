@@ -52,3 +52,29 @@ class TeacherAttendance:
         db.close()
 
         return res
+
+    def edit_teacher(self, userid, username, salt, hash, password):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = "SELECT * FROM Users WHERE Username=%s"
+        cursor.execute(select_query, (username,))
+
+        teacher_exist = cursor.fetchone()
+        res = "exists"
+
+        if not teacher_exist:
+            if password != str(salt + hash):
+                salt = generate_salt()
+                hash = get_hashed_password(password, salt)
+
+            update_query = "UPDATE Users SET Username=%s, Salt=%s, Hash=%s WHERE UserID=%s AND Privilege=%s"
+            cursor.execute(update_query, (username, salt, hash, userid, "Teacher"))
+            db.commit()
+
+            res = 'successful'
+
+        cursor.close()
+        db.close()
+
+        return res

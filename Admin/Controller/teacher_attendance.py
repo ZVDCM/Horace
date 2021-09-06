@@ -73,13 +73,20 @@ class TeacherAttendance:
         handler.finished.connect(self.View.btn_cancel_teacher.click)
         return handler
 
+    def EditTeacher(self):
+        handler = Operation(self.Model.edit_teacher)
+        handler.started.connect(self.View.TeacherLoadingScreen.run)
+        handler.error.connect(self.teacher_error)
+        handler.finished.connect(self.View.TeacherLoadingScreen.hide)
+        handler.finished.connect(self.View.btn_cancel_teacher.click)
+        return handler
+
     # Table
     def set_teacher_table(self, teachers):
         teacher_model = self.Model.TableModel(
             self.View.tv_teachers, teachers, self.Model.Teacher.get_headers())
         self.View.tv_teachers.setModel(teacher_model)
         self.View.tv_teachers.horizontalHeader().setMinimumSectionSize(150)
-        self.View.tv_teachers.setFocus(True)
 
     def table_teacher_clicked(self, index):
         row = index.row()
@@ -98,6 +105,8 @@ class TeacherAttendance:
         teacher_model = self.View.tv_teachers.model()
         self.target_teacher_row = teacher_model.findRow(
             self.TargetTeacher.Username)
+        self.View.tv_teachers.selectRow(self.target_teacher_row)
+        self.View.tv_teachers.setFocus(True)
         self.set_teacher_inputs()
 
     def set_teacher_inputs(self):
@@ -158,4 +167,23 @@ class TeacherAttendance:
         self.add_teacher_handler.start()
 
     def edit_teacher(self):
-        print(2)
+        username = self.View.txt_teacher_username.text()
+        password = self.View.txt_teacher_password.text()
+
+        if is_blank(username) or is_blank(password):
+            self.View.run_pop('Teacher fields must be filled')
+            return
+
+        if username == self.TargetTeacher.Username and password == str(self.TargetTeacher.Salt + self.TargetTeacher.Hash):
+            self.View.btn_cancel_teacher.click()
+            return
+
+        self.get_all_teacher_handler = self.GetAllTeacher()
+        self.edit_teacher_handler = self.EditTeacher()
+
+        self.edit_teacher_handler.val = self.TargetTeacher.UserID, username, self.TargetTeacher.Salt, self.TargetTeacher.Hash, password
+        self.edit_teacher_handler.operation.connect(self.get_all_teacher_handler.start)
+
+        self.get_all_teacher_handler.finished.connect(lambda: self.select_latest_teacher(username))
+        self.edit_teacher_handler.start()
+

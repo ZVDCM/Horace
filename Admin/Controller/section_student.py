@@ -199,6 +199,8 @@ class SectionStudent:
         section_model = self.View.tv_sections.model()
         self.target_section_row = section_model.findRow(
             self.TargetSection.Name)
+        self.View.tv_sections.selectRow(self.target_section_row)
+        self.View.tv_sections.setFocus(True)
         self.set_section_inputs()
 
     def set_section_inputs(self):
@@ -387,6 +389,7 @@ class SectionStudent:
         self.target_student_row = student_model.findRow(
             self.TargetStudent.Username)
         self.View.tv_students.selectRow(self.target_student_row)
+        self.View.tv_students.setFocus(True)
         self.set_student_inputs()
 
     def set_student_inputs(self):
@@ -476,7 +479,6 @@ class SectionStudent:
 
         if is_blank(username) or is_blank(password):
             self.View.run_pop('Student fields must be filled')
-            self.View.btn_cancel_student.click()
             return
 
         if username == self.TargetStudent.Username and password == str(self.TargetStudent.Salt + self.TargetStudent.Hash):
