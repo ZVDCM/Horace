@@ -49,7 +49,7 @@ class Admin(QtWidgets.QMainWindow):
             'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.ClassTeacherLoadingScreen = LoadingScreen(self.w_class_teacher, relative_path(
             'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
-        self.ClassStudentLoadingScreen = LoadingScreen(self.w_class_student, relative_path(
+        self.ClassStudentLoadingScreen = LoadingScreen(self.w_class_section, relative_path(
             'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         # URL
@@ -3287,36 +3287,36 @@ class Admin(QtWidgets.QMainWindow):
         self.line_6.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_6.setObjectName("line_6")
         self.verticalLayout_45.addWidget(self.line_6)
-        self.w_class_student = QtWidgets.QWidget(self.widget_8)
-        self.w_class_student.setObjectName("w_class_student")
-        self.verticalLayout_25 = QtWidgets.QVBoxLayout(self.w_class_student)
+        self.w_class_section = QtWidgets.QWidget(self.widget_8)
+        self.w_class_section.setObjectName("w_class_section")
+        self.verticalLayout_25 = QtWidgets.QVBoxLayout(self.w_class_section)
         self.verticalLayout_25.setContentsMargins(15, 20, 15, 15)
         self.verticalLayout_25.setSpacing(15)
         self.verticalLayout_25.setObjectName("verticalLayout_25")
         self.horizontalLayout_22 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_22.setSpacing(6)
         self.horizontalLayout_22.setObjectName("horizontalLayout_22")
-        self.lbl_class_student_status = QtWidgets.QLabel(self.w_class_student)
+        self.lbl_class_section_status = QtWidgets.QLabel(self.w_class_section)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.lbl_class_student_status.sizePolicy().hasHeightForWidth())
-        self.lbl_class_student_status.setSizePolicy(sizePolicy)
+            self.lbl_class_section_status.sizePolicy().hasHeightForWidth())
+        self.lbl_class_section_status.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
-        self.lbl_class_student_status.setFont(font)
-        self.lbl_class_student_status.setAlignment(QtCore.Qt.AlignCenter)
-        self.lbl_class_student_status.setIndent(1)
-        self.lbl_class_student_status.setObjectName("lbl_class_student_status")
-        self.horizontalLayout_22.addWidget(self.lbl_class_student_status)
+        self.lbl_class_section_status.setFont(font)
+        self.lbl_class_section_status.setAlignment(QtCore.Qt.AlignCenter)
+        self.lbl_class_section_status.setIndent(1)
+        self.lbl_class_section_status.setObjectName("lbl_class_section_status")
+        self.horizontalLayout_22.addWidget(self.lbl_class_section_status)
         spacerItem26 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_22.addItem(spacerItem26)
         self.btn_init_add_class_student = QtWidgets.QPushButton(
-            self.w_class_student)
+            self.w_class_section)
         self.btn_init_add_class_student.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_init_add_class_student.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_init_add_class_student.setCursor(
@@ -3339,7 +3339,7 @@ class Admin(QtWidgets.QMainWindow):
             "btn_init_add_class_student")
         self.horizontalLayout_22.addWidget(self.btn_init_add_class_student)
         self.btn_delete_class_student = QtWidgets.QPushButton(
-            self.w_class_student)
+            self.w_class_section)
         self.btn_delete_class_student.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_delete_class_student.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_delete_class_student.setCursor(
@@ -3358,7 +3358,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_delete_class_student.setObjectName("btn_delete_class_student")
         self.horizontalLayout_22.addWidget(self.btn_delete_class_student)
         self.btn_clear_class_student = QtWidgets.QPushButton(
-            self.w_class_student)
+            self.w_class_section)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3390,7 +3390,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_56.setSpacing(0)
         self.horizontalLayout_56.setObjectName("horizontalLayout_56")
         self.txt_search_class_student = QtWidgets.QLineEdit(
-            self.w_class_student)
+            self.w_class_section)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3411,7 +3411,7 @@ class Admin(QtWidgets.QMainWindow):
         self.txt_search_class_student.setObjectName("txt_search_class_student")
         self.horizontalLayout_56.addWidget(self.txt_search_class_student)
         self.btn_search_class_student = QtWidgets.QPushButton(
-            self.w_class_student)
+            self.w_class_section)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3437,10 +3437,10 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_search_class_student.setObjectName("btn_search_class_student")
         self.horizontalLayout_56.addWidget(self.btn_search_class_student)
         self.verticalLayout_25.addLayout(self.horizontalLayout_56)
-        self.lv_class_student = ListView(self.w_class_student)
-        self.lv_class_student.setObjectName("lv_class_student")
-        self.verticalLayout_25.addWidget(self.lv_class_student)
-        self.verticalLayout_45.addWidget(self.w_class_student)
+        self.lv_class_section = ListView(self.w_class_section)
+        self.lv_class_section.setObjectName("lv_class_section")
+        self.verticalLayout_25.addWidget(self.lv_class_section)
+        self.verticalLayout_45.addWidget(self.w_class_section)
         self.verticalLayout_45.setStretch(4, 1)
         self.horizontalLayout_5.addWidget(self.widget_8)
         self.horizontalLayout_5.setStretch(0, 2)
@@ -3846,9 +3846,9 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_search_url.setObjectName("btn_search_url")
         self.horizontalLayout_57.addWidget(self.btn_search_url)
         self.verticalLayout_4.addLayout(self.horizontalLayout_57)
-        self.tv_url = TableView(self.w_url)
-        self.tv_url.setObjectName("tv_url")
-        self.verticalLayout_4.addWidget(self.tv_url)
+        self.lv_url = ListView(self.w_url)
+        self.lv_url.setObjectName("lv_url")
+        self.verticalLayout_4.addWidget(self.lv_url)
         self.verticalLayout_42.addWidget(self.w_url)
         self.horizontalLayout_10.addWidget(self.widget_12)
         self.horizontalLayout_10.setStretch(0, 2)
@@ -3950,8 +3950,8 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_cancel_class.setText(_translate("MainWindow", "Cancel"))
         self.lbl_class_teacher_status.setText(
             _translate("MainWindow", "Teachers: 100"))
-        self.lbl_class_student_status.setText(
-            _translate("MainWindow", "Students: 100"))
+        self.lbl_class_section_status.setText(
+            _translate("MainWindow", "Sections: 100"))
         self.label_17.setText(_translate("MainWindow", "URL"))
         self.label_19.setText(_translate("MainWindow", "Domain"))
         self.btn_add_edit_url.setText(_translate("MainWindow", "Add"))

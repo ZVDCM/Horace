@@ -1,6 +1,7 @@
 from Admin.Model.database import Database
 from Admin.Model.section_student import SectionStudent
 from Admin.Model.teacher_attendance import TeacherAttendance
+from Admin.Model.blacklist_url import BlacklistURL
 from Admin.Model.class_member import ClassMember
 from Admin.Model.table_model import TableModel
 from Admin.Model.list_model import ListModel
@@ -110,6 +111,24 @@ class Class:
     def get_values(self):
         return (self.ID, self.Code, self.Name, self.HostAddress, self._Start, self._End)
 
+class Url:
+    def __init__(self, ID, Domain):
+        self.ID = ID
+        self.Domain = Domain
+
+    def __str__(self):
+        return f"URL(ID={self.ID}, Domain={self.Domain})"
+
+    @staticmethod
+    def get_headers():
+        return ("ID", "Domain")
+
+    def get_values(self):
+        return (self.ID, self.Domain)
+
+    def get_display(self):
+        return self.Domain
+
 class Model:
 
     def __init__(self):
@@ -121,8 +140,10 @@ class Model:
         self.Teacher = User
         self.Attendance = Attendance
         self.Class = Class
+        self.Url = Url
         self.Database = Database()
 
         self.SectionStudent = SectionStudent(self)
         self.TeacherAttendance = TeacherAttendance(self)
         self.ClassMember = ClassMember(self)
+        self.BlacklistURL = BlacklistURL(self)
