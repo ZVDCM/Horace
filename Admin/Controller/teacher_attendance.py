@@ -53,6 +53,7 @@ class TeacherAttendance:
         self.View.btn_add_edit_teacher.clicked.connect(
             self.init_add_edit_teacher)
         self.View.btn_cancel_teacher.clicked.connect(self.cancel_teacher)
+        self.View.btn_delete_teacher.clicked.connect(self.delete_teacher)
 
     def change_table_bulk(self, target, index):
         target.setCurrentIndex(index)
@@ -79,6 +80,12 @@ class TeacherAttendance:
         handler.error.connect(self.teacher_error)
         handler.finished.connect(self.View.TeacherLoadingScreen.hide)
         handler.finished.connect(self.View.btn_cancel_teacher.click)
+        return handler
+
+    def DeleteTeacher(self):
+        handler = Operation(self.Model.delete_teacher)
+        handler.started.connect(self.View.TeacherLoadingScreen.run)
+        handler.finished.connect(self.View.TeacherLoadingScreen.hide)
         return handler
 
     # Table
@@ -120,6 +127,11 @@ class TeacherAttendance:
         self.set_target_teacher(self.Model.Teacher(
             *teacher_model.getRowData(teacher_model.findRow(teacher))))
 
+    def get_latest_teacher(self):
+        teacher_model = self.View.tv_teachers.model()
+        self.set_target_teacher(self.Model.Teacher(
+            *teacher_model.getRowData(teacher_model.rowCount() - 2)))
+
     # Buttons
     def init_add_teacher(self):
         self.View.clear_teacher_inputs()
@@ -149,6 +161,7 @@ class TeacherAttendance:
         if error == 'exists':
             self.View.run_popup(f'Teacher exists')
 
+    # Teacher Add
     def add_teacher(self):
         username = self.View.txt_teacher_username.text()
         password = self.View.txt_teacher_password.text()
@@ -166,6 +179,7 @@ class TeacherAttendance:
         self.get_all_teacher_handler.finished.connect(lambda: self.select_latest_teacher(username))
         self.add_teacher_handler.start()
 
+    # Teacher Edit
     def edit_teacher(self):
         username = self.View.txt_teacher_username.text()
         password = self.View.txt_teacher_password.text()
@@ -187,3 +201,13 @@ class TeacherAttendance:
         self.get_all_teacher_handler.finished.connect(lambda: self.select_latest_teacher(username))
         self.edit_teacher_handler.start()
 
+    # Teacher Delete
+    def delete_teacher(self):
+        self.get_all_teacher_handler = self.GetAllTeacher()
+        self.delete_teacher_handler = self.DeleteTeacher()
+
+        self.delete_teacher_handler.val = self.TargetTeacher,
+        self.delete_teacher_handler.operation.connect(self.get_all_teacher_handler.start)
+
+        self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
+        self.delete_teacher_handler.start()

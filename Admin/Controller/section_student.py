@@ -160,7 +160,6 @@ class SectionStudent:
         handler = Operation(self.Model.delete_section)
         handler.started.connect(self.View.SectionLoadingScreen.run)
         handler.finished.connect(self.View.SectionLoadingScreen.hide)
-        handler.finished.connect(self.View.clear_section_inputs)
         return handler
 
     # Table

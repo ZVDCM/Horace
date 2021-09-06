@@ -78,3 +78,16 @@ class TeacherAttendance:
         db.close()
 
         return res
+
+    def delete_teacher(self, Teacher):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Users WHERE UserID=%s AND Privilege=%s"
+        cursor.execute(delete_query, (Teacher.UserID, 'Teacher'))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
