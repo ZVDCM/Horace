@@ -193,8 +193,8 @@ class SectionStudent:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT * FROM Users WHERE Username=%s AND Privilege=%s"
-        cursor.execute(select_query, (username, 'Student'))
+        select_query = "SELECT * FROM Users WHERE Username=%s"
+        cursor.execute(select_query, (username,))
 
         student_exist = cursor.fetchone()
         res = "exists"
@@ -230,8 +230,8 @@ class SectionStudent:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT * FROM Users WHERE Username=%s AND Privilege=%s"
-        cursor.execute(select_query, (username, 'Student'))
+        select_query = "SELECT * FROM Users WHERE Username=%s"
+        cursor.execute(select_query, (username,))
 
         student_exist = cursor.fetchone()
         res = "exists"

@@ -37,7 +37,7 @@ class Admin(QtWidgets.QMainWindow):
             'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         # Teacher Attendance
-        self.TeacherLoadingScreen = LoadingScreen(self.w_section_student, relative_path(
+        self.TeacherLoadingScreen = LoadingScreen(self.w_teacher_input, relative_path(
             'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.AttendanceLoadingScreen = LoadingScreen(self.w_attendance, relative_path(
             'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
@@ -3846,7 +3846,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_search_url.setObjectName("btn_search_url")
         self.horizontalLayout_57.addWidget(self.btn_search_url)
         self.verticalLayout_4.addLayout(self.horizontalLayout_57)
-        self.tv_url = QtWidgets.QTableView(self.w_url)
+        self.tv_url = TableView(self.w_url)
         self.tv_url.setObjectName("tv_url")
         self.verticalLayout_4.addWidget(self.tv_url)
         self.verticalLayout_42.addWidget(self.w_url)
@@ -3964,7 +3964,6 @@ class Admin(QtWidgets.QMainWindow):
         self.w_section_btn.hide()
         self.w_teacher_btn.hide()
         self.w_class_btn.hide()
-        self.w_teacher_btn.hide()
         self.w_url_btn.hide()
 
     # ==Section
@@ -4023,15 +4022,21 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_add_edit_student.setText(value)
 
     # ==Teacher
+    def clear_teacher_inputs(self):
+        self.txt_teacher_username.clear()
+        self.txt_teacher_password.operation.emit()
+
     def disable_teacher_buttons(self):
         self.btn_init_add_teacher.setDisabled(True)
         self.btn_init_edit_teacher.setDisabled(True)
         self.btn_delete_url.setDisabled(True)
+        self.w_teacher_btn.show()
 
     def enable_teacher_buttons(self):
         self.btn_init_add_teacher.setDisabled(False)
         self.btn_init_edit_teacher.setDisabled(False)
         self.btn_delete_url.setDisabled(False)
+        self.w_teacher_btn.hide()
 
     def disable_teacher_inputs(self):
         self.txt_teacher_username.setDisabled(True)
@@ -4043,6 +4048,7 @@ class Admin(QtWidgets.QMainWindow):
 
     def set_teacher(self, value):
         self.teacher_state = value
+        self.btn_add_edit_teacher.setText(value)
 
     # ==Class
     def disable_class_buttons(self):

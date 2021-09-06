@@ -256,7 +256,7 @@ class SectionStudent:
     def add_section(self):
         section = self.View.txt_section_name.text()
         if is_blank(section):
-            self.View.run_pop('Section fields must be filled')
+            self.View.run_popup('Section fields must be filled')
             return
         
         self.get_all_section_handler = self.GetAllSection()
