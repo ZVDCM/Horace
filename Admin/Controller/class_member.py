@@ -69,6 +69,14 @@ class ClassMember:
         handler.finished.connect(self.View.btn_cancel_class.click)
         return handler 
 
+    def EditClass(self):
+        handler = Operation(self.Model.edit_class)
+        handler.started.connect(self.View.ClassLoadingScreen.run)
+        handler.error.connect(self.class_error)
+        handler.finished.connect(self.View.ClassLoadingScreen.hide)
+        handler.finished.connect(self.View.btn_cancel_class.click)
+        return handler 
+
     # Table
     def table_class_clicked(self, index):
         row = index.row()
@@ -170,3 +178,22 @@ class ClassMember:
         if is_blank(code) or is_blank(name):
             self.View.run_popup(f'Class fields must be filled')
             return
+
+        target_start = QtCore.QTime(*self.TargetClass.Start)
+        target_end = QtCore.QTime(*self.TargetClass.End)
+
+        if code == self.TargetClass.Code and name == self.TargetClass.Name and start == target_start and end == target_end:
+            self.View.btn_cancel_class.click()
+            return
+
+        start = ":".join([str(start.hour()), str(start.minute()), str(start.second())])
+        end = ":".join([str(end.hour()), str(end.minute()), str(end.second())])
+        
+        self.get_all_class_handler = self.GetAllClass()
+        self.edit_class_handler = self.EditClass()
+
+        self.edit_class_handler.val = self.TargetClass.ID, code, name, start, end
+        self.edit_class_handler.operation.connect(self.get_all_class_handler.start)
+
+        self.get_all_class_handler.finished.connect(lambda: self.select_latest_class(code))
+        self.edit_class_handler.start()
