@@ -153,18 +153,51 @@ class ClassMember:
         return 'successful'
 
     # *Class Section
-    def get_target_class_section(self, Class):
+    def get_target_class_section(self, Class, ClassTeacher):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT * FROM Class_Sections WHERE Code=%s ORDER BY ID"
-        cursor.execute(select_query, (Class.Code,))
+        select_query = "SELECT * FROM Class_Sections WHERE Code=%s AND Teacher=%s ORDER BY ID"
+        cursor.execute(select_query, (Class.Code, ClassTeacher.Teacher))
 
         class_sections = cursor.fetchall()
-
+        
         cursor.close()
         db.close()
 
         if class_sections:
             return [self.ClassSection(*class_section) for class_section in class_sections]
         return []
+
+    def get_section_not_in_class(self, Class, ClassTeacher):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = """
+            SELECT * FROM Sections WHERE Name NOT IN (
+	            SELECT Section FROM Class_Sections WHERE Code=%s AND Teacher=%s);
+        """
+        cursor.execute(select_query, (Class.Code, ClassTeacher.Teacher))
+
+        sections_not_in_class = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        if sections_not_in_class:
+            return [self.Section(*section_not_in_class) for section_not_in_class in sections_not_in_class]
+        return []
+
+    def register_section_class(self, Class, ClassTeacher, Section):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        insert_query = "INSERT INTO Class_Sections (Code, Teacher, Section) VALUES (%s,%s,%s)"
+        cursor.execute(
+            insert_query, (Class.Code, ClassTeacher.Teacher, Section.Name))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'

@@ -408,7 +408,7 @@ QPushButton:hover{
             <string notr="true"/>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>2</number>
            </property>
            <widget class="QWidget" name="section_student">
             <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1">
@@ -6458,7 +6458,7 @@ border-bottom-right-radius: 5px;</string>
                       </spacer>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="btn_init_add_class_student">
+                      <widget class="QPushButton" name="btn_init_add_class_section">
                        <property name="minimumSize">
                         <size>
                          <width>30</width>
@@ -6498,7 +6498,7 @@ QPushButton::disabled{
                       </widget>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="btn_delete_class_student">
+                      <widget class="QPushButton" name="btn_delete_class_section">
                        <property name="minimumSize">
                         <size>
                          <width>30</width>

@@ -131,14 +131,14 @@ class ClassTeacher:
         return self.Teacher
 
 class ClassSection:
-    def __init__(self, ID, Code, Teacher):
+    def __init__(self, ID, Code, Teacher, Section):
         self.ID = ID
         self.Code = Code
         self.Teacher = Teacher
         self.Section = Section
 
     def __str__(self):
-        return f"ClassTeacher(ID={self.ID}, Code={self.Code}, Teacher={self.Teacher}, Section={self.Section})"
+        return f"ClassSection(ID={self.ID}, Code={self.Code}, Teacher={self.Teacher}, Section={self.Section})"
 
     @staticmethod
     def get_headers():

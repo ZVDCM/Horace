@@ -49,7 +49,7 @@ class Admin(QtWidgets.QMainWindow):
             'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.ClassTeacherLoadingScreen = LoadingScreen(self.w_class_teacher, relative_path(
             'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
-        self.ClassStudentLoadingScreen = LoadingScreen(self.w_class_section, relative_path(
+        self.ClassSectionLoadingScreen = LoadingScreen(self.w_class_section, relative_path(
             'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         # URL
@@ -3315,13 +3315,13 @@ class Admin(QtWidgets.QMainWindow):
         spacerItem26 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_22.addItem(spacerItem26)
-        self.btn_init_add_class_student = QtWidgets.QPushButton(
+        self.btn_init_add_class_section = QtWidgets.QPushButton(
             self.w_class_section)
-        self.btn_init_add_class_student.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_init_add_class_student.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_init_add_class_student.setCursor(
+        self.btn_init_add_class_section.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_init_add_class_section.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_init_add_class_section.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_init_add_class_student.setStyleSheet("QPushButton{\n"
+        self.btn_init_add_class_section.setStyleSheet("QPushButton{\n"
                                                       "    border-radius: 5px;\n"
                                                       f"    background-image:  url({relative_path('Admin', ['Misc', 'Resources'], 'add.png')});\n"
                                                       "    background-repeat: no-repeat;\n"
@@ -3334,17 +3334,17 @@ class Admin(QtWidgets.QMainWindow):
                                                       "    background-repeat: no-repeat;\n"
                                                       "    background-position: center center;\n"
                                                       "}")
-        self.btn_init_add_class_student.setIconSize(QtCore.QSize(17, 17))
-        self.btn_init_add_class_student.setObjectName(
-            "btn_init_add_class_student")
-        self.horizontalLayout_22.addWidget(self.btn_init_add_class_student)
-        self.btn_delete_class_student = QtWidgets.QPushButton(
+        self.btn_init_add_class_section.setIconSize(QtCore.QSize(17, 17))
+        self.btn_init_add_class_section.setObjectName(
+            "btn_init_add_class_section")
+        self.horizontalLayout_22.addWidget(self.btn_init_add_class_section)
+        self.btn_delete_class_section = QtWidgets.QPushButton(
             self.w_class_section)
-        self.btn_delete_class_student.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_delete_class_student.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_delete_class_student.setCursor(
+        self.btn_delete_class_section.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_delete_class_section.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_delete_class_section.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_delete_class_student.setStyleSheet("QPushButton{\n"
+        self.btn_delete_class_section.setStyleSheet("QPushButton{\n"
                                                     "    border-radius: 5px;\n"
                                                     "    background: none;\n"
                                                     "}\n"
@@ -3353,10 +3353,10 @@ class Admin(QtWidgets.QMainWindow):
                                                     "QPushButton:pressed {\n"
                                                     "     background-color: #072f49;\n"
                                                     "}")
-        self.btn_delete_class_student.setIcon(icon10)
-        self.btn_delete_class_student.setIconSize(QtCore.QSize(21, 21))
-        self.btn_delete_class_student.setObjectName("btn_delete_class_student")
-        self.horizontalLayout_22.addWidget(self.btn_delete_class_student)
+        self.btn_delete_class_section.setIcon(icon10)
+        self.btn_delete_class_section.setIconSize(QtCore.QSize(21, 21))
+        self.btn_delete_class_section.setObjectName("btn_delete_class_section")
+        self.horizontalLayout_22.addWidget(self.btn_delete_class_section)
         self.btn_clear_class_student = QtWidgets.QPushButton(
             self.w_class_section)
         sizePolicy = QtWidgets.QSizePolicy(

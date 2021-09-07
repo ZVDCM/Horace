@@ -49,11 +49,15 @@ class ClassMember:
         self.target_class_teacher_row = None
         self.TargetClassTeacher = None
 
+        self.target_class_section_row = None
+        self.TargetClassSection = None
+
         self.connect_signals()
 
     def connect_signals(self):
         self.class_signals()
         self.class_teacher_signals()
+        self.class_section_signals()
 
     # *Class
     def class_signals(self):
@@ -105,12 +109,8 @@ class ClassMember:
             *class_model.getRowData(row)))
 
         self.get_target_class_teacher_handler = self.GetTargetClassTeacher()
-        self.get_target_class_section_handler = self.GetTargetClassSection()
-
         self.get_target_class_teacher_handler.val = self.TargetClass,
-        self.get_target_class_section_handler.val = self.TargetClass,
         self.get_target_class_teacher_handler.start()
-        self.get_target_class_section_handler.start()
 
     def set_class_table(self, classes):
         class_model = self.Model.TableModel(
@@ -256,9 +256,9 @@ class ClassMember:
     # Operation
     def GetTargetClassTeacher(self):
         handler = Get(self.Model.get_target_class_teacher)
-        handler.started.connect(self.View.TableClassLoadingScreen.run)
+        handler.started.connect(self.View.ClassTeacherLoadingScreen.run)
         handler.operation.connect(self.set_class_teacher_list)
-        handler.finished.connect(self.View.TableClassLoadingScreen.hide)
+        handler.finished.connect(self.View.ClassTeacherLoadingScreen.hide)
         return handler
 
     def GetTeachersNotInClass(self):
@@ -290,12 +290,20 @@ class ClassMember:
         self.TargetClassTeacher = ClassTeacher
 
     def set_class_teacher_list(self, teachers):
-        class_teacher_model = self.Model.ListModel(
-            self.View.lv_class_teacher, teachers)
-        self.View.lv_class_teacher.setModel(class_teacher_model)
-        self.target_class_teacher_row = class_teacher_model.createIndex(0,0).row()
-        self.TargetClassTeacher = self.Model.ClassTeacher(None, self.TargetClass.Code, class_teacher_model.getRowData(self.target_class_teacher_row))
-        self.select_latest_class_teacher()
+        try:
+            class_teacher_model = self.Model.ListModel(
+                self.View.lv_class_teacher, teachers)
+            self.View.lv_class_teacher.setModel(class_teacher_model)
+            self.target_class_teacher_row = class_teacher_model.createIndex(0,0).row()
+            self.TargetClassTeacher = self.Model.ClassTeacher(None, self.TargetClass.Code, class_teacher_model.getRowData(self.target_class_teacher_row))
+            self.select_latest_class_teacher()
+
+        except IndexError:
+            pass
+
+        self.get_target_class_section_handler = self.GetTargetClassSection()
+        self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
+        self.get_target_class_section_handler.start()
 
     def select_latest_class_teacher(self):
         class_teachers_model = self.View.lv_class_teacher.model()
@@ -311,7 +319,7 @@ class ClassMember:
         self.get_teachers_not_in_class_handler.start()
 
     def run_teacher_data_table(self, teachers):
-        self.DataTable = DataTable(self.View, 'Class Teachers')
+        self.DataTable = DataTable(self.View, 'Teachers')
         teacher_model = self.Model.TableModel(self.DataTable.tv_target_data, teachers, self.Model.ClassTeacher.get_headers()) 
         self.DataTable.set_model(teacher_model)
         self.DataTable.btn_add.clicked.connect(self.add_target_teacher_data)
@@ -341,12 +349,28 @@ class ClassMember:
         self.delete_target_teacher_handler.start()
 
     # *Class Section
+    def class_section_signals(self):
+        self.View.btn_init_add_class_section.clicked.connect(self.init_add_class_section)
+
     # Operation
     def GetTargetClassSection(self):
         handler = Get(self.Model.get_target_class_section)
-        handler.started.connect(self.View.TableClassLoadingScreen.run)
+        handler.started.connect(self.View.ClassSectionLoadingScreen.run)
         handler.operation.connect(self.set_class_section_list)
-        handler.finished.connect(self.View.TableClassLoadingScreen.hide)
+        handler.finished.connect(self.View.ClassSectionLoadingScreen.hide)
+        return handler
+
+    def GetSectionsNotInClass(self):
+        handler = Get(self.Model.get_section_not_in_class)
+        handler.started.connect(self.View.ClassSectionLoadingScreen.run)
+        handler.operation.connect(self.run_section_data_table)
+        handler.finished.connect(self.View.ClassSectionLoadingScreen.hide)
+        return handler
+
+    def RegisterSection(self):
+        handler = Operation(self.Model.register_section_class)
+        handler.started.connect(self.View.ClassSectionLoadingScreen.run)
+        handler.finished.connect(self.View.ClassSectionLoadingScreen.hide)
         return handler
 
     # List
@@ -364,5 +388,27 @@ class ClassMember:
             self.View.lv_class_section.setCurrentIndex(index)
 
     # Buttons
-    def init_add_class_student(self):
-        pass
+    def init_add_class_section(self):
+        self.get_sections_not_in_class_handler = self.GetSectionsNotInClass()
+        self.get_sections_not_in_class_handler.val = self.TargetClass, self.TargetClassTeacher
+        self.get_sections_not_in_class_handler.start()
+
+    def run_section_data_table(self, sections):
+        self.DataTable = DataTable(self.View, 'Sections')
+        section_model = self.Model.TableModel(self.DataTable.tv_target_data, sections, self.Model.ClassSection.get_headers()) 
+        self.DataTable.set_model(section_model)
+        self.DataTable.btn_add.clicked.connect(self.add_target_section_data)
+        self.DataTable.run()
+
+    def add_target_section_data(self):
+        self.DataTable.close()
+        Section = self.Model.Section(*self.DataTable.get_target_row_data())
+
+        self.get_target_class_section_handler = self.GetTargetClassSection()
+        self.register_section_handler = self.RegisterSection()
+
+        self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
+        self.register_section_handler.val = self.TargetClass, self.TargetClassTeacher, Section
+        self.register_section_handler.operation.connect(self.get_target_class_section_handler.start)
+
+        self.register_section_handler.start()

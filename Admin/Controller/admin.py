@@ -198,10 +198,7 @@ class Admin:
         self.View.tv_class.selectRow(self.ClassMember.target_class_row)
 
         self.get_target_class_teacher.val = self.ClassMember.TargetClass,
-        self.get_target_class_section.val = self.ClassMember.TargetClass,
         self.get_target_class_teacher.start()
-        self.get_target_class_section.start()
-
         self.set_latest_class_inputs()
 
     def set_latest_class_inputs(self):
@@ -241,7 +238,7 @@ class Admin:
         self.View.AttendanceStudentLoadingScreen.resize_loader()
         self.View.ClassLoadingScreen.resize_loader()
         self.View.ClassTeacherLoadingScreen.resize_loader()
-        self.View.ClassStudentLoadingScreen.resize_loader()
+        self.View.ClassSectionLoadingScreen.resize_loader()
         self.View.URLLoadingScreen.resize_loader()
         self.View.URLSLoadingScreen.resize_loader()
         super(QMainWindow, self.View).resizeEvent(event)
