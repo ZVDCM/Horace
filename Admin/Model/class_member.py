@@ -201,3 +201,16 @@ class ClassMember:
         db.close()
 
         return 'successful'
+
+    def delete_class_section(self, ClassSection):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Class_Sections WHERE Code=%s AND Teacher=%s AND Section=%s"
+        cursor.execute(delete_query, (ClassSection.Code, ClassSection.Teacher, ClassSection.Section))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'

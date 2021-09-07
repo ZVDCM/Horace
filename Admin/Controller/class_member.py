@@ -286,6 +286,10 @@ class ClassMember:
         self.set_target_class_teacher(self.Model.ClassTeacher(
             None, self.TargetClass.Code, self.View.lv_class_teacher.model().getRowData(self.target_class_teacher_row)))
 
+        self.get_target_class_section_handler = self.GetTargetClassSection()
+        self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
+        self.get_target_class_section_handler.start()
+
     def set_target_class_teacher(self, ClassTeacher):
         self.TargetClassTeacher = ClassTeacher
 
@@ -351,6 +355,8 @@ class ClassMember:
     # *Class Section
     def class_section_signals(self):
         self.View.btn_init_add_class_section.clicked.connect(self.init_add_class_section)
+        self.View.lv_class_section.clicked.connect(self.list_class_section_clicked)
+        self.View.btn_delete_class_section.clicked.connect(self.delete_target_section)
 
     # Operation
     def GetTargetClassSection(self):
@@ -373,12 +379,31 @@ class ClassMember:
         handler.finished.connect(self.View.ClassSectionLoadingScreen.hide)
         return handler
 
+    def DeleteSection(self):
+        handler = Operation(self.Model.delete_class_section)
+        handler.started.connect(self.View.ClassSectionLoadingScreen.run)
+        handler.finished.connect(self.View.ClassSectionLoadingScreen.hide)
+        return handler
+
     # List
+    def list_class_section_clicked(self, index):
+        self.target_class_section_row = index.row()
+        self.set_target_class_section(self.Model.ClassSection(
+            None, self.TargetClass.Code, self.TargetClassTeacher.Teacher, self.View.lv_class_section.model().getRowData(self.target_class_section_row)))
+
+    def set_target_class_section(self, ClassSection):
+        self.TargetClassSection = ClassSection
+
     def set_class_section_list(self, sections):
-        class_section_model = self.Model.ListModel(
-            self.View.lv_class_section, sections)
-        self.View.lv_class_section.setModel(class_section_model)
-        self.select_latest_class_section()
+        try:
+            class_section_model = self.Model.ListModel(
+                self.View.lv_class_section, sections)
+            self.View.lv_class_section.setModel(class_section_model)
+            self.target_class_section_row = class_section_model.createIndex(0,0).row()
+            self.TargetClassSection = self.Model.ClassSection(None, self.TargetClass.Code, self.TargetClassTeacher.Teacher, class_section_model.getRowData(self.target_class_section_row))
+            self.select_latest_class_section()
+        except IndexError:
+            return
 
     def select_latest_class_section(self):
         class_sections_model = self.View.lv_class_section.model()
@@ -412,3 +437,13 @@ class ClassMember:
         self.register_section_handler.operation.connect(self.get_target_class_section_handler.start)
 
         self.register_section_handler.start()
+
+    def delete_target_section(self):
+        self.get_target_class_section_handler = self.GetTargetClassSection()
+        self.delete_section_handler = self.DeleteSection()
+
+        self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
+        self.delete_section_handler.val = self.TargetClassSection,
+        self.delete_section_handler.operation.connect(self.get_target_class_section_handler.start)
+
+        self.delete_section_handler.start()
