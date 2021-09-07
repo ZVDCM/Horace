@@ -139,6 +139,18 @@ class ClassMember:
 
         return 'successful'
 
+    def delete_class_teacher(self, ClassTeacher):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Class_Teachers WHERE Teacher=%s"
+        cursor.execute(delete_query, (ClassTeacher.Teacher,))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
 
     # *Class Section
     def get_target_class_section(self, Class):

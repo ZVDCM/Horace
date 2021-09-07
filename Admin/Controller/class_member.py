@@ -46,6 +46,9 @@ class ClassMember:
         self.target_class_row = None
         self.TargetClass = None
 
+        self.target_class_teacher_row = None
+        self.TargetClassTeacher = None
+
         self.connect_signals()
 
     def connect_signals(self):
@@ -247,6 +250,8 @@ class ClassMember:
     # *Class Teacher
     def class_teacher_signals(self):
         self.View.btn_init_add_class_teacher.clicked.connect(self.init_add_class_teacher)
+        self.View.btn_delete_class_teacher.clicked.connect(self.delete_target_teacher)
+        self.View.lv_class_teacher.clicked.connect(self.list_class_teacher_clicked)
 
     # Operation
     def GetTargetClassTeacher(self):
@@ -269,11 +274,27 @@ class ClassMember:
         handler.finished.connect(self.View.ClassTeacherLoadingScreen.hide)
         return handler
 
+    def DeleteTeacher(self):
+        handler = Operation(self.Model.delete_class_teacher)
+        handler.started.connect(self.View.ClassTeacherLoadingScreen.run)
+        handler.finished.connect(self.View.ClassTeacherLoadingScreen.hide)
+        return handler
+
     # List
+    def list_class_teacher_clicked(self, index):
+        self.target_class_teacher_row = index.row()
+        self.set_target_class_teacher(self.Model.ClassTeacher(
+            None, self.TargetClass.Code, self.View.lv_class_teacher.model().getRowData(self.target_class_teacher_row)))
+
+    def set_target_class_teacher(self, ClassTeacher):
+        self.TargetClassTeacher = ClassTeacher
+
     def set_class_teacher_list(self, teachers):
         class_teacher_model = self.Model.ListModel(
             self.View.lv_class_teacher, teachers)
         self.View.lv_class_teacher.setModel(class_teacher_model)
+        self.target_class_teacher_row = class_teacher_model.createIndex(0,0).row()
+        self.TargetClassTeacher = self.Model.ClassTeacher(None, self.TargetClass.Code, class_teacher_model.getRowData(self.target_class_teacher_row))
         self.select_latest_class_teacher()
 
     def select_latest_class_teacher(self):
@@ -308,6 +329,16 @@ class ClassMember:
         self.register_teacher_handler.operation.connect(self.get_target_class_teacher_handler.start)
 
         self.register_teacher_handler.start()
+
+    def delete_target_teacher(self):
+        self.get_target_class_teacher_handler = self.GetTargetClassTeacher()
+        self.delete_target_teacher_handler = self.DeleteTeacher()
+
+        self.get_target_class_teacher_handler.val = self.TargetClass,
+        self.delete_target_teacher_handler.val = self.TargetClassTeacher,
+        self.delete_target_teacher_handler.operation.connect(self.get_target_class_teacher_handler.start)
+
+        self.delete_target_teacher_handler.start()
 
     # *Class Section
     # Operation

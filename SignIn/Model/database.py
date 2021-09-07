@@ -64,8 +64,8 @@ class Database:
                     Teacher VARCHAR(32) BINARY,
                     PRIMARY KEY (ID),
                     CONSTRAINT FK_Class_Teachers_Code FOREIGN KEY (Code) REFERENCES Horace.Classes (Code) ON DELETE CASCADE ON UPDATE CASCADE,
-                    CONSTRAINT FK_Class_Teacher FOREIGN KEY (Teacher) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE
-                    ) ENGINE = InnoDB;
+                    CONSTRAINT FK_Class_Teacher FOREIGN KEY (Teacher) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE,
+                    UNIQUE INDEX Teacher_UNIQUE (Teacher)) ENGINE = InnoDB;
 
                 CREATE TABLE Horace.Class_Sections ( 
                     ID INT NOT NULL AUTO_INCREMENT,
