@@ -99,6 +99,16 @@ class Admin:
         self.get_all_section_student.finished.connect(self.View.SectionStudentLoadingScreen.hide)
         self.get_all_section_student.finished.connect(self.select_latest_targets)
 
+        self.get_target_class_teacher = Get(self.Model.ClassMember.get_target_class_teacher)
+        self.get_target_class_teacher.started.connect(self.View.TableClassLoadingScreen.run)
+        self.get_target_class_teacher.operation.connect(self.ClassMember.set_class_teacher_list)
+        self.get_target_class_teacher.finished.connect(self.View.TableClassLoadingScreen.hide)
+
+        self.get_target_class_section = Get(self.Model.ClassMember.get_target_class_section)
+        self.get_target_class_section.started.connect(self.View.TableClassLoadingScreen.run)
+        self.get_target_class_section.operation.connect(self.ClassMember.set_class_section_list)
+        self.get_target_class_section.finished.connect(self.View.TableClassLoadingScreen.hide)
+
     def change_page(self, index):
         for side_nav in self.View.side_navs:
             if side_nav.is_active:
@@ -135,11 +145,11 @@ class Admin:
     def select_latest_targets(self):
         self.View.tv_sections.selectRow(self.SectionStudent.target_section_row)
         self.set_latest_section_inputs()
-        section_student = self.View.lv_section_student.model().getData()
+        section_students = self.View.lv_section_student.model().getData()
 
-        if section_student != []:
+        if section_students != []:
             student_model = self.View.tv_students.model()
-            student = section_student[0]
+            student = section_students[0]
             self.SectionStudent.target_student_row = student_model.findRow(student)
             self.SectionStudent.TargetStudent = self.Model.Student(*student_model.getRowData(self.SectionStudent.target_student_row))
             self.SectionStudent.TargetStudent.Section = self.SectionStudent.TargetSection.Name
@@ -187,6 +197,11 @@ class Admin:
         self.ClassMember.TargetClass = self.Model.Class(*class_model.getRowData(self.ClassMember.target_class_row))
         self.View.tv_class.selectRow(self.ClassMember.target_class_row)
 
+        self.get_target_class_teacher.val = self.ClassMember.TargetClass,
+        self.get_target_class_section.val = self.ClassMember.TargetClass,
+        self.get_target_class_teacher.start()
+        self.get_target_class_section.start()
+
         self.set_latest_class_inputs()
 
     def set_latest_class_inputs(self):
@@ -199,10 +214,13 @@ class Admin:
     # *URLS
     def get_model_latest_url(self):
         url_model = self.View.lv_url.model()
-        self.BlacklistURL.target_url_row = 0
-        self.BlacklistURL.TargetUrl = self.Model.Url(None, url_model.getRowData(self.BlacklistURL.target_url_row))
-        index = url_model.createIndex(self.BlacklistURL.target_url_row, 0)
-        self.View.lv_url.setCurrentIndex(index)
+        try:
+            self.BlacklistURL.target_url_row = 0
+            self.BlacklistURL.TargetUrl = self.Model.Url(None, url_model.getRowData(self.BlacklistURL.target_url_row))
+            index = url_model.createIndex(self.BlacklistURL.target_url_row, 0)
+            self.View.lv_url.setCurrentIndex(index)
+        except IndexError:
+            return
 
         self.set_latest_url_inputs()
 

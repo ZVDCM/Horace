@@ -106,12 +106,17 @@ class TeacherAttendance:
         self.select_target_teacher_row()
 
     def select_target_teacher_row(self):
-        teacher_model = self.View.tv_teachers.model()
-        self.target_teacher_row = teacher_model.findRow(
-            self.TargetTeacher.Username)
-        self.View.tv_teachers.selectRow(self.target_teacher_row)
-        self.View.tv_teachers.setFocus(True)
-        self.set_teacher_inputs()
+        try:
+            teacher_model = self.View.tv_teachers.model()
+            self.target_teacher_row = teacher_model.findRow(
+                self.TargetTeacher.Username)
+            self.View.tv_teachers.selectRow(self.target_teacher_row)
+            self.View.tv_teachers.setFocus(True)
+            self.set_teacher_inputs()
+        except AttributeError:
+            return
+        except TypeError:
+            return
 
     def set_teacher_inputs(self):
         self.View.txt_teacher_username.setText(self.TargetTeacher.Username)
@@ -126,8 +131,11 @@ class TeacherAttendance:
 
     def get_latest_teacher(self):
         teacher_model = self.View.tv_teachers.model()
-        self.set_target_teacher(self.Model.Teacher(
-            *teacher_model.getRowData(teacher_model.rowCount() - 2)))
+        target_teacher_data = teacher_model.getRowData(teacher_model.rowCount() - 2)
+        if "NULL" not in target_teacher_data:
+            self.set_target_teacher(self.Model.Teacher(*target_teacher_data))
+        else:
+            self.View.clear_teacher_inputs()
 
     # Buttons
     def init_add_teacher(self):

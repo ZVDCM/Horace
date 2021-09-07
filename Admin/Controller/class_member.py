@@ -1,5 +1,7 @@
+from PyQt5.QtWidgets import QDialog
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
+from Admin.Misc.Widgets.data_table import DataTable
 
 
 class Get(QtCore.QThread):
@@ -47,6 +49,11 @@ class ClassMember:
         self.connect_signals()
 
     def connect_signals(self):
+        self.class_signals()
+        self.class_teacher_signals()
+
+    # *Class
+    def class_signals(self):
         self.View.tv_class.clicked.connect(self.table_class_clicked)
         self.View.btn_init_add_class.clicked.connect(self.init_add_class)
         self.View.btn_init_edit_class.clicked.connect(self.init_edit_class)
@@ -94,6 +101,14 @@ class ClassMember:
         self.set_target_class(self.Model.Class(
             *class_model.getRowData(row)))
 
+        self.get_target_class_teacher_handler = self.GetTargetClassTeacher()
+        self.get_target_class_section_handler = self.GetTargetClassSection()
+
+        self.get_target_class_teacher_handler.val = self.TargetClass,
+        self.get_target_class_section_handler.val = self.TargetClass,
+        self.get_target_class_teacher_handler.start()
+        self.get_target_class_section_handler.start()
+
     def set_class_table(self, classes):
         class_model = self.Model.TableModel(
             self.View.tv_class, classes, self.Model.Class.get_headers())
@@ -105,19 +120,27 @@ class ClassMember:
         self.select_target_class_row()
 
     def select_target_class_row(self):
-        class_model = self.View.tv_class.model()
-        self.target_class_row = class_model.findRow(
-            self.TargetClass.Code)
-        self.View.tv_class.selectRow(self.target_class_row)
-        self.View.tv_class.setFocus(True)
-        self.set_class_inputs()
+        try:
+            class_model = self.View.tv_class.model()
+            self.target_class_row = class_model.findRow(
+                self.TargetClass.Code)
+            self.View.tv_class.selectRow(self.target_class_row)
+            self.View.tv_class.setFocus(True)
+            self.set_class_inputs()
+        except AttributeError:
+            return
+        except TypeError:
+            return
 
     def set_class_inputs(self):
-        self.View.txt_class_code.setText(self.TargetClass.Code)
-        self.View.txt_class_name.setText(self.TargetClass.Name)
-        self.View.txt_class_start.setTime(
-            QtCore.QTime(*self.TargetClass.Start))
-        self.View.txt_class_end.setTime(QtCore.QTime(*self.TargetClass.End))
+        try:
+            self.View.txt_class_code.setText(self.TargetClass.Code)
+            self.View.txt_class_name.setText(self.TargetClass.Name)
+            self.View.txt_class_start.setTime(
+                QtCore.QTime(*self.TargetClass.Start))
+            self.View.txt_class_end.setTime(QtCore.QTime(*self.TargetClass.End))
+        except ValueError:
+            self.View.clear_class_inputs()
 
     def select_latest_class(self, _class):
         class_model = self.View.tv_class.model()
@@ -220,3 +243,95 @@ class ClassMember:
 
         self.get_all_class_handler.finished.connect(self.get_latest_class)
         self.delete_class_handler.start()
+
+    # *Class Teacher
+    def class_teacher_signals(self):
+        self.View.btn_init_add_class_teacher.clicked.connect(self.init_add_class_teacher)
+
+    # Operation
+    def GetTargetClassTeacher(self):
+        handler = Get(self.Model.get_target_class_teacher)
+        handler.started.connect(self.View.TableClassLoadingScreen.run)
+        handler.operation.connect(self.set_class_teacher_list)
+        handler.finished.connect(self.View.TableClassLoadingScreen.hide)
+        return handler
+
+    def GetTeachersNotInClass(self):
+        handler = Get(self.Model.get_teacher_not_in_class)
+        handler.started.connect(self.View.ClassTeacherLoadingScreen.run)
+        handler.operation.connect(self.run_teacher_data_table)
+        handler.finished.connect(self.View.ClassTeacherLoadingScreen.hide)
+        return handler
+
+    def RegisterTeacher(self):
+        handler = Operation(self.Model.register_teacher_class)
+        handler.started.connect(self.View.ClassTeacherLoadingScreen.run)
+        handler.finished.connect(self.View.ClassTeacherLoadingScreen.hide)
+        return handler
+
+    # List
+    def set_class_teacher_list(self, teachers):
+        class_teacher_model = self.Model.ListModel(
+            self.View.lv_class_teacher, teachers)
+        self.View.lv_class_teacher.setModel(class_teacher_model)
+        self.select_latest_class_teacher()
+
+    def select_latest_class_teacher(self):
+        class_teachers_model = self.View.lv_class_teacher.model()
+        class_teachers = class_teachers_model.getData()
+        if class_teachers != []:
+            index  = class_teachers_model.createIndex(0,0)
+            self.View.lv_class_teacher.setCurrentIndex(index)
+
+    # Buttons
+    def init_add_class_teacher(self):
+        self.get_teachers_not_in_class_handler = self.GetTeachersNotInClass()
+        self.get_teachers_not_in_class_handler.val = self.TargetClass,
+        self.get_teachers_not_in_class_handler.start()
+
+    def run_teacher_data_table(self, teachers):
+        self.DataTable = DataTable(self.View, 'Class Teachers')
+        teacher_model = self.Model.TableModel(self.DataTable.tv_target_data, teachers, self.Model.ClassTeacher.get_headers()) 
+        self.DataTable.set_model(teacher_model)
+        self.DataTable.btn_add.clicked.connect(self.add_target_teacher_data)
+        self.DataTable.run()
+
+    def add_target_teacher_data(self):
+        self.DataTable.close()
+        Teacher = self.Model.Teacher(*self.DataTable.get_target_row_data())
+
+        self.get_target_class_teacher_handler = self.GetTargetClassTeacher()
+        self.register_teacher_handler = self.RegisterTeacher()
+
+        self.get_target_class_teacher_handler.val = self.TargetClass,
+        self.register_teacher_handler.val = self.TargetClass, Teacher
+        self.register_teacher_handler.operation.connect(self.get_target_class_teacher_handler.start)
+
+        self.register_teacher_handler.start()
+
+    # *Class Section
+    # Operation
+    def GetTargetClassSection(self):
+        handler = Get(self.Model.get_target_class_section)
+        handler.started.connect(self.View.TableClassLoadingScreen.run)
+        handler.operation.connect(self.set_class_section_list)
+        handler.finished.connect(self.View.TableClassLoadingScreen.hide)
+        return handler
+
+    # List
+    def set_class_section_list(self, sections):
+        class_section_model = self.Model.ListModel(
+            self.View.lv_class_section, sections)
+        self.View.lv_class_section.setModel(class_section_model)
+        self.select_latest_class_section()
+
+    def select_latest_class_section(self):
+        class_sections_model = self.View.lv_class_section.model()
+        class_sections = class_sections_model.getData()
+        if class_sections != []:
+            index  = class_sections_model.createIndex(0,0)
+            self.View.lv_class_section.setCurrentIndex(index)
+
+    # Buttons
+    def init_add_class_student(self):
+        pass

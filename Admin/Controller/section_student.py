@@ -1,3 +1,4 @@
+import re
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 
@@ -115,6 +116,12 @@ class SectionStudent:
         self.set_target_student(self.Model.Student(
             *student_model.getRowData(student_model.findRow(self.TargetSectionStudent.Student))))
 
+    def empty_section_student_list(self):
+        try:
+            self.View.lv_section_student.model().removeRows(0, self.View.lv_section_student.model().rowCount())
+        except AttributeError:
+            return
+
     # *Section
     def section_signals(self):
         self.View.tv_sections.clicked.connect(self.table_section_clicked)
@@ -195,12 +202,15 @@ class SectionStudent:
         self.select_target_section_row()
 
     def select_target_section_row(self):
-        section_model = self.View.tv_sections.model()
-        self.target_section_row = section_model.findRow(
-            self.TargetSection.Name)
-        self.View.tv_sections.selectRow(self.target_section_row)
-        self.View.tv_sections.setFocus(True)
-        self.set_section_inputs()
+        try:
+            section_model = self.View.tv_sections.model()
+            self.target_section_row = section_model.findRow(
+                self.TargetSection.Name)
+            self.View.tv_sections.selectRow(self.target_section_row)
+            self.View.tv_sections.setFocus(True)
+            self.set_section_inputs()
+        except:
+            self.View.clear_section_inputs()
 
     def set_section_inputs(self):
         self.View.tv_sections.selectRow(self.target_section_row)
@@ -221,6 +231,8 @@ class SectionStudent:
         section_model = self.View.tv_sections.model()
         self.set_target_section(self.Model.Section(
             *section_model.getRowData(section_model.rowCount() - 2)))
+        
+        self.get_target_section_student_handler = self.GetTargetSectionStudent()
         self.get_target_section_student_handler.value = self.TargetSection,
         self.get_target_section_student_handler.start()
 
@@ -260,17 +272,20 @@ class SectionStudent:
             self.View.run_popup('Section fields must be filled')
             return
         
-        self.get_all_section_handler = self.GetAllSection()
-        self.add_section_handler = self.AddSection()
+        try:
+            self.get_all_section_handler = self.GetAllSection()
+            self.add_section_handler = self.AddSection()
 
-        self.add_section_handler.val = section,
-        self.add_section_handler.operation.connect(self.get_all_section_handler.start)
+            self.add_section_handler.val = section,
+            self.add_section_handler.operation.connect(self.get_all_section_handler.start)
 
-        self.get_all_section_handler.finished.connect(lambda: self.select_latest_section(section))
-        self.get_all_section_handler.finished.connect(self.View.tv_students.clearSelection)
-        self.get_all_section_handler.finished.connect(self.View.clear_student_inputs)
-        self.get_all_section_handler.finished.connect(lambda: self.View.lv_section_student.model().removeRows(0, self.View.lv_section_student.model().rowCount()))
-        self.add_section_handler.start()
+            self.get_all_section_handler.finished.connect(lambda: self.select_latest_section(section))
+            self.get_all_section_handler.finished.connect(self.View.tv_students.clearSelection)
+            self.get_all_section_handler.finished.connect(self.View.clear_student_inputs)
+            self.get_all_section_handler.finished.connect(self.empty_section_student_list)
+            self.add_section_handler.start()
+        except AttributeError:
+            return
 
     # Section Edit
     def edit_section(self):
@@ -384,12 +399,17 @@ class SectionStudent:
         self.select_target_student_row()
 
     def select_target_student_row(self):
-        student_model = self.View.tv_students.model()
-        self.target_student_row = student_model.findRow(
-            self.TargetStudent.Username)
-        self.View.tv_students.selectRow(self.target_student_row)
-        self.View.tv_students.setFocus(True)
-        self.set_student_inputs()
+        try:
+            student_model = self.View.tv_students.model()
+            self.target_student_row = student_model.findRow(
+                self.TargetStudent.Username)
+            self.View.tv_students.selectRow(self.target_student_row)
+            self.View.tv_students.setFocus(True)
+            self.set_student_inputs()
+        except AttributeError:
+            return
+        except TypeError:
+            return
 
     def set_student_inputs(self):
         self.View.txt_student_username.setText(self.TargetStudent.Username)
@@ -410,10 +430,13 @@ class SectionStudent:
             *student_model.getRowData(student_model.findRow(username))))
 
     def get_latest_section_student(self):
-        section_model = self.View.lv_section_student.model()
-        self.set_target_section_student(self.Model.SectionStudent(None, self.TargetSection.Name, section_model.getData()[0]))
-        student_model = self.View.tv_students.model()
-        self.set_target_student(self.Model.Student(*student_model.getRowData(student_model.findRow(self.TargetSectionStudent.Student))))
+        try:
+            section_model = self.View.lv_section_student.model()
+            self.set_target_section_student(self.Model.SectionStudent(None, self.TargetSection.Name, section_model.getData()[0]))
+            student_model = self.View.tv_students.model()
+            self.set_target_student(self.Model.Student(*student_model.getRowData(student_model.findRow(self.TargetSectionStudent.Student))))
+        except IndexError:
+            self.View.clear_student_inputs()
 
     # Buttons
     def init_add_student(self):

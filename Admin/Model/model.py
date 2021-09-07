@@ -111,6 +111,45 @@ class Class:
     def get_values(self):
         return (self.ID, self.Code, self.Name, self.HostAddress, self._Start, self._End)
 
+class ClassTeacher:
+    def __init__(self, ID, Code, Teacher):
+        self.ID = ID
+        self.Code = Code
+        self.Teacher = Teacher
+
+    def __str__(self):
+        return f"ClassTeacher(ID={self.ID}, Code={self.Code}, Teacher={self.Teacher})"
+
+    @staticmethod
+    def get_headers():
+        return ("ID", "Code", "Teacher")
+
+    def get_values(self):
+        return (self.ID, self.Code, self.Teacher)
+
+    def get_display(self):
+        return self.Teacher
+
+class ClassSection:
+    def __init__(self, ID, Code, Teacher):
+        self.ID = ID
+        self.Code = Code
+        self.Teacher = Teacher
+        self.Section = Section
+
+    def __str__(self):
+        return f"ClassTeacher(ID={self.ID}, Code={self.Code}, Teacher={self.Teacher}, Section={self.Section})"
+
+    @staticmethod
+    def get_headers():
+        return ("ID", "Code", "Teacher", "Section")
+
+    def get_values(self):
+        return (self.ID, self.Code, self.Teacher, self.Section)
+
+    def get_display(self):
+        return self.Section
+
 class Url:
     def __init__(self, ID, Domain):
         self.ID = ID
@@ -140,6 +179,8 @@ class Model:
         self.Teacher = User
         self.Attendance = Attendance
         self.Class = Class
+        self.ClassTeacher = ClassTeacher
+        self.ClassSection = ClassSection
         self.Url = Url
         self.Database = Database()
 

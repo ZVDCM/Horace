@@ -7,22 +7,12 @@ from Admin.Misc.Functions.relative_path import relative_path
 
 class DataTable(QtWidgets.QDialog):
 
-    def __init__(self, parent, target_table, target_column, table_model):
+    def __init__(self, parent, target_table):
         super().__init__()
         self.setupUi(self)
         self.parent = parent
         self.target_table = target_table
-        self.target_column = target_column
-        self.table_model = table_model
-        self.target_row = self.table_model.rowCount() - 2
-
         self.lbl_target_table.setText(self.target_table)
-        self.tv_target_data.setModel(self.table_model)
-        self.tv_target_data.horizontalHeader().setMinimumSectionSize(150)
-        self.tv_target_data.setFocus(True)
-        self.tv_target_data.selectRow(self.target_row)
-
-        self.remove_null_row()
 
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
 
@@ -35,6 +25,14 @@ class DataTable(QtWidgets.QDialog):
     def run(self):
         self.activateWindow()
         self.exec_()
+
+    def set_model(self, table_model):
+        self.tv_target_data.setModel(table_model)
+        self.target_row = table_model.rowCount() - 2
+        self.tv_target_data.horizontalHeader().setMinimumSectionSize(150)
+        self.tv_target_data.setFocus(True)
+        self.tv_target_data.selectRow(self.target_row)
+        self.remove_null_row()
 
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -180,15 +178,15 @@ class DataTable(QtWidgets.QDialog):
         spacerItem1 = QtWidgets.QSpacerItem(
             0, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem1)
-        self.btn_set = QtWidgets.QPushButton(self.widget)
-        self.btn_set.setMinimumSize(QtCore.QSize(150, 0))
+        self.btn_add = QtWidgets.QPushButton(self.widget)
+        self.btn_add.setMinimumSize(QtCore.QSize(150, 0))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
-        self.btn_set.setFont(font)
-        self.btn_set.setStyleSheet("border-radius: 5px;")
-        self.btn_set.setObjectName("btn_set")
-        self.horizontalLayout_3.addWidget(self.btn_set)
+        self.btn_add.setFont(font)
+        self.btn_add.setStyleSheet("border-radius: 5px;")
+        self.btn_add.setObjectName("btn_add")
+        self.horizontalLayout_3.addWidget(self.btn_add)
         self.verticalLayout.addLayout(self.horizontalLayout_3)
         self.verticalLayout_2.addWidget(self.widget)
 
@@ -199,7 +197,7 @@ class DataTable(QtWidgets.QDialog):
         _translate = QtCore.QCoreApplication.translate
         self.lbl_target_table.setText(_translate("Form", "Table"))
         self.btn_cancel.setText(_translate("Form", "Cancel"))
-        self.btn_set.setText(_translate("Form", "Set"))
+        self.btn_add.setText(_translate("Form", "Add"))
 
     def on_focus_change(self):
         if self.isActiveWindow():
@@ -220,6 +218,11 @@ class DataTable(QtWidgets.QDialog):
         table_model = self.tv_target_data.model()
         last_row_index = table_model.rowCount() - 1
         self.tv_target_data.setRowHidden(last_row_index, True)
+
+    def get_target_row_data(self):
+        table_model = self.tv_target_data.model()
+        return table_model.getRowData(self.target_row)
+
 
 
 

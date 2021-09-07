@@ -96,13 +96,18 @@ class BlacklistURL:
         self.select_target_url_row()
 
     def select_target_url_row(self):
-        url_model = self.View.lv_url.model()
-        self.target_url_row = url_model.findRow(
-            self.TargetUrl.Domain)
-        index = url_model.createIndex(self.target_url_row, 0)
-        self.View.lv_url.setCurrentIndex(index)
-        self.View.lv_url.setFocus(True)
-        self.set_url_inputs()
+        try:
+            url_model = self.View.lv_url.model()
+            self.target_url_row = url_model.findRow(
+                self.TargetUrl.Domain)
+            index = url_model.createIndex(self.target_url_row, 0)
+            self.View.lv_url.setCurrentIndex(index)
+            self.View.lv_url.setFocus(True)
+            self.set_url_inputs()
+        except AttributeError:
+            return
+        except TypeError:
+            return
 
     def set_url_inputs(self):
         self.View.txt_url.setText(self.TargetUrl.Domain)
@@ -118,9 +123,12 @@ class BlacklistURL:
             None, url_model.getRowData(url_model.findRow(domain))))
 
     def get_latest_url(self):
-        class_model = self.View.lv_url.model()
-        self.set_target_url(self.Model.Url(
-            None, class_model.getRowData(0)))
+        try:
+            class_model = self.View.lv_url.model()
+            self.set_target_url(self.Model.Url(
+                None, class_model.getRowData(0)))
+        except IndexError:
+            self.View.clear_url_inputs()
 
     # Buttons
     def init_add_url(self):

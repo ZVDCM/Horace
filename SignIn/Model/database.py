@@ -63,16 +63,18 @@ class Database:
                     Code VARCHAR(32) BINARY,
                     Teacher VARCHAR(32) BINARY,
                     PRIMARY KEY (ID),
-                    CONSTRAINT FK_Class_Code FOREIGN KEY (Code) REFERENCES Horace.Classes (Code) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT FK_Class_Teachers_Code FOREIGN KEY (Code) REFERENCES Horace.Classes (Code) ON DELETE CASCADE ON UPDATE CASCADE,
                     CONSTRAINT FK_Class_Teacher FOREIGN KEY (Teacher) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE
                     ) ENGINE = InnoDB;
 
                 CREATE TABLE Horace.Class_Sections ( 
                     ID INT NOT NULL AUTO_INCREMENT,
                     Code VARCHAR(32) BINARY,
+                    Teacher VARCHAR(32) BINARY,
                     Section VARCHAR(32) BINARY,
                     PRIMARY KEY (ID),
-                    CONSTRAINT FK_Class_Code FOREIGN KEY (Code) REFERENCES Horace.Classes (Code) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT FK_Class_Section_Teacher FOREIGN KEY (Teacher) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT FK_Class_Section_Code FOREIGN KEY (Code) REFERENCES Horace.Classes (Code) ON DELETE CASCADE ON UPDATE CASCADE,
                     CONSTRAINT FK_Class_Section FOREIGN KEY (Section) REFERENCES Horace.Sections (Name) ON DELETE CASCADE ON UPDATE CASCADE
                     ) ENGINE = InnoDB;
 
