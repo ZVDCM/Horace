@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Admin.Misc.Functions.relative_path import relative_path
+from Teachers.Misc.Functions.relative_path import relative_path
 
 
 class TitleBar(QtWidgets.QWidget):
@@ -16,36 +16,20 @@ class TitleBar(QtWidgets.QWidget):
 
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
-        Form.setSizePolicy(sizePolicy)
+        Form.resize(690, 30)
         Form.setMinimumSize(QtCore.QSize(0, 30))
         Form.setMaximumSize(QtCore.QSize(16777215, 30))
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(Form)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_2.setSpacing(0)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.widget = QtWidgets.QWidget(Form)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.widget.sizePolicy().hasHeightForWidth())
-        self.widget.setSizePolicy(sizePolicy)
-        self.widget.setMinimumSize(QtCore.QSize(230, 0))
-        self.widget.setMaximumSize(QtCore.QSize(230, 16777215))
-        self.widget.setStyleSheet("background: #0D3C6E;")
-        self.widget.setObjectName("widget")
-        self.horizontalLayout_2.addWidget(self.widget)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout = QtWidgets.QHBoxLayout(Form)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
+        self.widget_5 = QtWidgets.QWidget(Form)
+        self.widget_5.setMinimumSize(QtCore.QSize(92, 0))
+        self.widget_5.setStyleSheet("background: #0D3C6E;")
+        self.widget_5.setObjectName("widget_5")
+        self.horizontalLayout.addWidget(self.widget_5)
         spacerItem = QtWidgets.QSpacerItem(
-            378, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+            537, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
         self.btn_minimize = QtWidgets.QPushButton(Form)
         sizePolicy = QtWidgets.QSizePolicy(
@@ -57,24 +41,23 @@ class TitleBar(QtWidgets.QWidget):
         self.btn_minimize.setSizePolicy(sizePolicy)
         self.btn_minimize.setMinimumSize(QtCore.QSize(50, 0))
         self.btn_minimize.setMaximumSize(QtCore.QSize(55, 16777215))
-        self.btn_minimize.setCursor(
-            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_minimize.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_minimize.setStyleSheet("QPushButton{\n"
-                                        "    border: none;\n"
-                                        "    border-radius: none;\n"
-                                        "    background: none;\n"
-                                        "    background-repeat: none;\n"
-                                        f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'minimize.png')});\n"
-                                        "    background-position: center center;\n"
-                                        "}\n"
-                                        "\n"
-                                        "QPushButton:hover{\n"
-                                        "    background: none;\n"
-                                        "    background: rgba(0, 0, 0, 40);\n"
-                                        "    background-repeat: none;\n"
-                                        f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'minimize.png')});\n"
-                                        "    background-position: center center;\n"
-                                        "}")
+                                      "    border: none;\n"
+                                      "    border-radius: none;\n"
+                                      "    background: none;\n"
+                                      "    background-repeat: none;\n"
+                                      f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'minimize.png')});\n"
+                                      "    background-position: center center;\n"
+                                      "}\n"
+                                      "\n"
+                                      "QPushButton:hover{\n"
+                                      "    background: none;\n"
+                                      "    background: rgba(0, 0, 0, 40);\n"
+                                      "    background-repeat: none;\n"
+                                      f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'minimize.png')});\n"
+                                      "    background-position: center center;\n"
+                                      "}")
         self.btn_minimize.setObjectName("btn_minimize")
         self.horizontalLayout.addWidget(self.btn_minimize)
         self.btn_maximize_restore = QtWidgets.QPushButton(Form)
@@ -90,21 +73,21 @@ class TitleBar(QtWidgets.QWidget):
         self.btn_maximize_restore.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_maximize_restore.setStyleSheet("QPushButton{\n"
-                                                "    border: none;\n"
-                                                "    border-radius: none;\n"
-                                                "    background: none;\n"
-                                                "    background-repeat: none;\n"
-                                                f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'maximize.png')});\n"
-                                                "    background-position: center center;\n"
-                                                "}\n"
-                                                "\n"
-                                                "QPushButton:hover{\n"
-                                                "    background: none;\n"
-                                                "    background: rgba(0, 0, 0, 40);\n"
-                                                "    background-repeat: none;\n"
-                                                f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'maximize.png')});\n"
-                                                "    background-position: center center;\n"
-                                                "}")
+                                        "    border: none;\n"
+                                        "    border-radius: none;\n"
+                                        "    background: none;\n"
+                                        "    background-repeat: none;\n"
+                                        f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'maximize.png')});\n"
+                                        "    background-position: center center;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QPushButton:hover{\n"
+                                        "    background: none;\n"
+                                        "    background: rgba(0, 0, 0, 40);\n"
+                                        "    background-repeat: none;\n"
+                                        f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'maximize.png')});\n"
+                                        "    background-position: center center;\n"
+                                        "}")
         self.btn_maximize_restore.setObjectName("btn_maximize_restore")
         self.horizontalLayout.addWidget(self.btn_maximize_restore)
         self.btn_close = QtWidgets.QPushButton(Form)
@@ -121,31 +104,25 @@ class TitleBar(QtWidgets.QWidget):
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_close.setAutoFillBackground(False)
         self.btn_close.setStyleSheet("QPushButton{\n"
-                                     "    border: none;\n"
-                                     "    border-radius: none;\n"
-                                     "    background: none;\n"
-                                     "    background-repeat: none;\n"
-                                     f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'close.png')});\n"
-                                     "    background-position: center center;\n"
-                                     "}\n"
-                                     "\n"
-                                     "QPushButton:hover{\n"
-                                     "    background: none;\n"
-                                     "    background-color: red;\n"
-                                     "    background-repeat: none;\n"
-                                     f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'close_2.png')});\n"
-                                     "    background-position: center center;\n"
-                                     "}")
+                                        "    border: none;\n"
+                                        "    border-radius: none;\n"
+                                        "    background: none;\n"
+                                        "    background-repeat: none;\n"
+                                        f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close.png')});\n"
+                                        "    background-position: center center;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QPushButton:hover{\n"
+                                        "    background: none;\n"
+                                        "    background-color: red;\n"
+                                        "    background-repeat: none;\n"
+                                        f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close_2.png')});\n"
+                                        "    background-position: center center;\n"
+                                        "}")
         self.btn_close.setObjectName("btn_close")
         self.horizontalLayout.addWidget(self.btn_close)
-        self.horizontalLayout_2.addLayout(self.horizontalLayout)
 
-        self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-
-    def retranslateUi(self, Form):
-        _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
 
     def connect_signals(self):
         self.btn_minimize.clicked.connect(self.minimize_clicked)
@@ -175,7 +152,7 @@ class TitleBar(QtWidgets.QWidget):
 
     def mouseReleaseEvent(self, event):
         self.pressing = False
-        self.parent.setMinimumSize(QtCore.QSize(1188, 884))
+        self.parent.setMinimumSize(QtCore.QSize(974, 806))
         self.parent.setMaximumSize(QtCore.QSize(16777215, 16777215))
         super().mouseReleaseEvent(event)
 

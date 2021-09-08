@@ -1,4 +1,5 @@
-from Admin.Controller.controller import Controller
+from Admin.Controller.controller import Controller as AdminController
+from Teachers.Controller.controller import Controller as TeacherController
 from SignIn.Misc.Functions.relative_path import relative_path
 from SignIn.Misc.Functions.is_blank import is_blank
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -140,11 +141,11 @@ class SignIn:
         self.Controller.init_forgot_password()
 
     def init_admin(self):
-        self.AdminController = Controller(self.Controller)
+        self.AdminController = AdminController(self.Controller)
         self.View.close()
 
     def init_teacher(self):
-        print("teacher")
+        self.TeacherController = TeacherController(self.Controller)
         self.View.close()
 
     def init_student(self):

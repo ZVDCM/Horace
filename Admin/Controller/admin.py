@@ -226,7 +226,6 @@ class Admin:
         self.View.txt_url.setText(Url.Domain)
 
     def resize(self, event):
-        self.View.title_bar.resize_window()
         self.View.TableSectionStudentLoadingScreen.resize_loader()
         self.View.TableTeacherLoadingScreen.resize_loader()
         self.View.TableClassLoadingScreen.resize_loader()
