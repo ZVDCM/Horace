@@ -45,7 +45,7 @@ class SignIn:
         self.Controller = Controller
 
         self.User = None
-        self.View.txt_input.setText("Admin")
+        self.View.txt_input.setText("John")
         self.connect_signals()
 
         self.View.run()
@@ -65,7 +65,6 @@ class SignIn:
         self.is_match = Validate(self.Model.is_match)
         self.is_match.started.connect(self.View.LoadingScreen.run)
         self.is_match.finished.connect(self.View.LoadingScreen.hide)
-        self.is_match.operation.connect(self.init_admin)
         self.is_match.validation.connect(self.is_not_match)
 
     def sign_in(self):
@@ -94,13 +93,16 @@ class SignIn:
             self.View.invalid_input("Username invalid or non-existent")
             return
 
-        if self.User.Username == "Admin":
+        if self.User.Privilege == "Admin":
             self.View.icon.setPixmap(QtGui.QPixmap(relative_path(
-                "SignIn", ["Misc", "Resources"], "crown.png")))
+                "SignIn", ["Misc", "Resources"], "admin.png")))
             if not self.User.Hash:
                 self.init_register_admin()
                 return
             self.View.lbl_forgot_password.show()
+        elif self.User.Privilege == "Teacher":
+            self.View.icon.setPixmap(QtGui.QPixmap(relative_path(
+                "SignIn", ["Misc", "Resources"], "teacher.png")))
 
         self.View.second_state()
         self.View.LoadingScreen.hide()
@@ -112,6 +114,13 @@ class SignIn:
             self.View.invalid_input("Password must be filled")
             self.View.txt_input.clear()
             return
+
+        if self.User.Privilege == "Admin":
+            self.is_match.operation.connect(self.init_admin)
+        elif self.User.Privilege == "Teacher":
+            self.is_match.operation.connect(self.init_teacher)
+        elif self.User.Privilege == "Student":
+            self.is_match.operation.connect(self.init_student)
 
         self.is_match.val = self.User.Salt, self.User.Hash, password
         self.is_match.start()
@@ -132,4 +141,12 @@ class SignIn:
 
     def init_admin(self):
         self.AdminController = Controller(self.Controller)
+        self.View.close()
+
+    def init_teacher(self):
+        print("teacher")
+        self.View.close()
+
+    def init_student(self):
+        print("Student")
         self.View.close()
