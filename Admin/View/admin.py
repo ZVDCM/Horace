@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Admin.Misc.Widgets.admin_title_bar import TitleBar
 from Admin.Misc.Widgets.loading_screen import LoadingScreen
 from Admin.Misc.Widgets.custom_table_view import TableView
-from Admin.Misc.Widgets.custome_list_view import ListView
+from Admin.Misc.Widgets.custom_list_view import ListView
 from Admin.Misc.Widgets.custom_lineedit import PasswordGenerator
 from Admin.Misc.Widgets.pop_up import Popup
 from Admin.Misc.Functions.relative_path import relative_path
@@ -22,41 +22,41 @@ class Admin(QtWidgets.QMainWindow):
 
         # Table
         self.TableSectionStudentLoadingScreen = LoadingScreen(self.w_table_section_student, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         self.TableTeacherLoadingScreen = LoadingScreen(self.w_table_teacher, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         self.TableClassLoadingScreen = LoadingScreen(self.w_table_class, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         
         # Section Student
         self.SectionLoadingScreen = LoadingScreen(self.w_section_input, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.StudentLoadingScreen = LoadingScreen(self.w_student_input, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.SectionStudentLoadingScreen = LoadingScreen(self.w_section_student, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         # Teacher Attendance
         self.TeacherLoadingScreen = LoadingScreen(self.w_teacher_input, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.AttendanceLoadingScreen = LoadingScreen(self.w_attendance, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.AttendanceStudentLoadingScreen = LoadingScreen(self.w_attendance_student, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         # Class Member
         self.ClassLoadingScreen = LoadingScreen(self.w_class_input, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.ClassTeacherLoadingScreen = LoadingScreen(self.w_class_teacher, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.ClassSectionLoadingScreen = LoadingScreen(self.w_class_section, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         # URL
         self.URLLoadingScreen = LoadingScreen(self.w_url_input, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.URLSLoadingScreen = LoadingScreen(self.w_url, relative_path(
-            'SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
+            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         self.hide_buttons()
         self.disable_student_inputs()

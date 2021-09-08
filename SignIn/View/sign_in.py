@@ -247,6 +247,8 @@ class SignIn(QtWidgets.QWidget):
 
     def first_state(self):
         self.in_username = True
+        self.icon.setPixmap(QtGui.QPixmap(relative_path(
+                "SignIn", ["Misc", "Resources"], "login.png")))
         self.lbl_tag.setText("Username")
         self.txt_input.clear()
         self.txt_input.setEchoMode(QtWidgets.QLineEdit.Normal)

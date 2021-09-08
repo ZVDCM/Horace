@@ -18,7 +18,6 @@ class Nav(QtWidgets.QWidget):
         if self.is_active:
             self.activate()
 
-
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(94, 71)

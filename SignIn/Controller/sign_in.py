@@ -104,6 +104,9 @@ class SignIn:
         elif self.User.Privilege == "Teacher":
             self.View.icon.setPixmap(QtGui.QPixmap(relative_path(
                 "SignIn", ["Misc", "Resources"], "teacher.png")))
+        elif self.User.Privilege == "Student":
+            self.View.icon.setPixmap(QtGui.QPixmap(relative_path(
+                "SignIn", ["Misc", "Resources"], "login.png")))
 
         self.View.second_state()
         self.View.LoadingScreen.hide()
@@ -141,11 +144,11 @@ class SignIn:
         self.Controller.init_forgot_password()
 
     def init_admin(self):
-        self.AdminController = AdminController(self.Controller)
+        self.AdminController = AdminController(self.Controller, self.User)
         self.View.close()
 
     def init_teacher(self):
-        self.TeacherController = TeacherController(self.Controller)
+        self.TeacherController = TeacherController(self.Controller, self.User)
         self.View.close()
 
     def init_student(self):

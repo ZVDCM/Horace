@@ -4,8 +4,9 @@ from Admin.Controller.admin import Admin
 
 class Controller:
 
-    def __init__(self, SignInController):
+    def __init__(self, SignInController, User):
         self.SignInController = SignInController
+        self.User = User
         self.Model = Model()
         self.View = View()
 

@@ -1,9 +1,9 @@
+from Teachers.Misc.Widgets.loading_screen import LoadingScreen
 from Teachers.Misc.Widgets.nav import Nav
-from Admin.Misc.Widgets.custome_list_view import ListView
 from Teachers.Misc.Functions.relative_path import relative_path
 from Teachers.Misc.Widgets.lobby_title_bar import TitleBar
 from Teachers.Misc.Widgets.custom_table_view import TableView
-from Teachers.Misc.Widgets.custome_list_view import ListView
+from Teachers.Misc.Widgets.custom_list_view import ListView
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -15,6 +15,10 @@ class Lobby(QtWidgets.QMainWindow):
         self.setupUi(self)
 
         self.side_navs = [self.w_class, self.w_attendance]
+        self.ClassLoadingScreen = LoadingScreen(self.classes, relative_path(
+            'Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+        self.AttendanceLoadingScreen = LoadingScreen(self.attendances, relative_path(
+            'Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
 
     def run(self):
         self.raise_()
