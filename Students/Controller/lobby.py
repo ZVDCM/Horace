@@ -47,7 +47,6 @@ class Lobby:
             self.View.add_class_item(_class)
 
     def class_item_clicked(self, Class):
-        Class.HostAddress = self.get_local_ip()
         self.Controller.Model.init_meeting()
         self.Controller.View.init_meeting()
         self.Controller.init_meeting(Class)

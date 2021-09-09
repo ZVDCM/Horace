@@ -1,4 +1,5 @@
 from Students.View.lobby import Lobby
+from Students.View.meeting import Meeting
 
 class View:
 
@@ -7,3 +8,6 @@ class View:
 
     def init_lobby(self):
         self.Lobby = Lobby(self)
+    
+    def init_meeting(self):
+        self.Meeting = Meeting(self)

@@ -1,5 +1,6 @@
 from Students.Model.database import Database
 from Students.Model.lobby import Lobby
+from Students.Model.meeting import Meeting
 from datetime import datetime
 
 class Class:
@@ -34,3 +35,6 @@ class Model:
 
     def init_lobby(self):
         self.Lobby = Lobby(self)
+    
+    def init_meeting(self):
+        self.Meeting = Meeting(self)

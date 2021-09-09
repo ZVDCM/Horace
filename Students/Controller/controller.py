@@ -2,6 +2,7 @@ from Students.View.lobby import Lobby
 from Students.Model.model import Model
 from Students.View.view import View
 from Students.Controller.lobby import Lobby
+from Students.Controller.meeting import Meeting
 
 class Controller:
 
@@ -15,3 +16,6 @@ class Controller:
 
     def init_lobby(self):
         self.Lobby = Lobby(self)
+
+    def init_meeting(self, Class):
+        self.Meeting = Meeting(self, Class)
