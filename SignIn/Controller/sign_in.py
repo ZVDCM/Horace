@@ -1,5 +1,6 @@
 from Admin.Controller.controller import Controller as AdminController
 from Teachers.Controller.controller import Controller as TeacherController
+from Students.Controller.controller import Controller as StudentController
 from SignIn.Misc.Functions.relative_path import relative_path
 from SignIn.Misc.Functions.is_blank import is_blank
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -46,7 +47,7 @@ class SignIn:
         self.Controller = Controller
 
         self.User = None
-        self.View.txt_input.setText("John")
+        self.View.txt_input.setText("Juan")
         self.connect_signals()
 
         self.View.run()
@@ -152,5 +153,5 @@ class SignIn:
         self.View.close()
 
     def init_student(self):
-        print("Student")
+        self.StudentController = StudentController(self.Controller, self.User)
         self.View.close()

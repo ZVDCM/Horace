@@ -830,6 +830,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.sw_left.setCurrentIndex(0)
         self.sw_right.setCurrentIndex(0)
         self.sw_right.hide()
+        self.w_url_btn.hide()
         self.lbl_reply.hide()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
