@@ -12,7 +12,8 @@ class SideNav(QLabel):
         self.target_index = target_index
 
     def mousePressEvent(self, event):
-        self.operation.emit(self.target_index)
+        if not self.is_active:
+            self.operation.emit(self.target_index)
         super().mousePressEvent(event)
 
     def activate(self):

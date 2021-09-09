@@ -22,6 +22,8 @@ class Nav(QtWidgets.QWidget):
         Form.setObjectName("Form")
         Form.resize(94, 71)
         Form.setWindowTitle("")
+        Form.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setSpacing(0)
@@ -78,7 +80,8 @@ class Nav(QtWidgets.QWidget):
         super().leaveEvent(event)
 
     def mousePressEvent(self, event):
-        self.operation.emit(self.target_index)
+        if not self.is_active:
+            self.operation.emit(self.target_index)
         super().mousePressEvent(event)
 
     def activate(self):

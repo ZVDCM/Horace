@@ -1,3 +1,4 @@
+from Teachers.Misc.Widgets.custom_button import Button
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Teachers.Misc.Widgets.loading_screen import LoadingScreen
 from Teachers.Misc.Functions.relative_path import relative_path
@@ -11,6 +12,10 @@ class Meeting(QtWidgets.QMainWindow):
         super().__init__()
         self.View = View
         self.setupUi(self)
+
+        self.screens = [self.btn_screenshare, self.btn_inspector]
+        self.interactors = [self.btn_student_list, self.btn_chat, self.btn_block]
+        self.close_buttons = [self.btn_close_student_list, self.btn_close_chat, self.btn_close_url]
 
     def run(self):
         self.raise_()
@@ -106,7 +111,7 @@ class Meeting(QtWidgets.QMainWindow):
         spacerItem = QtWidgets.QSpacerItem(
             772, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.btn_screenshare = QtWidgets.QPushButton(self.widget1)
+        self.btn_screenshare = Button(self.widget1, 0, True, relative_path('Teachers', ['Misc', 'Resources'], 'monitor_3'), relative_path('Teachers', ['Misc', 'Resources'], 'monitor_2'), relative_path('Teachers', ['Misc', 'Resources'], 'monitor.png'))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -118,31 +123,9 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_screenshare.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_screenshare.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_screenshare.setStyleSheet("QPushButton{\n"
-                                           "    border: none;\n"
-                                           "    border-radius: none;\n"
-                                           "    background: none;\n"
-                                           "    background-repeat: none;\n"
-                                           "    background-image: url(:/icons/monitor_2.png);\n"
-                                           "    background-position: center center;\n"
-                                           "}\n"
-                                           "\n"
-                                           "QPushButton:hover{\n"
-                                           "    background: none;\n"
-                                           "    background-repeat: none;\n"
-                                           "    background-image: url(:/icons/monitor.png);\n"
-                                           "    background-position: center center;\n"
-                                           "}\n"
-                                           "\n"
-                                           "QPushButton:pressed{\n"
-                                           "    background: none;\n"
-                                           "    background-repeat: none;\n"
-                                           "    background-image: url(:/icons/monitor_3.png);\n"
-                                           "    background-position: center center;\n"
-                                           "}")
         self.btn_screenshare.setObjectName("btn_screenshare")
         self.horizontalLayout.addWidget(self.btn_screenshare)
-        self.btn_inspector = QtWidgets.QPushButton(self.widget1)
+        self.btn_inspector = Button(self.widget1, 1, False, relative_path('Teachers', ['Misc', 'Resources'], 'inspect_3'), relative_path('Teachers', ['Misc', 'Resources'], 'inspect_2'), relative_path('Teachers', ['Misc', 'Resources'], 'inspect'))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -154,28 +137,6 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_inspector.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_inspector.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_inspector.setStyleSheet("QPushButton{\n"
-                                         "    border: none;\n"
-                                         "    border-radius: none;\n"
-                                         "    background: none;\n"
-                                         "    background-repeat: none;\n"
-                                         "    background-image: url(:/icons/inspect_2.png);\n"
-                                         "    background-position: center center;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QPushButton:hover{\n"
-                                         "    background: none;\n"
-                                         "    background-repeat: none;\n"
-                                         "    background-image: url(:/icons/inspect.png);\n"
-                                         "    background-position: center center;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QPushButton:pressed{\n"
-                                         "    background: none;\n"
-                                         "    background-repeat: none;\n"
-                                         "    background-image: url(:/icons/inspect_3.png);\n"
-                                         "    background-position: center center;\n"
-                                         "}")
         self.btn_inspector.setObjectName("btn_inspector")
         self.horizontalLayout.addWidget(self.btn_inspector)
         self.line = QtWidgets.QFrame(self.widget1)
@@ -185,7 +146,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.line.setFrameShape(QtWidgets.QFrame.VLine)
         self.line.setObjectName("line")
         self.horizontalLayout.addWidget(self.line)
-        self.btn_student_list = QtWidgets.QPushButton(self.widget1)
+        self.btn_student_list = Button(self.widget1, 0, False, relative_path('Teachers', ['Misc', 'Resources'], 'list_3'), relative_path('Teachers', ['Misc', 'Resources'], 'list_2'), relative_path('Teachers', ['Misc', 'Resources'], 'list'))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -197,31 +158,9 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_student_list.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_student_list.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_student_list.setStyleSheet("QPushButton{\n"
-                                            "    border: none;\n"
-                                            "    border-radius: none;\n"
-                                            "    background: none;\n"
-                                            "    background-repeat: none;\n"
-                                            "    background-image: url(:/icons/list_2.png);\n"
-                                            "    background-position: center center;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QPushButton:hover{\n"
-                                            "    background: none;\n"
-                                            "    background-repeat: none;\n"
-                                            "    background-image: url(:/icons/list.png);\n"
-                                            "    background-position: center center;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QPushButton:pressed{\n"
-                                            "    background: none;\n"
-                                            "    background-repeat: none;\n"
-                                            "    background-image: url(:/icons/list_3.png);\n"
-                                            "    background-position: center center;\n"
-                                            "}")
         self.btn_student_list.setObjectName("btn_student_list")
         self.horizontalLayout.addWidget(self.btn_student_list)
-        self.btn_chat = QtWidgets.QPushButton(self.widget1)
+        self.btn_chat = Button(self.widget1, 1, False, relative_path('Teachers', ['Misc', 'Resources'], 'chat_3'), relative_path('Teachers', ['Misc', 'Resources'], 'chat_2'), relative_path('Teachers', ['Misc', 'Resources'], 'chat'))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -232,31 +171,9 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_chat.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_chat.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_chat.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_chat.setStyleSheet("QPushButton{\n"
-                                    "    border: none;\n"
-                                    "    border-radius: none;\n"
-                                    "    background: none;\n"
-                                    "    background-repeat: none;\n"
-                                    "    background-image: url(:/icons/chat_2.png);\n"
-                                    "    background-position: center center;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton:hover{\n"
-                                    "    background: none;\n"
-                                    "    background-repeat: none;\n"
-                                    "    background-image: url(:/icons/chat.png);\n"
-                                    "    background-position: center center;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton:pressed{\n"
-                                    "    background: none;\n"
-                                    "    background-repeat: none;\n"
-                                    "    background-image: url(:/icons/chat_3.png);\n"
-                                    "    background-position: center center;\n"
-                                    "}")
         self.btn_chat.setObjectName("btn_chat")
         self.horizontalLayout.addWidget(self.btn_chat)
-        self.btn_block = QtWidgets.QPushButton(self.widget1)
+        self.btn_block = Button(self.widget1, 2, False, relative_path('Teachers', ['Misc', 'Resources'], 'block_3'), relative_path('Teachers', ['Misc', 'Resources'], 'block_2'), relative_path('Teachers', ['Misc', 'Resources'], 'block'))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -267,28 +184,6 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_block.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_block.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_block.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_block.setStyleSheet("QPushButton{\n"
-                                     "    border: none;\n"
-                                     "    border-radius: none;\n"
-                                     "    background: none;\n"
-                                     "    background-repeat: none;\n"
-                                     "    background-image: url(:/icons/block_2.png);\n"
-                                     "    background-position: center center;\n"
-                                     "}\n"
-                                     "\n"
-                                     "QPushButton:hover{\n"
-                                     "    background: none;\n"
-                                     "    background-repeat: none;\n"
-                                     "    background-image: url(:/icons/block.png);\n"
-                                     "    background-position: center center;\n"
-                                     "}\n"
-                                     "\n"
-                                     "QPushButton:pressed{\n"
-                                     "    background: none;\n"
-                                     "    background-repeat: none;\n"
-                                     "    background-image: url(:/icons/block_3.png);\n"
-                                     "    background-position: center center;\n"
-                                     "}")
         self.btn_block.setObjectName("btn_block")
         self.horizontalLayout.addWidget(self.btn_block)
         self.line_2 = QtWidgets.QFrame(self.widget1)
@@ -314,7 +209,7 @@ class Meeting(QtWidgets.QMainWindow):
                                      "    border-radius: 5px;\n"
                                      "    background: none;\n"
                                      "    background-repeat: none;\n"
-                                     "    background-image: url(:/icons/call_end.png);\n"
+                                     f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'call_end.png')});\n"
                                      "    background-position: center center;\n"
                                      "}\n"
                                      "\n"
@@ -322,7 +217,7 @@ class Meeting(QtWidgets.QMainWindow):
                                      "    background: none;\n"
                                      "    background-color: #bd2000;\n"
                                      "    background-repeat: none;\n"
-                                     "    background-image: url(:/icons/call_end.png);\n"
+                                     f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'call_end.png')});\n"
                                      "    background-position: center center;\n"
                                      "}")
         self.btn_leave.setObjectName("btn_leave")
@@ -336,6 +231,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.sw_left.setStyleSheet("background: #0B1A30;")
         self.sw_left.setObjectName("sw_left")
         self.page = QtWidgets.QWidget()
+        self.page.setMouseTracking(True)
         self.page.setObjectName("page")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.page)
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
@@ -478,14 +374,14 @@ class Meeting(QtWidgets.QMainWindow):
                                                   "    border-radius: none;\n"
                                                   "    background: none;\n"
                                                   "    background-repeat: none;\n"
-                                                  "    background-image: url(:/icons/close.png);\n"
+                                                  f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close.png')});\n"
                                                   "    background-position: center center;\n"
                                                   "}\n"
                                                   "\n"
                                                   "QPushButton:hover{\n"
                                                   "    background: none;\n"
                                                   "    background-repeat: none;\n"
-                                                  "    background-image: url(:/icons/close_2.png);\n"
+                                                  f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close_2.png')});\n"
                                                   "    background-position: center center;\n"
                                                   "}")
         self.btn_close_student_list.setObjectName("btn_close_student_list")
@@ -537,7 +433,7 @@ class Meeting(QtWidgets.QMainWindow):
                                               "border-bottom-right-radius: 5px;")
         self.btn_search_student.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icons/search.png"),
+        icon.addPixmap(QtGui.QPixmap(relative_path('Teachers', ['Misc', 'Resources'], 'search.png')),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_search_student.setIcon(icon)
         self.btn_search_student.setIconSize(QtCore.QSize(18, 18))
@@ -584,14 +480,14 @@ class Meeting(QtWidgets.QMainWindow):
                                           "    border-radius: none;\n"
                                           "    background: none;\n"
                                           "    background-repeat: none;\n"
-                                          "    background-image: url(:/icons/close.png);\n"
+                                          f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close.png')});\n"
                                           "    background-position: center center;\n"
                                           "}\n"
                                           "\n"
                                           "QPushButton:hover{\n"
                                           "    background: none;\n"
                                           "    background-repeat: none;\n"
-                                          "    background-image: url(:/icons/close_2.png);\n"
+                                          f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close_2.png')});\n"
                                           "    background-position: center center;\n"
                                           "}")
         self.btn_close_chat.setObjectName("btn_close_chat")
@@ -643,14 +539,14 @@ class Meeting(QtWidgets.QMainWindow):
                                     "    border-radius: none;\n"
                                     "    background: none;\n"
                                     "    background-repeat: none;\n"
-                                    "    background-image: url(:/icons/clip.png);\n"
+                                    f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'clip.png')});\n"
                                     "    background-position: center center;\n"
                                     "}\n"
                                     "\n"
                                     "QPushButton:hover{\n"
                                     "    background: none;\n"
                                     "    background-repeat: none;\n"
-                                    "    background-image: url(:/icons/clip_2.png);\n"
+                                    f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'clip_2.png')});\n"
                                     "    background-position: center center;\n"
                                     "}")
         self.btn_file.setObjectName("btn_file")
@@ -674,14 +570,14 @@ class Meeting(QtWidgets.QMainWindow):
                                     "    border-radius: none;\n"
                                     "    background: none;\n"
                                     "    background-repeat: none;\n"
-                                    "    background-image: url(:/icons/send.png);\n"
+                                    f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'send.png')});\n"
                                     "    background-position: center center;\n"
                                     "}\n"
                                     "\n"
                                     "QPushButton:hover{\n"
                                     "    background: none;\n"
                                     "    background-repeat: none;\n"
-                                    "    background-image: url(:/icons/send_2.png);\n"
+                                    f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'send_2.png')});\n"
                                     "    background-position: center center;\n"
                                     "}")
         self.btn_send.setObjectName("btn_send")
@@ -730,14 +626,14 @@ class Meeting(QtWidgets.QMainWindow):
                                          "    border-radius: none;\n"
                                          "    background: none;\n"
                                          "    background-repeat: none;\n"
-                                         "    background-image: url(:/icons/close.png);\n"
+                                         f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close.png')});\n"
                                          "    background-position: center center;\n"
                                          "}\n"
                                          "\n"
                                          "QPushButton:hover{\n"
                                          "    background: none;\n"
                                          "    background-repeat: none;\n"
-                                         "    background-image: url(:/icons/close_2.png);\n"
+                                         f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close_2.png')});\n"
                                          "    background-position: center center;\n"
                                          "}")
         self.btn_close_url.setObjectName("btn_close_url")
@@ -780,7 +676,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_import_students_sections_12.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_import_students_sections_12.setStyleSheet("border-radius: 5px;\n"
-                                                           "background-image: url(:/icons/add.png);\n"
+                                                           f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'add.png')});\n"
                                                            "background-repeat: no-repeat;\n"
                                                            "background-position: center center;")
         self.btn_import_students_sections_12.setObjectName(
@@ -804,7 +700,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_import_students_sections_14.setStyleSheet(
             "border-radius: 5px;")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/icons/edit.png"),
+        icon1.addPixmap(QtGui.QPixmap(relative_path('Teachers', ['Misc', 'Resources'], 'edit.png')),
                         QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_import_students_sections_14.setIcon(icon1)
         self.btn_import_students_sections_14.setIconSize(QtCore.QSize(20, 20))
@@ -836,7 +732,7 @@ class Meeting(QtWidgets.QMainWindow):
                                                            "     background-color: #072f49;\n"
                                                            "}")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/icons/trash.png"),
+        icon2.addPixmap(QtGui.QPixmap(relative_path('Teachers', ['Misc', 'Resources'], 'trash.png')),
                         QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_import_students_sections_13.setIcon(icon2)
         self.btn_import_students_sections_13.setIconSize(QtCore.QSize(20, 20))
@@ -934,6 +830,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.sw_left.setCurrentIndex(0)
         self.sw_right.setCurrentIndex(0)
         self.sw_right.hide()
+        self.lbl_reply.hide()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -949,3 +846,9 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_add_edit_url.setText(_translate("MainWindow", "Add"))
         self.btn_cancel_url.setText(_translate("MainWindow", "Cancel"))
 
+    def close_right(self):
+        for interactor in self.interactors:
+            if interactor.is_active:
+                interactor.deactivate()
+                break
+        self.sw_right.hide()
