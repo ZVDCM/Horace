@@ -1,6 +1,7 @@
 from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow
-
+import socket
 
 class Get(QtCore.QThread):
     operation = QtCore.pyqtSignal(object)
@@ -57,10 +58,27 @@ class Lobby:
 
     def get_classes(self):
         self.get_all_class.val = self.Controller.User,
+        self.get_all_class.finished.connect(self.set_classes_operation)
         self.get_all_class.start()
+    
+    def set_classes_operation(self):
+        for index in range(self.View.flow_layout.count()):
+            target_class_item = self.View.flow_layout.itemAt(index).widget()
+            target_class_item.operation.connect(self.class_item_clicked)
 
     def set_classes(self, classes):
-        print(classes)
+        for _class in classes:
+            self.View.add_class_item(_class)
+
+    def class_item_clicked(self, Class):
+        Class.HostAddress = self.get_local_ip()
+        self.Controller.Model.init_meeting()
+        self.Controller.View.init_meeting()
+        self.Controller.init_meeting(Class)
+
+    @staticmethod
+    def get_local_ip():
+        return socket.gethostbyname(socket.gethostname())
 
     def change_page(self, index):
         for side_nav in self.View.side_navs:

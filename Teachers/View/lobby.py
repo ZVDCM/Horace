@@ -4,6 +4,8 @@ from Teachers.Misc.Functions.relative_path import relative_path
 from Teachers.Misc.Widgets.lobby_title_bar import TitleBar
 from Teachers.Misc.Widgets.custom_table_view import TableView
 from Teachers.Misc.Widgets.custom_list_view import ListView
+from Teachers.Misc.Widgets.flow_layout import FlowLayout
+from Teachers.Misc.Widgets.class_item import ClassItem
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -64,7 +66,7 @@ class Lobby(QtWidgets.QMainWindow):
         self.w_class = Nav(self, 0, 'Classes', relative_path('Teachers', ['Misc', 'Resources'], 'class_3.png'), relative_path('Teachers', ['Misc', 'Resources'], 'class.png'), relative_path('Teachers', ['Misc', 'Resources'], 'class_2.png'), True)
         self.w_class.setObjectName("w_class")
         self.verticalLayout_3.addWidget(self.w_class)
-        self.w_attendance = Nav(self, 1, 'Classes', relative_path('Teachers', ['Misc', 'Resources'], 'attendance_3.png'), relative_path('Teachers', ['Misc', 'Resources'], 'attendance.png'), relative_path('Teachers', ['Misc', 'Resources'], 'attendance_2.png'), False)
+        self.w_attendance = Nav(self, 1, 'Attendances', relative_path('Teachers', ['Misc', 'Resources'], 'attendance_3.png'), relative_path('Teachers', ['Misc', 'Resources'], 'attendance.png'), relative_path('Teachers', ['Misc', 'Resources'], 'attendance_2.png'), False)
         self.w_attendance.setObjectName("w_attendance")
         self.verticalLayout_3.addWidget(self.w_attendance)
         spacerItem1 = QtWidgets.QSpacerItem(
@@ -227,6 +229,10 @@ class Lobby(QtWidgets.QMainWindow):
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 840, 658))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        
+        self.flow_layout = FlowLayout(parent=self.scrollAreaWidgetContents, spacing=20)
+        self.flow_layout.setObjectName("flow_layout")
+
         self.sa_class.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout_7.addWidget(self.sa_class)
         self.verticalLayout_7.setStretch(1, 1)
@@ -365,3 +371,7 @@ class Lobby(QtWidgets.QMainWindow):
         self.label_6.setText(_translate("MainWindow", "Classes"))
         self.pushButton.setText(_translate("MainWindow", "Create Class"))
         self.label_7.setText(_translate("MainWindow", "Attendances"))
+
+    def add_class_item(self, Class):
+        self.ClassItem = ClassItem(self, Class) 
+        self.flow_layout.addWidget(self.ClassItem)

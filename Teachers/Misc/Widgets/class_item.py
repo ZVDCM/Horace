@@ -1,26 +1,39 @@
-import Resources_rc
+from Teachers.Misc.Functions.relative_path import relative_path
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Form(object):
+class ClassItem(QtWidgets.QWidget):
+    operation = QtCore.pyqtSignal(object)
+    
+    def __init__(self, parent, Class):
+        super().__init__(parent=parent)
+        self.Class = Class
+        self.setupUi(self)
+
     def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(201, 171)
+        Form.setObjectName(self.Class.Code)
         Form.setMinimumSize(QtCore.QSize(201, 171))
         Form.setMaximumSize(QtCore.QSize(201, 171))
-        Form.setWindowTitle("")
+        Form.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         Form.setStyleSheet("QWidget{\n"
                            "    background: #102542;\n"
                            "    color: white; \n"
                            "    font-family: Barlow\n"
                            "}")
-        self.verticalLayout = QtWidgets.QVBoxLayout(Form)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(Form)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_2.setSpacing(0)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.widget = QtWidgets.QWidget(Form)
+        self.widget.setObjectName("widget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout.setContentsMargins(15, 15, 15, 15)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label = QtWidgets.QLabel(Form)
+        self.label = QtWidgets.QLabel(self.widget)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(14)
@@ -34,7 +47,7 @@ class Ui_Form(object):
         spacerItem = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.pushButton = QtWidgets.QPushButton(Form)
+        self.pushButton = QtWidgets.QPushButton(self.widget)
         self.pushButton.setMinimumSize(QtCore.QSize(20, 20))
         self.pushButton.setMaximumSize(QtCore.QSize(20, 20))
         self.pushButton.setStyleSheet("QPushButton{\n"
@@ -42,20 +55,22 @@ class Ui_Form(object):
                                       "    border-radius: none;\n"
                                       "    background: none;\n"
                                       "    background-repeat: none;\n"
-                                      "    background-image: url(:/icons/menu_alt.png);\n"
+                                      f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'menu_alt')});\n"
                                       "    background-position: center center;\n"
                                       "}\n"
                                       "\n"
                                       "QPushButton:hover{\n"
                                       "    background: none;\n"
                                       "    background-repeat: none;\n"
-                                      "    background-image: url(:/icons/menu_alt_2.png);\n"
+                                      f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'menu_alt_2')});\n"
                                       "    background-position: center center;\n"
                                       "}")
+        self.pushButton.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton.setObjectName("pushButton")
         self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        self.label_2 = QtWidgets.QLabel(Form)
+        self.label_2 = QtWidgets.QLabel(self.widget)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(11)
@@ -67,7 +82,7 @@ class Ui_Form(object):
         self.verticalLayout.addWidget(self.label_2)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.label_3 = QtWidgets.QLabel(Form)
+        self.label_3 = QtWidgets.QLabel(self.widget)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
@@ -78,7 +93,7 @@ class Ui_Form(object):
         spacerItem1 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
-        self.label_4 = QtWidgets.QLabel(Form)
+        self.label_4 = QtWidgets.QLabel(self.widget)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
@@ -88,24 +103,31 @@ class Ui_Form(object):
         self.horizontalLayout_2.addWidget(self.label_4)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.verticalLayout.setStretch(1, 1)
+        self.verticalLayout_2.addWidget(self.widget)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        self.label.setText(_translate("Form", "MMW"))
+        self.label.setText(_translate("Form", self.Class.Code))
         self.label_2.setText(_translate(
-            "Form", "Mathematics in the Modern World"))
-        self.label_3.setText(_translate("Form", "7:00 AM"))
-        self.label_4.setText(_translate("Form", "7:00 AM"))
+            "Form", self.Class.Name))
+        self.label_3.setText(_translate("Form", self.Class.Start))
+        self.label_4.setText(_translate("Form", self.Class.End))
 
+    def enterEvent(self, event):
+        self.widget.setStyleSheet("QWidget#widget{\n"
+                                  "    border: 1px solid #256eff; \n"
+                                  "}")
+        super().enterEvent(event)
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Form = QtWidgets.QWidget()
-    ui = Ui_Form()
-    ui.setupUi(Form)
-    Form.show()
-    sys.exit(app.exec_())
+    def leaveEvent(self, event):
+        self.widget.setStyleSheet("QWidget#widget{\n"
+                                  "    border: none; \n"
+                                  "}")
+        super().leaveEvent(event)
+
+    def mousePressEvent(self, event):
+        self.operation.emit(self.Class)
+        super().mousePressEvent(event)

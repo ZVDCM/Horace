@@ -94,7 +94,7 @@ class Class:
         self._End = End
 
     def __str__(self):
-        return f"Class(ID={self.UserID}, Name={self.Name}, HostAddress={self.HostAddress}, Start={self._Start}, End={self._End})"
+        return f"Class(ID={self.ID}, Name={self.Name}, HostAddress={self.HostAddress}, Start={self._Start}, End={self._End})"
 
     @staticmethod
     def get_headers():

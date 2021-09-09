@@ -10,7 +10,7 @@ class Lobby:
         cursor = db.cursor(buffered=True)
 
         select_query = """
-            SELECT ID, Code, Name, Start, End FROM Classes WHERE Code IN 
+            SELECT * FROM Classes WHERE Code IN 
             (SELECT Code FROM Class_Teachers WHERE Teacher=%s);
         """
         cursor.execute(select_query, (User.Username,))

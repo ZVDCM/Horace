@@ -65,7 +65,7 @@ class Nav(QtWidgets.QWidget):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        self.lbl_title.setText(_translate("Form", "Attendance"))
+        self.lbl_title.setText(_translate("Form", self.title))
 
     def enterEvent(self, event):
         if not self.is_active:
