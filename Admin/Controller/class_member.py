@@ -304,10 +304,11 @@ class ClassMember:
 
         except IndexError:
             pass
-
-        self.get_target_class_section_handler = self.GetTargetClassSection()
-        self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
-        self.get_target_class_section_handler.start()
+        
+        if self.TargetClass and self.TargetClassTeacher:
+            self.get_target_class_section_handler = self.GetTargetClassSection()
+            self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
+            self.get_target_class_section_handler.start()
 
     def select_latest_class_teacher(self):
         class_teachers_model = self.View.lv_class_teacher.model()

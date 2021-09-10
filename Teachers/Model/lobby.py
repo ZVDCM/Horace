@@ -23,3 +23,16 @@ class Lobby:
         if classes:
             return [self.Class(*_class) for _class in classes]
         return []
+
+    def set_class_teacher_address(self, address, Class, Teacher):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        update_query = "UPDATE Class_Teachers SET Host_Address=INET_ATON(%s) WHERE Code=%s AND Teacher=%s"
+        cursor.execute(update_query, (address, Class.Code, Teacher.Username))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'

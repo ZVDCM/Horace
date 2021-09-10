@@ -85,20 +85,19 @@ class Attendance:
 
 
 class Class:
-    def __init__(self, ID, Code, Name, HostAddress, Start, End):
+    def __init__(self, ID, Code, Name, Start, End):
         self.ID = ID
         self.Code = Code
         self.Name = Name
-        self.HostAddress = HostAddress
         self._Start = Start
         self._End = End
 
     def __str__(self):
-        return f"Class(ID={self.ID}, Name={self.Name}, HostAddress={self.HostAddress}, Start={self._Start}, End={self._End})"
+        return f"Class(ID={self.ID}, Name={self.Name}, Start={self._Start}, End={self._End})"
 
     @staticmethod
     def get_headers():
-        return ("ID", "Code", "Name", "HostAddress", "Start", "End")
+        return ("ID", "Code", "Name", "Start", "End")
     
     @property
     def Start(self):
@@ -109,7 +108,7 @@ class Class:
         return [int(i) for i in str(self._End).split(':')]
 
     def get_values(self):
-        return (self.ID, self.Code, self.Name, self.HostAddress, self._Start, self._End)
+        return (self.ID, self.Code, self.Name, self._Start, self._End)
 
 class ClassTeacher:
     def __init__(self, ID, Code, Teacher):

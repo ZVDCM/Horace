@@ -94,7 +94,7 @@ class ClassMember:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT * FROM Class_Teachers WHERE Code=%s ORDER BY ID"
+        select_query = "SELECT ID, Code, Teacher FROM Class_Teachers WHERE Code=%s ORDER BY ID"
         cursor.execute(select_query, (Class.Code,))
 
         class_teachers = cursor.fetchall()

@@ -21,6 +21,8 @@ class Lobby:
         self.View = Controller.View.Lobby
         self.Controller = Controller
 
+        self.TargetClass = None
+
         self.connect_signals()
         self.get_classes()
 
@@ -31,6 +33,8 @@ class Lobby:
         self.get_all_class.started.connect(self.View.ClassLoadingScreen.run)
         self.get_all_class.operation.connect(self.set_classes)
         self.get_all_class.finished.connect(self.View.ClassLoadingScreen.hide)
+
+        self.get_class_address = Get(self.Model.get_class_address)
 
     def get_classes(self):
         self.get_all_class.val = self.Controller.User,
@@ -47,6 +51,12 @@ class Lobby:
             self.View.add_class_item(_class)
 
     def class_item_clicked(self, Class):
+        self.get_class_address.val = Class, self.Controller.User
+        self.get_class_address.operation.connect(self.init_meeting)
+        self.get_class_address.operation.connect(self.View.close)
+        self.get_class_address.start()
+
+    def init_meeting(self, Class):
         self.Controller.Model.init_meeting()
         self.Controller.View.init_meeting()
         self.Controller.init_meeting(Class)

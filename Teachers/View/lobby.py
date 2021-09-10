@@ -25,7 +25,7 @@ class Lobby(QtWidgets.QMainWindow):
     def run(self):
         self.raise_()
         self.show()
-        self.title_bar.btn_maximize_restore.click()
+        # self.title_bar.btn_maximize_restore.click()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")

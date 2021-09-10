@@ -3,6 +3,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow
 import socket
 
+
 class Get(QtCore.QThread):
     operation = QtCore.pyqtSignal(object)
 
@@ -34,6 +35,7 @@ class Operation(QtCore.QThread):
             self.error.emit(res)
         self.quit()
 
+
 class Lobby:
 
     def __init__(self, Controller):
@@ -56,11 +58,13 @@ class Lobby:
         self.get_all_class.operation.connect(self.set_classes)
         self.get_all_class.finished.connect(self.View.ClassLoadingScreen.hide)
 
+        self.set_class_teacher_address = Operation(self.Model.set_class_teacher_address)
+
     def get_classes(self):
         self.get_all_class.val = self.Controller.User,
         self.get_all_class.finished.connect(self.set_classes_operation)
         self.get_all_class.start()
-    
+
     def set_classes_operation(self):
         for index in range(self.View.flow_layout.count()):
             target_class_item = self.View.flow_layout.itemAt(index).widget()
@@ -71,10 +75,10 @@ class Lobby:
             self.View.add_class_item(_class)
 
     def class_item_clicked(self, Class):
-        Class.HostAddress = self.get_local_ip()
-        self.Controller.Model.init_meeting()
-        self.Controller.View.init_meeting()
-        self.Controller.init_meeting(Class)
+        self.set_class_teacher_address.val = self.get_local_ip(), Class, self.Controller.User
+        self.set_class_teacher_address.operation.connect(lambda: self.init_meeting(Class))
+        self.set_class_teacher_address.operation.connect(self.View.close)
+        self.set_class_teacher_address.start()
 
     @staticmethod
     def get_local_ip():
@@ -92,3 +96,8 @@ class Lobby:
         self.View.ClassLoadingScreen.resize_loader()
         self.View.AttendanceLoadingScreen.resize_loader()
         super(QMainWindow, self.View).resizeEvent(event)
+
+    def init_meeting(self, Class):
+        self.Controller.Model.init_meeting()
+        self.Controller.View.init_meeting()
+        self.Controller.init_meeting(Class)
