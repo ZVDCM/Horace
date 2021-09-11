@@ -5,6 +5,7 @@ from Teachers.Misc.Functions.relative_path import relative_path
 from Teachers.Misc.Widgets.meeting_title_bar import TitleBar
 from Teachers.Misc.Widgets.custom_list_view import ListView
 from Teachers.Misc.Widgets.flow_layout import FlowLayout
+from Teachers.Misc.Widgets.message_sent import MessageSent
 
 class Meeting(QtWidgets.QMainWindow):
 
@@ -52,14 +53,12 @@ class Meeting(QtWidgets.QMainWindow):
                                          "\n"
                                          "QScrollBar:vertical{\n"
                                          "    width: 18px;\n"
-                                         "    margin: 0px 3px 0px 7px;\n"
-                                         "    border-radius: 5px;\n"
+                                         "    margin-left: 10px;\n"
                                          "}\n"
                                          "\n"
                                          "QScrollBar::handle:vertical{\n"
                                          "    background-color: #97b9f4;    \n"
                                          "    min-height: 5px;\n"
-                                         "     border-radius: 4px;\n"
                                          "}\n"
                                          "\n"
                                          "QScrollBar::sub-line:vertical{\n"
@@ -74,16 +73,10 @@ class Meeting(QtWidgets.QMainWindow):
                                          "\n"
                                          "QScrollBar::add-page:vertical{\n"
                                          "    background: #0b1a30;\n"
-                                         "    border-bottom-left-radius: 4px;\n"
-                                         "    border-bottom-right-radius: 4px;\n"
-                                         "    margin-top: -3px;\n"
                                          " }\n"
                                          "\n"
                                          "QScrollBar::sub-page:vertical{\n"
                                          "      background: #0b1a30;\n"
-                                         "    border-top-left-radius: 4px;\n"
-                                         "    border-top-right-radius: 4px;\n"
-                                         "    margin-bottom: -3px;\n"
                                          "}")
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -302,41 +295,7 @@ class Meeting(QtWidgets.QMainWindow):
                                     "  background-color: #072f49;\n"
                                     "}\n"
                                     "\n"
-                                    "QScrollBar:vertical{\n"
-                                    "    width: 18px;\n"
-                                    "    margin: 0px 3px 0px 7px;\n"
-                                    "    border-radius: 5px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::handle:vertical{\n"
-                                    "    background-color: #97b9f4;    \n"
-                                    "    min-height: 5px;\n"
-                                    "     border-radius: 4px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::sub-line:vertical{\n"
-                                    "     height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-line:vertical{\n"
-                                    "        height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-page:vertical{\n"
-                                    "    background: #0b1a30;\n"
-                                    "    border-bottom-left-radius: 4px;\n"
-                                    "    border-bottom-right-radius: 4px;\n"
-                                    "    margin-top: -3px;\n"
-                                    " }\n"
-                                    "\n"
-                                    "QScrollBar::sub-page:vertical{\n"
-                                    "      background: #0b1a30;\n"
-                                    "    border-top-left-radius: 4px;\n"
-                                    "    border-top-right-radius: 4px;\n"
-                                    "    margin-bottom: -3px;\n"
-                                    "}")
+                                    )
         self.sw_right.setObjectName("sw_right")
         self.page_5 = QtWidgets.QWidget()
         self.page_5.setObjectName("page_5")
@@ -494,15 +453,24 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout_4.addWidget(self.btn_close_chat)
         self.verticalLayout_4.addLayout(self.horizontalLayout_4)
         self.sa_chat = QtWidgets.QScrollArea(self.page_3)
-        self.sa_chat.setStyleSheet("border-radius: 5px")
+        self.sa_chat.setStyleSheet("background: #0B1A30")
         self.sa_chat.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.sa_chat.setWidgetResizable(True)
         self.sa_chat.setObjectName("sa_chat")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 270, 394))
-        self.scrollAreaWidgetContents.setStyleSheet("background: #0B1A30")
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.sa_chat.setWidget(self.scrollAreaWidgetContents)
+
+        self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_10.setContentsMargins(8, 15, 8, 15)
+        self.verticalLayout_10.setSpacing(15)
+        self.verticalLayout_10.setObjectName("verticalLayout_10")
+
+        spacerItem6 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_10.addItem(spacerItem6)
+
         self.verticalLayout_4.addWidget(self.sa_chat)
         self.lbl_reply = QtWidgets.QLabel(self.page_3)
         font = QtGui.QFont()
@@ -853,3 +821,8 @@ class Meeting(QtWidgets.QMainWindow):
                 interactor.deactivate()
                 break
         self.sw_right.hide()
+
+    def display_message_sent(self, text):
+        message_sent = MessageSent(self, text)
+        self.verticalLayout_10.insertWidget(self.verticalLayout_10.count()-1, message_sent)
+        self.txt_message.clear()

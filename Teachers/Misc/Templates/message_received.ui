@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>169</width>
+    <width>220</width>
     <height>54</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>220</width>
+    <height>16777215</height>
+   </size>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -64,7 +70,13 @@
         <string notr="true">border-radius: 10px; background-color: #0e4884; padding: 10px; color: white;</string>
        </property>
        <property name="text">
-        <string>Hello</string>
+        <string>dsal,dlas,das,dsaopdkasopkdopaksdoksaokdoaskd</string>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

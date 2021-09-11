@@ -5,6 +5,7 @@ from Students.Misc.Functions.relative_path import relative_path
 from Students.Misc.Widgets.meeting_title_bar import TitleBar
 from Students.Misc.Widgets.custom_list_view import ListView
 from Students.Misc.Widgets.flow_layout import FlowLayout
+from Students.Misc.Widgets.message_sent import MessageSent
 
 
 class Meeting(QtWidgets.QMainWindow):
@@ -180,14 +181,12 @@ class Meeting(QtWidgets.QMainWindow):
                                     "\n"
                                     "QScrollBar:vertical{\n"
                                     "    width: 18px;\n"
-                                    "    margin: 0px 3px 0px 7px;\n"
-                                    "    border-radius: 5px;\n"
+                                    "    margin-left: 10px;\n"
                                     "}\n"
                                     "\n"
                                     "QScrollBar::handle:vertical{\n"
                                     "    background-color: #97b9f4;    \n"
                                     "    min-height: 5px;\n"
-                                    "     border-radius: 4px;\n"
                                     "}\n"
                                     "\n"
                                     "QScrollBar::sub-line:vertical{\n"
@@ -202,16 +201,10 @@ class Meeting(QtWidgets.QMainWindow):
                                     "\n"
                                     "QScrollBar::add-page:vertical{\n"
                                     "    background: #0b1a30;\n"
-                                    "    border-bottom-left-radius: 4px;\n"
-                                    "    border-bottom-right-radius: 4px;\n"
-                                    "    margin-top: -3px;\n"
                                     " }\n"
                                     "\n"
                                     "QScrollBar::sub-page:vertical{\n"
                                     "      background: #0b1a30;\n"
-                                    "    border-top-left-radius: 4px;\n"
-                                    "    border-top-right-radius: 4px;\n"
-                                    "    margin-bottom: -3px;\n"
                                     "}")
         self.sw_right.setObjectName("sw_right")
         self.page_8 = QtWidgets.QWidget()
@@ -370,17 +363,26 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout_15.addWidget(self.btn_close_chat)
         self.verticalLayout_11.addLayout(self.horizontalLayout_15)
         self.sa_chat = QtWidgets.QScrollArea(self.page_9)
-        self.sa_chat.setStyleSheet("border-radius: 5px")
+        self.sa_chat.setStyleSheet("background: #0B1A30")
         self.sa_chat.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.sa_chat.setWidgetResizable(True)
         self.sa_chat.setObjectName("sa_chat")
         self.scrollAreaWidgetContents_4 = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_4.setGeometry(
             QtCore.QRect(0, 0, 270, 307))
-        self.scrollAreaWidgetContents_4.setStyleSheet("background: #0B1A30")
         self.scrollAreaWidgetContents_4.setObjectName(
             "scrollAreaWidgetContents_4")
         self.sa_chat.setWidget(self.scrollAreaWidgetContents_4)
+
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_4)
+        self.verticalLayout_6.setContentsMargins(8, 15, 8, 15)
+        self.verticalLayout_6.setSpacing(15)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+
+        spacerItem6 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_6.addItem(spacerItem6)
+
         self.verticalLayout_11.addWidget(self.sa_chat)
         self.txt_message = QtWidgets.QLineEdit(self.page_9)
         self.txt_message.setMinimumSize(QtCore.QSize(0, 30))
@@ -489,3 +491,8 @@ class Meeting(QtWidgets.QMainWindow):
                 interactor.deactivate()
                 break
         self.sw_right.hide()
+
+    def add_message_sent(self):
+        message_sent = MessageSent(self, self.txt_message.text())
+        self.verticalLayout_6.insertWidget(self.verticalLayout_6.count()-1, message_sent)
+        self.txt_message.clear()

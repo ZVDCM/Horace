@@ -3,8 +3,17 @@ from Students.Misc.Functions.messages import *
 import socket
 import select
 import queue
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QThread, pyqtSignal
 
+class Operation(QThread):
+    operation = pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+
+    def run(self):
+        self.operation.emit()
+        self.quit()
 
 class Host:
 
@@ -18,10 +27,17 @@ class Host:
     outputs = []
     clients = {}
 
-    def __init__(self, Class):
+    def __init__(self, Class, Model, View, Controller):
         self.Class = Class
+        self.Model = Model
+        self.View = View
+        self.Controller = Controller
+        self.connect_signals()
         self.init_host()
 
+    def connect_signals(self):
+        self.View.txt_message.returnPressed.connect(self.send_message)
+    
     def init_host(self):
         self.host = socket.socket()
         self.host.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -109,3 +125,8 @@ class Host:
     def set_message(self, type, message):
         message = serialize_message(normalize_message(type, message))
         self.messages.put(message)
+
+    def send_message(self):
+        text = self.View.txt_message.text()
+        self.set_message('msg', text)
+        self.View.display_message_sent(text)

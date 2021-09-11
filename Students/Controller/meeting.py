@@ -55,6 +55,9 @@ class Meeting:
 
         self.View.btn_leave.clicked.connect(self.list_all_threads)
 
+        self.View.txt_message.returnPressed.connect(self.View.add_message_sent)
+
+
     def change_right_page(self, index):
         if self.View.sw_right.isHidden():
             self.View.sw_right.show()
@@ -70,3 +73,4 @@ class Meeting:
     def list_all_threads(self):
         for i in threading.enumerate():
             print(i)
+    

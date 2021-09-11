@@ -35,6 +35,32 @@ class Connect(QThread):
         self.quit()
 
 
+class Receive(QThread):
+
+    def __init__(self, Client):
+        super().__init__()
+        self.Client = Client
+        self.client_socket = Client.client
+        self.Controller = Client.Controller
+
+    def run(self):
+        while True:
+            message = receive_message(self.client_socket)
+
+            if not message:
+                break
+            if message['type'] == 'cmd':
+                if message['data'] == 'connect':
+                    self.Client.end_loading.start()
+                    self.Client.set_message(
+                        'name', self.Controller.User.Username)
+                    self.Client.send()
+
+            elif message['type'] == 'msg':
+                print(message['data'])
+
+        self.quit()
+
 class Client:
 
     PORT = 43200
@@ -67,24 +93,9 @@ class Client:
         self.set_message('section', self.Class.Code)
         self.send()
 
-        receive_thread = threading.Thread(
-            target=self.receive, daemon=True, name="Receive")
-        receive_thread.start()
-
-    def receive(self):
-        while True:
-            message = receive_message(self.client)
-
-            if not message:
-                break
-            if message['type'] == 'cmd':
-                if message['data'] == 'connect':
-                    self.end_loading.start()
-                    self.set_message('name', self.Controller.User.Username)
-                    self.send()
-
-        self.client.close()
-        self.init_connection()
+        self.Receive = Receive(self)
+        self.Receive.finished.connect(self.init_connection)
+        self.Receive.start()
 
     def send(self):
         message = self.messages.get()

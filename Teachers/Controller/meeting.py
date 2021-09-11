@@ -42,7 +42,7 @@ class Meeting:
         self.Controller = Controller
         self.Class = Class
 
-        self.Host = Host(self.Class)
+        self.Host = Host(self.Class, self.Model, self.View, self.Controller)
         self.connect_signals()
         self.View.run()
 
@@ -57,6 +57,7 @@ class Meeting:
             close_button.clicked.connect(self.View.close_right)
 
         self.View.btn_leave.clicked.connect(self.list_all_threads)
+
 
     def change_left_page(self, index):
         for screen in self.View.screens:
