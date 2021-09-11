@@ -56,7 +56,7 @@ class Meeting:
         for close_button in self.View.close_buttons:
             close_button.clicked.connect(self.View.close_right)
 
-        self.View.btn_leave.clicked.connect(self.Host.list_threads)
+        self.View.btn_leave.clicked.connect(self.list_all_threads)
 
     def change_left_page(self, index):
         for screen in self.View.screens:
@@ -78,3 +78,7 @@ class Meeting:
 
         self.View.interactors[index].activate()
         self.View.sw_right.setCurrentIndex(index)
+
+    def list_all_threads(self):
+        for i in threading.enumerate():
+            print(i)

@@ -4,17 +4,42 @@ import zlib
 HEADER_LENGTH = 10
 FORMAT = "utf-8"
 
-def receive_message(socket):
+
+def serialize_message(message):
+    data = zlib.compress(pickle.dumps(message, pickle.HIGHEST_PROTOCOL), 9)
+    return f"{len(data):<{HEADER_LENGTH}}".encode(FORMAT) + data
+
+
+def normalize_message(type, message, target=None):
+
+    message = {
+        "type": type,
+        "data": message,
+        "target": target
+    }
+
+    return message
+
+
+def receive_message(client_socket):
     try:
-        message_header = socket.recv(HEADER_LENGTH)
+        message_header = client_socket.recv(HEADER_LENGTH)
+
+        if not len(message_header):
+            raise Exception
 
         message_length = int(message_header.decode(FORMAT))
-        message_data = socket.recv(message_length)
+        message_data = client_socket.recv(message_length)
 
-        while len(message_data) != message_length:
+        while message_length != len(message_data):
             remainder = message_length - len(message_data)
-            message_data += remainder 
+            message_data += client_socket.recv(remainder)
 
         return pickle.loads(zlib.decompress(message_data))
+
     except:
         return False
+
+
+def send_message(message, client_socket):
+    client_socket.send(message)

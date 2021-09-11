@@ -14,6 +14,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.View = View
         self.setupUi(self)
 
+        self.LoadingScreen = LoadingScreen(self.widget, relative_path('Students', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         self.interactors = [self.btn_student_list, self.btn_chat]
         self.close_buttons = [self.btn_close_student_list, self.btn_close_chat]
 

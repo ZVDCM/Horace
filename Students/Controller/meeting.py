@@ -1,6 +1,6 @@
 from PyQt5 import QtCore
 from Students.Controller.client import Client
-
+import threading
 
 class Get(QtCore.QThread):
     operation = QtCore.pyqtSignal(object)
@@ -42,9 +42,7 @@ class Meeting:
         self.Controller = Controller
         self.Class = Class
 
-        print(Class)
-        
-        self.Client = Client(self.Class)
+        self.Client = Client(self.Class, self.Model, self.View, self.Controller)
         self.connect_signals()
         self.View.run()
 
@@ -54,6 +52,8 @@ class Meeting:
 
         for close_button in self.View.close_buttons:
             close_button.clicked.connect(self.View.close_right)
+
+        self.View.btn_leave.clicked.connect(self.list_all_threads)
 
     def change_right_page(self, index):
         if self.View.sw_right.isHidden():
@@ -66,3 +66,7 @@ class Meeting:
 
         self.View.interactors[index].activate()
         self.View.sw_right.setCurrentIndex(index)
+
+    def list_all_threads(self):
+        for i in threading.enumerate():
+            print(i)

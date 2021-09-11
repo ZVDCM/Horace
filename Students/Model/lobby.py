@@ -28,12 +28,12 @@ class Lobby:
             return [self.Class(*_class) for _class in classes]
         return []
 
-    def get_class_address(self, Class, Student):
+    def get_class_section_address(self, Class, Student):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
         select_query = """
-            SELECT * FROM class_teachers WHERE Code IN (
+            SELECT ID, Code, Teacher, INET_NTOA(Host_Address) FROM class_teachers WHERE Code IN (
                 SELECT Code FROM Class_Sections WHERE Code=%s AND Section IN (
                         SELECT Section From Section_Students WHERE Student=%s
                     )
