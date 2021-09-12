@@ -36,7 +36,7 @@ class MessageReceived(QtWidgets.QWidget):
         font.setFamily("Barlow")
         font.setPointSize(10)
         self.textEdit.setFont(font)
-        self.textEdit.setStyleSheet("border-radius: 10px; background-color: #0e4884; padding: 10px; color: white;")
+        self.textEdit.setStyleSheet("border-radius: 5px; background-color: #0e4884; padding: 10px; color: white;")
         self.textEdit.setFrameShadow(QtWidgets.QFrame.Plain)
         self.textEdit.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.textEdit.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)

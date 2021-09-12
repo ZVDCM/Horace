@@ -1,4 +1,8 @@
-from os import read
+from Teachers.Misc.Widgets.file_message_sent import FileMessageSent
+from Teachers.Misc.Widgets.file_message_received import FileMessageReceived as _FileMessageReceived
+import os
+from PyQt5.QtWidgets import QFileDialog
+from Teachers.Misc.Functions.is_blank import is_blank
 import threading
 from Teachers.Misc.Functions.messages import *
 import socket
@@ -10,8 +14,11 @@ from Teachers.Misc.Widgets.message_received import MessageReceived as _MessageRe
 
 class NotMessage(Exception):
     pass
+
+
 class FromDifferentClass(Exception):
     pass
+
 
 class MessageReceived(QThread):
     operation = pyqtSignal(str, str)
@@ -23,6 +30,20 @@ class MessageReceived(QThread):
 
     def run(self):
         self.operation.emit(self.message, self.sender)
+        self.quit()
+
+
+class FileMessageReceived(QThread):
+    operation = pyqtSignal(str, str, bytearray)
+
+    def __init__(self):
+        super().__init__()
+        self.sender = None
+        self.filename = None
+        self.data = None
+
+    def run(self):
+        self.operation.emit(self.sender, self.filename, self.data)
         self.quit()
 
 
@@ -60,11 +81,17 @@ class Host:
 
     def connect_signals(self):
         self.View.txt_message.returnPressed.connect(self.send_message)
+        self.View.btn_send.clicked.connect(self.send_message)
 
         self.MessageReceived = MessageReceived()
         self.MessageReceived.operation.connect(self.display_message_received)
 
+        self.FileMessageReceived = FileMessageReceived()
+        self.FileMessageReceived.operation.connect(self.display_file_message_received)
+
         self.View.btn_close_reply.clicked.connect(self.hide_reply)
+
+        self.View.btn_file.clicked.connect(self.get_file)
 
     def init_host(self):
         self.host = socket.socket()
@@ -73,7 +100,8 @@ class Host:
         self.host.listen()
         self.inputs.append(self.host)
 
-        self.handler_thread = threading.Thread(target=self.handler, daemon=True, name='ChatHandler')
+        self.handler_thread = threading.Thread(
+            target=self.handler, daemon=True, name='ChatHandler')
         self.handler_thread.start()
 
     def handler(self):
@@ -121,7 +149,9 @@ class Host:
                 if message['data'] == self.Class.Code:
                     self.clients_name[readable] = message['sender']
                     self.clients_socket[message['sender']] = readable
-                    self.set_message('cmd', 'connect', target=message['sender'])
+                    message = normalize_message(
+                        'cmd', 'connect', target=message['sender'])
+                    self.set_message(message)
                 else:
                     raise FromDifferentClass
 
@@ -129,6 +159,12 @@ class Host:
                 self.MessageReceived.message = message['data']
                 self.MessageReceived.sender = message['sender']
                 self.MessageReceived.start()
+
+            elif message['type'] == 'fls':
+                self.FileMessageReceived.sender = message['sender']
+                self.FileMessageReceived.filename = message['data']
+                self.FileMessageReceived.data = message['file']
+                self.FileMessageReceived.start()
 
         except (NotMessage, FromDifferentClass):
             self.inputs.remove(readable)
@@ -151,36 +187,38 @@ class Host:
         if exceptional in self.outputs:
             self.outputs.remove(exceptional)
         if exceptional in self.clients_name.keys():
-                del self.clients_name[exceptional]
+            del self.clients_name[exceptional]
         if exceptional in self.clients_socket.keys():
             del self.clients_socket[exceptional]
         exceptional.close()
 
-    def set_message(self, type, message, target=None):
-        message = normalize_message(type, message, target=target, sender=self.Sender)
-        if target:
-            self.messages[self.clients_socket[target]].put(message)
+    def set_message(self, message):
+        message['sender'] = self.Sender
+        if message['target']:
+            self.messages[self.clients_socket[message['target']]].put(message)
         else:
             for client in self.messages.keys():
                 self.messages[client].put(message)
 
     def send_message(self):
         text = self.View.txt_message.text()
+        if is_blank(text):
+            return
+        message = normalize_message('msg', text)
         if self.View.w_reply.isVisible():
             target = self.View.lbl_reply.text().removeprefix('Replying to ')
-            self.set_message('msg', text, target=target)
-        else:
-            self.set_message('msg', text)
+            message['target'] = target
+        self.set_message(message)
         self.View.display_message_sent(text)
 
     def display_message_received(self, text, sender):
         message_received = _MessageReceived(self.View, text, sender)
-        message_received.operation.connect(self.target_message)
+        message_received.operation.connect(self.target_sender_message)
         self.View.verticalLayout_10.insertWidget(
             self.View.verticalLayout_10.count()-1, message_received)
         self.View.w_reply.hide()
 
-    def target_message(self, sender):
+    def target_sender_message(self, sender):
         self.target = sender
         self.View.lbl_reply.setText(f"Replying to {sender}")
         self.View.w_reply.show()
@@ -188,3 +226,48 @@ class Host:
     def hide_reply(self):
         self.target = None
         self.View.w_reply.hide()
+
+    def get_file(self):
+        response = QFileDialog.getOpenFileName(
+            parent=self.View,
+            caption="Select a file",
+            directory=os.path.expanduser('~/Documents'),
+        )
+
+        if response[0]:
+            filename = response[0].split("/")[-1]
+            size = os.path.getsize(response[0])
+
+            if size > 131_072_000:
+                print('file too large')
+                return
+
+            with open(response[0], "rb") as file:
+                file = bytearray(file.read())
+
+            message = normalize_message("fls", filename, file=file)
+            if self.View.w_reply.isVisible():
+                target = self.View.lbl_reply.text().removeprefix('Replying to ')
+                message['target'] = target
+            self.set_message(message)
+            self.display_file_message_sent(filename, file)
+
+    def display_file_message_sent(self, filename, data):
+        file_message_sent = FileMessageSent(self.View, filename, data)
+        file_message_sent.operation.connect(self.download_file)
+        self.View.verticalLayout_10.insertWidget(
+            self.View.verticalLayout_10.count()-1, file_message_sent)
+
+    def download_file(self, data, filename):
+        path = os.path.join(os.path.expanduser('~/Documents'), filename)
+        ext = filename.split('.')[-1]
+        path = QFileDialog.getSaveFileName(
+            self.View, 'Save File', path, ext)[0]
+        with open(path, 'wb') as file:
+            file.write(data)
+
+    def display_file_message_received(self, sender, filename, data):
+        file_message_received = _FileMessageReceived(self.View, sender, filename, data)
+        file_message_received.download.connect(self.download_file)
+        file_message_received.reply.connect(self.target_sender_message)
+        self.View.verticalLayout_10.insertWidget(self.View.verticalLayout_10.count()-1, file_message_received)

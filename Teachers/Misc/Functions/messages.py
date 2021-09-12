@@ -9,13 +9,16 @@ def serialize_message(message):
     return f"{len(data):<{HEADER_LENGTH}}".encode(FORMAT) + data
 
 
-def normalize_message(type, message, target=None, sender=None):
+def normalize_message(type, message, target=None, sender=None, file=None):
     message = {
         "type": type,
         "data": message,
         "target": target,
         "sender": sender
     }
+
+    if type == 'fls':
+        message['file'] = file
 
     return message
 
