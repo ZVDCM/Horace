@@ -13,7 +13,7 @@ class MessageSent(QtWidgets.QWidget):
         Form.setObjectName("Form")
         Form.resize(400, 89)
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
-        self.verticalLayout.setContentsMargins(15, 0, 0, 0)
+        self.verticalLayout.setContentsMargins(15, 15, 0, 0)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
 

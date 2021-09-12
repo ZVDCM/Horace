@@ -6,6 +6,18 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from Students.Misc.Functions.messages import *
 
 
+class MessageReceived(QThread):
+    operation = pyqtSignal(str, str)
+
+    def __init__(self):
+        super().__init__()
+        self.message = None
+        self.sender = None
+
+    def run(self):
+        self.operation.emit(self.message, self.sender)
+        self.quit()
+
 class Operation(QThread):
     operation = pyqtSignal()
 
@@ -41,7 +53,6 @@ class Receive(QThread):
         super().__init__()
         self.Client = Client
         self.client_socket = Client.client
-        self.Controller = Client.Controller
 
     def run(self):
         while True:
@@ -49,37 +60,43 @@ class Receive(QThread):
 
             if not message:
                 break
+            
             if message['type'] == 'cmd':
                 if message['data'] == 'connect':
-                    self.Client.end_loading.start()
-                    self.Client.set_message(
-                        'name', self.Controller.User.Username)
-                    self.Client.send()
+                    self.Client.EndLoading.start()
+                    self.Client.send('name', self.Client.Sender)
 
             elif message['type'] == 'msg':
-                print(message['data'])
+                self.Client.MessageReceived.message = message['data']
+                self.Client.MessageReceived.sender = message['sender']
+                self.Client.MessageReceived.start()
 
         self.quit()
 
 class Client:
 
     PORT = 43200
-    messages = queue.Queue()
 
     def __init__(self, Class, Model, View, Controller):
         self.Class = Class
         self.Model = Model
         self.View = View
         self.Controller = Controller
+        self.Sender = Controller.User.Username
         self.connect_signals()
         self.init_connection()
 
     def connect_signals(self):
-        self.start_loading = Operation()
-        self.start_loading.operation.connect(self.View.LoadingScreen.run)
+        self.StartLoading = Operation()
+        self.StartLoading.operation.connect(self.View.LoadingScreen.run)
 
-        self.end_loading = Operation()
-        self.end_loading.operation.connect(self.View.LoadingScreen.hide)
+        self.EndLoading = Operation()
+        self.EndLoading.operation.connect(self.View.LoadingScreen.hide)
+
+        self.MessageReceived = MessageReceived()
+        self.MessageReceived.operation.connect(self.View.display_message_received)
+
+        self.View.txt_message.returnPressed.connect(self.send_message)
 
     def init_connection(self):
         self.client = socket.socket()
@@ -90,17 +107,17 @@ class Client:
         self.connect_handler.start()
 
     def start(self):
-        self.set_message('section', self.Class.Code)
-        self.send()
+        self.send('section', self.Class.Code)
 
         self.Receive = Receive(self)
         self.Receive.finished.connect(self.init_connection)
         self.Receive.start()
 
-    def send(self):
-        message = self.messages.get()
+    def send(self, type, message):
+        message = serialize_message(normalize_message(type, message, sender=self.Sender))
         send_message(message, self.client)
 
-    def set_message(self, type, message):
-        message = serialize_message(normalize_message(type, message))
-        self.messages.put(message)
+    def send_message(self):
+        text = self.View.txt_message.text()
+        self.send('msg', text)
+        self.View.display_message_sent(text)

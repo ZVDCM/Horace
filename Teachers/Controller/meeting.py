@@ -58,7 +58,6 @@ class Meeting:
 
         self.View.btn_leave.clicked.connect(self.list_all_threads)
 
-
     def change_left_page(self, index):
         for screen in self.View.screens:
             if screen.is_active:

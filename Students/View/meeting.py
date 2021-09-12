@@ -1,3 +1,4 @@
+from Students.Misc.Widgets.teacher_message_received import MessageReceived
 from Students.Misc.Widgets.custom_button import Button
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Students.Misc.Widgets.loading_screen import LoadingScreen
@@ -179,14 +180,19 @@ class Meeting(QtWidgets.QMainWindow):
                                     "  background-color: #072f49;\n"
                                     "}\n"
                                     "\n"
+                                    "QScrollArea{\n"
+                                    "    border: 1px solid #0b1a30;\n"
+                                    "    border-radius: 5px\n"
+                                    "}\n"
                                     "QScrollBar:vertical{\n"
-                                    "    width: 18px;\n"
-                                    "    margin-left: 10px;\n"
+                                    "    width: 12px;\n"
                                     "}\n"
                                     "\n"
                                     "QScrollBar::handle:vertical{\n"
                                     "    background-color: #97b9f4;    \n"
                                     "    min-height: 5px;\n"
+                                    "    border-radius: 4px;\n"
+                                    "    margin: 2px;\n\n"
                                     "}\n"
                                     "\n"
                                     "QScrollBar::sub-line:vertical{\n"
@@ -492,7 +498,12 @@ class Meeting(QtWidgets.QMainWindow):
                 break
         self.sw_right.hide()
 
-    def add_message_sent(self):
-        message_sent = MessageSent(self, self.txt_message.text())
+    def display_message_sent(self, text):
+        message_sent = MessageSent(self, text)
         self.verticalLayout_6.insertWidget(self.verticalLayout_6.count()-1, message_sent)
         self.txt_message.clear()
+
+    @QtCore.pyqtSlot(str, str)
+    def display_message_received(self, text, sender):
+        message_received = MessageReceived(self, text, sender)
+        self.verticalLayout_6.insertWidget(self.verticalLayout_6.count()-1, message_received)

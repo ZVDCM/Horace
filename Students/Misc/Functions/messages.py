@@ -10,12 +10,13 @@ def serialize_message(message):
     return f"{len(data):<{HEADER_LENGTH}}".encode(FORMAT) + data
 
 
-def normalize_message(type, message, target=None):
+def normalize_message(type, message, target=None, sender=None):
 
     message = {
         "type": type,
         "data": message,
-        "target": target
+        "target": target,
+        "sender": sender,
     }
 
     return message

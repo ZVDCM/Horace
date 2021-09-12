@@ -51,14 +51,19 @@ class Meeting(QtWidgets.QMainWindow):
                                          "  background-color: #072f49;\n"
                                          "}\n"
                                          "\n"
+                                         "QScrollArea{\n"
+                                         "    border: 1px solid #0b1a30;\n"
+                                         "    border-radius: 5px\n"
+                                         "}\n"
                                          "QScrollBar:vertical{\n"
-                                         "    width: 18px;\n"
-                                         "    margin-left: 10px;\n"
+                                         "    width: 12px;\n"
                                          "}\n"
                                          "\n"
                                          "QScrollBar::handle:vertical{\n"
                                          "    background-color: #97b9f4;    \n"
                                          "    min-height: 5px;\n"
+                                         "    border-radius: 4px;\n"
+                                         "    margin: 2px;\n"
                                          "}\n"
                                          "\n"
                                          "QScrollBar::sub-line:vertical{\n"
@@ -470,8 +475,15 @@ class Meeting(QtWidgets.QMainWindow):
         spacerItem6 = QtWidgets.QSpacerItem(
             20, 40, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_10.addItem(spacerItem6)
-
         self.verticalLayout_4.addWidget(self.sa_chat)
+
+        self.w_reply = QtWidgets.QWidget()
+        self.w_reply.setObjectName("w_reply")
+
+        self.horizontalLayout_100 = QtWidgets.QHBoxLayout(self.w_reply)
+        self.horizontalLayout_100.setContentsMargins(0,0,0,0)
+        self.horizontalLayout_100.setSpacing(0)
+        self.horizontalLayout_100.setObjectName("horizontalLayout_100")
         self.lbl_reply = QtWidgets.QLabel(self.page_3)
         font = QtGui.QFont()
         font.setFamily("Barlow")
@@ -480,7 +492,42 @@ class Meeting(QtWidgets.QMainWindow):
         self.lbl_reply.setStyleSheet("color: gray")
         self.lbl_reply.setIndent(1)
         self.lbl_reply.setObjectName("lbl_reply")
-        self.verticalLayout_4.addWidget(self.lbl_reply)
+        self.horizontalLayout_100.addWidget(self.lbl_reply)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_100.addItem(spacerItem2)
+        self.btn_close_reply = QtWidgets.QPushButton(self.page_3)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_close_reply.sizePolicy().hasHeightForWidth())
+        self.btn_close_reply.setSizePolicy(sizePolicy)
+        self.btn_close_reply.setMinimumSize(QtCore.QSize(20, 20))
+        self.btn_close_reply.setMaximumSize(QtCore.QSize(20, 20))
+        self.btn_close_reply.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_close_reply.setStyleSheet("QPushButton{\n"
+                                          "    border: none;\n"
+                                          "    border-radius: none;\n"
+                                          "    background: none;\n"
+                                          "    background-repeat: none;\n"
+                                          f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close.png')});\n"
+                                          "    background-position: center center;\n"
+                                          "}\n"
+                                          "\n"
+                                          "QPushButton:hover{\n"
+                                          "    background: none;\n"
+                                          "    background-repeat: none;\n"
+                                          f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close_2.png')});\n"
+                                          "    background-position: center center;\n"
+                                          "}")
+        self.btn_close_reply.setObjectName("btn_close_reply")
+        self.horizontalLayout_100.addWidget(self.btn_close_reply)
+        self.verticalLayout_4.addWidget(self.w_reply)
+
+
         self.txt_message = QtWidgets.QLineEdit(self.page_3)
         self.txt_message.setMinimumSize(QtCore.QSize(0, 30))
         font = QtGui.QFont()
@@ -799,7 +846,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.sw_right.setCurrentIndex(0)
         self.sw_right.hide()
         self.w_url_btn.hide()
-        self.lbl_reply.hide()
+        self.w_reply.hide()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -826,3 +873,6 @@ class Meeting(QtWidgets.QMainWindow):
         message_sent = MessageSent(self, text)
         self.verticalLayout_10.insertWidget(self.verticalLayout_10.count()-1, message_sent)
         self.txt_message.clear()
+
+    def hide_reply(self):
+        self.w_reply.hide()
