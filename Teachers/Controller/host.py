@@ -1,5 +1,6 @@
 from Teachers.Misc.Widgets.file_message_sent import FileMessageSent
 from Teachers.Misc.Widgets.file_message_received import FileMessageReceived as _FileMessageReceived
+from Teachers.Misc.Widgets.replied_file_message_sent import RepliedFileMessageSent
 import os
 from PyQt5.QtWidgets import QFileDialog
 from Teachers.Misc.Functions.is_blank import is_blank
@@ -209,7 +210,10 @@ class Host:
             target = self.View.lbl_reply.text().removeprefix('Replying to ')
             message['target'] = target
         self.set_message(message)
-        self.View.display_message_sent(text)
+        if self.View.w_reply.isVisible():
+            self.View.display_replied_message_sent(target, text)
+        else:
+            self.View.display_message_sent(text)
 
     def display_message_received(self, text, sender):
         message_received = _MessageReceived(self.View, text, sender)
@@ -250,10 +254,19 @@ class Host:
                 target = self.View.lbl_reply.text().removeprefix('Replying to ')
                 message['target'] = target
             self.set_message(message)
-            self.display_file_message_sent(filename, file)
+            if self.View.w_reply.isVisible():
+                self.display_replied_file_message_sent(target, filename, file)
+            else:
+                self.display_file_message_sent(filename, file)
 
     def display_file_message_sent(self, filename, data):
         file_message_sent = FileMessageSent(self.View, filename, data)
+        file_message_sent.operation.connect(self.download_file)
+        self.View.verticalLayout_10.insertWidget(
+            self.View.verticalLayout_10.count()-1, file_message_sent)
+
+    def display_replied_file_message_sent(self, target, filename, data):
+        file_message_sent = RepliedFileMessageSent(self.View, target, filename, data)
         file_message_sent.operation.connect(self.download_file)
         self.View.verticalLayout_10.insertWidget(
             self.View.verticalLayout_10.count()-1, file_message_sent)

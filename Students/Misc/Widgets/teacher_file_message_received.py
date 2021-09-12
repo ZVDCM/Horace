@@ -6,9 +6,10 @@ from Teachers.Misc.Widgets.custom_text_edit import TextEdit
 class FileMessageReceived(QtWidgets.QWidget):
     operation = QtCore.pyqtSignal(bytearray, str)
 
-    def __init__(self, parent, filename, data):
+    def __init__(self, parent, sender, filename, data):
         super().__init__(parent=parent)
         self.parent = parent
+        self.sender = sender
         self.filename = filename
         self.data = data
         self.setupUi(self)
@@ -22,6 +23,20 @@ class FileMessageReceived(QtWidgets.QWidget):
         self.verticalLayout.setContentsMargins(0, 0, 15, 0)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
+
+        self.lbl_sender = QtWidgets.QLabel(Form)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lbl_sender.sizePolicy().hasHeightForWidth())
+        self.lbl_sender.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        self.lbl_sender.setFont(font)
+        self.lbl_sender.setStyleSheet("color: #6b6b6b; padding-left: 10px")
+        self.lbl_sender.setObjectName("lbl_sender")
+        self.verticalLayout.addWidget(self.lbl_sender)
+
         self.widget = QtWidgets.QWidget(Form)
         self.widget.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.widget.setStyleSheet("")
@@ -55,7 +70,12 @@ class FileMessageReceived(QtWidgets.QWidget):
         self.horizontalLayout.addWidget(self.textEdit)
         self.verticalLayout.addWidget(self.widget)
 
+        self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        self.lbl_sender.setText(_translate("Form", self.sender))
 
     def pressed(self, event):
         self.operation.emit(self.data, self.filename)

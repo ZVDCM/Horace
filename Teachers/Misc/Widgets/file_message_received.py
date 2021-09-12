@@ -22,7 +22,7 @@ class FileMessageReceived(QtWidgets.QWidget):
         Form.setObjectName("Form")
         Form.resize(348, 89)
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setContentsMargins(0, 0, 15, 0)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
 
@@ -47,7 +47,7 @@ class FileMessageReceived(QtWidgets.QWidget):
         self.widget.setObjectName("widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout.setSpacing(0)
+        self.horizontalLayout.setSpacing(5)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.label = QtWidgets.QLabel(self.widget)
         self.label.setMinimumSize(QtCore.QSize(40, 0))

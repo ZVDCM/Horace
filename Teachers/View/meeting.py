@@ -1,3 +1,4 @@
+from Teachers.Misc.Widgets.replied_to import RepliedMessageSent
 from Teachers.Misc.Widgets.custom_button import Button
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Teachers.Misc.Widgets.loading_screen import LoadingScreen
@@ -871,6 +872,11 @@ class Meeting(QtWidgets.QMainWindow):
 
     def display_message_sent(self, text):
         message_sent = MessageSent(self, text)
+        self.verticalLayout_10.insertWidget(self.verticalLayout_10.count()-1, message_sent)
+        self.txt_message.clear()
+        
+    def display_replied_message_sent(self, target, text):
+        message_sent = RepliedMessageSent(self, target, text)
         self.verticalLayout_10.insertWidget(self.verticalLayout_10.count()-1, message_sent)
         self.txt_message.clear()
 

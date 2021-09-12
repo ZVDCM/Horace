@@ -23,15 +23,16 @@ class MessageReceived(QThread):
         self.quit()
 
 class FileMessageReceived(QThread):
-    operation = pyqtSignal(str, bytearray)
+    operation = pyqtSignal(str, str, bytearray)
 
     def __init__(self):
         super().__init__()
+        self.sender = None
         self.filename = None
         self.data = None
 
     def run(self):
-        self.operation.emit(self.filename, self.data)
+        self.operation.emit(self.sender, self.filename, self.data)
         self.quit()
 
 class Operation(QThread):
@@ -89,6 +90,7 @@ class Receive(QThread):
                 self.Client.MessageReceived.start()
 
             elif message['type'] == 'fls':
+                self.Client.FileMessageReceived.sender = message['sender']
                 self.Client.FileMessageReceived.filename = message['data']
                 self.Client.FileMessageReceived.data = message['file']
                 self.Client.FileMessageReceived.start()
@@ -183,8 +185,8 @@ class Client:
         self.View.verticalLayout_6.insertWidget(
             self.View.verticalLayout_6.count()-1, file_message_sent)
 
-    def display_file_message_received(self, filename, data):
-        file_message_received = _FileMessageReceived(self.View, filename, data)
+    def display_file_message_received(self, sender, filename, data):
+        file_message_received = _FileMessageReceived(self.View, sender, filename, data)
         file_message_received.operation.connect(self.download_file)
         self.View.verticalLayout_6.insertWidget(self.View.verticalLayout_6.count()-1, file_message_received)
 
