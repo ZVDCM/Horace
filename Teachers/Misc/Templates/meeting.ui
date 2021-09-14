@@ -593,8 +593,8 @@ QPushButton:hover{
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>743</width>
-                  <height>543</height>
+                  <width>32</width>
+                  <height>16</height>
                  </rect>
                 </property>
                 <property name="styleSheet">
@@ -692,7 +692,7 @@ QScrollBar::sub-page:vertical{
 }</string>
            </property>
            <property name="currentIndex">
-            <number>2</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page_5">
             <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1259,7 +1259,7 @@ QPushButton:hover{
                    <number>6</number>
                   </property>
                   <item>
-                   <widget class="QWidget" name="" native="true">
+                   <widget class="QWidget" name="widget" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_8">
                      <property name="spacing">
                       <number>6</number>

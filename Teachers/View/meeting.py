@@ -882,3 +882,9 @@ class Meeting(QtWidgets.QMainWindow):
 
     def hide_reply(self):
         self.w_reply.hide()
+
+    @QtCore.pyqtSlot(QtGui.QPixmap)
+    def set_frame(self, frame):
+        frame = frame.scaled(
+                self.screen.width(), self.screen.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        self.screen.setPixmap(frame)

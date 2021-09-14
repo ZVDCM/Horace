@@ -61,9 +61,7 @@ class Operation(QThread):
 
 class Host:
 
-    HOST = socket.gethostbyname(socket.gethostname())
     PORT = 43200
-    ADDR = (HOST, PORT)
     target = None
     messages = {}
     inputs = []
@@ -97,7 +95,8 @@ class Host:
     def init_host(self):
         self.host = socket.socket()
         self.host.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.host.bind(self.ADDR)
+        address = (self.Class.HostAddress, self.PORT)
+        self.host.bind(address)
         self.host.listen()
         self.inputs.append(self.host)
 
@@ -167,6 +166,9 @@ class Host:
                 self.FileMessageReceived.data = message['file']
                 self.FileMessageReceived.start()
 
+            elif message['type'] == 'frame':
+                print(message)
+
         except (NotMessage, FromDifferentClass):
             self.inputs.remove(readable)
             if readable in self.outputs:
@@ -212,6 +214,7 @@ class Host:
         self.set_message(message)
         if self.View.w_reply.isVisible():
             self.View.display_replied_message_sent(target, text)
+            self.View.w_reply.hide()
         else:
             self.View.display_message_sent(text)
 
@@ -256,6 +259,7 @@ class Host:
             self.set_message(message)
             if self.View.w_reply.isVisible():
                 self.display_replied_file_message_sent(target, filename, file)
+                self.View.w_reply.hide()
             else:
                 self.display_file_message_sent(filename, file)
 

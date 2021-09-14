@@ -75,7 +75,9 @@ class Lobby:
             self.View.add_class_item(_class)
 
     def class_item_clicked(self, Class):
-        self.set_class_teacher_address.val = self.get_local_ip(), Class, self.Controller.User
+        address = self.get_local_ip()
+        Class.HostAddress = address
+        self.set_class_teacher_address.val = address, Class, self.Controller.User
         self.set_class_teacher_address.operation.connect(lambda: self.init_meeting(Class))
         self.set_class_teacher_address.operation.connect(self.View.close)
         self.set_class_teacher_address.start()

@@ -1,5 +1,6 @@
 from PyQt5 import QtCore
-from Teachers.Controller.host import Host
+from Teachers.Controller.Chat.host import Host as ChatHost
+from Teachers.Controller.Stream.host import Host as StreamHost
 import threading
 
 class Get(QtCore.QThread):
@@ -42,7 +43,8 @@ class Meeting:
         self.Controller = Controller
         self.Class = Class
 
-        self.Host = Host(self.Class, self.Model, self.View, self.Controller)
+        self.ChatHost = ChatHost(self.Class, self.Model, self.View, self.Controller)
+        self.StreamHost = StreamHost(self.Class, self.Model, self.View, self.Controller)
         self.connect_signals()
         self.View.run()
 

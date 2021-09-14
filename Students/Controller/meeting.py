@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from Students.Controller.client import Client
+from Students.Controller.Chat.client import Client as ChatClient
 import threading
 
 class Get(QtCore.QThread):
@@ -42,7 +42,7 @@ class Meeting:
         self.Controller = Controller
         self.Class = Class
 
-        self.Client = Client(self.Class, self.Model, self.View, self.Controller)
+        self.ChatClient = ChatClient(self.Class, self.Model, self.View, self.Controller)
         self.connect_signals()
         self.View.run()
 

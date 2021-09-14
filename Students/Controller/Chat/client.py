@@ -1,6 +1,8 @@
+import threading
+from Students.Misc.Functions.window_capture import screenshot
 from Students.Misc.Widgets.file_message_sent import FileMessageSent
 import os
-
+from Students.Controller.Stream.client import Client as StreamClient
 from PyQt5.QtWidgets import QFileDialog
 from Students.Misc.Functions.is_blank import is_blank
 from Students.Misc.Widgets.teacher_file_message_received import FileMessageReceived as _FileMessageReceived
@@ -81,6 +83,8 @@ class Receive(QThread):
             if message['type'] == 'cmd':
                 if message['data'] == 'connect':
                     self.Client.EndLoading.start()
+                    self.StreamClient = StreamClient(self.Client.Class, self.Client.Model, self.Client.View, self.Client.Controller)
+
                     message = normalize_message('name', self.Client.Sender)
                     self.Client.send(message)
 
@@ -108,7 +112,7 @@ class Client:
         self.Controller = Controller
         self.Sender = Controller.User.Username
         self.connect_signals()
-        self.init_connection()
+        self.init_client()
 
     def connect_signals(self):
         self.StartLoading = Operation()
@@ -128,7 +132,7 @@ class Client:
 
         self.View.btn_file.clicked.connect(self.get_file)
 
-    def init_connection(self):
+    def init_client(self):
         self.client = socket.socket()
         address = (self.Class.HostAddress, self.PORT)
         self.connect_handler = Connect(self.client, address)
@@ -141,8 +145,20 @@ class Client:
         self.send(message)
 
         self.Receive = Receive(self)
-        self.Receive.finished.connect(self.init_connection)
+        self.Receive.finished.connect(self.init_client)
         self.Receive.start()
+
+        send_screenshot_thread = threading.Thread(target=self.send_screenshot, daemon=True, name='ChatScreenshotThread')
+        send_screenshot_thread.start()
+    
+    def send_screenshot(self):
+        while True:
+            if self.client._closed:
+                return
+            sct = screenshot()
+            message = normalize_message('frame', sct)
+            self.send(message)
+            time.sleep(2)
 
     def send(self, message):
         message['sender'] = self.Sender
@@ -169,7 +185,7 @@ class Client:
             size = os.path.getsize(response[0])
 
             if size > 131_072_000:
-                print('file too large')
+                print('file exceeds 125mb limit')
                 return
 
             with open(response[0], "rb") as file:

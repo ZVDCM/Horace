@@ -1,3 +1,5 @@
+from PIL.Image import Image
+from PIL.ImageQt import ImageQt
 from Students.Misc.Widgets.teacher_message_received import MessageReceived
 from Students.Misc.Widgets.custom_button import Button
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -507,3 +509,9 @@ class Meeting(QtWidgets.QMainWindow):
     def display_message_received(self, text, sender):
         message_received = MessageReceived(self, text, sender)
         self.verticalLayout_6.insertWidget(self.verticalLayout_6.count()-1, message_received)
+
+    @QtCore.pyqtSlot(QtGui.QPixmap)
+    def set_frame(self, frame):
+        frame = frame.scaled(
+                self.screen.width(), self.screen.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        self.screen.setPixmap(frame)
