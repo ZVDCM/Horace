@@ -1,3 +1,4 @@
+from PIL import Image
 from Teachers.Misc.Widgets.replied_to import RepliedMessageSent
 from Teachers.Misc.Widgets.custom_button import Button
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -8,6 +9,7 @@ from Teachers.Misc.Widgets.custom_list_view import ListView
 from Teachers.Misc.Widgets.flow_layout import FlowLayout
 from Teachers.Misc.Widgets.message_sent import MessageSent
 
+
 class Meeting(QtWidgets.QMainWindow):
 
     def __init__(self, View):
@@ -16,8 +18,10 @@ class Meeting(QtWidgets.QMainWindow):
         self.setupUi(self)
 
         self.screens = [self.btn_screenshare, self.btn_inspector]
-        self.interactors = [self.btn_student_list, self.btn_chat, self.btn_block]
-        self.close_buttons = [self.btn_close_student_list, self.btn_close_chat, self.btn_close_url]
+        self.interactors = [self.btn_student_list,
+                            self.btn_chat, self.btn_block]
+        self.close_buttons = [self.btn_close_student_list,
+                              self.btn_close_chat, self.btn_close_url]
 
     def run(self):
         self.raise_()
@@ -110,7 +114,8 @@ class Meeting(QtWidgets.QMainWindow):
         spacerItem = QtWidgets.QSpacerItem(
             772, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.btn_screenshare = Button(self.widget1, 0, True, relative_path('Teachers', ['Misc', 'Resources'], 'monitor_3'), relative_path('Teachers', ['Misc', 'Resources'], 'monitor_2'), relative_path('Teachers', ['Misc', 'Resources'], 'monitor.png'))
+        self.btn_screenshare = Button(self.widget1, 0, True, relative_path('Teachers', ['Misc', 'Resources'], 'monitor_3'), relative_path(
+            'Teachers', ['Misc', 'Resources'], 'monitor_2'), relative_path('Teachers', ['Misc', 'Resources'], 'monitor.png'))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -124,7 +129,8 @@ class Meeting(QtWidgets.QMainWindow):
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_screenshare.setObjectName("btn_screenshare")
         self.horizontalLayout.addWidget(self.btn_screenshare)
-        self.btn_inspector = Button(self.widget1, 1, False, relative_path('Teachers', ['Misc', 'Resources'], 'inspect_3'), relative_path('Teachers', ['Misc', 'Resources'], 'inspect_2'), relative_path('Teachers', ['Misc', 'Resources'], 'inspect'))
+        self.btn_inspector = Button(self.widget1, 1, False, relative_path('Teachers', ['Misc', 'Resources'], 'inspect_3'), relative_path(
+            'Teachers', ['Misc', 'Resources'], 'inspect_2'), relative_path('Teachers', ['Misc', 'Resources'], 'inspect'))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -145,7 +151,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.line.setFrameShape(QtWidgets.QFrame.VLine)
         self.line.setObjectName("line")
         self.horizontalLayout.addWidget(self.line)
-        self.btn_student_list = Button(self.widget1, 0, False, relative_path('Teachers', ['Misc', 'Resources'], 'list_3'), relative_path('Teachers', ['Misc', 'Resources'], 'list_2'), relative_path('Teachers', ['Misc', 'Resources'], 'list'))
+        self.btn_student_list = Button(self.widget1, 0, False, relative_path('Teachers', ['Misc', 'Resources'], 'list_3'), relative_path(
+            'Teachers', ['Misc', 'Resources'], 'list_2'), relative_path('Teachers', ['Misc', 'Resources'], 'list'))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -159,7 +166,8 @@ class Meeting(QtWidgets.QMainWindow):
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_student_list.setObjectName("btn_student_list")
         self.horizontalLayout.addWidget(self.btn_student_list)
-        self.btn_chat = Button(self.widget1, 1, False, relative_path('Teachers', ['Misc', 'Resources'], 'chat_3'), relative_path('Teachers', ['Misc', 'Resources'], 'chat_2'), relative_path('Teachers', ['Misc', 'Resources'], 'chat'))
+        self.btn_chat = Button(self.widget1, 1, False, relative_path('Teachers', ['Misc', 'Resources'], 'chat_3'), relative_path(
+            'Teachers', ['Misc', 'Resources'], 'chat_2'), relative_path('Teachers', ['Misc', 'Resources'], 'chat'))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -172,7 +180,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_chat.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_chat.setObjectName("btn_chat")
         self.horizontalLayout.addWidget(self.btn_chat)
-        self.btn_block = Button(self.widget1, 2, False, relative_path('Teachers', ['Misc', 'Resources'], 'block_3'), relative_path('Teachers', ['Misc', 'Resources'], 'block_2'), relative_path('Teachers', ['Misc', 'Resources'], 'block'))
+        self.btn_block = Button(self.widget1, 2, False, relative_path('Teachers', ['Misc', 'Resources'], 'block_3'), relative_path(
+            'Teachers', ['Misc', 'Resources'], 'block_2'), relative_path('Teachers', ['Misc', 'Resources'], 'block'))
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -249,7 +258,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout_9.setContentsMargins(25, 29, 25, 25)
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
         self.sa_inspector = QtWidgets.QScrollArea(self.page_2)
-        self.sa_inspector.setStyleSheet("border-radius: 5px")
+        self.sa_inspector.setStyleSheet("border-radius: 5px;")
         self.sa_inspector.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.sa_inspector.setVerticalScrollBarPolicy(
             QtCore.Qt.ScrollBarAsNeeded)
@@ -262,6 +271,10 @@ class Meeting(QtWidgets.QMainWindow):
         self.scrollAreaWidgetContents_2.setObjectName(
             "scrollAreaWidgetContents_2")
         self.sa_inspector.setWidget(self.scrollAreaWidgetContents_2)
+
+        self.flow_layout = FlowLayout(self.scrollAreaWidgetContents_2)
+        self.flow_layout.setObjectName("flow_layout")
+
         self.horizontalLayout_9.addWidget(self.sa_inspector)
         self.sw_left.addWidget(self.page_2)
         self.horizontalLayout_3.addWidget(self.sw_left)
@@ -468,7 +481,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.sa_chat.setWidget(self.scrollAreaWidgetContents)
 
-        self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_10 = QtWidgets.QVBoxLayout(
+            self.scrollAreaWidgetContents)
         self.verticalLayout_10.setContentsMargins(8, 15, 8, 15)
         self.verticalLayout_10.setSpacing(15)
         self.verticalLayout_10.setObjectName("verticalLayout_10")
@@ -482,7 +496,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.w_reply.setObjectName("w_reply")
 
         self.horizontalLayout_100 = QtWidgets.QHBoxLayout(self.w_reply)
-        self.horizontalLayout_100.setContentsMargins(0,0,0,0)
+        self.horizontalLayout_100.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_100.setSpacing(0)
         self.horizontalLayout_100.setObjectName("horizontalLayout_100")
         self.lbl_reply = QtWidgets.QLabel(self.page_3)
@@ -510,24 +524,23 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_close_reply.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_close_reply.setStyleSheet("QPushButton{\n"
-                                          "    border: none;\n"
-                                          "    border-radius: none;\n"
-                                          "    background: none;\n"
-                                          "    background-repeat: none;\n"
-                                          f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close.png')});\n"
-                                          "    background-position: center center;\n"
-                                          "}\n"
-                                          "\n"
-                                          "QPushButton:hover{\n"
-                                          "    background: none;\n"
-                                          "    background-repeat: none;\n"
-                                          f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close_2.png')});\n"
-                                          "    background-position: center center;\n"
-                                          "}")
+                                           "    border: none;\n"
+                                           "    border-radius: none;\n"
+                                           "    background: none;\n"
+                                           "    background-repeat: none;\n"
+                                           f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close.png')});\n"
+                                           "    background-position: center center;\n"
+                                           "}\n"
+                                           "\n"
+                                           "QPushButton:hover{\n"
+                                           "    background: none;\n"
+                                           "    background-repeat: none;\n"
+                                           f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'close_2.png')});\n"
+                                           "    background-position: center center;\n"
+                                           "}")
         self.btn_close_reply.setObjectName("btn_close_reply")
         self.horizontalLayout_100.addWidget(self.btn_close_reply)
         self.verticalLayout_4.addWidget(self.w_reply)
-
 
         self.txt_message = QtWidgets.QLineEdit(self.page_3)
         self.txt_message.setMinimumSize(QtCore.QSize(0, 30))
@@ -872,12 +885,14 @@ class Meeting(QtWidgets.QMainWindow):
 
     def display_message_sent(self, text):
         message_sent = MessageSent(self, text)
-        self.verticalLayout_10.insertWidget(self.verticalLayout_10.count()-1, message_sent)
+        self.verticalLayout_10.insertWidget(
+            self.verticalLayout_10.count()-1, message_sent)
         self.txt_message.clear()
-        
+
     def display_replied_message_sent(self, target, text):
         message_sent = RepliedMessageSent(self, target, text)
-        self.verticalLayout_10.insertWidget(self.verticalLayout_10.count()-1, message_sent)
+        self.verticalLayout_10.insertWidget(
+            self.verticalLayout_10.count()-1, message_sent)
         self.txt_message.clear()
 
     def hide_reply(self):
@@ -886,5 +901,11 @@ class Meeting(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot(QtGui.QPixmap)
     def set_frame(self, frame):
         frame = frame.scaled(
-                self.screen.width(), self.screen.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            self.screen.width(), self.screen.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         self.screen.setPixmap(frame)
+
+    @QtCore.pyqtSlot(str, QtGui.QPixmap)
+    def set_student_frame(self, name, frame):
+        parent = self.scrollAreaWidgetContents_2.findChild(QtWidgets.QWidget, name)
+        target = parent.verticalLayout.itemAt(1).widget()
+        target.setPixmap(frame)

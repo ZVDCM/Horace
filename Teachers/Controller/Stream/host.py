@@ -1,7 +1,7 @@
 import threading
 from PyQt5 import QtGui
 from PyQt5.QtCore import QThread, pyqtSignal
-from Teachers.Misc.Functions.window_capture import convert_bytearray_to_QPixmap, window_capture, resize_img
+from Teachers.Misc.Functions.window_capture import convert_bytearray_to_QPixmap, convert_bytearray_to_pil_image, window_capture
 import socket
 import pickle
 import zlib
@@ -76,13 +76,13 @@ class Host:
         self.set_frame.start()
 
     def broadcast_frame(self, frame):
-        resized_img = resize_img(frame)
-        resized_img = zlib.compress(pickle.dumps(
-            resized_img, pickle.HIGHEST_PROTOCOL), 9)
-        packets = str(math.ceil(len(resized_img)/self.BUFFER)).encode(self.FORMAT)
+        pil_img = convert_bytearray_to_pil_image(frame)
+        pil_img = zlib.compress(pickle.dumps(
+            pil_img, pickle.HIGHEST_PROTOCOL), 9)
+        packets = str(math.ceil(len(pil_img)/self.BUFFER)).encode(self.FORMAT)
         self.host.sendto(packets, self.BROADCAST_ADDR)
 
-        while resized_img:
+        while pil_img:
             bytes_sent = self.host.sendto(
-                resized_img[:self.BUFFER], self.BROADCAST_ADDR)
-            resized_img = resized_img[bytes_sent:]
+                pil_img[:self.BUFFER], self.BROADCAST_ADDR)
+            pil_img = pil_img[bytes_sent:]

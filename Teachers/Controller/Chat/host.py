@@ -1,3 +1,7 @@
+from Teachers.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
+from PIL import Image
+from PyQt5.QtGui import QPixmap
+from Teachers.Misc.Widgets.student_item import StudentItem
 from Teachers.Misc.Widgets.file_message_sent import FileMessageSent
 from Teachers.Misc.Widgets.file_message_received import FileMessageReceived as _FileMessageReceived
 from Teachers.Misc.Widgets.replied_file_message_sent import RepliedFileMessageSent
@@ -58,6 +62,29 @@ class Operation(QThread):
         self.operation.emit()
         self.quit()
 
+class AddStudentItem(QThread):
+    operation = pyqtSignal(str)
+
+    def __init__(self):
+        super().__init__()
+        self.name = None
+
+    def run(self):
+        self.operation.emit(self.name)
+        self.quit()
+
+class SetStudentFrame(QThread):
+    operation = pyqtSignal(str, QPixmap)
+
+    def __init__(self):
+        super().__init__()
+        self.name = None
+        self.frame = None
+
+    def run(self):
+        self.operation.emit(self.name, self.frame)
+        self.quit()
+
 
 class Host:
 
@@ -81,6 +108,8 @@ class Host:
     def connect_signals(self):
         self.View.txt_message.returnPressed.connect(self.send_message)
         self.View.btn_send.clicked.connect(self.send_message)
+        self.View.btn_close_reply.clicked.connect(self.hide_reply)
+        self.View.btn_file.clicked.connect(self.get_file)
 
         self.MessageReceived = MessageReceived()
         self.MessageReceived.operation.connect(self.display_message_received)
@@ -88,9 +117,11 @@ class Host:
         self.FileMessageReceived = FileMessageReceived()
         self.FileMessageReceived.operation.connect(self.display_file_message_received)
 
-        self.View.btn_close_reply.clicked.connect(self.hide_reply)
+        self.AddStudentItem = AddStudentItem()
+        self.AddStudentItem.operation.connect(self.add_student_item)
 
-        self.View.btn_file.clicked.connect(self.get_file)
+        self.SetStudentFrame = SetStudentFrame()
+        self.SetStudentFrame.operation.connect(self.View.set_student_frame)
 
     def init_host(self):
         self.host = socket.socket()
@@ -149,6 +180,8 @@ class Host:
                 if message['data'] == self.Class.Code:
                     self.clients_name[readable] = message['sender']
                     self.clients_socket[message['sender']] = readable
+                    self.AddStudentItem.name = message['sender']
+                    self.AddStudentItem.start()
                     message = normalize_message(
                         'cmd', 'connect', target=message['sender'])
                     self.set_message(message)
@@ -167,7 +200,10 @@ class Host:
                 self.FileMessageReceived.start()
 
             elif message['type'] == 'frame':
-                print(message)
+                frame = convert_pil_image_to_QPixmap(message['data'])
+                self.SetStudentFrame.name = message['sender']
+                self.SetStudentFrame.frame = frame
+                self.SetStudentFrame.start()
 
         except (NotMessage, FromDifferentClass):
             self.inputs.remove(readable)
@@ -288,3 +324,12 @@ class Host:
         file_message_received.download.connect(self.download_file)
         file_message_received.reply.connect(self.target_sender_message)
         self.View.verticalLayout_10.insertWidget(self.View.verticalLayout_10.count()-1, file_message_received)
+    
+    def add_student_item(self, name):
+        student_item = StudentItem(self.View, name)
+        student_item.operation.connect(self.student_item_clicked)
+        student_item.setObjectName(name)
+        self.View.flow_layout.addWidget(student_item)
+
+    def student_item_clicked(self, name):
+        print(name)
