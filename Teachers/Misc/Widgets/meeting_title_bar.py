@@ -167,7 +167,7 @@ class TitleBar(QtWidgets.QWidget):
                                                 "    border-radius: none;\n"
                                                 "    background: none;\n"
                                                 "    background-repeat: none;\n"
-                                                f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'maximize.png')});\n"
+                                                f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'maximize.png')});\n"
                                                 "    background-position: center center;\n"
                                                 "}\n"
                                                 "\n"
@@ -175,7 +175,7 @@ class TitleBar(QtWidgets.QWidget):
                                                 "    background: none;\n"
                                                 "    background: rgba(0, 0, 0, 40);\n"
                                                 "    background-repeat: none;\n"
-                                                f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'maximize.png')});\n"
+                                                f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'maximize.png')});\n"
                                                 "    background-position: center center;\n"
                                                 "}")
 
@@ -187,7 +187,7 @@ class TitleBar(QtWidgets.QWidget):
                                                 "    border-radius: none;\n"
                                                 "    background: none;\n"
                                                 "    background-repeat: none;\n"
-                                                f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'restore.png')});\n"
+                                                f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'restore.png')});\n"
                                                 "    background-position: center center;\n"
                                                 "}\n"
                                                 "\n"
@@ -195,7 +195,7 @@ class TitleBar(QtWidgets.QWidget):
                                                 "    background: none;\n"
                                                 "    background: rgba(0, 0, 0, 40);\n"
                                                 "    background-repeat: none;\n"
-                                                f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'restore.png')});\n"
+                                                f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'restore.png')});\n"
                                                 "    background-position: center center;\n"
                                                 "}")
 

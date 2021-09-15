@@ -1,3 +1,4 @@
+from Teachers.Misc.Widgets.overlay import Overlay
 from PIL import Image
 from Teachers.Misc.Widgets.replied_to import RepliedMessageSent
 from Teachers.Misc.Widgets.custom_button import Button
@@ -23,6 +24,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.close_buttons = [self.btn_close_student_list,
                               self.btn_close_chat, self.btn_close_url]
 
+        self.Overlay = Overlay(self.page)
+
     def run(self):
         self.raise_()
         self.show()
@@ -38,22 +41,6 @@ class Meeting(QtWidgets.QMainWindow):
                                          "    background: #0B1A30;\n"
                                          "    color: white; \n"
                                          "    font-family: Barlow\n"
-                                         "}\n"
-                                         "\n"
-                                         "QPushButton {\n"
-                                         "  padding: 5px;\n"
-                                         "  border: 1px solid #0e4884;\n"
-                                         "  background-color: #0e4884;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QPushButton:focus,\n"
-                                         "QPushButton:hover {\n"
-                                         "  border: 1px solid #256eff;\n"
-                                         "  outline: none;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QPushButton:pressed {\n"
-                                         "  background-color: #072f49;\n"
                                          "}\n"
                                          "\n")
         self.centralwidget.setObjectName("centralwidget")
@@ -222,9 +209,103 @@ class Meeting(QtWidgets.QMainWindow):
         self.sw_left.addWidget(self.page)
         self.page_2 = QtWidgets.QWidget()
         self.page_2.setObjectName("page_2")
-        self.horizontalLayout_9 = QtWidgets.QHBoxLayout(self.page_2)
-        self.horizontalLayout_9.setContentsMargins(25, 29, 25, 25)
-        self.horizontalLayout_9.setObjectName("horizontalLayout_9")
+        self.page_2.setStyleSheet("QPushButton {\n"
+                                "  padding: 5px;\n"
+                                "  border-radius: 5px;\n"
+                                "  border: 1px solid #0e4884;\n"
+                                "  background-color: #0e4884;\n"
+                                "}\n"
+                                "\n"
+                                "QPushButton:focus,\n"
+                                "QPushButton:hover {\n"
+                                "  border: 1px solid #256eff;\n"
+                                "  outline: none;\n"
+                                "}\n"
+                                "\n"
+                                "QPushButton:pressed {\n"
+                                "  background-color: #072f49;\n"
+                                "}\n")
+        self.verticalLayout_100 = QtWidgets.QVBoxLayout(self.page_2)
+        self.verticalLayout_100.setContentsMargins(25, 29, 25, 25)
+        self.verticalLayout_100.setObjectName("verticalLayout_100")
+
+        self.horizontalLayout_101 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_101.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_101.setSpacing(6)
+        self.horizontalLayout_101.setObjectName("horizontalLayout_101")
+        self.verticalLayout_100.addLayout(self.horizontalLayout_101)
+        self.lbl_inspector = QtWidgets.QLabel(self.page_2)
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(15)
+        self.lbl_inspector.setFont(font)
+        self.lbl_inspector.setIndent(1)
+        self.lbl_inspector.setObjectName("lbl_inspector")
+        self.horizontalLayout_101.addWidget(self.lbl_inspector)
+        spacerItem100 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_101.addItem(spacerItem100)
+
+        self.btn_shutdown = QtWidgets.QPushButton(self.page_2)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_shutdown.sizePolicy().hasHeightForWidth())
+        self.btn_shutdown.setSizePolicy(sizePolicy)
+        self.btn_shutdown.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_shutdown.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_shutdown.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_shutdown.setStyleSheet("QPushButton{\n"
+                                           "    background-repeat: none;\n"
+                                           f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'shutdown.png')});\n"
+                                           "    background-position: center center;\n"
+                                           "}\n")
+        self.btn_shutdown.setObjectName("btn_shutdown")
+        self.horizontalLayout_101.addWidget(self.btn_shutdown)
+
+        self.btn_restart = QtWidgets.QPushButton(self.page_2)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_restart.sizePolicy().hasHeightForWidth())
+        self.btn_restart.setSizePolicy(sizePolicy)
+        self.btn_restart.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_restart.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_restart.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_restart.setStyleSheet("QPushButton{\n"
+                                           "    background-repeat: none;\n"
+                                           f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'restart.png')});\n"
+                                           "    background-position: center center;\n"
+                                           "}\n")
+        self.btn_restart.setObjectName("btn_restart")
+        self.horizontalLayout_101.addWidget(self.btn_restart)
+
+        self.btn_lock = QtWidgets.QPushButton(self.page_2)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_lock.sizePolicy().hasHeightForWidth())
+        self.btn_lock.setSizePolicy(sizePolicy)
+        self.btn_lock.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_lock.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_lock.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_lock.setStyleSheet("QPushButton{\n"
+                                           "    background-repeat: none;\n"
+                                           f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'lock.png')});\n"
+                                           "    background-position: center center;\n"
+                                           "}\n")
+        self.btn_lock.setObjectName("btn_lock")
+        self.horizontalLayout_101.addWidget(self.btn_lock)
+
         self.sa_inspector = QtWidgets.QScrollArea(self.page_2)
         self.sa_inspector.setStyleSheet("QScrollArea{\n"
                                          "    border: 1px solid #102542;\n"
@@ -274,8 +355,8 @@ class Meeting(QtWidgets.QMainWindow):
 
         self.flow_layout = FlowLayout(self.scrollAreaWidgetContents_2)
         self.flow_layout.setObjectName("flow_layout")
+        self.verticalLayout_100.addWidget(self.sa_inspector)
 
-        self.horizontalLayout_9.addWidget(self.sa_inspector)
         self.sw_left.addWidget(self.page_2)
         self.horizontalLayout_3.addWidget(self.sw_left)
         self.sw_right = QtWidgets.QStackedWidget(self.widget)
@@ -899,6 +980,7 @@ class Meeting(QtWidgets.QMainWindow):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.lbl_inspector.setText(_translate("MainWindow", "Inspector"))
         self.label_4.setText(_translate("MainWindow", "Students"))
         self.label_2.setText(_translate("MainWindow", "Chat"))
         self.lbl_reply.setText(_translate("MainWindow", "Replying to"))
