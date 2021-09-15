@@ -55,39 +55,7 @@ class Meeting(QtWidgets.QMainWindow):
                                          "QPushButton:pressed {\n"
                                          "  background-color: #072f49;\n"
                                          "}\n"
-                                         "\n"
-                                         "QScrollArea{\n"
-                                         "    border: 1px solid #0b1a30;\n"
-                                         "    border-radius: 5px\n"
-                                         "}\n"
-                                         "QScrollBar:vertical{\n"
-                                         "    width: 12px;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QScrollBar::handle:vertical{\n"
-                                         "    background-color: #97b9f4;    \n"
-                                         "    min-height: 5px;\n"
-                                         "    border-radius: 4px;\n"
-                                         "    margin: 2px;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QScrollBar::sub-line:vertical{\n"
-                                         "     height: 0;\n"
-                                         "     width: 0;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QScrollBar::add-line:vertical{\n"
-                                         "        height: 0;\n"
-                                         "     width: 0;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QScrollBar::add-page:vertical{\n"
-                                         "    background: #0b1a30;\n"
-                                         " }\n"
-                                         "\n"
-                                         "QScrollBar::sub-page:vertical{\n"
-                                         "      background: #0b1a30;\n"
-                                         "}")
+                                         "\n")
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -258,7 +226,39 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout_9.setContentsMargins(25, 29, 25, 25)
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
         self.sa_inspector = QtWidgets.QScrollArea(self.page_2)
-        self.sa_inspector.setStyleSheet("border-radius: 5px;")
+        self.sa_inspector.setStyleSheet("QScrollArea{\n"
+                                         "    border: 1px solid #102542;\n"
+                                         "    border-radius: 5px\n"
+                                         "}\n"
+                                         "QScrollBar:vertical{\n"
+                                         "    width: 12px;\n"
+                                         "    background: #102542;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QScrollBar::handle:vertical{\n"
+                                         "    background-color: #97b9f4;    \n"
+                                         "    min-height: 5px;\n"
+                                         "    border-radius: 4px;\n"
+                                         "    margin: 2px;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QScrollBar::sub-line:vertical{\n"
+                                         "     height: 0;\n"
+                                         "     width: 0;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QScrollBar::add-line:vertical{\n"
+                                         "     height: 0;\n"
+                                         "     width: 0;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QScrollBar::add-page:vertical{\n"
+                                         "    background: none;\n"
+                                         " }\n"
+                                         "\n"
+                                         "QScrollBar::sub-page:vertical{\n"
+                                         "     background: none;\n"
+                                         "}")
         self.sa_inspector.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.sa_inspector.setVerticalScrollBarPolicy(
             QtCore.Qt.ScrollBarAsNeeded)
@@ -472,12 +472,45 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout_4.addWidget(self.btn_close_chat)
         self.verticalLayout_4.addLayout(self.horizontalLayout_4)
         self.sa_chat = QtWidgets.QScrollArea(self.page_3)
-        self.sa_chat.setStyleSheet("background: #0B1A30")
+        self.sa_chat.setStyleSheet("QScrollArea{\n"
+                                    "    border: 1px solid #0B1A30;\n"
+                                    "    border-radius: 5px\n"
+                                    "}\n"
+                                    "QScrollBar:vertical{\n"
+                                    "    width: 12px;\n"
+                                    "    background: #0B1A30;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QScrollBar::handle:vertical{\n"
+                                    "    background-color: #97b9f4;    \n"
+                                    "    min-height: 5px;\n"
+                                    "    border-radius: 4px;\n"
+                                    "    margin: 2px;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QScrollBar::sub-line:vertical{\n"
+                                    "     height: 0;\n"
+                                    "     width: 0;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QScrollBar::add-line:vertical{\n"
+                                    "     height: 0;\n"
+                                    "     width: 0;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QScrollBar::add-page:vertical{\n"
+                                    "    background: none;\n"
+                                    " }\n"
+                                    "\n"
+                                    "QScrollBar::sub-page:vertical{\n"
+                                    "     background: none;\n"
+                                    "}")
         self.sa_chat.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.sa_chat.setWidgetResizable(True)
         self.sa_chat.setObjectName("sa_chat")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 270, 394))
+        self.scrollAreaWidgetContents.setStyleSheet("background: #0B1A30;")
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.sa_chat.setWidget(self.scrollAreaWidgetContents)
 
@@ -906,6 +939,11 @@ class Meeting(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot(str, QtGui.QPixmap)
     def set_student_frame(self, name, frame):
-        parent = self.scrollAreaWidgetContents_2.findChild(QtWidgets.QWidget, name)
-        target = parent.verticalLayout.itemAt(1).widget()
-        target.setPixmap(frame)
+        student_item = self.scrollAreaWidgetContents_2.findChild(QtWidgets.QWidget, name)
+        target_lbl = student_item.verticalLayout.itemAt(1).widget()
+        target_lbl.setPixmap(frame)
+
+    @QtCore.pyqtSlot(str)
+    def remove_student_item(self, name):
+        student_item = self.scrollAreaWidgetContents_2.findChild(QtWidgets.QWidget, name)
+        self.flow_layout.removeWidget(student_item)

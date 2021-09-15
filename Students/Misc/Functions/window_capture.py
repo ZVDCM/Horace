@@ -11,7 +11,7 @@ def screenshot():
     img = np.array(img)
     width, height = GetSystemMetrics(0), GetSystemMetrics(1)
     img = Image.frombytes("RGB", (width, height), img, "raw")
-    img = img.resize((500, 281), Image.LANCZOS)
+    img = img.resize((400, 225), Image.LANCZOS)
     return img
 
 

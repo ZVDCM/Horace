@@ -1,7 +1,7 @@
 from Teachers.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
 from PIL import Image
 from PyQt5.QtGui import QPixmap
-from Teachers.Misc.Widgets.student_item import StudentItem
+from Teachers.Misc.Widgets.student_item import StudentItem as _StudentItem
 from Teachers.Misc.Widgets.file_message_sent import FileMessageSent
 from Teachers.Misc.Widgets.file_message_received import FileMessageReceived as _FileMessageReceived
 from Teachers.Misc.Widgets.replied_file_message_sent import RepliedFileMessageSent
@@ -62,7 +62,7 @@ class Operation(QThread):
         self.operation.emit()
         self.quit()
 
-class AddStudentItem(QThread):
+class StudentItem(QThread):
     operation = pyqtSignal(str)
 
     def __init__(self):
@@ -117,8 +117,11 @@ class Host:
         self.FileMessageReceived = FileMessageReceived()
         self.FileMessageReceived.operation.connect(self.display_file_message_received)
 
-        self.AddStudentItem = AddStudentItem()
+        self.AddStudentItem = StudentItem()
         self.AddStudentItem.operation.connect(self.add_student_item)
+
+        self.RemoveStudentItem = StudentItem()
+        self.RemoveStudentItem.operation.connect(self.View.remove_student_item)
 
         self.SetStudentFrame = SetStudentFrame()
         self.SetStudentFrame.operation.connect(self.View.set_student_frame)
@@ -207,6 +210,8 @@ class Host:
 
         except (NotMessage, FromDifferentClass):
             self.inputs.remove(readable)
+            self.RemoveStudentItem.name = self.clients_name[readable]
+            self.RemoveStudentItem.start()
             if readable in self.outputs:
                 self.outputs.remove(readable)
             if readable in self.clients_name.keys():
@@ -326,7 +331,7 @@ class Host:
         self.View.verticalLayout_10.insertWidget(self.View.verticalLayout_10.count()-1, file_message_received)
     
     def add_student_item(self, name):
-        student_item = StudentItem(self.View, name)
+        student_item = _StudentItem(self.View, name)
         student_item.operation.connect(self.student_item_clicked)
         student_item.setObjectName(name)
         self.View.flow_layout.addWidget(student_item)
