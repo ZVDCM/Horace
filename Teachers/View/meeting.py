@@ -1029,3 +1029,6 @@ class Meeting(QtWidgets.QMainWindow):
     def remove_student_item(self, name):
         student_item = self.scrollAreaWidgetContents_2.findChild(QtWidgets.QWidget, name)
         self.flow_layout.removeWidget(student_item)
+
+    def disconnect_screen(self):
+        self.screen.clear()

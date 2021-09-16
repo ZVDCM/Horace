@@ -96,7 +96,8 @@ class Host:
     clients_name = {}
     clients_socket = {}
 
-    def __init__(self, Class, Model, View, Controller):
+    def __init__(self, Meeting, Class, Model, View, Controller):
+        self.Meeting = Meeting
         self.Class = Class
         self.Model = Model
         self.View = View
@@ -110,6 +111,9 @@ class Host:
         self.View.btn_send.clicked.connect(self.send_message)
         self.View.btn_close_reply.clicked.connect(self.hide_reply)
         self.View.btn_file.clicked.connect(self.get_file)
+        self.View.Overlay.reconnect.connect(self.reconnect)
+        self.View.Overlay.disconnect.connect(self.disconnect)
+        self.View.Overlay.btn_freeze.clicked.connect(self.freeze)
 
         self.MessageReceived = MessageReceived()
         self.MessageReceived.operation.connect(self.display_message_received)
@@ -338,3 +342,27 @@ class Host:
 
     def student_item_clicked(self, name):
         print(name)
+
+    def reconnect(self):
+        self.Meeting.is_connected = True
+        self.Meeting.is_disconnected = False
+        self.Meeting.is_frozen = False
+
+        self.Meeting.StreamHost.init_stream()
+        message = normalize_message('cmd', 'reconnect')
+        self.set_message(message)
+
+    def disconnect(self):
+        self.Meeting.is_connected = False
+        self.Meeting.is_disconnected = True
+        message = normalize_message('cmd', 'disconnect')
+        self.set_message(message)
+
+    def freeze(self):
+        if self.Meeting.is_frozen:
+            self.Meeting.is_frozen = False
+            message = normalize_message('cmd', 'thawed')
+        else:
+            self.Meeting.is_frozen = True
+            message = normalize_message('cmd', 'frozen')
+        self.set_message(message)

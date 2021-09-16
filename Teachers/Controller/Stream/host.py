@@ -41,7 +41,8 @@ class Host:
 
     last_frame = bytearray()
 
-    def __init__(self, Class, Model, View, Controller):
+    def __init__(self, Meeting, Class, Model, View, Controller):
+        self.Meeting = Meeting
         self.Class = Class
         self.Model = Model
         self.View = View
@@ -50,30 +51,42 @@ class Host:
         self.init_host()
 
     def connect_signals(self):
-        self.set_frame = Frame()
-        self.set_frame.operation.connect(self.View.set_frame)
-
+        self.SetFrame = Frame()
+        self.SetFrame.operation.connect(self.View.set_frame)
+        
     def init_host(self):
         self.host = socket.socket(type=socket.SOCK_DGRAM)
         self.host.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.host.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         address = (self.Class.HostAddress, self.HOST_PORT)
         self.host.bind(address)
+        self.init_stream()
 
+    def init_stream(self):
         self.stream_thread = threading.Thread(target=self.handler, daemon=True, name="StreamHandler")
         self.stream_thread.start()
 
     def handler(self):
-        while True:
-            self.last_frame = window_capture()
+        while self.Meeting.is_connected:
+            if not self.Meeting.is_frozen:
+                self.last_frame = window_capture()
             self.display_frame(self.last_frame)
             broadcast_thread = threading.Thread(target=self.broadcast_frame, args=(self.last_frame,), daemon=True, name="BroadcastThread")
             broadcast_thread.start()
 
     def display_frame(self, frame):
         frame = convert_bytearray_to_QPixmap(frame)
-        self.set_frame.frame = frame
-        self.set_frame.start()
+        self.SetFrame.frame = frame
+
+        if self.Meeting.is_disconnected:
+            self.SetFrame.finished.connect(self.View.disconnect_screen)
+        else:
+            try:
+                self.SetFrame.finished.disconnect(self.View.disconnect_screen)
+            except TypeError:
+                pass
+
+        self.SetFrame.start()
 
     def broadcast_frame(self, frame):
         pil_img = convert_bytearray_to_pil_image(frame)

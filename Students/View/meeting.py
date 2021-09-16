@@ -515,3 +515,6 @@ class Meeting(QtWidgets.QMainWindow):
         frame = frame.scaled(
                 self.screen.width(), self.screen.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         self.screen.setPixmap(frame)
+
+    def disconnect_screen(self):
+        self.screen.clear()

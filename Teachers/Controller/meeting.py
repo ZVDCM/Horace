@@ -37,14 +37,18 @@ class Operation(QtCore.QThread):
 
 class Meeting:
 
+    is_frozen = False
+    is_connected = True
+    is_disconnected = False
+
     def __init__(self, Controller, Class):
         self.Model = Controller.Model.Meeting
         self.View = Controller.View.Meeting
         self.Controller = Controller
         self.Class = Class
 
-        self.ChatHost = ChatHost(self.Class, self.Model, self.View, self.Controller)
-        self.StreamHost = StreamHost(self.Class, self.Model, self.View, self.Controller)
+        self.StreamHost = StreamHost(self, self.Class, self.Model, self.View, self.Controller)
+        self.ChatHost = ChatHost(self, self.Class, self.Model, self.View, self.Controller)
         self.connect_signals()
         self.View.run()
 

@@ -1,3 +1,4 @@
+import queue
 import threading
 from Students.Misc.Functions.window_capture import screenshot
 from Students.Misc.Widgets.file_message_sent import FileMessageSent
@@ -87,6 +88,18 @@ class Receive(QThread):
 
                     message = normalize_message('name', self.Client.Sender)
                     self.Client.send(message)
+
+                elif message['data'] == 'reconnect':
+                    self.StreamClient.start_displaying()
+                    
+                elif message['data'] == 'disconnect':
+                    self.StreamClient.frames.put(message['data'])
+
+                elif message['data'] == 'frozen':
+                    print('frozen')
+                
+                elif message['data'] == 'thawed':
+                    self.StreamClient.frames = queue.Queue()
 
             elif message['type'] == 'msg':
                 self.Client.MessageReceived.message = message['data']

@@ -3,8 +3,7 @@ import time
 from Students.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
 import pickle
 import zlib
-from PyQt5.QtGui import QPixmap 
-
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QThread, pyqtSignal
 import queue
 import socket
@@ -20,6 +19,17 @@ class Frame(QThread):
 
     def run(self):
         self.operation.emit(self.frame)
+        self.quit()
+
+
+class Operation(QThread):
+    operation = pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+
+    def run(self):
+        self.operation.emit()
         self.quit()
 
 
@@ -45,21 +55,26 @@ class Client:
         self.init_client()
 
     def connect_signals(self):
-        self.set_frame = Frame()
-        self.set_frame.operation.connect(self.View.set_frame)
+        self.SetFrame = Frame()
+        self.SetFrame.operation.connect(self.View.set_frame)
+
+        self.DisconnectScreen = Operation()
+        self.DisconnectScreen.operation.connect(self.View.disconnect_screen)
 
     def init_client(self):
         self.client = socket.socket(type=socket.SOCK_DGRAM)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.client.bind(self.CLIENT_ADDR)
-        self.start()
+        self.start_receiving()
+        self.start_displaying()
 
-    def start(self):
+    def start_receiving(self):
         receiving_thread = threading.Thread(
             target=self.receive, daemon=True, name="StreamReceiveThread")
         receiving_thread.start()
 
+    def start_displaying(self):
         display_thread = threading.Thread(
             target=self.display, daemon=True, name="StreamDisplayThread")
         display_thread.start()
@@ -79,11 +94,14 @@ class Client:
     def display(self):
         while True:
             frame = self.frames.get()
+            if frame == 'disconnect':
+                self.DisconnectScreen.start()
+                return
             try:
                 frame = pickle.loads(zlib.decompress(frame))
                 self.last_frame = convert_pil_image_to_QPixmap(frame)
-                self.set_frame.frame = self.last_frame
-                self.set_frame.start()
+                self.SetFrame.frame = self.last_frame
+                self.SetFrame.start()
                 time.sleep(0.025)
             except zlib.error:
                 continue

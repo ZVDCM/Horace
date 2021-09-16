@@ -5,7 +5,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Overlay(QtWidgets.QWidget):
     reconnect = QtCore.pyqtSignal()
     disconnect = QtCore.pyqtSignal()
-    freeze = QtCore.pyqtSignal()
 
     def __init__(self, parent):
         super().__init__(parent=parent)
@@ -13,7 +12,7 @@ class Overlay(QtWidgets.QWidget):
         self.is_connected = True
         self.setupUi(self)
         self.connect_signals()
-        self.reconnect()
+        self.reconnected()
         self.hide()
 
         self.parent.resizeEvent = self.parent_resized
@@ -97,11 +96,13 @@ class Overlay(QtWidgets.QWidget):
 
     def reconnect_disconnect(self):
         if self.is_connected:
-            self.disconnect()
+            self.disconnected()
+            self.disconnect.emit()
         else:
-            self.reconnect()
+            self.reconnected()
+            self.reconnect.emit()
 
-    def reconnect(self):
+    def reconnected(self):
         self.is_connected = True
         self.btn_reconnect_disconnect.setStyleSheet("""
             QPushButton{
@@ -117,7 +118,7 @@ class Overlay(QtWidgets.QWidget):
             }
         """ % relative_path('Teachers', ['Misc', 'Resources'], 'disconnected.png'))
 
-    def disconnect(self):
+    def disconnected(self):
         self.is_connected = False
         self.btn_reconnect_disconnect.setStyleSheet("""
             QPushButton{
