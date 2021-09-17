@@ -1,11 +1,13 @@
 import threading
 from PyQt5 import QtGui
 from PyQt5.QtCore import QThread, pyqtSignal
+import win32ui
 from Teachers.Misc.Functions.window_capture import convert_bytearray_to_QPixmap, convert_bytearray_to_pil_image, window_capture
 import socket
 import pickle
 import zlib
 import math
+import pywintypes
 
 class Operation(QThread):
     operation = pyqtSignal()
@@ -69,7 +71,10 @@ class Host:
     def handler(self):
         while self.Meeting.is_connected:
             if not self.Meeting.is_frozen:
-                self.last_frame = window_capture()
+                try:
+                    self.last_frame = window_capture()
+                except (win32ui.error, pywintypes.error):
+                    pass
             self.display_frame(self.last_frame)
             broadcast_thread = threading.Thread(target=self.broadcast_frame, args=(self.last_frame,), daemon=True, name="BroadcastThread")
             broadcast_thread.start()

@@ -50,6 +50,10 @@ class Meeting:
         self.StreamHost = StreamHost(self, self.Class, self.Model, self.View, self.Controller)
         self.ChatHost = ChatHost(self, self.Class, self.Model, self.View, self.Controller)
         self.connect_signals()
+
+        student_model = self.Model.ListModel(self.View.lv_student, [])
+        self.View.lv_student.setModel(student_model)
+
         self.View.run()
 
     def connect_signals(self):

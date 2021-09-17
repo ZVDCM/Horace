@@ -29,34 +29,24 @@ def get_cursor():
     _, hcursor, (cx, cy) = win32gui.GetCursorInfo()
     hwin = win32gui.GetDesktopWindow()
     hwindc = win32gui.GetWindowDC(hwin)
+    hdc = win32ui.CreateDCFromHandle(hwindc)
     
-    try:
-        hdc = win32ui.CreateDCFromHandle(hwindc)
-    except: 
-        return
-
     hbmp = win32ui.CreateBitmap()
     hbmp.CreateCompatibleBitmap(hdc, 36, 36)
+
     hdc = hdc.CreateCompatibleDC()
     hdc.SelectObject(hbmp)
-
-    try:
-        hdc.DrawIcon((0, 0), hcursor)
-    except:
-        hdc.DrawIcon((0, 0), 65539)
+    hdc.DrawIcon((0, 0), hcursor)
 
     bmpinfo = hbmp.GetInfo()
     bmpstr = hbmp.GetBitmapBits(True)
+
     im = np.array(Image.frombuffer(
         'RGB',
         (bmpinfo['bmWidth'], bmpinfo['bmHeight']),
         bmpstr, 'raw', 'BGRX', 0, 1))
 
-    try:
-        win32gui.DestroyIcon(hcursor)
-    except:
-        win32gui.DestroyIcon(65539)
-    
+    win32gui.DestroyIcon(hcursor)
     win32gui.DeleteObject(hbmp.GetHandle())
     hdc.DeleteDC()
     

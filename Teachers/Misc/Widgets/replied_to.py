@@ -4,10 +4,10 @@ from Teachers.Misc.Widgets.custom_text_edit import TextEdit
 
 class RepliedMessageSent(QtWidgets.QWidget):
 
-    def __init__(self, parent, target, text):
+    def __init__(self, parent, targets, text):
         super().__init__(parent=parent)
         self.parent = parent
-        self.target = target
+        self.targets = targets
         self.setupUi(self)
         self.textEdit.append(text)
 
@@ -71,4 +71,4 @@ class RepliedMessageSent(QtWidgets.QWidget):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        self.lbl_target.setText(_translate("Form", f"You replied to {self.target}"))
+        self.lbl_target.setText(_translate("Form", f"You replied to {self.targets}"))

@@ -392,6 +392,10 @@ class Meeting(QtWidgets.QMainWindow):
         self.verticalLayout_6.addItem(spacerItem6)
 
         self.verticalLayout_11.addWidget(self.sa_chat)
+
+        self.verticalLayout_12 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_12.setSpacing(6)
+        self.verticalLayout_12.setObjectName("verticalLayout_12")
         self.txt_message = QtWidgets.QLineEdit(self.page_9)
         self.txt_message.setMinimumSize(QtCore.QSize(0, 30))
         font = QtGui.QFont()
@@ -399,9 +403,11 @@ class Meeting(QtWidgets.QMainWindow):
         font.setPointSize(10)
         self.txt_message.setFont(font)
         self.txt_message.setObjectName("txt_message")
-        self.verticalLayout_11.addWidget(self.txt_message)
-        self.horizontalLayout_16 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_16.setObjectName("horizontalLayout_16")
+        self.verticalLayout_12.addWidget(self.txt_message)
+        self.horizontalLayout_18 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_18.setSizeConstraint(
+            QtWidgets.QLayout.SetMinimumSize)
+        self.horizontalLayout_18.setObjectName("horizontalLayout_18")
         self.btn_file = QtWidgets.QPushButton(self.page_9)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -414,25 +420,25 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_file.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_file.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_file.setStyleSheet("QPushButton{\n"
-                                    "    border: none;\n"
-                                    "    border-radius: none;\n"
-                                    "    background: none;\n"
-                                    "    background-repeat: none;\n"
-                                    f"    background-image: url({relative_path('Students', ['Misc', 'Resources'], 'clip.png')});\n"
-                                    "    background-position: center center;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton:hover{\n"
-                                    "    background: none;\n"
-                                    "    background-repeat: none;\n"
-                                    f"    background-image: url({relative_path('Students', ['Misc', 'Resources'], 'clip_2.png')});\n"
-                                    "    background-position: center center;\n"
-                                    "}")
+                                      "    border: none;\n"
+                                      "    border-radius: none;\n"
+                                      "    background: none;\n"
+                                      "    background-repeat: none;\n"
+                                     f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'clip.png')});\n"
+                                      "    background-position: center center;\n"
+                                      "}\n"
+                                      "\n"
+                                      "QPushButton:hover{\n"
+                                      "    background: none;\n"
+                                      "    background-repeat: none;\n"
+                                     f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'clip_2.png')});\n"
+                                      "    background-position: center center;\n"
+                                      "}")
         self.btn_file.setObjectName("btn_file")
-        self.horizontalLayout_16.addWidget(self.btn_file)
-        spacerItem3 = QtWidgets.QSpacerItem(
+        self.horizontalLayout_18.addWidget(self.btn_file)
+        spacerItem1 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_16.addItem(spacerItem3)
+        self.horizontalLayout_18.addItem(spacerItem1)
         self.btn_send = QtWidgets.QPushButton(self.page_9)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -445,23 +451,24 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_send.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_send.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_send.setStyleSheet("QPushButton{\n"
-                                    "    border: none;\n"
-                                    "    border-radius: none;\n"
-                                    "    background: none;\n"
-                                    "    background-repeat: none;\n"
-                                    f"    background-image: url({relative_path('Students', ['Misc', 'Resources'], 'send.png')});\n"
-                                    "    background-position: center center;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton:hover{\n"
-                                    "    background: none;\n"
-                                    "    background-repeat: none;\n"
-                                    f"    background-image: url({relative_path('Students', ['Misc', 'Resources'], 'send_2.png')});\n"
-                                    "    background-position: center center;\n"
-                                    "}")
+                                      "    border: none;\n"
+                                      "    border-radius: none;\n"
+                                      "    background: none;\n"
+                                      "    background-repeat: none;\n"
+                                     f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'send.png')});\n"
+                                      "    background-position: center center;\n"
+                                      "}\n"
+                                      "\n"
+                                      "QPushButton:hover{\n"
+                                      "    background: none;\n"
+                                      "    background-repeat: none;\n"
+                                     f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'send_2.png')});\n"
+                                      "    background-position: center center;\n"
+                                      "}")
         self.btn_send.setObjectName("btn_send")
-        self.horizontalLayout_16.addWidget(self.btn_send)
-        self.verticalLayout_11.addLayout(self.horizontalLayout_16)
+        self.horizontalLayout_18.addWidget(self.btn_send)
+        self.verticalLayout_12.addLayout(self.horizontalLayout_18)
+        self.verticalLayout_11.addLayout(self.verticalLayout_12)
         self.sw_right.addWidget(self.page_9)
         self.horizontalLayout_12.addWidget(self.sw_right)
         self.horizontalLayout_12.setStretch(1, 1)

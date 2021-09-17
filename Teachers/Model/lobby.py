@@ -3,6 +3,7 @@ class Lobby:
     def __init__(self, Model):
         self.Model = Model
         self.Class = Model.Class
+        self.TableModel = Model.TableModel
         self.Database = Model.Database
 
     def get_all_class(self, User):

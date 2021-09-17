@@ -211,7 +211,7 @@ padding-right: 15px</string>
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="C:/Users/moral/Desktop/Resources/Resources.qrc">:/icons/crown.png</pixmap>
+            <pixmap>:/icons/crown.png</pixmap>
            </property>
            <property name="scaledContents">
             <bool>false</bool>
@@ -408,7 +408,7 @@ QPushButton:hover{
             <string notr="true"/>
            </property>
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="section_student">
             <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1">
@@ -1255,8 +1255,8 @@ border-bottom-right-radius: 5px;</string>
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>82</width>
-                         <height>30</height>
+                         <width>44</width>
+                         <height>16</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -1492,8 +1492,8 @@ QPushButton:hover{
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>82</width>
-                         <height>30</height>
+                         <width>44</width>
+                         <height>16</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_53">
@@ -3476,8 +3476,8 @@ border-bottom-right-radius: 5px;</string>
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>82</width>
-                         <height>30</height>
+                         <width>44</width>
+                         <height>16</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -5294,8 +5294,8 @@ border-bottom-right-radius: 5px;</string>
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>82</width>
-                         <height>30</height>
+                         <width>44</width>
+                         <height>16</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_50">

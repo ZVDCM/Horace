@@ -9,7 +9,7 @@ class ListModel(QAbstractListModel):
         self.data = []
         if len(data) != 0:
             for datum in data:
-                self.data.insert(len(self.data)-1, datum.get_display())
+                self.data.insert(len(self.data)-1, datum)
 
     def rowCount(self, parent=None):
         return len(self.data)
@@ -35,11 +35,11 @@ class ListModel(QAbstractListModel):
     def getData(self):
         return self.data
 
-    def insertRows(self, position, rows, parent=QModelIndex()):
+    def insertRows(self, position, rows, value, parent=QModelIndex()):
         self.beginInsertRows(parent, position, position + rows - 1)
 
         for i in range(rows):
-            self.data.insert(position, "<url>")
+            self.data.insert(position, value)
 
         self.endInsertRows()
         return True
