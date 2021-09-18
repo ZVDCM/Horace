@@ -67,6 +67,16 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout.setContentsMargins(15, 15, 15, 15)
         self.horizontalLayout.setSpacing(15)
         self.horizontalLayout.setObjectName("horizontalLayout")
+
+        self.lbl_timer = QtWidgets.QLabel('00:00:00', self.widget1)
+        font = QtGui.QFont()
+        font.setFamily("Barlow Thin")
+        font.setPointSize(11)
+        self.lbl_timer.setFont(font)
+        self.lbl_timer.setIndent(4)
+        self.lbl_timer.setStyleSheet("color: gray")
+        self.horizontalLayout.addWidget(self.lbl_timer)
+
         spacerItem = QtWidgets.QSpacerItem(
             772, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
@@ -935,8 +945,9 @@ class Meeting(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot(str, QtGui.QPixmap)
     def set_student_frame(self, name, frame):
         student_item = self.scrollAreaWidgetContents_2.findChild(QtWidgets.QWidget, name)
-        target_lbl = student_item.verticalLayout.itemAt(1).widget()
-        target_lbl.setPixmap(frame)
+        if student_item:
+            target_lbl = student_item.verticalLayout.itemAt(1).widget()
+            target_lbl.setPixmap(frame)
 
     @QtCore.pyqtSlot(str)
     def remove_student_item(self, name):
@@ -945,3 +956,6 @@ class Meeting(QtWidgets.QMainWindow):
 
     def disconnect_screen(self):
         self.screen.clear()
+
+    def set_timer(self, time):
+        self.lbl_timer.setText(time)

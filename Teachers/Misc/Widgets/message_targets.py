@@ -240,4 +240,5 @@ class MessageTarget(QtWidgets.QDialog):
 
     def set_model(self, table_model):
         self.lv_target_student.setModel(table_model)
+        self.lv_target_student.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
         self.targets = table_model.getData()

@@ -61,6 +61,17 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout_11.setContentsMargins(15, 15, 15, 15)
         self.horizontalLayout_11.setSpacing(15)
         self.horizontalLayout_11.setObjectName("horizontalLayout_11")
+
+        self.lbl_timer = QtWidgets.QLabel('00:00:00', self.widget_2)
+        font = QtGui.QFont()
+        font.setFamily("Barlow Thin")
+        font.setPointSize(11)
+        self.lbl_timer.setFont(font)
+        self.lbl_timer.setIndent(4)
+        self.lbl_timer.setStyleSheet("color: gray")
+        self.lbl_timer.hide()
+        self.horizontalLayout_11.addWidget(self.lbl_timer)
+
         spacerItem = QtWidgets.QSpacerItem(
             772, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_11.addItem(spacerItem)
@@ -525,3 +536,6 @@ class Meeting(QtWidgets.QMainWindow):
 
     def disconnect_screen(self):
         self.screen.clear()
+
+    def set_timer(self, time):
+        self.lbl_timer.setText(time)

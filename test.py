@@ -1,4 +1,2 @@
-x = ["1", "2", "3"]
-
-if 1 < len(x) < 3:
-    print(2)
+x = {1:2, 2:3}
+print(list(x.items())[1:])
