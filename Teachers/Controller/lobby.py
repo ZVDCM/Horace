@@ -79,7 +79,6 @@ class Lobby:
         Class.HostAddress = address
         self.set_class_teacher_address.val = address, Class, self.Controller.User
         self.set_class_teacher_address.operation.connect(lambda: self.init_meeting(Class))
-        self.set_class_teacher_address.operation.connect(self.View.close)
         self.set_class_teacher_address.start()
 
     @staticmethod

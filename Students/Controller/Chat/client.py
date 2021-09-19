@@ -13,6 +13,8 @@ import time
 import socket
 from PyQt5.QtCore import QThread, pyqtSignal
 from Students.Misc.Functions.messages import *
+import platform
+import subprocess
 
 
 class MessageReceived(QThread):
@@ -72,6 +74,10 @@ class Connect(QThread):
 
 
 class Receive(QThread):
+    HOST_PATH = os.path.join(os.environ['SystemRoot'], 'SysNative' if platform.architecture()[
+                             0] == '32bit' else 'System32', "drivers", "etc", "hosts")
+    REDIRECT = "127.0.0.1"
+    DETACHED_PROCESS = 0x00000008
 
     def __init__(self, Client):
         super().__init__()
@@ -98,6 +104,19 @@ class Receive(QThread):
                 elif message['data'] == 'thawed':
                     self.StreamClient.frames = queue.Queue()
 
+                elif message['data'] == 'shutdown':
+                    print(message['data'])
+                    # subprocess.call('shutdown /s /f /t 0',
+                    #                     creationflags=self.DETACHED_PROCESS)
+                elif message['data'] == 'restart':
+                    print(message['data'])
+                    # subprocess.call('shutdown /r /f /t 0',
+                    #                     creationflags=self.DETACHED_PROCESS)
+                elif message['data'] == 'lock':
+                    print(message['data'])
+                    # subprocess.call('rundll32.exe user32.dll,LockWorkStation',
+                    #                     creationflags=self.DETACHED_PROCESS)
+
             elif message['type'] == 'time':
                 self.Client.EndLoading.start()
                 self.Client.start_time = message['data']
@@ -120,7 +139,6 @@ class Receive(QThread):
 
         self.quit()
 
-   
 
 class SetTime(QThread):
     operation = pyqtSignal(str)

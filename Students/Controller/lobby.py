@@ -53,7 +53,6 @@ class Lobby:
     def class_item_clicked(self, Class):
         self.get_class_section_address.val = Class, self.Controller.User
         self.get_class_section_address.operation.connect(self.init_meeting)
-        self.get_class_section_address.operation.connect(self.View.close)
         self.get_class_section_address.start()
 
     def init_meeting(self, Class):

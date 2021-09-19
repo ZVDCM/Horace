@@ -1,3 +1,4 @@
+from Teachers.Misc.Widgets.active_overlay import ActiveOverlay
 from Teachers.Misc.Widgets.overlay import Overlay
 from PIL import Image
 from Teachers.Misc.Widgets.replied_to import RepliedMessageSent
@@ -18,7 +19,9 @@ class Meeting(QtWidgets.QMainWindow):
         super().__init__()
         self.View = View
         self.setupUi(self)
-
+        QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
+        self.ActiveOverlay = ActiveOverlay(self)
+        
         self.screens = [self.btn_screenshare, self.btn_inspector]
         self.interactors = [self.btn_student_list,
                             self.btn_chat, self.btn_block]
@@ -27,13 +30,14 @@ class Meeting(QtWidgets.QMainWindow):
 
         self.Overlay = Overlay(self.page)
 
+
     def run(self):
         self.raise_()
         self.show()
-        # self.title_bar.btn_maximize_restore.click()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(800, 570)
         MainWindow.setMinimumSize(QtCore.QSize(740, 540))
         MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -916,6 +920,14 @@ class Meeting(QtWidgets.QMainWindow):
         self.label_6.setText(_translate("MainWindow", "Domain"))
         self.btn_add_edit_url.setText(_translate("MainWindow", "Add"))
         self.btn_cancel_url.setText(_translate("MainWindow", "Cancel"))
+
+    def on_focus_change(self):
+        if self.isActiveWindow():
+            self.ActiveOverlay.is_focused = True
+            self.ActiveOverlay.update()
+        else:
+            self.ActiveOverlay.is_focused = False
+            self.ActiveOverlay.update()
 
     def close_right(self):
         for interactor in self.interactors:

@@ -16,7 +16,7 @@ import select
 import queue
 from PyQt5.QtCore import QThread, pyqtSignal
 from Teachers.Misc.Widgets.message_received import MessageReceived as _MessageReceived
-from datetime import date, datetime, time
+from datetime import date, datetime
 
 
 class NotMessage(Exception):
@@ -89,6 +89,7 @@ class SetStudentFrame(QThread):
         self.operation.emit(self.name, self.frame)
         self.quit()
 
+
 class SetTime(QThread):
     operation = pyqtSignal(str)
 
@@ -99,6 +100,25 @@ class SetTime(QThread):
     def run(self):
         self.operation.emit(self.time)
         self.quit()
+
+
+class Attendance(QtCore.QThread):
+    operation = QtCore.pyqtSignal()
+    error = QtCore.pyqtSignal(str)
+
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+        self.val = ()
+
+    def run(self):
+        res = self.fn(*self.val)
+        if res == 'successful':
+            self.operation.emit()
+        else:
+            self.error.emit(res)
+        self.quit()
+
 
 class Host:
 
@@ -133,6 +153,10 @@ class Host:
         self.View.btn_send_many.clicked.connect(self.init_message_target)
         self.View.closeEvent = self.meeting_closed
 
+        self.View.btn_shutdown.clicked.connect(lambda: self.btn_commands_clicked('shutdown'))
+        self.View.btn_restart.clicked.connect(lambda: self.btn_commands_clicked('restart'))
+        self.View.btn_lock.clicked.connect(lambda: self.btn_commands_clicked('lock'))
+
         self.MessageReceived = MessageReceived()
         self.MessageReceived.operation.connect(self.display_message_received)
 
@@ -159,6 +183,10 @@ class Host:
         self.timer.timeout.connect(self.timer_event)
         self.timer.start(1000)
 
+        self.AddAttendance = Attendance(self.Model.create_attendance)
+        self.AddAttendance.operation.connect(lambda: print("Success"))
+        self.AddAttendance.error.connect(lambda: print("Error"))
+
     def init_host(self):
         self.host = socket.socket()
         self.host.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -168,7 +196,7 @@ class Host:
         self.inputs.append(self.host)
 
         class_start = self.now()
-        self.time['Teacher'] = {'Start' : class_start}
+        self.time['Teacher'] = {'Start': class_start}
 
         self.handler_thread = threading.Thread(
             target=self.handler, daemon=True, name='ChatHandler')
@@ -225,10 +253,12 @@ class Host:
 
                     time_joined = self.now()
                     try:
-                        self.time[message['sender']]['log'].append(('Joined', time_joined))
+                        self.time[message['sender']]['log'].append(
+                            ('Joined', time_joined))
                         self.time[message['sender']]['logged'] += 1
                     except KeyError:
-                        self.time[message['sender']] = {'logged': 1, 'log': [('Joined', time_joined)]}
+                        self.time[message['sender']] = {
+                            'logged': 1, 'log': [('Joined', time_joined)]}
 
                     message = normalize_message(
                         'time', self.start_time, target=message['sender'])
@@ -258,7 +288,8 @@ class Host:
 
         except NotMessage:
             time_left = self.now()
-            self.time[self.clients_name[readable]]['log'].append(('Left', time_left))
+            self.time[self.clients_name[readable]
+                      ]['log'].append(('Left', time_left))
             self.time[self.clients_name[readable]]['logged'] += 1
             self.exceptional(readable)
 
@@ -496,21 +527,22 @@ class Host:
         for student_name, student_info in list(self.time.items())[1:]:
             if 2 % student_info['logged'] != 0:
                 self.time[student_name]['log'].append(('Left', class_end))
-        
-        attendance_thread = threading.Thread(target=self.record_attendance, daemon=True, name="AttendanceThread")
+
+        attendance_thread = threading.Thread(
+            target=self.record_attendance, daemon=True, name="AttendanceThread")
         attendance_thread.start()
 
     def record_attendance(self):
         attendance = "".join(("Class Meeting Summary\n",
-                      f"Total Number of Students,{len(list(self.time.items())[1:])}\n",
-                      f"Teacher,{self.Controller.User.Username}\n",
-                      f"Class Name,{self.Class.Name}\n",
-                      f"Scheduled Start,{self.Class.Start}\n",
-                      f"Scheduled End,{self.Class.End}\n",
-                      f"Class Start,\"{self.time['Teacher']['Start']}\"\n",
-                      f"Class End,\"{self.time['Teacher']['End']}\"\n",
-                      f"\nUsername,Join Time,Leave Time\n",
-        ))
+                              f"Total Number of Students,{len(list(self.time.items())[1:])}\n",
+                              f"Teacher,{self.Controller.User.Username}\n",
+                              f"Class Name,{self.Class.Name}\n",
+                              f"Scheduled Start,{self.Class.Start}\n",
+                              f"Scheduled End,{self.Class.End}\n",
+                              f"Class Start,\"{self.time['Teacher']['Start']}\"\n",
+                              f"Class End,\"{self.time['Teacher']['End']}\"\n",
+                              f"\nUsername,Join Time,Leave Time\n",
+                              ))
 
         del self.time['Teacher']
         for student_name, student_info in self.time.items():
@@ -523,8 +555,9 @@ class Host:
             attendance += student_row + "\n"
 
         data = bytearray(attendance.encode('utf-8'))
-        with open("%s-%s.csv" % (self.Class.Code, date.today().strftime("%B %d, %Y")), 'wb') as file:
-            file.write(data)
+        self.AddAttendance.val = self.Controller.User.Username, "%s %s.csv" % (
+            self.Class.Code,  date.today().strftime("%B %d, %Y")), data, datetime.today()
+        self.AddAttendance.start()
 
     def timer_event(self):
         self.start_time = self.start_time.addSecs(1)
@@ -534,3 +567,7 @@ class Host:
     def now(self):
         now = datetime.now()
         return now.strftime("%I:%M %p")
+
+    def btn_commands_clicked(self, command):
+        message = normalize_message('cmd', command)
+        self.set_message(message)

@@ -1,5 +1,4 @@
-from PIL.Image import Image
-from PIL.ImageQt import ImageQt
+from Students.Misc.Widgets.active_overlay import ActiveOverlay
 from Students.Misc.Widgets.teacher_message_received import MessageReceived
 from Students.Misc.Widgets.custom_button import Button
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -17,6 +16,8 @@ class Meeting(QtWidgets.QMainWindow):
         super().__init__()
         self.View = View
         self.setupUi(self)
+        QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
+        self.ActiveOverlay = ActiveOverlay(self)
 
         self.LoadingScreen = LoadingScreen(self.widget, relative_path('Students', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         self.interactors = [self.btn_student_list, self.btn_chat]
@@ -25,10 +26,10 @@ class Meeting(QtWidgets.QMainWindow):
     def run(self):
         self.raise_()
         self.show()
-        # self.title_bar.btn_maximize_restore.click()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(800, 570)
         MainWindow.setMinimumSize(QtCore.QSize(740, 540))
         MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -510,6 +511,14 @@ class Meeting(QtWidgets.QMainWindow):
         self.label_3.setText(_translate("MainWindow", "Chat"))
         self.txt_message.setPlaceholderText(
             _translate("MainWindow", "Type Something..."))
+
+    def on_focus_change(self):
+        if self.isActiveWindow():
+            self.ActiveOverlay.is_focused = True
+            self.ActiveOverlay.update()
+        else:
+            self.ActiveOverlay.is_focused = False
+            self.ActiveOverlay.update()
 
     def close_right(self):
         for interactor in self.interactors:
