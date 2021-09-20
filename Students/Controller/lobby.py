@@ -33,8 +33,9 @@ class Lobby:
         self.get_all_class.started.connect(self.View.ClassLoadingScreen.run)
         self.get_all_class.operation.connect(self.set_classes)
         self.get_all_class.finished.connect(self.View.ClassLoadingScreen.hide)
-
-        self.get_class_section_address = Get(self.Model.get_class_section_address)
+    
+    def GetClassSectionAddress(self):
+        return Get(self.Model.get_class_section_address)
 
     def get_classes(self):
         self.get_all_class.val = self.Controller.User,
@@ -51,9 +52,10 @@ class Lobby:
             self.View.add_class_item(_class)
 
     def class_item_clicked(self, Class):
-        self.get_class_section_address.val = Class, self.Controller.User
-        self.get_class_section_address.operation.connect(self.init_meeting)
-        self.get_class_section_address.start()
+        self.get_class_section_address_handler = self.GetClassSectionAddress()
+        self.get_class_section_address_handler.val = Class, self.Controller.User
+        self.get_class_section_address_handler.operation.connect(self.init_meeting)
+        self.get_class_section_address_handler.start()
 
     def init_meeting(self, Class):
         self.Controller.Model.init_meeting()

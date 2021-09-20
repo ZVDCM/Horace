@@ -57,8 +57,9 @@ class Lobby:
         self.get_all_class.started.connect(self.View.ClassLoadingScreen.run)
         self.get_all_class.operation.connect(self.set_classes)
         self.get_all_class.finished.connect(self.View.ClassLoadingScreen.hide)
-
-        self.set_class_teacher_address = Operation(self.Model.set_class_teacher_address)
+    
+    def SetClassTeacherAddress(self):
+        return Operation(self.Model.set_class_teacher_address)
 
     def get_classes(self):
         self.get_all_class.val = self.Controller.User,
@@ -77,9 +78,10 @@ class Lobby:
     def class_item_clicked(self, Class):
         address = self.get_local_ip()
         Class.HostAddress = address
-        self.set_class_teacher_address.val = address, Class, self.Controller.User
-        self.set_class_teacher_address.operation.connect(lambda: self.init_meeting(Class))
-        self.set_class_teacher_address.start()
+        self.set_class_teacher_address_handler = self.SetClassTeacherAddress()
+        self.set_class_teacher_address_handler.val = address, Class, self.Controller.User
+        self.set_class_teacher_address_handler.operation.connect(lambda: self.init_meeting(Class))
+        self.set_class_teacher_address_handler.start()
 
     @staticmethod
     def get_local_ip():

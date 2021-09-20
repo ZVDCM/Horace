@@ -19,6 +19,7 @@ class Meeting(QtWidgets.QMainWindow):
         super().__init__()
         self.View = View
         self.setupUi(self)
+
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
         
@@ -964,10 +965,11 @@ class Meeting(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot(str)
     def remove_student_item(self, name):
         student_item = self.scrollAreaWidgetContents_2.findChild(QtWidgets.QWidget, name)
-        self.flow_layout.removeWidget(student_item)
+        student_item.deleteLater()
 
     def disconnect_screen(self):
         self.screen.clear()
 
     def set_timer(self, time):
         self.lbl_timer.setText(time)
+    

@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from Teachers.Misc.Widgets.context_menu import ContextMenu
 
 
 class StudentItem(QtWidgets.QWidget):
@@ -8,7 +9,10 @@ class StudentItem(QtWidgets.QWidget):
         super().__init__(parent=parent)
         self.name = name
         self.setupUi(self)
+        self.ContextMenu = ContextMenu(self)
+        self.ContextMenu.showEvent = self.show_context_menu
         self.lbl_student_name.setText(self.name)
+        self.mouse_pos = QtCore.QPoint(0, 0)
 
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -36,5 +40,12 @@ class StudentItem(QtWidgets.QWidget):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def mousePressEvent(self, event):
-        self.operation.emit(self.name)
+        if event.buttons() == QtCore.Qt.LeftButton:
+            self.mouse_pos = self.mapToGlobal(event.pos())
+            self.ContextMenu.show()
+            self.operation.emit(self.name)
         super().mousePressEvent(event)
+
+    def show_context_menu(self, event):
+        self.ContextMenu.setFocus(True)
+        self.ContextMenu.move(self.mouse_pos)

@@ -16,6 +16,7 @@ import select
 import queue
 from PyQt5.QtCore import QThread, pyqtSignal
 from Teachers.Misc.Widgets.message_received import MessageReceived as _MessageReceived
+from Teachers.Misc.Widgets.remote_desktop import RemoteDesktop
 from datetime import date, datetime
 
 
@@ -123,13 +124,6 @@ class Attendance(QtCore.QThread):
 class Host:
 
     PORT = 43200
-    messages = {}
-    inputs = []
-    outputs = []
-    clients_name = {}
-    clients_socket = {}
-    time = {}
-    start_time = QtCore.QTime(0, 0, 0)
 
     def __init__(self, Meeting, Class, Model, View, Controller):
         self.Meeting = Meeting
@@ -138,6 +132,14 @@ class Host:
         self.View = View
         self.Controller = Controller
         self.Sender = Controller.User.Username
+        self.target = None
+        self.messages = {}
+        self.inputs = []
+        self.outputs = []
+        self.clients_name = {}
+        self.clients_socket = {}
+        self.time = {}
+        self.start_time = QtCore.QTime(0, 0, 0)
         self.connect_signals()
         self.init_host()
 
@@ -193,17 +195,18 @@ class Host:
         address = (self.Class.HostAddress, self.PORT)
         self.host.bind(address)
         self.host.listen()
+        print(self.host)
         self.inputs.append(self.host)
 
         class_start = self.now()
         self.time['Teacher'] = {'Start': class_start}
 
-        self.handler_thread = threading.Thread(
+        handler_thread = threading.Thread(
             target=self.handler, daemon=True, name='ChatHandler')
-        self.handler_thread.start()
+        handler_thread.start()
 
     def handler(self):
-        while self.inputs:
+        while self.View.isVisible():
             readables, writables, exceptionals = select.select(
                 self.inputs, self.outputs, self.inputs)
 
@@ -220,6 +223,10 @@ class Host:
 
             for exceptional in exceptionals:
                 self.exceptional(exceptional)
+
+        else:
+            for socket in self.inputs:
+                socket.close()
 
     def host_readable(self, readable):
         if readable is not self.host:
@@ -282,6 +289,9 @@ class Host:
                 self.SetStudentFrame.name = message['sender']
                 self.SetStudentFrame.frame = frame
                 self.SetStudentFrame.start()
+
+            elif message['type'] == 'res':
+                self.RemoteDesktop = RemoteDesktop(self.View, message['data'])
 
         except FromDifferentClass:
             self.exceptional(readable)
@@ -441,11 +451,15 @@ class Host:
     def add_student_item(self, name):
         student_item = _StudentItem(self.View, name)
         student_item.operation.connect(self.student_item_clicked)
+        student_item.ContextMenu.shutdown.connect(lambda: self.btn_commands_clicked('shutdown'))
+        student_item.ContextMenu.restart.connect(lambda: self.btn_commands_clicked('restart'))
+        student_item.ContextMenu.lock.connect(lambda: self.btn_commands_clicked('lock'))
+        student_item.ContextMenu.control.connect(self.control_desktop)
         student_item.setObjectName(name)
         self.View.flow_layout.addWidget(student_item)
 
     def student_item_clicked(self, name):
-        print(name)
+        self.target = name
 
     def reconnect(self):
         self.Meeting.is_connected = True
@@ -571,3 +585,8 @@ class Host:
     def btn_commands_clicked(self, command):
         message = normalize_message('cmd', command)
         self.set_message(message)
+
+    def control_desktop(self):
+        message = normalize_message('cmd', 'control')
+        self.set_message(message)
+        

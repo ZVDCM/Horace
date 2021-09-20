@@ -57,15 +57,15 @@ class Operation(QThread):
 
 class Connect(QThread):
 
-    def __init__(self, client, address):
+    def __init__(self, Client, address):
         super().__init__()
-        self.client = client
+        self.Client = Client
         self.address = address
 
     def run(self):
-        while True:
+        while self.Client.View.isVisible():
             try:
-                self.client.connect(self.address)
+                self.Client.client.connect(self.address)
                 break
             except:
                 print('Connecting')
@@ -116,12 +116,17 @@ class Receive(QThread):
                     print(message['data'])
                     # subprocess.call('rundll32.exe user32.dll,LockWorkStation',
                     #                     creationflags=self.DETACHED_PROCESS)
+                elif message['data'] == 'control':
+                    print(message['data'])
+                    # subprocess.call('rundll32.exe user32.dll,LockWorkStation',
+                    #                     creationflags=self.DETACHED_PROCESS)
 
             elif message['type'] == 'time':
                 self.Client.EndLoading.start()
                 self.Client.start_time = message['data']
                 self.Client.SetTime.time = message['data'].toString("hh:mm:ss")
                 self.Client.SetTime.start()
+                self.Client.ShowLabel.start()
 
                 self.StreamClient = StreamClient(
                     self.Client.Class, self.Client.Model, self.Client.View, self.Client.Controller)
@@ -167,6 +172,8 @@ class Client:
         self.init_client()
 
     def connect_signals(self):
+        self.View.closeEvent = self.meeting_closed
+
         self.StartLoading = Operation()
         self.StartLoading.operation.connect(self.View.LoadingScreen.run)
 
@@ -191,7 +198,6 @@ class Client:
 
         self.SetTime = SetTime()
         self.SetTime.operation.connect(self.View.set_timer)
-        self.SetTime.finished.connect(self.ShowLabel.start)
 
         self.Timer = QtCore.QTimer()
         self.Timer.timeout.connect(self.timer_event)
@@ -200,7 +206,7 @@ class Client:
     def init_client(self):
         self.client = socket.socket()
         address = (self.Class.HostAddress, self.PORT)
-        self.connect_handler = Connect(self.client, address)
+        self.connect_handler = Connect(self, address)
         self.connect_handler.started.connect(self.View.LoadingScreen.run)
         self.connect_handler.finished.connect(self.start)
         self.connect_handler.start()
@@ -218,18 +224,19 @@ class Client:
         send_screenshot_thread.start()
 
     def send_screenshot(self):
-        while True:
-            if self.client._closed:
-                return
+        while self.View.isVisible():
             sct = screenshot()
             message = normalize_message('frame', sct)
             self.send(message)
             time.sleep(2)
 
     def send(self, message):
-        message['sender'] = self.Sender
-        message = serialize_message(message)
-        send_message(message, self.client)
+        try:
+            message['sender'] = self.Sender
+            message = serialize_message(message)
+            send_message(message, self.client)
+        except OSError:
+            return
 
     def send_message(self):
         text = self.View.txt_message.text()
@@ -287,3 +294,6 @@ class Client:
         self.start_time = self.start_time.addSecs(1)
         self.SetTime.time = self.start_time.toString("hh:mm:ss")
         self.SetTime.start()
+
+    def meeting_closed(self, event):
+        self.client.close()

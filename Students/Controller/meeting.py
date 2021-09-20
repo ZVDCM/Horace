@@ -70,4 +70,3 @@ class Meeting:
     def list_all_threads(self):
         for i in threading.enumerate():
             print(i)
-    

@@ -46,17 +46,26 @@ class Overlay(QtWidgets.QWidget):
         self.btn_freeze.setMaximumSize(QtCore.QSize(50, 50))
         self.btn_freeze.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_freeze.setStyleSheet("""
-            QPushButton{
+            QPushButton {
                 border-radius: 25px;
                 background-color: #eee;
                 background-repeat: none;
                 background-image: url(%s);
                 background-position: center center;
             }
+
             QPushButton:pressed {
                 background-color: #ccc;
             }
-        """  % relative_path('Teachers', ['Misc', 'Resources'], 'freeze.png'))
+
+            QPushButton:disabled {
+                background: none;
+                background-color: #6b6b6b;
+                background-repeat: none;
+                background-image: url(%s);
+                background-position: center center;
+            }
+        """  % (relative_path('Teachers', ['Misc', 'Resources'], 'freeze.png'), relative_path('Teachers', ['Misc', 'Resources'], 'freeze_2.png')))
         self.btn_freeze.setObjectName("btn_freeze")
         self.horizontalLayout.addWidget(self.btn_freeze)
         spacerItem2 = QtWidgets.QSpacerItem(
@@ -117,6 +126,7 @@ class Overlay(QtWidgets.QWidget):
                 background-color: #ccc;
             }
         """ % relative_path('Teachers', ['Misc', 'Resources'], 'disconnected.png'))
+        self.btn_freeze.setEnabled(True)
 
     def disconnected(self):
         self.is_connected = False
@@ -133,3 +143,4 @@ class Overlay(QtWidgets.QWidget):
                 background-color: #ccc;
             }
         """ % relative_path('Teachers', ['Misc', 'Resources'], 'connected.png'))
+        self.btn_freeze.setEnabled(False)

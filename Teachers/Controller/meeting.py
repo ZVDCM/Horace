@@ -1,3 +1,4 @@
+import socket
 from PyQt5 import QtCore
 from Teachers.Controller.Chat.host import Host as ChatHost
 from Teachers.Controller.Stream.host import Host as StreamHost
@@ -37,24 +38,23 @@ class Operation(QtCore.QThread):
 
 class Meeting:
 
-    is_frozen = False
-    is_connected = True
-    is_disconnected = False
-
     def __init__(self, Controller, Class):
         self.Model = Controller.Model.Meeting
         self.View = Controller.View.Meeting
         self.Controller = Controller
         self.Class = Class
-
-        self.StreamHost = StreamHost(self, self.Class, self.Model, self.View, self.Controller)
-        self.ChatHost = ChatHost(self, self.Class, self.Model, self.View, self.Controller)
-        self.connect_signals()
+        self.is_frozen = False
+        self.is_connected = True
+        self.is_disconnected = False
 
         student_model = self.Model.ListModel(self.View.lv_student, [])
         self.View.lv_student.setModel(student_model)
 
+        self.connect_signals()
         self.View.run()
+
+        self.StreamHost = StreamHost(self, self.Class, self.Model, self.View, self.Controller)
+        self.ChatHost = ChatHost(self, self.Class, self.Model, self.View, self.Controller)
 
     def connect_signals(self):
         for screen in self.View.screens:

@@ -1,5 +1,3 @@
-
-import time
 from Students.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
 import pickle
 import zlib
@@ -81,15 +79,19 @@ class Client:
 
     def receive(self):
         while True:
-            data, _ = self.client.recvfrom(self.MAX_DGRAM)
-            if len(data) < 100:
-                packets = int(data.decode(self.FORMAT))
-                buffer = b""
-                for _ in range(packets):
-                    data, _ = self.client.recvfrom(self.MAX_DGRAM)
-                    buffer += data
+            try:
+                data, _ = self.client.recvfrom(self.MAX_DGRAM)
+                if len(data) < 100:
+                    packets = int(data.decode(self.FORMAT))
+                    buffer = b""
+                    for _ in range(packets):
+                        data, _ = self.client.recvfrom(self.MAX_DGRAM)
+                        buffer += data
 
-                self.frames.put(buffer)
+                    self.frames.put(buffer)
+            except OSError:
+                self.frames.put("disconnect")
+                return
 
     def display(self):
         while True:
@@ -102,6 +104,5 @@ class Client:
                 self.last_frame = convert_pil_image_to_QPixmap(frame)
                 self.SetFrame.frame = self.last_frame
                 self.SetFrame.start()
-                time.sleep(0.025)
             except zlib.error:
                 continue

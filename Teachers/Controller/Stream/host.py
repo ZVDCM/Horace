@@ -42,14 +42,13 @@ class Host:
 
     FORMAT = 'utf-8'
 
-    last_frame = bytearray()
-
     def __init__(self, Meeting, Class, Model, View, Controller):
         self.Meeting = Meeting
         self.Class = Class
         self.Model = Model
         self.View = View
         self.Controller = Controller
+        self.last_frame = bytearray()
         self.connect_signals()
         self.init_host()
 
@@ -70,7 +69,7 @@ class Host:
         self.stream_thread.start()
 
     def handler(self):
-        while self.Meeting.is_connected:
+        while self.View.isVisible() and self.Meeting.is_connected:
             if not self.Meeting.is_frozen:
                 try:
                     self.last_frame = window_capture()
@@ -79,6 +78,7 @@ class Host:
             self.display_frame(self.last_frame)
             broadcast_thread = threading.Thread(target=self.broadcast_frame, args=(self.last_frame,), daemon=True, name="BroadcastThread")
             broadcast_thread.start()
+        self.View.disconnect_screen()
 
     def display_frame(self, frame):
         frame = convert_bytearray_to_QPixmap(frame)
@@ -95,13 +95,16 @@ class Host:
         self.SetFrame.start()
 
     def broadcast_frame(self, frame):
+        if not self.View.isVisible():
+            return
+            
         pil_img = convert_bytearray_to_pil_image(frame)
         pil_img = zlib.compress(pickle.dumps(
             pil_img, pickle.HIGHEST_PROTOCOL), 9)
         packets = str(math.ceil(len(pil_img)/self.BUFFER)).encode(self.FORMAT)
         self.host.sendto(packets, self.BROADCAST_ADDR)
 
-        while pil_img:
+        while pil_img and self.View.isVisible():
             bytes_sent = self.host.sendto(
                 pil_img[:self.BUFFER], self.BROADCAST_ADDR)
             pil_img = pil_img[bytes_sent:]
