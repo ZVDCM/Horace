@@ -41,14 +41,15 @@ class Client:
 
     FORMAT = 'utf-8'
 
-    frames = queue.Queue()
-    last_frame = None
-
     def __init__(self, Class, Model, View, Controller):
         self.Class = Class
         self.Model = Model
         self.View = View
         self.Controller = Controller
+        
+        self.frames = queue.Queue()
+        self.last_frame = None
+
         self.connect_signals()
         self.init_client()
 

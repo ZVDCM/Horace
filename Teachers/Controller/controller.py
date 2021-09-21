@@ -2,6 +2,7 @@ from Teachers.Model.model import Model
 from Teachers.View.view import View
 from Teachers.Controller.lobby import Lobby
 from Teachers.Controller.meeting import Meeting
+from Teachers.Controller.remote_desktop import RemoteDesktop
 
 class Controller:
 
@@ -18,3 +19,6 @@ class Controller:
 
     def init_meeting(self, Class):
         self.Meeting = Meeting(self, Class)
+
+    def init_remote_desktop(self, name):
+        self.RemoteDesktop = RemoteDesktop(self, name)

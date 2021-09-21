@@ -1,4 +1,92 @@
-class RDC:
+import queue
+from Teachers.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
+from PyQt5 import QtGui
+from PyQt5.QtCore import QThread, pyqtSignal
+from Teachers.Misc.Functions.messages import normalize_message
+import zlib
+import pickle
+import socket
+import threading
+
+class Frame(QThread):
+    operation = pyqtSignal(QtGui.QPixmap)
 
     def __init__(self):
-        pass
+        super().__init__()
+        self.frame = None
+
+    def run(self):
+        self.operation.emit(self.frame)
+        self.quit()
+
+class Host:
+    MAX_DGRAM = 2**16
+    BUFFER = MAX_DGRAM - 64
+    PORT = 43203
+
+    FORMAT = 'utf-8'
+
+    def __init__(self, parent, Chat, target):
+        self.parent = parent
+        self.parent.operation.connect(self.get_mouse_pos)
+        self.Chat = Chat
+        self.target = target
+
+        self.last_frame = None
+        self.frames = queue.Queue()
+        self.connect_signals()
+        self.parent.run()
+        self.start()
+
+    def connect_signals(self):
+        self.SetFrame = Frame()
+        self.SetFrame.operation.connect(self.parent.set_frame)
+
+    def get_mouse_pos(self, coordinates):
+        message = normalize_message('mouse', ['move', coordinates], target=self.target)
+        self.Chat.set_message(message)
+
+    def start(self):
+        self.server = socket.socket(type=socket.SOCK_DGRAM)
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server.bind((socket.gethostbyname(socket.gethostname()), self.PORT))
+
+        receive_thread = threading.Thread(
+            target=self.receive, daemon=True, name="RDCUDPReceiveThread")
+        receive_thread.start()
+
+        display_thread = threading.Thread(
+            target=self.display, daemon=True, name="RDCUDPDisplayThread")
+        display_thread.start()
+
+    def stop(self):
+        self.server.close()
+
+    def receive(self):
+        while not self.server._closed:
+            try:
+                data, _ = self.server.recvfrom(self.MAX_DGRAM)
+                if len(data) < 100:
+                    packets = int(data.decode(self.FORMAT))
+                    buffer = b""
+                    for _ in range(packets):
+                        data, _ = self.server.recvfrom(self.MAX_DGRAM)
+                        buffer += data
+
+                    self.frames.put(buffer)
+            except OSError:
+                self.frames.put("disconnect")
+                return
+
+    def display(self):
+        while not self.server._closed:
+            frame = self.frames.get()
+            if frame == 'disconnect':
+                return
+            try:
+                frame = pickle.loads(zlib.decompress(frame))
+                self.last_frame = convert_pil_image_to_QPixmap(frame)
+                self.SetFrame.frame = self.last_frame
+                self.SetFrame.start()
+            except zlib.error:
+                continue

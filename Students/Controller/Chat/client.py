@@ -2,6 +2,7 @@ import queue
 import threading
 
 from PyQt5 import QtCore
+from win32api import GetSystemMetrics
 from Students.Misc.Functions.window_capture import screenshot
 from Students.Misc.Widgets.file_message_sent import FileMessageSent
 import os
@@ -15,6 +16,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from Students.Misc.Functions.messages import *
 import platform
 import subprocess
+from Students.Controller.RDC.client import Client as RDCClient
 
 
 class MessageReceived(QThread):
@@ -117,9 +119,15 @@ class Receive(QThread):
                     # subprocess.call('rundll32.exe user32.dll,LockWorkStation',
                     #                     creationflags=self.DETACHED_PROCESS)
                 elif message['data'] == 'control':
-                    print(message['data'])
-                    # subprocess.call('rundll32.exe user32.dll,LockWorkStation',
-                    #                     creationflags=self.DETACHED_PROCESS)
+                    self.RDCClient = RDCClient(self.Client.Class)
+
+                    width, height = GetSystemMetrics(0), GetSystemMetrics(1)
+                    message = normalize_message('res', (width, height))
+                    self.Client.send(message)
+
+            elif message['type'] == 'mouse':
+                if message['data'][0] == 'move':
+                    print(message['data'][1])
 
             elif message['type'] == 'time':
                 self.Client.EndLoading.start()

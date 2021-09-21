@@ -147,7 +147,7 @@ class TitleBar(QtWidgets.QWidget):
 
     def mouseReleaseEvent(self, event):
         self.pressing = False
-        self.parent.setMinimumSize(QtCore.QSize(540, 540))
+        self.parent.setMinimumSize(QtCore.QSize(800, 570))
         self.parent.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.parent.ActiveOverlay.show()
         super().mouseReleaseEvent(event)

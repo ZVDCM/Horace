@@ -1,3 +1,4 @@
+from Teachers.Controller.RDC.host import Host as RDCHost
 from PyQt5 import QtCore
 from Teachers.Misc.Widgets.message_targets import MessageTarget
 from Teachers.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
@@ -16,7 +17,6 @@ import select
 import queue
 from PyQt5.QtCore import QThread, pyqtSignal
 from Teachers.Misc.Widgets.message_received import MessageReceived as _MessageReceived
-from Teachers.Misc.Widgets.remote_desktop import RemoteDesktop
 from datetime import date, datetime
 
 
@@ -132,6 +132,7 @@ class Host:
         self.View = View
         self.Controller = Controller
         self.Sender = Controller.User.Username
+
         self.target = None
         self.messages = {}
         self.inputs = []
@@ -139,7 +140,9 @@ class Host:
         self.clients_name = {}
         self.clients_socket = {}
         self.time = {}
+
         self.start_time = QtCore.QTime(0, 0, 0)
+        
         self.connect_signals()
         self.init_host()
 
@@ -291,7 +294,8 @@ class Host:
                 self.SetStudentFrame.start()
 
             elif message['type'] == 'res':
-                self.RemoteDesktop = RemoteDesktop(self.View, message['data'])
+                self.Controller.RemoteDesktop.EndLoading.start()
+                self.Controller.View.RemoteDesktop.target_resolution = message['data']
 
         except FromDifferentClass:
             self.exceptional(readable)
@@ -451,10 +455,10 @@ class Host:
     def add_student_item(self, name):
         student_item = _StudentItem(self.View, name)
         student_item.operation.connect(self.student_item_clicked)
-        student_item.ContextMenu.shutdown.connect(lambda: self.btn_commands_clicked('shutdown'))
-        student_item.ContextMenu.restart.connect(lambda: self.btn_commands_clicked('restart'))
-        student_item.ContextMenu.lock.connect(lambda: self.btn_commands_clicked('lock'))
-        student_item.ContextMenu.control.connect(self.control_desktop)
+        student_item.ContextMenu.shutdown.connect(lambda: self.btn_commands_clicked('shutdown', name))
+        student_item.ContextMenu.restart.connect(lambda: self.btn_commands_clicked('restart', name))
+        student_item.ContextMenu.lock.connect(lambda: self.btn_commands_clicked('lock', name))
+        student_item.ContextMenu.control.connect(lambda: self.control_desktop(name))
         student_item.setObjectName(name)
         self.View.flow_layout.addWidget(student_item)
 
@@ -582,11 +586,12 @@ class Host:
         now = datetime.now()
         return now.strftime("%I:%M %p")
 
-    def btn_commands_clicked(self, command):
-        message = normalize_message('cmd', command)
+    def btn_commands_clicked(self, command, target=None):
+        message = normalize_message('cmd', command, target=target)
         self.set_message(message)
 
-    def control_desktop(self):
+    def control_desktop(self, name):
         message = normalize_message('cmd', 'control')
         self.set_message(message)
-        
+        self.Controller.View.init_remote_desktop(self.View)
+        self.Controller.init_remote_desktop(name)

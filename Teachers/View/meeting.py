@@ -39,7 +39,7 @@ class Meeting(QtWidgets.QMainWindow):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 570)
-        MainWindow.setMinimumSize(QtCore.QSize(740, 540))
+        MainWindow.setMinimumSize(QtCore.QSize(800, 570))
         MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
