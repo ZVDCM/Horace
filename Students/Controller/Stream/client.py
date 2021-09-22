@@ -6,7 +6,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 import queue
 import socket
 import threading
-
+import time
 
 class Frame(QThread):
     operation = pyqtSignal(QPixmap)

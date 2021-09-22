@@ -26,9 +26,13 @@ class Host:
 
     FORMAT = 'utf-8'
 
-    def __init__(self, parent, Chat, target):
+    def __init__(self, RDC, parent, Chat, target):
+        self.RDC = RDC
         self.parent = parent
-        self.parent.operation.connect(self.get_mouse_pos)
+        self.parent.mouse_move.connect(self.get_mouse_pos)
+        self.parent.mouse_press.connect(self.get_pressed_mouse_button)
+        self.parent.mouse_release.connect(self.get_released_mouse_button)
+        self.parent.mouse_wheel.connect(self.get_mouse_scroll_direction)
         self.Chat = Chat
         self.target = target
 
@@ -44,6 +48,18 @@ class Host:
 
     def get_mouse_pos(self, coordinates):
         message = normalize_message('mouse', ['move', coordinates], target=self.target)
+        self.Chat.set_message(message)
+
+    def get_pressed_mouse_button(self, button):
+        message = normalize_message('mouse', ['pressed', button], target=self.target)
+        self.Chat.set_message(message)
+
+    def get_released_mouse_button(self, button):
+        message = normalize_message('mouse', ['released', button], target=self.target)
+        self.Chat.set_message(message)
+
+    def get_mouse_scroll_direction(self, direction):
+        message = normalize_message('mouse', ['scroll', direction], target=self.target)
         self.Chat.set_message(message)
 
     def start(self):
@@ -81,6 +97,8 @@ class Host:
     def display(self):
         while not self.server._closed:
             frame = self.frames.get()
+            if self.parent.LoadingScreen.isVisible():
+                self.RDC.EndLoading.start()
             if frame == 'disconnect':
                 return
             try:

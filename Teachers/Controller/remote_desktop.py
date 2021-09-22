@@ -18,7 +18,7 @@ class RemoteDesktop:
         self.Controller = Controller
         
         self.connect_signals()
-        self.RDCHost = RDCHost(self.View, self.Controller.Meeting.ChatHost, target)
+        self.RDCHost = RDCHost(self, self.View, self.Controller.Meeting.ChatHost, target)
         self.View.run()
         self.StartLoading.start()
 

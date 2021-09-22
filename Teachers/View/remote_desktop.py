@@ -5,7 +5,10 @@ from Teachers.Misc.Widgets.meeting_title_bar import TitleBar
 from Teachers.Misc.Widgets.loading_screen import LoadingScreen
 
 class RemoteDesktop(QtWidgets.QMainWindow):
-    operation = QtCore.pyqtSignal(tuple)
+    mouse_move = QtCore.pyqtSignal(tuple)
+    mouse_press = QtCore.pyqtSignal(str)
+    mouse_release = QtCore.pyqtSignal(str)
+    mouse_wheel = QtCore.pyqtSignal(str)
 
     def __init__(self, View, parent):
         super().__init__()
@@ -13,7 +16,7 @@ class RemoteDesktop(QtWidgets.QMainWindow):
         self.parent = parent
         self.target_resolution = None
         self.setupUi(self)
-        self.screen.mouseMoveEvent = self.mouse_moved
+        self.connect_signals()
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
         self.LoadingScreen = LoadingScreen(self.widget, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
@@ -75,6 +78,12 @@ class RemoteDesktop(QtWidgets.QMainWindow):
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    def connect_signals(self):
+        self.screen.mouseMoveEvent = self.mouse_moved
+        self.screen.mousePressEvent = self.mouse_pressed
+        self.screen.mouseReleaseEvent = self.mouse_released
+        self.screen.wheelEvent = self.mouse_wheeled
+
     def on_focus_change(self):
         if self.isActiveWindow():
             self.ActiveOverlay.is_focused = True
@@ -94,5 +103,29 @@ class RemoteDesktop(QtWidgets.QMainWindow):
             size_ratio = (self.screen.width()/self.target_resolution[0], self.screen.height()/self.target_resolution[1])
             pos = self.screen.mapToParent(event.pos())
             scaled_coordinates = (pos.x()//size_ratio[0], pos.y()//size_ratio[1])
-            self.operation.emit(scaled_coordinates)
+            self.mouse_move.emit(scaled_coordinates)
         super(QtWidgets.QLabel, self.screen).mouseMoveEvent(event)
+
+    def mouse_pressed(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self.mouse_press.emit('left')
+        if event.button() == QtCore.Qt.MiddleButton:
+            self.mouse_press.emit('middle')
+        if event.button() == QtCore.Qt.RightButton:
+            self.mouse_press.emit('right')
+        super(QtWidgets.QLabel, self.screen).mousePressEvent(event)
+
+    def mouse_released(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self.mouse_release.emit('left')
+        if event.button() == QtCore.Qt.MiddleButton:
+            self.mouse_release.emit('middle')
+        if event.button() == QtCore.Qt.RightButton:
+            self.mouse_release.emit('right')
+        super(QtWidgets.QLabel, self.screen).mouseReleaseEvent(event)
+
+    def mouse_wheeled(self, event):
+        degrees = event.angleDelta() / 8
+        scroll_direction = f"{'down' if degrees.y() < 0 else 'up'}"
+        self.mouse_wheel.emit(scroll_direction)
+        super(QtWidgets.QLabel, self.screen).wheelEvent(event)

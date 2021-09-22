@@ -294,7 +294,6 @@ class Host:
                 self.SetStudentFrame.start()
 
             elif message['type'] == 'res':
-                self.Controller.RemoteDesktop.EndLoading.start()
                 self.Controller.View.RemoteDesktop.target_resolution = message['data']
 
         except FromDifferentClass:

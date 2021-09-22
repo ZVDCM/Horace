@@ -128,6 +128,12 @@ class Receive(QThread):
             elif message['type'] == 'mouse':
                 if message['data'][0] == 'move':
                     print(message['data'][1])
+                elif message['data'][0] == 'pressed':
+                    print(message['data'][1])
+                elif message['data'][0] == 'released':
+                    print(message['data'][1])
+                elif message['data'][0] == 'scroll':
+                    print(message['data'][1])
 
             elif message['type'] == 'time':
                 self.Client.EndLoading.start()
