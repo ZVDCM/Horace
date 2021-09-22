@@ -1,6 +1,8 @@
 import threading
 from PyQt5 import QtGui
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5 import QtCore
+from PyQt5.QtCore import QEvent, QThread, pyqtSignal
+from PyQt5.QtWidgets import QMainWindow, QWidget
 import mss
 import win32ui
 from Teachers.Misc.Functions.window_capture import convert_bytearray_to_QPixmap, convert_bytearray_to_pil_image, window_capture
@@ -56,6 +58,8 @@ class Host:
         self.SetFrame = Frame()
         self.SetFrame.operation.connect(self.View.set_frame)
         
+        self.View.page.resizeEvent = self.screen_resized
+        
     def init_host(self):
         self.host = socket.socket(type=socket.SOCK_DGRAM)
         self.host.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -70,11 +74,12 @@ class Host:
 
     def handler(self):
         while self.View.isVisible() and self.Meeting.is_connected:
-            if not self.Meeting.is_frozen:
-                try:
-                    self.last_frame = window_capture()
-                except (win32ui.error, pywintypes.error, mss.exception.ScreenShotError):
-                    pass
+            if self.Meeting.is_frozen:
+                return
+            try:
+                self.last_frame = window_capture()
+            except (win32ui.error, pywintypes.error, mss.exception.ScreenShotError):
+                pass
             self.display_frame(self.last_frame)
             broadcast_thread = threading.Thread(target=self.broadcast_frame, args=(self.last_frame,), daemon=True, name="BroadcastThread")
             broadcast_thread.start()
@@ -108,3 +113,11 @@ class Host:
             bytes_sent = self.host.sendto(
                 pil_img[:self.BUFFER], self.BROADCAST_ADDR)
             pil_img = pil_img[bytes_sent:]
+
+    def screen_resized(self, event):
+        if self.Meeting.is_frozen:
+            frame = convert_bytearray_to_QPixmap(self.last_frame)
+            frame = frame.scaled(
+                    self.View.page.width(), self.View.page.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            self.View.screen.setPixmap(frame)
+        self.View.Overlay.parent_resized(None)

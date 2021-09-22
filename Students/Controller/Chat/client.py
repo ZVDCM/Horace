@@ -17,6 +17,8 @@ from Students.Misc.Functions.messages import *
 import platform
 import subprocess
 from Students.Controller.RDC.client import Client as RDCClient
+from pynput.mouse import Button, Controller as MouseController
+from pynput.keyboard import Controller as KeyboardController
 
 
 class MessageReceived(QThread):
@@ -95,16 +97,26 @@ class Receive(QThread):
 
             if message['type'] == 'cmd':
                 if message['data'] == 'reconnect':
+                    self.Client.Meeting.is_connected = True
+                    self.Client.Meeting.is_disconnected = False
+                    self.Client.Meeting.is_frozen = False
+                    self.StreamClient.frames = queue.Queue()
+                    self.StreamClient.start_receiving()
                     self.StreamClient.start_displaying()
 
                 elif message['data'] == 'disconnect':
-                    self.StreamClient.frames.put(message['data'])
+                    self.Client.Meeting.is_connected = False
+                    self.Client.Meeting.is_disconnected = True
+                    self.StreamClient.frames.put('disconnect')
 
                 elif message['data'] == 'frozen':
-                    print('frozen')
+                    self.Client.Meeting.is_frozen = True
 
                 elif message['data'] == 'thawed':
+                    self.Client.Meeting.is_frozen = False
                     self.StreamClient.frames = queue.Queue()
+                    self.StreamClient.start_receiving()
+                    self.StreamClient.start_displaying()
 
                 elif message['data'] == 'shutdown':
                     print(message['data'])
@@ -118,22 +130,48 @@ class Receive(QThread):
                     print(message['data'])
                     # subprocess.call('rundll32.exe user32.dll,LockWorkStation',
                     #                     creationflags=self.DETACHED_PROCESS)
-                elif message['data'] == 'control':
-                    self.RDCClient = RDCClient(self.Client.Class)
+                elif message['data'] == 'start control':
+                    self.RDCClient = RDCClient(self.Client.Class, self.Client.View)
 
                     width, height = GetSystemMetrics(0), GetSystemMetrics(1)
                     message = normalize_message('res', (width, height))
                     self.Client.send(message)
 
-            elif message['type'] == 'mouse':
-                if message['data'][0] == 'move':
-                    print(message['data'][1])
-                elif message['data'][0] == 'pressed':
-                    print(message['data'][1])
-                elif message['data'][0] == 'released':
-                    print(message['data'][1])
-                elif message['data'][0] == 'scroll':
-                    print(message['data'][1])
+                elif message['data'] == 'end control':
+                    self.RDCClient.stop()
+
+            # elif message['type'] == 'mouse':
+            #     print(message)
+                # mouse = MouseController()
+                # if message['data'][0] == 'move':
+                #     mouse.position = message['data'][1]
+                # elif message['data'][0] == 'pressed':
+                #     if message['data'][1] == 'left':
+                #         mouse.press(Button.left)
+                #     if message['data'][1] == 'middle':
+                #         mouse.press(Button.middle)
+                #     if message['data'][1] == 'right':
+                #         mouse.press(Button.right)
+                # elif message['data'][0] == 'released':
+                #     if message['data'][1] == 'left':
+                #         mouse.release(Button.left)
+                #     if message['data'][1] == 'middle':
+                #         mouse.release(Button.middle)
+                #     if message['data'][1] == 'right':
+                #         mouse.release(Button.right)
+                # elif message['data'][0] == 'scroll':
+                #     if message['data'][1] == 'up':
+                #         mouse.scroll(0, 1)
+                #     if message['data'][1] == 'down':
+                #         mouse.scroll(0, -1)
+
+            # elif message['type'] == 'keyboard':
+                # print(message['data'])
+                # keyboard = KeyboardController()
+                # if "pressed" == message['data'][0]:
+                #     keyboard.press(message['data'][1])
+                # if "released" == message['data'][0]:
+                #     keyboard.release(message['data'][1])
 
             elif message['type'] == 'time':
                 self.Client.EndLoading.start()
@@ -143,7 +181,7 @@ class Receive(QThread):
                 self.Client.ShowLabel.start()
 
                 self.StreamClient = StreamClient(
-                    self.Client.Class, self.Client.Model, self.Client.View, self.Client.Controller)
+                    self.Client.Meeting, self.Client.Class, self.Client.Model, self.Client.View, self.Client.Controller)
 
             elif message['type'] == 'msg':
                 self.Client.MessageReceived.message = message['data']
@@ -176,7 +214,8 @@ class Client:
     PORT = 43200
     start_time = QtCore.QTime(0, 0, 0)
 
-    def __init__(self, Class, Model, View, Controller):
+    def __init__(self, Meeting, Class, Model, View, Controller):
+        self.Meeting = Meeting
         self.Class = Class
         self.Model = Model
         self.View = View

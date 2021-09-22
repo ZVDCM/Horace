@@ -17,11 +17,7 @@ class ActiveOverlay(QWidget):
         self.is_focused = True
 
         self.parent.resizeEvent = self.resize
-        self.resized.connect(self.resize_loader)
-
-    def showEvent(self, event):
-        self.resized.emit()
-        super().showEvent(event)
+        self.resized.connect(self.resize_overlay)
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -35,7 +31,7 @@ class ActiveOverlay(QWidget):
         super().paintEvent(event)
 
     @QtCore.pyqtSlot()
-    def resize_loader(self):
+    def resize_overlay(self):
         self.width, self.height = self.parent.frameGeometry(
         ).width(), self.parent.frameGeometry().height()
         self.setGeometry(0, 0, self.width, self.height)

@@ -1,3 +1,5 @@
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QWidget
 from Students.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
 import pickle
 import zlib
@@ -41,7 +43,8 @@ class Client:
 
     FORMAT = 'utf-8'
 
-    def __init__(self, Class, Model, View, Controller):
+    def __init__(self, Meeting, Class, Model, View, Controller):
+        self.Meeting = Meeting
         self.Class = Class
         self.Model = Model
         self.View = View
@@ -59,6 +62,8 @@ class Client:
 
         self.DisconnectScreen = Operation()
         self.DisconnectScreen.operation.connect(self.View.disconnect_screen)
+
+        self.View.widget.resizeEvent = self.screen_resized
 
     def init_client(self):
         self.client = socket.socket(type=socket.SOCK_DGRAM)
@@ -79,31 +84,35 @@ class Client:
         display_thread.start()
 
     def receive(self):
-        while True:
-            try:
-                data, _ = self.client.recvfrom(self.MAX_DGRAM)
-                if len(data) < 100:
-                    packets = int(data.decode(self.FORMAT))
-                    buffer = b""
-                    for _ in range(packets):
-                        data, _ = self.client.recvfrom(self.MAX_DGRAM)
-                        buffer += data
+        while self.Meeting.is_connected and not self.Meeting.is_frozen and not self.Meeting.is_disconnected:
+            data, _ = self.client.recvfrom(self.MAX_DGRAM)
+            if len(data) < 100:
+                packets = int(data.decode(self.FORMAT))
+                buffer = b""
+                for _ in range(packets):
+                    data, _ = self.client.recvfrom(self.MAX_DGRAM)
+                    buffer += data
 
-                    self.frames.put(buffer)
-            except OSError:
-                self.frames.put("disconnect")
-                return
+                self.frames.put(buffer)
 
     def display(self):
-        while True:
+        while self.Meeting.is_connected and not self.Meeting.is_frozen:
             frame = self.frames.get()
             if frame == 'disconnect':
                 self.DisconnectScreen.start()
                 return
             try:
-                frame = pickle.loads(zlib.decompress(frame))
-                self.last_frame = convert_pil_image_to_QPixmap(frame)
-                self.SetFrame.frame = self.last_frame
+                self.last_frame = pickle.loads(zlib.decompress(frame))
+                frame = convert_pil_image_to_QPixmap(self.last_frame)
+                self.SetFrame.frame = frame
                 self.SetFrame.start()
             except zlib.error:
                 continue
+
+    def screen_resized(self, event):
+        if self.Meeting.is_frozen:
+            frame = convert_pil_image_to_QPixmap(self.last_frame)
+            frame = frame.scaled(
+                    self.View.w_left.width(), self.View.w_left.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            self.View.screen.setPixmap(frame)
+        self.View.LoadingScreen.parent_resized(None)

@@ -29,10 +29,13 @@ class Host:
     def __init__(self, RDC, parent, Chat, target):
         self.RDC = RDC
         self.parent = parent
+        self.parent.closeEvent = self.parent_closed
         self.parent.mouse_move.connect(self.get_mouse_pos)
         self.parent.mouse_press.connect(self.get_pressed_mouse_button)
         self.parent.mouse_release.connect(self.get_released_mouse_button)
         self.parent.mouse_wheel.connect(self.get_mouse_scroll_direction)
+        self.parent.key_press.connect(self.get_pressed_key)
+        self.parent.key_release.connect(self.get_released_key)
         self.Chat = Chat
         self.target = target
 
@@ -60,6 +63,14 @@ class Host:
 
     def get_mouse_scroll_direction(self, direction):
         message = normalize_message('mouse', ['scroll', direction], target=self.target)
+        self.Chat.set_message(message)
+
+    def get_pressed_key(self, key):
+        message = normalize_message('keyboard', ['pressed', key], target=self.target)
+        self.Chat.set_message(message)
+
+    def get_released_key(self, key):
+        message = normalize_message('keyboard', ['release', key], target=self.target)
         self.Chat.set_message(message)
 
     def start(self):
@@ -108,3 +119,9 @@ class Host:
                 self.SetFrame.start()
             except zlib.error:
                 continue
+
+    def parent_closed(self, event):
+        self.stop()
+        message = normalize_message('cmd', 'end control', target=self.target)
+        self.Chat.set_message(message)
+        self.Chat.View.Overlay.btn_freeze.click()

@@ -1,5 +1,7 @@
+import os
 import socket
 from PyQt5 import QtCore
+from PyQt5.QtWidgets import QMainWindow
 from Teachers.Controller.Chat.host import Host as ChatHost
 from Teachers.Controller.Stream.host import Host as StreamHost
 import threading
@@ -46,6 +48,7 @@ class Meeting:
         self.is_frozen = False
         self.is_connected = True
         self.is_disconnected = False
+        self.is_controlling = False
 
         student_model = self.Model.ListModel(self.View.lv_student, [])
         self.View.lv_student.setModel(student_model)
@@ -90,5 +93,6 @@ class Meeting:
         self.View.sw_right.setCurrentIndex(index)
 
     def list_all_threads(self):
+        os.system('cls')
         for i in threading.enumerate():
             print(i)

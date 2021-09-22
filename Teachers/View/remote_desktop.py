@@ -1,3 +1,4 @@
+from pynput import keyboard
 from Teachers.Misc.Functions.relative_path import relative_path
 from Teachers.Misc.Widgets.active_overlay import ActiveOverlay
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -10,6 +11,9 @@ class RemoteDesktop(QtWidgets.QMainWindow):
     mouse_release = QtCore.pyqtSignal(str)
     mouse_wheel = QtCore.pyqtSignal(str)
 
+    key_press = QtCore.pyqtSignal(object)
+    key_release = QtCore.pyqtSignal(object)
+
     def __init__(self, View, parent):
         super().__init__()
         self.View = View
@@ -20,10 +24,12 @@ class RemoteDesktop(QtWidgets.QMainWindow):
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
         self.LoadingScreen = LoadingScreen(self.widget, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
-
+        
     def run(self):
         self.raise_()
         self.show()
+        self.keyboard_listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
+
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -83,14 +89,19 @@ class RemoteDesktop(QtWidgets.QMainWindow):
         self.screen.mousePressEvent = self.mouse_pressed
         self.screen.mouseReleaseEvent = self.mouse_released
         self.screen.wheelEvent = self.mouse_wheeled
-
+    
     def on_focus_change(self):
         if self.isActiveWindow():
             self.ActiveOverlay.is_focused = True
             self.ActiveOverlay.update()
+            if self.keyboard_listener.running:
+                self.keyboard_listener.stop()
+            self.keyboard_listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
+            self.keyboard_listener.start()
         else:
             self.ActiveOverlay.is_focused = False
             self.ActiveOverlay.update()
+            self.keyboard_listener.stop()
 
     @QtCore.pyqtSlot(QtGui.QPixmap)
     def set_frame(self, frame):
@@ -129,3 +140,9 @@ class RemoteDesktop(QtWidgets.QMainWindow):
         scroll_direction = f"{'down' if degrees.y() < 0 else 'up'}"
         self.mouse_wheel.emit(scroll_direction)
         super(QtWidgets.QLabel, self.screen).wheelEvent(event)
+
+    def on_press(self, key):
+        self.key_press.emit(key)
+
+    def on_release(self, key):
+        self.key_release.emit(key)

@@ -1,3 +1,4 @@
+import os
 from PyQt5 import QtCore
 from Students.Controller.Chat.client import Client as ChatClient
 import threading
@@ -41,8 +42,11 @@ class Meeting:
         self.View = Controller.View.Meeting
         self.Controller = Controller
         self.Class = Class
+        self.is_frozen = False
+        self.is_connected = True
+        self.is_disconnected = False
 
-        self.ChatClient = ChatClient(self.Class, self.Model, self.View, self.Controller)
+        self.ChatClient = ChatClient(self, self.Class, self.Model, self.View, self.Controller)
         self.connect_signals()
         self.View.run()
 
@@ -68,5 +72,6 @@ class Meeting:
         self.View.sw_right.setCurrentIndex(index)
 
     def list_all_threads(self):
+        os.system('cls')
         for i in threading.enumerate():
             print(i)

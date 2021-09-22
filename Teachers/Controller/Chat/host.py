@@ -476,6 +476,10 @@ class Host:
     def disconnect(self):
         self.Meeting.is_connected = False
         self.Meeting.is_disconnected = True
+
+        if self.Meeting.is_frozen:
+            self.View.disconnect_screen()
+
         message = normalize_message('cmd', 'disconnect')
         self.set_message(message)
 
@@ -483,6 +487,7 @@ class Host:
         if self.Meeting.is_frozen:
             self.Meeting.is_frozen = False
             message = normalize_message('cmd', 'thawed')
+            self.Meeting.StreamHost.init_stream()
         else:
             self.Meeting.is_frozen = True
             message = normalize_message('cmd', 'frozen')
@@ -590,7 +595,9 @@ class Host:
         self.set_message(message)
 
     def control_desktop(self, name):
-        message = normalize_message('cmd', 'control')
+        self.is_controlling = True
+        self.View.Overlay.btn_freeze.click()
+        message = normalize_message('cmd', 'start control')
         self.set_message(message)
         self.Controller.View.init_remote_desktop(self.View)
         self.Controller.init_remote_desktop(name)
