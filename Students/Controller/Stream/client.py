@@ -54,7 +54,7 @@ class Client:
         self.last_frame = None
 
         self.connect_signals()
-        self.init_client()
+        self.start()
 
     def connect_signals(self):
         self.SetFrame = Frame()
@@ -70,8 +70,15 @@ class Client:
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.client.bind(self.CLIENT_ADDR)
+
+    def start(self):
+        self.frames = queue.Queue()
+        self.init_client()
         self.start_receiving()
         self.start_displaying()
+
+    def stop(self):
+        self.client.close()
 
     def start_receiving(self):
         receiving_thread = threading.Thread(
@@ -84,19 +91,23 @@ class Client:
         display_thread.start()
 
     def receive(self):
-        while self.Meeting.is_connected and not self.Meeting.is_frozen and not self.Meeting.is_disconnected:
-            data, _ = self.client.recvfrom(self.MAX_DGRAM)
-            if len(data) < 100:
-                packets = int(data.decode(self.FORMAT))
-                buffer = b""
-                for _ in range(packets):
-                    data, _ = self.client.recvfrom(self.MAX_DGRAM)
-                    buffer += data
+        while self.Meeting.is_connected and not self.Meeting.is_frozen and not self.client._closed:
+            try:
+                data, _ = self.client.recvfrom(self.MAX_DGRAM)
+                if len(data) < 100:
+                    packets = int(data.decode(self.FORMAT))
+                    buffer = b""
+                    for _ in range(packets):
+                        data, _ = self.client.recvfrom(self.MAX_DGRAM)
+                        buffer += data
 
-                self.frames.put(buffer)
+                    self.frames.put(buffer)
+            except OSError:
+                self.frames.put('disconnect')
+                return
 
     def display(self):
-        while self.Meeting.is_connected and not self.Meeting.is_frozen:
+        while self.View.isVisible():
             frame = self.frames.get()
             if frame == 'disconnect':
                 self.DisconnectScreen.start()

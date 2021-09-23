@@ -1,7 +1,7 @@
 from Teachers.Controller.RDC.host import Host as RDCHost
 from PyQt5 import QtCore
 from Teachers.Misc.Widgets.message_targets import MessageTarget
-from Teachers.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
+from Teachers.Misc.Functions.window_capture import convert_bytearray_to_pil_image, convert_pil_image_to_QPixmap
 from PyQt5.QtGui import QPixmap
 from Teachers.Misc.Widgets.student_item import StudentItem as _StudentItem
 from Teachers.Misc.Widgets.file_message_sent import FileMessageSent
@@ -273,6 +273,15 @@ class Host:
                     message = normalize_message(
                         'time', self.start_time, target=message['sender'])
                     self.set_message(message)
+
+                    if self.Meeting.is_disconnected:
+                        message = normalize_message('cmd', 'disconnect')
+                        self.set_message(message)
+                    elif self.Meeting.is_frozen:
+                        message = normalize_message('cmd', 'frozen')
+                        self.set_message(message)
+                        message = normalize_message('frame', convert_bytearray_to_pil_image(self.Meeting.StreamHost.last_frame))
+                        self.set_message(message)
                 else:
                     raise FromDifferentClass
 

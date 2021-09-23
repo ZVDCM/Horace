@@ -3,7 +3,7 @@ import threading
 
 from PyQt5 import QtCore
 from win32api import GetSystemMetrics
-from Students.Misc.Functions.window_capture import screenshot
+from Students.Misc.Functions.window_capture import convert_pil_image_to_QPixmap, screenshot
 from Students.Misc.Widgets.file_message_sent import FileMessageSent
 import os
 from Students.Controller.Stream.client import Client as StreamClient
@@ -100,23 +100,20 @@ class Receive(QThread):
                     self.Client.Meeting.is_connected = True
                     self.Client.Meeting.is_disconnected = False
                     self.Client.Meeting.is_frozen = False
-                    self.StreamClient.frames = queue.Queue()
-                    self.StreamClient.start_receiving()
-                    self.StreamClient.start_displaying()
+                    self.StreamClient.start()
 
                 elif message['data'] == 'disconnect':
                     self.Client.Meeting.is_connected = False
                     self.Client.Meeting.is_disconnected = True
-                    self.StreamClient.frames.put('disconnect')
+                    self.StreamClient.stop()
 
                 elif message['data'] == 'frozen':
                     self.Client.Meeting.is_frozen = True
+                    self.StreamClient.stop()
 
                 elif message['data'] == 'thawed':
                     self.Client.Meeting.is_frozen = False
-                    self.StreamClient.frames = queue.Queue()
-                    self.StreamClient.start_receiving()
-                    self.StreamClient.start_displaying()
+                    self.StreamClient.start()
 
                 elif message['data'] == 'shutdown':
                     print(message['data'])
@@ -139,6 +136,12 @@ class Receive(QThread):
 
                 elif message['data'] == 'end control':
                     self.RDCClient.stop()
+
+            elif message['type'] == 'frame':
+                self.StreamClient.last_frame = message['data']
+                frame = convert_pil_image_to_QPixmap(self.StreamClient.last_frame)
+                self.StreamClient.SetFrame.frame = frame
+                self.StreamClient.SetFrame.start()
 
             # elif message['type'] == 'mouse':
             #     print(message)
