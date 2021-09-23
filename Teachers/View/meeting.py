@@ -1,7 +1,6 @@
 from Teachers.Misc.Widgets.badge_overlay import BadgeOverlay
 from Teachers.Misc.Widgets.active_overlay import ActiveOverlay
 from Teachers.Misc.Widgets.overlay import Overlay
-from PIL import Image
 from Teachers.Misc.Widgets.replied_to import RepliedMessageSent
 from Teachers.Misc.Widgets.custom_button import Button
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -22,7 +21,10 @@ class Meeting(QtWidgets.QMainWindow):
         self.setupUi(self)
 
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
+        
         self.ActiveOverlay = ActiveOverlay(self)
+        self.Overlay = Overlay(self.page)
+        self.BadgeOverlay = BadgeOverlay(self.btn_chat)
         
         self.screens = [self.btn_screenshare, self.btn_inspector]
         self.interactors = [self.btn_student_list,
@@ -30,10 +32,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.close_buttons = [self.btn_close_student_list,
                               self.btn_close_chat, self.btn_close_url]
 
-        self.Overlay = Overlay(self.page)
-
-        self.BadgeOverlay = BadgeOverlay(self.btn_chat)
-
+        self.LoadingScreenURL = LoadingScreen(self.w_url, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
+        self.LoadingScreenURLList = LoadingScreen(self.w_url_list, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
 
     def run(self):
         self.raise_()
@@ -409,8 +409,7 @@ class Meeting(QtWidgets.QMainWindow):
                                     "QPushButton:pressed {\n"
                                     "  background-color: #072f49;\n"
                                     "}\n"
-                                    "\n"
-                                    )
+                                    "\n")
         self.sw_right.setObjectName("sw_right")
         self.page_5 = QtWidgets.QWidget()
         self.page_5.setObjectName("page_5")
@@ -664,7 +663,21 @@ class Meeting(QtWidgets.QMainWindow):
         self.sw_right.addWidget(self.page_3)
         self.page_4 = QtWidgets.QWidget()
         self.page_4.setObjectName("page_4")
-        self.page_4.setStyleSheet("background: #083654;")
+        self.page_4.setStyleSheet("QWidget{\n"
+                                    "   background-color:  #083654;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QLineEdit::disabled {\n"
+                                    "   border: 1px solid #072f49;\n"
+                                    "   border-radius: 5px;\n"
+                                    "   background-color: #072f49;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QPushButton::disabled {\n"
+                                    "  padding: 5px;\n"
+                                    "  border: 1px solid #102542;\n"
+                                    "  background-color: #102542;\n"
+                                    "}\n")
         self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.page_4)
         self.verticalLayout_9.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_9.setSpacing(0)
@@ -821,6 +834,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout_8.addWidget(self.btn_import_students_sections_13)
         self.verticalLayout_6.addWidget(self.widget2)
         self.txt_url = QtWidgets.QLineEdit(self.w_url)
+        self.txt_url.setDisabled(True)
         self.txt_url.setMinimumSize(QtCore.QSize(0, 30))
         font = QtGui.QFont()
         font.setFamily("Barlow")

@@ -5,6 +5,7 @@ from Teachers.Model.list_model import ListModel
 from Teachers.Model.table_model import TableModel
 from datetime import datetime
 
+
 class Class:
     def __init__(self, ID, Code, Name, Start, End):
         self.ID = ID
@@ -26,6 +27,7 @@ class Class:
         time = datetime.strptime(str(self._End), "%H:%M:%S")
         return time.strftime("%I:%M %p")
 
+
 class Model:
 
     def __init__(self):
@@ -42,4 +44,3 @@ class Model:
 
     def init_meeting(self):
         self.Meeting = Meeting(self)
-

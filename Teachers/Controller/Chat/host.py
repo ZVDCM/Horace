@@ -1,4 +1,3 @@
-from Teachers.Controller.RDC.host import Host as RDCHost
 from PyQt5 import QtCore
 from Teachers.Misc.Widgets.message_targets import MessageTarget
 from Teachers.Misc.Functions.window_capture import convert_bytearray_to_pil_image, convert_pil_image_to_QPixmap
@@ -7,17 +6,17 @@ from Teachers.Misc.Widgets.student_item import StudentItem as _StudentItem
 from Teachers.Misc.Widgets.file_message_sent import FileMessageSent
 from Teachers.Misc.Widgets.file_message_received import FileMessageReceived as _FileMessageReceived
 from Teachers.Misc.Widgets.replied_file_message_sent import RepliedFileMessageSent
-import os
 from PyQt5.QtWidgets import QFileDialog
 from Teachers.Misc.Functions.is_blank import is_blank
-import threading
 from Teachers.Misc.Functions.messages import *
-import socket
-import select
-import queue
 from PyQt5.QtCore import QThread, pyqtSignal
 from Teachers.Misc.Widgets.message_received import MessageReceived as _MessageReceived
 from datetime import date, datetime
+import os
+import queue
+import socket
+import select
+import threading
 
 
 class NotMessage(Exception):
@@ -105,7 +104,6 @@ class SetTime(QThread):
 
 class Attendance(QtCore.QThread):
     operation = QtCore.pyqtSignal()
-    error = QtCore.pyqtSignal(str)
 
     def __init__(self, fn):
         super().__init__()
@@ -116,8 +114,18 @@ class Attendance(QtCore.QThread):
         res = self.fn(*self.val)
         if res == 'successful':
             self.operation.emit()
-        else:
-            self.error.emit(res)
+        self.quit()
+
+class GetUrls(QtCore.QThread):
+    operation = QtCore.pyqtSignal(object)
+
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+
+    def run(self):
+        res = self.fn()
+        self.operation.emit(res)
         self.quit()
 
 
@@ -190,10 +198,17 @@ class Host:
 
         self.AddAttendance = Attendance(self.Model.create_attendance)
         self.AddAttendance.operation.connect(lambda: print("Success"))
-        self.AddAttendance.error.connect(lambda: print("Error"))
 
         self.IncrementBadge = Operation()
         self.IncrementBadge.operation.connect(self.View.BadgeOverlay.increment)
+
+        self.GetUrls = GetUrls(self.Model.get_blacklisted_urls)
+        self.GetUrls.started.connect(self.View.LoadingScreenURL.show)
+        self.GetUrls.started.connect(self.View.LoadingScreenURLList.show)
+        self.GetUrls.operation.connect(self.set_url_list)
+        self.GetUrls.finished.connect(self.View.LoadingScreenURL.hide)
+        self.GetUrls.finished.connect(self.View.LoadingScreenURLList.hide)
+        self.GetUrls.start()
 
     def init_host(self):
         self.host = socket.socket()
@@ -615,3 +630,15 @@ class Host:
         self.set_message(message)
         self.Controller.View.init_remote_desktop(self.View)
         self.Controller.init_remote_desktop(name)
+
+    def set_url_list(self, urls):
+        url_model = self.Model.ListModel(self.View.lv_url, urls)
+        self.View.lv_url.setModel(url_model)
+        self.set_latest_url()
+
+    def set_latest_url(self):
+        url_model = self.View.lv_url.model()
+        index = url_model.createIndex(0, 0)
+        self.View.lv_student.setCurrentIndex(index)
+        text = url_model.getRowData(0)
+        self.View.txt_url.setText(text)

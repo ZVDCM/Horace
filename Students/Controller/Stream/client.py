@@ -1,14 +1,12 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QWidget
 from Students.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
-import pickle
-import zlib
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QThread, pyqtSignal
+import pickle
+import zlib
 import queue
 import socket
 import threading
-import time
 
 class Frame(QThread):
     operation = pyqtSignal(QPixmap)

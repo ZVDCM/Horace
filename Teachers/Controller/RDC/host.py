@@ -1,9 +1,9 @@
-import queue
 from Teachers.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
 from PyQt5 import QtGui
 from PyQt5.QtCore import QThread, pyqtSignal
 from Teachers.Misc.Functions.messages import normalize_message
 import zlib
+import queue
 import pickle
 import socket
 import threading

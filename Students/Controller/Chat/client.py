@@ -1,24 +1,22 @@
-import queue
-import threading
-
 from PyQt5 import QtCore
 from win32api import GetSystemMetrics
 from Students.Misc.Functions.window_capture import convert_pil_image_to_QPixmap, screenshot
 from Students.Misc.Widgets.file_message_sent import FileMessageSent
-import os
 from Students.Controller.Stream.client import Client as StreamClient
 from PyQt5.QtWidgets import QFileDialog
 from Students.Misc.Functions.is_blank import is_blank
 from Students.Misc.Widgets.teacher_file_message_received import FileMessageReceived as _FileMessageReceived
-import time
-import socket
 from PyQt5.QtCore import QThread, pyqtSignal
 from Students.Misc.Functions.messages import *
-import platform
-import subprocess
 from Students.Controller.RDC.client import Client as RDCClient
-from pynput.mouse import Button, Controller as MouseController
+from pynput.mouse import Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController
+import os
+import time
+import socket
+import platform
+import threading
+import subprocess
 
 
 class MessageReceived(QThread):

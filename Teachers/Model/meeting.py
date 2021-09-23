@@ -28,4 +28,16 @@ class Meeting:
 
         return 'successful'
 
-    
+    def get_blacklisted_urls(self):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = "SELECT Domain FROM Urls"
+        cursor.execute(select_query)
+
+        urls = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        return [url[0] for url in urls]
