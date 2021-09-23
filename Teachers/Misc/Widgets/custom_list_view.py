@@ -21,7 +21,6 @@ class ListView(QListView):
             QListView::item{
                 border: none;
                 padding: 4px 6px;
-                margin-bottom: 5px;
             }
 
             QListView::item:hover{
@@ -38,6 +37,10 @@ class ListView(QListView):
 
             QListView::item:selected:!active{
                 background: white;
+            }
+
+            QListView::item:disabled{
+                color: #6b6b6b;
             }
 
             QScrollBar:vertical{

@@ -593,8 +593,8 @@ QPushButton:hover{
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>743</width>
-                  <height>568</height>
+                  <width>100</width>
+                  <height>30</height>
                  </rect>
                 </property>
                 <property name="styleSheet">
@@ -991,8 +991,8 @@ QPushButton:hover{
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>100</width>
-                  <height>30</height>
+                  <width>270</width>
+                  <height>384</height>
                  </rect>
                 </property>
                 <property name="styleSheet">
@@ -1087,7 +1087,7 @@ QScrollBar::sub-page:horizontal{
                        <x>0</x>
                        <y>0</y>
                        <width>258</width>
-                       <height>38</height>
+                       <height>52</height>
                       </rect>
                      </property>
                      <layout class="QHBoxLayout" name="horizontalLayout_15">
@@ -1608,7 +1608,7 @@ QPushButton:hover{
                       </spacer>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="btn_import_students_sections_12">
+                      <widget class="QPushButton" name="btn_add_url">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -1639,7 +1639,7 @@ background-position: center center;</string>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="btn_import_students_sections_14">
+                      <widget class="QPushButton" name="btn_edit_url">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -1677,7 +1677,7 @@ background-position: center center;</string>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="btn_import_students_sections_13">
+                      <widget class="QPushButton" name="btn_delete_url">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                          <horstretch>0</horstretch>

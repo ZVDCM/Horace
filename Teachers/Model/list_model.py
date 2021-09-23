@@ -7,7 +7,9 @@ class ListModel(QAbstractListModel):
         self.parent = parent
 
         self.data = []
+        self.default_size = 0
         if len(data) != 0:
+            self.default_size = len(data)
             for datum in data:
                 self.data.insert(len(self.data)-1, datum)
 
@@ -22,9 +24,13 @@ class ListModel(QAbstractListModel):
             return value
 
     def flags(self, index):
+        if index.row() < self.default_size:
+            return Qt.NoItemFlags
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
     def getRowData(self, index):
+        if index < self.default_size:
+            return None
         return self.data[index]
 
     def findRow(self, text):
@@ -52,3 +58,6 @@ class ListModel(QAbstractListModel):
 
         self.endRemoveRows()
         return True
+
+    def editRow(self, position, value):
+        self.data[position] = value

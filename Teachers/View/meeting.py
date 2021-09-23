@@ -1,3 +1,5 @@
+from Teachers.Misc.Functions.is_blank import is_blank
+from Teachers.Misc.Widgets.pop_up import Popup
 from Teachers.Misc.Widgets.badge_overlay import BadgeOverlay
 from Teachers.Misc.Widgets.active_overlay import ActiveOverlay
 from Teachers.Misc.Widgets.overlay import Overlay
@@ -20,6 +22,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.View = View
         self.setupUi(self)
 
+        self.Popup = Popup(self)
+        
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         
         self.ActiveOverlay = ActiveOverlay(self)
@@ -34,6 +38,8 @@ class Meeting(QtWidgets.QMainWindow):
 
         self.LoadingScreenURL = LoadingScreen(self.w_url, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
         self.LoadingScreenURLList = LoadingScreen(self.w_url_list, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
+
+        self.url_state = 'Read'
 
     def run(self):
         self.raise_()
@@ -673,11 +679,7 @@ class Meeting(QtWidgets.QMainWindow):
                                     "   background-color: #072f49;\n"
                                     "}\n"
                                     "\n"
-                                    "QPushButton::disabled {\n"
-                                    "  padding: 5px;\n"
-                                    "  border: 1px solid #102542;\n"
-                                    "  background-color: #102542;\n"
-                                    "}\n")
+                                    )
         self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.page_4)
         self.verticalLayout_9.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_9.setSpacing(0)
@@ -752,86 +754,133 @@ class Meeting(QtWidgets.QMainWindow):
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_8.addItem(spacerItem5)
-        self.btn_import_students_sections_12 = QtWidgets.QPushButton(
+        self.btn_init_add_url = QtWidgets.QPushButton(
             self.widget2)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.btn_import_students_sections_12.sizePolicy().hasHeightForWidth())
-        self.btn_import_students_sections_12.setSizePolicy(sizePolicy)
-        self.btn_import_students_sections_12.setMinimumSize(
+            self.btn_init_add_url.sizePolicy().hasHeightForWidth())
+        self.btn_init_add_url.setSizePolicy(sizePolicy)
+        self.btn_init_add_url.setMinimumSize(
             QtCore.QSize(30, 30))
-        self.btn_import_students_sections_12.setMaximumSize(
+        self.btn_init_add_url.setMaximumSize(
             QtCore.QSize(30, 30))
-        self.btn_import_students_sections_12.setCursor(
+        self.btn_init_add_url.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_import_students_sections_12.setStyleSheet("border-radius: 5px;\n"
-                                                           "background-color: #0e4884;\n"
-                                                           f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'add.png')});\n"
-                                                           "background-repeat: no-repeat;\n"
-                                                           "background-position: center center;")
-        self.btn_import_students_sections_12.setObjectName(
-            "btn_import_students_sections_12")
-        self.horizontalLayout_8.addWidget(self.btn_import_students_sections_12)
-        self.btn_import_students_sections_14 = QtWidgets.QPushButton(
+        self.btn_init_add_url.setStyleSheet("QPushButton{\n"
+                                            "   border-radius: 5px;\n"
+                                            "   background: none;\n"
+                                            "   background-color: #0e4884;\n"
+                                            f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'add.png')});\n"
+                                            "   background-repeat: no-repeat;\n"
+                                            "   background-position: center center;\n"
+                                            "}"
+                                            "\n"
+                                            "QPushButton::disabled {\n"
+                                            "   padding: 5px;\n"
+                                            "   background: none;\n"
+                                            "   border: 1px solid #102542;\n"
+                                            "   background-color: #102542;\n"
+                                            f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'add_2.png')});\n"
+                                            "   background-repeat: no-repeat;\n"
+                                            "   background-position: center center;\n"
+                                            "}"
+                                            "\n"
+                                            "QPushButton:focus,"
+                                            "QPushButton:hover {\n"
+                                            "   border: 1px solid #256eff;\n"
+                                            "}"
+                                            )
+        self.btn_init_add_url.setObjectName(
+            "btn_init_add_url")
+        self.horizontalLayout_8.addWidget(self.btn_init_add_url)
+        self.btn_init_edit_url = QtWidgets.QPushButton(
             self.widget2)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.btn_import_students_sections_14.sizePolicy().hasHeightForWidth())
-        self.btn_import_students_sections_14.setSizePolicy(sizePolicy)
-        self.btn_import_students_sections_14.setMinimumSize(
+            self.btn_init_edit_url.sizePolicy().hasHeightForWidth())
+        self.btn_init_edit_url.setSizePolicy(sizePolicy)
+        self.btn_init_edit_url.setMinimumSize(
             QtCore.QSize(30, 30))
-        self.btn_import_students_sections_14.setMaximumSize(
+        self.btn_init_edit_url.setMaximumSize(
             QtCore.QSize(30, 30))
-        self.btn_import_students_sections_14.setCursor(
+        self.btn_init_edit_url.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_import_students_sections_14.setStyleSheet("border-radius: 5px;"
-                                                            "background-color: #0e4884;\n")
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(relative_path('Teachers', ['Misc', 'Resources'], 'edit.png')),
-                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btn_import_students_sections_14.setIcon(icon1)
-        self.btn_import_students_sections_14.setIconSize(QtCore.QSize(20, 20))
-        self.btn_import_students_sections_14.setObjectName(
-            "btn_import_students_sections_14")
-        self.horizontalLayout_8.addWidget(self.btn_import_students_sections_14)
-        self.btn_import_students_sections_13 = QtWidgets.QPushButton(
+        self.btn_init_edit_url.setStyleSheet("QPushButton{\n"
+                                            "   border-radius: 5px;\n"
+                                            "   background: none;\n"
+                                            "   background-color: #0e4884;\n"
+                                            f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'edit.png')});\n"
+                                            "   background-repeat: no-repeat;\n"
+                                            "   background-position: center center;\n"
+                                            "}"
+                                            "\n"
+                                            "QPushButton::disabled {\n"
+                                            "   padding: 5px;\n"
+                                            "   border: 1px solid #102542;\n"
+                                            "   background: none;\n"
+                                            "   background-color: #102542;\n"
+                                            f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'edit_2.png')});\n"
+                                            "   background-repeat: no-repeat;\n"
+                                            "   background-position: center center;\n"
+                                            "}"
+                                            "\n"
+                                            "QPushButton:focus,"
+                                            "QPushButton:hover {\n"
+                                            "   border: 1px solid #256eff;\n"
+                                            "}"
+                                            )
+        self.btn_init_edit_url.setObjectName(
+            "btn_init_edit_url")
+        self.horizontalLayout_8.addWidget(self.btn_init_edit_url)
+        self.btn_delete_url = QtWidgets.QPushButton(
             self.widget2)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.btn_import_students_sections_13.sizePolicy().hasHeightForWidth())
-        self.btn_import_students_sections_13.setSizePolicy(sizePolicy)
-        self.btn_import_students_sections_13.setMinimumSize(
+            self.btn_delete_url.sizePolicy().hasHeightForWidth())
+        self.btn_delete_url.setSizePolicy(sizePolicy)
+        self.btn_delete_url.setMinimumSize(
             QtCore.QSize(30, 30))
-        self.btn_import_students_sections_13.setMaximumSize(
+        self.btn_delete_url.setMaximumSize(
             QtCore.QSize(30, 30))
-        self.btn_import_students_sections_13.setCursor(
+        self.btn_delete_url.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_import_students_sections_13.setStyleSheet("QPushButton{\n"
-                                                           "    border-radius: 5px;\n"
-                                                           "    background: none;\n"
-                                                           "}\n"
-                                                           "\n"
-                                                           "\n"
-                                                           "QPushButton:pressed {\n"
-                                                           "     background-color: #072f49;\n"
-                                                           "}")
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(relative_path('Teachers', ['Misc', 'Resources'], 'trash.png')),
-                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btn_import_students_sections_13.setIcon(icon2)
-        self.btn_import_students_sections_13.setIconSize(QtCore.QSize(20, 20))
-        self.btn_import_students_sections_13.setObjectName(
-            "btn_import_students_sections_13")
-        self.horizontalLayout_8.addWidget(self.btn_import_students_sections_13)
+        self.btn_delete_url.setStyleSheet("QPushButton{\n"
+                                            "   border-radius: 5px;\n"
+                                            "   background: none;\n"
+                                            "   border: 1px solid #0e4884;\n"
+                                            f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'trash.png')});\n"
+                                            "   background-repeat: no-repeat;\n"
+                                            "   background-position: center center;\n"
+                                            "}"
+                                            "\n"
+                                            "QPushButton::disabled {\n"
+                                            "   padding: 5px;\n"
+                                            "   background: none;\n"
+                                            "   border: 1px solid #102542;\n"
+                                            f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'trash_2.png')});\n"
+                                            "   background-repeat: no-repeat;\n"
+                                            "   background-position: center center;\n"
+                                            "}"
+                                            "\n"
+                                            "QPushButton:focus,"
+                                            "QPushButton:hover {\n"
+                                            "   border: 1px solid #256eff;\n"
+                                            "}"
+                                            )
+        self.btn_delete_url.setDisabled(True)
+        self.btn_delete_url.setIconSize(QtCore.QSize(20, 20))
+        self.btn_delete_url.setObjectName(
+            "btn_delete_url")
+        self.horizontalLayout_8.addWidget(self.btn_delete_url)
         self.verticalLayout_6.addWidget(self.widget2)
         self.txt_url = QtWidgets.QLineEdit(self.w_url)
         self.txt_url.setDisabled(True)
@@ -860,7 +909,14 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_add_edit_url.setFont(font)
         self.btn_add_edit_url.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_add_edit_url.setStyleSheet("border-radius: 5px;")
+        self.btn_add_edit_url.setStyleSheet("QPushButton{\n"
+                                          "    border-radius: 5px;\n"
+                                          "    background: #0e4884;\n"
+                                          "}\n"
+                                          "\n"
+                                          "QPushButton:pressed {\n"
+                                          "     background-color: #072f49;\n"
+                                          "}")
         self.btn_add_edit_url.setObjectName("btn_add_edit_url")
         self.verticalLayout_41.addWidget(self.btn_add_edit_url)
         self.btn_cancel_url = QtWidgets.QPushButton(self.w_url_btn)
@@ -875,7 +931,6 @@ class Meeting(QtWidgets.QMainWindow):
                                           "    border-radius: 5px;\n"
                                           "    background: none;\n"
                                           "}\n"
-                                          "\n"
                                           "\n"
                                           "QPushButton:pressed {\n"
                                           "     background-color: #072f49;\n"
@@ -989,4 +1044,43 @@ class Meeting(QtWidgets.QMainWindow):
 
     def set_timer(self, time):
         self.lbl_timer.setText(time)
+
+    def run_popup(self, message, icon='information'):
+        if icon == 'question':
+            self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
+            'Teachers', ['Misc', 'Resources'], 'question.png')))
+        elif icon == 'warning':
+            self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
+            'Teachers', ['Misc', 'Resources'], 'warning.png')))
+        elif icon == 'critical':
+            self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
+            'Teachers', ['Misc', 'Resources'], 'critical.png')))
+        
+        self.Popup.lbl_message.setText(message)
+        self.Popup.run()
     
+    def clear_url_inputs(self):
+        self.txt_url.clear()
+
+    def disable_url_buttons(self):
+        self.btn_init_add_url.setDisabled(True)
+        self.btn_init_edit_url.setDisabled(True)
+        self.btn_delete_url.setDisabled(True)
+        self.w_url_btn.show()
+
+    def enable_url_buttons(self):
+        self.btn_init_add_url.setDisabled(False)
+        self.btn_init_edit_url.setDisabled(False)
+        if not is_blank(self.txt_url.text()):
+            self.btn_delete_url.setDisabled(False)
+        self.w_url_btn.hide()
+
+    def disable_url_inputs(self):
+        self.txt_url.setDisabled(True)
+
+    def enable_url_inputs(self):
+        self.txt_url.setDisabled(False)
+
+    def set_url(self, value):
+        self.url_state = value
+        self.btn_add_edit_url.setText(value)

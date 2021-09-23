@@ -165,6 +165,13 @@ class Host:
         self.View.Overlay.btn_freeze.clicked.connect(self.freeze)
         self.View.btn_send_many.clicked.connect(self.init_message_target)
         self.View.closeEvent = self.meeting_closed
+        self.View.lv_url.clicked.connect(self.url_list_clicked)
+
+        self.View.btn_init_add_url.clicked.connect(self.init_add_url)
+        self.View.btn_init_edit_url.clicked.connect(self.init_edit_url)
+        self.View.btn_delete_url.clicked.connect(self.delete_url)
+        self.View.btn_add_edit_url.clicked.connect(self.init_add_edit_url)
+        self.View.btn_cancel_url.clicked.connect(self.cancel_url)
 
         self.View.btn_shutdown.clicked.connect(lambda: self.btn_commands_clicked('shutdown'))
         self.View.btn_restart.clicked.connect(lambda: self.btn_commands_clicked('restart'))
@@ -634,11 +641,80 @@ class Host:
     def set_url_list(self, urls):
         url_model = self.Model.ListModel(self.View.lv_url, urls)
         self.View.lv_url.setModel(url_model)
-        self.set_latest_url()
 
     def set_latest_url(self):
         url_model = self.View.lv_url.model()
-        index = url_model.createIndex(0, 0)
-        self.View.lv_student.setCurrentIndex(index)
-        text = url_model.getRowData(0)
+        if url_model.rowCount() == url_model.default_size:
+            return
+        index = url_model.createIndex(url_model.rowCount()-1, 0)
+        self.View.lv_url.setCurrentIndex(index)
+        text = url_model.getRowData(url_model.rowCount()-1)
         self.View.txt_url.setText(text)
+
+    def url_list_clicked(self, index):
+        row = index.row()
+        target_url = self.View.lv_url.model().getRowData(row)
+        if target_url:
+            self.View.txt_url.setText(target_url)
+
+    def init_add_url(self):
+        self.View.clear_url_inputs()
+        self.View.disable_url_buttons()
+        self.View.enable_url_inputs()
+        self.View.set_url('Add')
+
+    def init_edit_url(self):
+        self.View.disable_url_buttons()
+        self.View.enable_url_inputs()
+        self.View.set_url('Edit')
+
+    def cancel_url(self):
+        self.View.clear_url_inputs()
+        self.set_latest_url()
+        self.View.enable_url_buttons()
+        self.View.disable_url_inputs()
+        self.View.set_url('Read')
+
+    def init_add_edit_url(self):
+        if self.View.url_state == "Add":
+            self.add_url()
+        elif self.View.url_state == "Edit":
+            self.edit_url()
+
+    def add_url(self):
+        domain = self.View.txt_url.text()
+        if is_blank(domain):
+            self.View.run_popup(f'URL fields must be filled')
+            return
+
+        url_model = self.View.lv_url.model()
+
+        index = url_model.findRow(domain)
+        if index:
+            self.View.run_popup(f'URL exists')
+            return
+
+        url_model.insertRows(url_model.rowCount(), 1, domain)
+        index = url_model.createIndex(url_model.rowCount()-1, 0)
+        self.View.lv_url.setCurrentIndex(index)
+        self.cancel_url()
+
+    def edit_url(self):
+        domain = self.View.txt_url.text()
+        if is_blank(domain):
+            self.View.run_popup(f'URL fields must be filled')
+            return
+
+        url_model = self.View.lv_url.model()
+        index = url_model.findRow(domain)
+        if index and index != self.View.lv_url.selectedIndexes()[0].row():
+            self.View.run_popup(f'URL exists')
+            return
+
+        url_model.editRow(url_model.rowCount()-1, domain)
+        self.cancel_url()
+
+    def delete_url(self):
+        row = self.View.lv_url.selectedIndexes()[0].row()
+        self.View.lv_url.model().removeRows(row, 1)
+        self.set_latest_url()
