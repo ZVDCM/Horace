@@ -1,3 +1,4 @@
+from Students.Misc.Widgets.badge_overlay import BadgeOverlay
 from Students.Misc.Widgets.active_overlay import ActiveOverlay
 from Students.Misc.Widgets.teacher_message_received import MessageReceived
 from Students.Misc.Widgets.custom_button import Button
@@ -22,6 +23,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.LoadingScreen = LoadingScreen(self.widget, relative_path('Students', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         self.interactors = [self.btn_student_list, self.btn_chat]
         self.close_buttons = [self.btn_close_student_list, self.btn_close_chat]
+
+        self.BadgeOverlay = BadgeOverlay(self.btn_chat)
 
     def run(self):
         self.raise_()

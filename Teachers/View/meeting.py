@@ -1,3 +1,4 @@
+from Teachers.Misc.Widgets.badge_overlay import BadgeOverlay
 from Teachers.Misc.Widgets.active_overlay import ActiveOverlay
 from Teachers.Misc.Widgets.overlay import Overlay
 from PIL import Image
@@ -30,6 +31,8 @@ class Meeting(QtWidgets.QMainWindow):
                               self.btn_close_chat, self.btn_close_url]
 
         self.Overlay = Overlay(self.page)
+
+        self.BadgeOverlay = BadgeOverlay(self.btn_chat)
 
 
     def run(self):

@@ -68,6 +68,9 @@ class Meeting:
                 interactor.deactivate()
                 break
 
+        if index == 1:
+            self.View.BadgeOverlay.hide()
+
         self.View.interactors[index].activate()
         self.View.sw_right.setCurrentIndex(index)
 

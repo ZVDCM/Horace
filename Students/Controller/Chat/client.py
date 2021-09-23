@@ -187,11 +187,13 @@ class Receive(QThread):
                     self.Client.Meeting, self.Client.Class, self.Client.Model, self.Client.View, self.Client.Controller)
 
             elif message['type'] == 'msg':
+                self.Client.IncrementBadge.start()
                 self.Client.MessageReceived.message = message['data']
                 self.Client.MessageReceived.sender = message['sender']
                 self.Client.MessageReceived.start()
 
             elif message['type'] == 'fls':
+                self.Client.IncrementBadge.start()
                 self.Client.FileMessageReceived.sender = message['sender']
                 self.Client.FileMessageReceived.filename = message['data']
                 self.Client.FileMessageReceived.data = message['file']
@@ -258,6 +260,9 @@ class Client:
         self.Timer = QtCore.QTimer()
         self.Timer.timeout.connect(self.timer_event)
         self.Timer.start(1000)
+
+        self.IncrementBadge = Operation()
+        self.IncrementBadge.operation.connect(self.View.BadgeOverlay.increment)
 
     def init_client(self):
         self.client = socket.socket()

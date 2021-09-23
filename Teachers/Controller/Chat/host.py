@@ -192,6 +192,9 @@ class Host:
         self.AddAttendance.operation.connect(lambda: print("Success"))
         self.AddAttendance.error.connect(lambda: print("Error"))
 
+        self.IncrementBadge = Operation()
+        self.IncrementBadge.operation.connect(self.View.BadgeOverlay.increment)
+
     def init_host(self):
         self.host = socket.socket()
         self.host.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -286,11 +289,13 @@ class Host:
                     raise FromDifferentClass
 
             elif message['type'] == 'msg':
+                self.IncrementBadge.start()
                 self.MessageReceived.message = message['data']
                 self.MessageReceived.sender = message['sender']
                 self.MessageReceived.start()
 
             elif message['type'] == 'fls':
+                self.IncrementBadge.start()
                 self.FileMessageReceived.sender = message['sender']
                 self.FileMessageReceived.filename = message['data']
                 self.FileMessageReceived.data = message['file']
