@@ -1,5 +1,5 @@
+from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import QListView
-from PyQt5 import QtGui
 
 class ListView(QListView):
 
@@ -13,32 +13,42 @@ class ListView(QListView):
 
         self.setStyleSheet("""
             QListView{
-                border: 1px solid #0e4884;
+                border: none;
+                background-color: #0B1A30;
                 outline: 0;
             }
 
             QListView::item{
                 border: none;
                 padding: 4px 6px;
-                margin-bottom: 5px;
             }
 
-            QListView::item:hover{
-                background: #06293f;
+            QScrollBar:vertical{
+                width: 8px;
+                background: #0B1A30;
             }
-
-            QListView::item:selected{
-                background: #256eff;
+            
+            QScrollBar::handle:vertical{
+                background-color: #97b9f4;    
+                min-height: 5px;
             }
-
-            QListView::item:selected:active{
-                background: #256eff;
+            
+            QScrollBar::sub-line:vertical{
+                height: 0;
+                width: 0;
             }
-
-            QListView::item:selected:!active{
-                background: white;
+            
+            QScrollBar::add-line:vertical{
+                height: 0;
+                width: 0;
+            }
+            
+            QScrollBar::add-page:vertical{
+                background: none;
+            }
+            
+            QScrollBar::sub-page:vertical{
+                background: none;
             }
            
         """)
-
-

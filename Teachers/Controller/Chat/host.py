@@ -116,6 +116,7 @@ class Attendance(QtCore.QThread):
             self.operation.emit()
         self.quit()
 
+
 class GetUrls(QtCore.QThread):
     operation = QtCore.pyqtSignal(object)
 
@@ -126,6 +127,19 @@ class GetUrls(QtCore.QThread):
     def run(self):
         res = self.fn()
         self.operation.emit(res)
+        self.quit()
+
+
+class SetMeetingStatus(QtCore.QThread):
+    operation = QtCore.pyqtSignal(str)
+
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+        self.val = None
+
+    def run(self):
+        self.fn(self.val)
         self.quit()
 
 
@@ -150,7 +164,8 @@ class Host:
         self.time = {}
 
         self.start_time = QtCore.QTime(0, 0, 0)
-        
+        self.status_time = 0
+
         self.connect_signals()
         self.init_host()
 
@@ -173,9 +188,12 @@ class Host:
         self.View.btn_add_edit_url.clicked.connect(self.init_add_edit_url)
         self.View.btn_cancel_url.clicked.connect(self.cancel_url)
 
-        self.View.btn_shutdown.clicked.connect(lambda: self.btn_commands_clicked('shutdown'))
-        self.View.btn_restart.clicked.connect(lambda: self.btn_commands_clicked('restart'))
-        self.View.btn_lock.clicked.connect(lambda: self.btn_commands_clicked('lock'))
+        self.View.btn_shutdown.clicked.connect(
+            lambda: self.btn_commands_clicked('shutdown'))
+        self.View.btn_restart.clicked.connect(
+            lambda: self.btn_commands_clicked('restart'))
+        self.View.btn_lock.clicked.connect(
+            lambda: self.btn_commands_clicked('lock'))
 
         self.MessageReceived = MessageReceived()
         self.MessageReceived.operation.connect(self.display_message_received)
@@ -217,6 +235,15 @@ class Host:
         self.GetUrls.finished.connect(self.View.LoadingScreenURLList.hide)
         self.GetUrls.start()
 
+    def set_meeting_status(self):
+        return SetMeetingStatus(self.View.set_meeting_status)
+
+    def set_meeting_status_handler(self, status):
+        self.status_time = 0
+        self.handler = self.set_meeting_status()
+        self.handler.val = status
+        self.handler.start()
+
     def init_host(self):
         self.host = socket.socket()
         self.host.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -232,6 +259,8 @@ class Host:
         handler_thread = threading.Thread(
             target=self.handler, daemon=True, name='ChatHandler')
         handler_thread.start()
+
+        self.set_meeting_status_handler('Meeting initialized')
 
     def handler(self):
         while self.View.isVisible():
@@ -301,17 +330,29 @@ class Host:
                     self.set_message(message)
 
                     if self.Meeting.is_disconnected:
-                        message = normalize_message('cmd', 'disconnect', target=target)
+                        message = normalize_message(
+                            'cmd', 'disconnect', target=target)
                         self.set_message(message)
                     elif self.Meeting.is_frozen:
-                        message = normalize_message('cmd', 'frozen', target=target)
+                        message = normalize_message(
+                            'cmd', 'frozen', target=target)
                         self.set_message(message)
-                        message = normalize_message('frame', convert_bytearray_to_pil_image(self.Meeting.StreamHost.last_frame), target=target)
+                        message = normalize_message('frame', convert_bytearray_to_pil_image(
+                            self.Meeting.StreamHost.last_frame), target=target)
                         self.set_message(message)
 
-                    message = normalize_message('url', self.View.lv_url.model().data, target=target)
+                    message = normalize_message(
+                        'url', self.View.lv_url.model().data, target=target)
                     self.set_message(message)
+                    message = normalize_message(
+                        'student', self.View.lv_student.model().data)
+                    self.set_message(message)
+                    self.set_meeting_status_handler(
+                        f"{target} joined the class")
                 else:
+                    message = normalize_message('permission', False, target=message['sender'])
+                    message = serialize_message(message)
+                    send_message(message, readable)
                     raise FromDifferentClass
 
             elif message['type'] == 'msg':
@@ -319,6 +360,8 @@ class Host:
                 self.MessageReceived.message = message['data']
                 self.MessageReceived.sender = message['sender']
                 self.MessageReceived.start()
+                self.set_meeting_status_handler(
+                    f"Received a message from {message['sender']}")
 
             elif message['type'] == 'fls':
                 self.IncrementBadge.start()
@@ -326,6 +369,8 @@ class Host:
                 self.FileMessageReceived.filename = message['data']
                 self.FileMessageReceived.data = message['file']
                 self.FileMessageReceived.start()
+                self.set_meeting_status_handler(
+                    f"Received a file from {message['sender']}")
 
             elif message['type'] == 'frame':
                 frame = convert_pil_image_to_QPixmap(message['data'])
@@ -341,10 +386,17 @@ class Host:
 
         except NotMessage:
             time_left = self.now()
-            self.time[self.clients_name[readable]
-                      ]['log'].append(('Left', time_left))
-            self.time[self.clients_name[readable]]['logged'] += 1
-            self.exceptional(readable)
+            try:
+                target = self.clients_name[readable]
+                self.time[target]['log'].append(('Left', time_left))
+                self.time[target]['logged'] += 1
+                self.set_meeting_status_handler(f"{target} left the class")
+                self.exceptional(readable)
+            except KeyError:
+                return
+
+        except ConnectionAbortedError:
+            return
 
     def client_writable(self, message, writable):
         if writable._closed:
@@ -361,6 +413,13 @@ class Host:
         if exceptional in self.outputs:
             self.outputs.remove(exceptional)
         if exceptional in self.clients_name.keys():
+            student_model = self.View.lv_student.model()
+            row = student_model.findRow(self.clients_name[exceptional])
+            student_model.removeRows(row, 1)
+            message = normalize_message(
+                'student', self.View.lv_student.model().data)
+            self.set_message(message)
+
             self.RemoveStudentItem.name = self.clients_name[exceptional]
             self.RemoveStudentItem.start()
             del self.clients_name[exceptional]
@@ -494,10 +553,14 @@ class Host:
     def add_student_item(self, name):
         student_item = _StudentItem(self.View, name)
         student_item.operation.connect(self.student_item_clicked)
-        student_item.ContextMenu.shutdown.connect(lambda: self.btn_commands_clicked('shutdown', name))
-        student_item.ContextMenu.restart.connect(lambda: self.btn_commands_clicked('restart', name))
-        student_item.ContextMenu.lock.connect(lambda: self.btn_commands_clicked('lock', name))
-        student_item.ContextMenu.control.connect(lambda: self.control_desktop(name))
+        student_item.ContextMenu.shutdown.connect(
+            lambda: self.btn_commands_clicked('shutdown', name))
+        student_item.ContextMenu.restart.connect(
+            lambda: self.btn_commands_clicked('restart', name))
+        student_item.ContextMenu.lock.connect(
+            lambda: self.btn_commands_clicked('lock', name))
+        student_item.ContextMenu.control.connect(
+            lambda: self.control_desktop(name))
         student_item.setObjectName(name)
         self.View.flow_layout.addWidget(student_item)
 
@@ -512,6 +575,7 @@ class Host:
         self.Meeting.StreamHost.init_stream()
         message = normalize_message('cmd', 'reconnect')
         self.set_message(message)
+        self.set_meeting_status_handler('Screen reconnected')
 
     def disconnect(self):
         self.Meeting.is_connected = False
@@ -522,27 +586,50 @@ class Host:
 
         message = normalize_message('cmd', 'disconnect')
         self.set_message(message)
+        self.set_meeting_status_handler('Screen disconnected')
 
     def freeze(self):
         if self.Meeting.is_frozen:
             self.Meeting.is_frozen = False
             message = normalize_message('cmd', 'thawed')
             self.Meeting.StreamHost.init_stream()
+            self.set_meeting_status_handler('Screen thawed')
         else:
             self.Meeting.is_frozen = True
             message = normalize_message('cmd', 'frozen')
+            self.set_meeting_status_handler('Screen frozen')
         self.set_message(message)
 
     def init_message_target(self):
         self.MessageTarget = MessageTarget(self)
-        target_student_model = self.Model.ListModel(self.MessageTarget.lv_target_student, [
-                                                    self.View.lv_student.model().getRowData(i.row()) for i in self.View.lv_student.selectedIndexes()])
+        target_student_model = self.Model.ReadOnlyListModel(self.MessageTarget.lv_target_student, [
+            self.View.lv_student.model().getRowData(i.row()) for i in self.View.lv_student.selectedIndexes()])
         self.MessageTarget.set_model(target_student_model)
         self.MessageTarget.txt_message.returnPressed.connect(
             self.target_send_message)
-        self.MessageTarget.btn_send.clicked.connect(self.target_send_message)
+        self.MessageTarget.operation.connect(self.target_init_send_message)
         self.MessageTarget.btn_file.clicked.connect(self.target_get_file)
         self.MessageTarget.run()
+
+    def target_init_send_message(self, is_popup):
+        if is_popup:
+            self.target_send_popup()
+        else:
+            self.target_send_message()
+
+    def target_send_popup(self):
+        text = self.MessageTarget.txt_message.text()
+        if is_blank(text):
+            return
+
+        message = normalize_message(
+            'popup', [text, self.MessageTarget.comboBox.currentText()])
+
+        for target in self.MessageTarget.targets:
+            message['target'] = target
+            self.set_message(message)
+
+        self.MessageTarget.close()
 
     def target_send_message(self):
         text = self.MessageTarget.txt_message.text()
@@ -626,6 +713,10 @@ class Host:
         self.SetTime.time = self.start_time.toString("hh:mm:ss")
         self.SetTime.start()
 
+        self.status_time += 1
+        if self.status_time == 5:
+            self.View.lbl_meeting_status.clear()
+
     def now(self):
         now = datetime.now()
         return now.strftime("%I:%M %p")
@@ -702,8 +793,10 @@ class Host:
         index = url_model.createIndex(url_model.rowCount()-1, 0)
         self.View.lv_url.setCurrentIndex(index)
         self.cancel_url()
-        message = normalize_message('url', self.View.lv_url.model().data, target=message['sender'])
+        message = normalize_message('url', self.View.lv_url.model().data)
         self.set_message(message)
+        self.SetMeetingStatus.val = f"Blacklisted {domain}"
+        self.SetMeetingStatus.start()
 
     def edit_url(self):
         domain = self.View.txt_url.text()
@@ -724,7 +817,10 @@ class Host:
 
     def delete_url(self):
         row = self.View.lv_url.selectedIndexes()[0].row()
-        self.View.lv_url.model().removeRows(row, 1)
+        url_model = self.View.lv_url.model()
+        self.SetMeetingStatus.val = f"Whitelisted {url_model.getRowData(row)}"
+        self.SetMeetingStatus.start()
+        url_model.removeRows(row, 1)
         self.set_latest_url()
         message = normalize_message('url', self.View.lv_url.model().data)
         self.set_message(message)

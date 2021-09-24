@@ -1,11 +1,12 @@
 from Teachers.Misc.Functions.relative_path import relative_path
 from Teachers.Misc.Widgets.active_overlay import ActiveOverlay
 from Teachers.Misc.Widgets.dialog_title_bar import TitleBar
-from Teachers.Misc.Widgets.custom_list_view import ListView
+from Teachers.Misc.Widgets.custom_list_view import ReadOnlyListView
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class MessageTarget(QtWidgets.QDialog):
+    operation = QtCore.pyqtSignal(bool)
 
     def __init__(self, parent):
         super().__init__()
@@ -14,6 +15,7 @@ class MessageTarget(QtWidgets.QDialog):
         self.setupUi(self)
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
+        self.btn_send.clicked.connect(self.btn_send_clicked)
 
     def run(self):
         self.activateWindow()
@@ -58,7 +60,7 @@ class MessageTarget(QtWidgets.QDialog):
                                   "\n"
                                   "QComboBox::down-arrow {\n"
                                   f"    image: url({relative_path('Teachers', ['Misc', 'Resources'], 'down.png')});\n"
-                                  "    padding-right: 5px;\n"
+                                  "    padding-right: 10px;\n"
                                   "}\n"
                                   "\n"
                                   "QGroupBox {\n"
@@ -89,7 +91,7 @@ class MessageTarget(QtWidgets.QDialog):
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.groupBox)
         self.verticalLayout_2.setContentsMargins(15, 15, 15, 15)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.lv_target_student = ListView(self.groupBox)
+        self.lv_target_student = ReadOnlyListView(self.groupBox)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
@@ -237,6 +239,13 @@ class MessageTarget(QtWidgets.QDialog):
         else:
             self.ActiveOverlay.is_focused = False
             self.ActiveOverlay.update()
+
+    def btn_send_clicked(self):
+        if self.checkBox.isChecked():
+            is_popup = True
+        else:
+            is_popup = False
+        self.operation.emit(is_popup)
 
     def set_model(self, table_model):
         self.lv_target_student.setModel(table_model)

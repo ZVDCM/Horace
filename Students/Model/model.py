@@ -1,3 +1,4 @@
+from Students.Model.list_model import ListModel
 from Students.Model.database import Database
 from Students.Model.lobby import Lobby
 from Students.Model.meeting import Meeting
@@ -49,6 +50,7 @@ class Model:
 
     def __init__(self):
         self.Class = Class
+        self.ListModel = ListModel
         self.ClassTeacher = ClassTeacher  
         self.Database = Database()
         self.init_lobby()

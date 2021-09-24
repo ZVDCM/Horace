@@ -4,12 +4,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Popup(QtWidgets.QDialog):
-    def __init__(self, parent, icon):
+    def __init__(self, parent):
         super().__init__()
         self.parent = parent
-        self.icon = icon
         self.setupUi(self)
-        self.set_icon()
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self.widget)
         self.btn_ok.clicked.connect(self.close)
@@ -56,6 +54,8 @@ class Popup(QtWidgets.QDialog):
         self.lbl_icon.setMinimumSize(QtCore.QSize(60, 60))
         self.lbl_icon.setMaximumSize(QtCore.QSize(60, 60))
         self.lbl_icon.setText("")
+        self.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
+            'Teachers', ['Misc', 'Resources'], 'information.png')))
         self.lbl_icon.setScaledContents(False)
         self.lbl_icon.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl_icon.setObjectName("lbl_icon")
@@ -121,7 +121,3 @@ class Popup(QtWidgets.QDialog):
             self.ActiveOverlay.show()
         else:
             self.ActiveOverlay.hide()
-
-    def set_icon(self):
-        self.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Admin', ['Misc', 'Resources'], f'{self.icon}.png')))

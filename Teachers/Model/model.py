@@ -1,7 +1,7 @@
 from Teachers.Model.lobby import Lobby
 from Teachers.Model.meeting import Meeting
 from Teachers.Model.database import Database
-from Teachers.Model.list_model import ListModel
+from Teachers.Model.list_model import ListModel, ReadOnlyListModel
 from Teachers.Model.table_model import TableModel
 from datetime import datetime
 
@@ -33,6 +33,7 @@ class Model:
     def __init__(self):
         self.Class = Class
         self.ListModel = ListModel
+        self.ReadOnlyListModel = ReadOnlyListModel
         self.TableModel = TableModel
         self.Class = Class
         self.Database = Database()

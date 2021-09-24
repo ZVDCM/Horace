@@ -1,8 +1,7 @@
 import threading
 from PyQt5 import QtGui
 from PyQt5 import QtCore
-from PyQt5.QtCore import QEvent, QThread, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QWidget
+from PyQt5.QtCore import QThread, pyqtSignal
 import mss
 import win32ui
 from Teachers.Misc.Functions.window_capture import convert_bytearray_to_QPixmap, convert_bytearray_to_pil_image, window_capture
@@ -11,6 +10,7 @@ import pickle
 import zlib
 import math
 import pywintypes
+import time
 
 class Operation(QThread):
     operation = pyqtSignal()
@@ -83,6 +83,7 @@ class Host:
             self.display_frame(self.last_frame)
             broadcast_thread = threading.Thread(target=self.broadcast_frame, args=(self.last_frame,), daemon=True, name="BroadcastThread")
             broadcast_thread.start()
+            time.sleep(0.025)
         self.View.disconnect_screen()
 
     def display_frame(self, frame):

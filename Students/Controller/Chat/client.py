@@ -69,7 +69,7 @@ class Connect(QThread):
             try:
                 self.Client.client.connect(self.address)
                 break
-            except:
+            except OSError:
                 print('Connecting')
                 time.sleep(2)
         self.quit()
@@ -92,8 +92,12 @@ class Receive(QThread):
 
             if not message:
                 break
+            
+            if message['type'] == 'permission':
+                time.sleep(3)
+                break
 
-            if message['type'] == 'cmd':
+            elif message['type'] == 'cmd':
                 if message['data'] == 'reconnect':
                     self.Client.Meeting.is_connected = True
                     self.Client.Meeting.is_disconnected = False
@@ -104,6 +108,9 @@ class Receive(QThread):
                     self.Client.Meeting.is_connected = False
                     self.Client.Meeting.is_disconnected = True
                     self.StreamClient.stop()
+
+                    if self.Client.Meeting.is_frozen:
+                        self.StreamClient.DisconnectScreen.start()
 
                 elif message['data'] == 'frozen':
                     self.Client.Meeting.is_frozen = True
@@ -211,6 +218,14 @@ class Receive(QThread):
                 # os.system("taskkill /f /im iexplore.exe")
                 # os.system("taskkill /f /im msedge.exe")
 
+            elif message['type'] == 'student':
+                self.Client.SetStudentList.val = message['data']
+                self.Client.SetStudentList.start()
+
+            elif message['type'] == 'popup':
+                self.Client.Popup.val = message['data']
+                self.Client.Popup.start()
+
         self.quit()
 
 
@@ -223,6 +238,28 @@ class SetTime(QThread):
 
     def run(self):
         self.operation.emit(self.time)
+        self.quit()
+
+class SetStudentList(QThread):
+    operation = pyqtSignal(object)
+
+    def __init__(self):
+        super().__init__()
+        self.val = None
+
+    def run(self):
+        self.operation.emit(self.val)
+        self.quit()
+
+class Popup(QThread):
+
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+        self.val = ()
+
+    def run(self):
+        self.fn(*self.val)
         self.quit()
 
 
@@ -238,6 +275,7 @@ class Client:
         self.View = View
         self.Controller = Controller
         self.Sender = Controller.User.Username
+        self.from_another_class = False
         self.connect_signals()
         self.init_client()
 
@@ -276,13 +314,18 @@ class Client:
         self.IncrementBadge = Operation()
         self.IncrementBadge.operation.connect(self.View.BadgeOverlay.increment)
 
+        self.SetStudentList = SetStudentList()
+        self.SetStudentList.operation.connect(self.set_student_list)
+
+        self.Popup = Popup(self.View.run_popup)
+
     def init_client(self):
         self.client = socket.socket()
         address = (self.Class.HostAddress, self.PORT)
-        self.connect_handler = Connect(self, address)
-        self.connect_handler.started.connect(self.View.LoadingScreen.run)
-        self.connect_handler.finished.connect(self.start)
-        self.connect_handler.start()
+        self.Connect = Connect(self, address)
+        self.Connect.started.connect(self.View.LoadingScreen.run)
+        self.Connect.finished.connect(self.start)
+        self.Connect.start()
 
     def start(self):
         message = normalize_message('section', self.Class.Code)
@@ -297,7 +340,7 @@ class Client:
         send_screenshot_thread.start()
 
     def send_screenshot(self):
-        while self.View.isVisible():
+        while self.View.isVisible() and not self.client._closed:
             sct = screenshot()
             message = normalize_message('frame', sct)
             self.send(message)
@@ -370,3 +413,7 @@ class Client:
 
     def meeting_closed(self, event):
         self.client.close()
+
+    def set_student_list(self, students):
+        student_model = self.Model.ListModel(self.View.lv_student, students)
+        self.View.lv_student.setModel(student_model)

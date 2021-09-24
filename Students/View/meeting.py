@@ -1,3 +1,4 @@
+from Students.Misc.Widgets.pop_up import Popup
 from Students.Misc.Widgets.badge_overlay import BadgeOverlay
 from Students.Misc.Widgets.active_overlay import ActiveOverlay
 from Students.Misc.Widgets.teacher_message_received import MessageReceived
@@ -17,6 +18,9 @@ class Meeting(QtWidgets.QMainWindow):
         super().__init__()
         self.View = View
         self.setupUi(self)
+
+        self.Popup = Popup(self)
+
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
 
@@ -164,22 +168,26 @@ class Meeting(QtWidgets.QMainWindow):
         self.sw_right = QtWidgets.QStackedWidget(self.widget)
         self.sw_right.setMinimumSize(QtCore.QSize(310, 0))
         self.sw_right.setMaximumSize(QtCore.QSize(310, 16777215))
-        self.sw_right.setStyleSheet("QWidget{\n"
+        self.sw_right.setObjectName("sw_right")
+        self.page_8 = QtWidgets.QWidget()
+        self.page_8.setObjectName("page_8")
+        self.page_8.setStyleSheet("QWidget#page_8{\n"
                                     "    background: #083654;\n"
                                     "}\n"
                                     "\n"
-                                    "QListView{\n"
-                                    "    border: 1px solid #0e4884;\n"
-                                    "    border-radius: 5px;\n"
+                                    "QLabel {\n"
+                                    "    background: #083654;\n"
                                     "}\n"
                                     "\n"
                                     "QLineEdit {\n"
+                                    "    background: #083654;\n"
                                     "      padding: 1px 5px;\n"
                                     "      border: 1px solid #0e4884;\n"
                                     "      border-radius: 5px;\n"
                                     "}\n"
                                     "\n"
                                     "QPushButton {\n"
+                                    "    background: #083654;\n"
                                     "  padding: 5px;\n"
                                     "  border: 1px solid #0e4884;\n"
                                     "  background-color: #0e4884;\n"
@@ -195,43 +203,7 @@ class Meeting(QtWidgets.QMainWindow):
                                     "\n"
                                     "QPushButton:pressed {\n"
                                     "  background-color: #072f49;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollArea{\n"
-                                    "    border: 1px solid #0b1a30;\n"
-                                    "    border-radius: 5px\n"
-                                    "}\n"
-                                    "QScrollBar:vertical{\n"
-                                    "    width: 12px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::handle:vertical{\n"
-                                    "    background-color: #97b9f4;    \n"
-                                    "    min-height: 5px;\n"
-                                    "    border-radius: 4px;\n"
-                                    "    margin: 2px;\n\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::sub-line:vertical{\n"
-                                    "     height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-line:vertical{\n"
-                                    "        height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-page:vertical{\n"
-                                    "    background: #0b1a30;\n"
-                                    " }\n"
-                                    "\n"
-                                    "QScrollBar::sub-page:vertical{\n"
-                                    "      background: #0b1a30;\n"
                                     "}")
-        self.sw_right.setObjectName("sw_right")
-        self.page_8 = QtWidgets.QWidget()
-        self.page_8.setObjectName("page_8")
         self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.page_8)
         self.verticalLayout_10.setContentsMargins(20, 20, 20, 20)
         self.verticalLayout_10.setSpacing(15)
@@ -332,11 +304,71 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_search_student.setObjectName("btn_search_student")
         self.horizontalLayout_48.addWidget(self.btn_search_student)
         self.verticalLayout_10.addLayout(self.horizontalLayout_48)
-        self.lv_student = QtWidgets.QListView(self.page_8)
+        self.lv_student = ListView(self.page_8)
         self.lv_student.setObjectName("lv_student")
         self.verticalLayout_10.addWidget(self.lv_student)
         self.sw_right.addWidget(self.page_8)
         self.page_9 = QtWidgets.QWidget()
+        self.page_9.setStyleSheet("QWidget{\n"
+                                    "    background: #083654;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QLineEdit {\n"
+                                    "      padding: 1px 5px;\n"
+                                    "      border: 1px solid #0e4884;\n"
+                                    "      border-radius: 5px;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QPushButton {\n"
+                                    "  padding: 5px;\n"
+                                    "  border: 1px solid #0e4884;\n"
+                                    "  background-color: #0e4884;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QLineEdit:focus,\n"
+                                    "QLineEdit:hover,\n"
+                                    "QPushButton:focus,\n"
+                                    "QPushButton:hover {\n"
+                                    "  border: 1px solid #256eff;\n"
+                                    "  outline: none;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QPushButton:pressed {\n"
+                                    "  background-color: #072f49;\n"
+                                    "}"
+                                    "\n"
+                                    "QScrollArea{\n"
+                                    "    border: 1px solid #0b1a30;\n"
+                                    "    border-radius: 5px\n"
+                                    "}\n"
+                                    "QScrollBar:vertical{\n"
+                                    "    width: 12px;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QScrollBar::handle:vertical{\n"
+                                    "    background-color: #97b9f4;    \n"
+                                    "    min-height: 5px;\n"
+                                    "    border-radius: 4px;\n"
+                                    "    margin: 2px;\n\n"
+                                    "}\n"
+                                    "\n"
+                                    "QScrollBar::sub-line:vertical{\n"
+                                    "     height: 0;\n"
+                                    "     width: 0;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QScrollBar::add-line:vertical{\n"
+                                    "        height: 0;\n"
+                                    "     width: 0;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QScrollBar::add-page:vertical{\n"
+                                    "    background: #0b1a30;\n"
+                                    " }\n"
+                                    "\n"
+                                    "QScrollBar::sub-page:vertical{\n"
+                                    "      background: #0b1a30;\n"
+                                    "}")
         self.page_9.setObjectName("page_9")
         self.verticalLayout_11 = QtWidgets.QVBoxLayout(self.page_9)
         self.verticalLayout_11.setContentsMargins(20, 20, 20, 20)
@@ -551,3 +583,17 @@ class Meeting(QtWidgets.QMainWindow):
 
     def set_timer(self, time):
         self.lbl_timer.setText(time)
+
+    def run_popup(self, message, icon='information'):
+        if icon == 'question':
+            self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
+            'Teachers', ['Misc', 'Resources'], 'question.png')))
+        elif icon == 'warning':
+            self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
+            'Teachers', ['Misc', 'Resources'], 'warning.png')))
+        elif icon == 'critical':
+            self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
+            'Teachers', ['Misc', 'Resources'], 'critical.png')))
+        
+        self.Popup.lbl_message.setText(message)
+        self.Popup.run()

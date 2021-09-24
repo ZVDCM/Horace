@@ -3,6 +3,7 @@ class Meeting:
     def __init__(self, Model):
         self.Model = Model
         self.ListModel = Model.ListModel
+        self.ReadOnlyListModel = Model.ReadOnlyListModel
         self.Database = Model.Database
 
     def create_attendance(self, teacher, name, file, date):
