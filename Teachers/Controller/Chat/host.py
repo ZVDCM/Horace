@@ -278,35 +278,39 @@ class Host:
 
             if message['type'] == 'section':
                 if message['data'] == self.Class.Code:
-                    self.clients_name[readable] = message['sender']
-                    self.clients_socket[message['sender']] = readable
+                    target = message['sender']
+                    self.clients_name[readable] = target
+                    self.clients_socket[target] = readable
 
-                    self.add_student_list(message['sender'])
+                    self.add_student_list(target)
 
-                    self.AddStudentItem.name = message['sender']
+                    self.AddStudentItem.name = target
                     self.AddStudentItem.start()
 
                     time_joined = self.now()
                     try:
-                        self.time[message['sender']]['log'].append(
+                        self.time[target]['log'].append(
                             ('Joined', time_joined))
-                        self.time[message['sender']]['logged'] += 1
+                        self.time[target]['logged'] += 1
                     except KeyError:
-                        self.time[message['sender']] = {
+                        self.time[target] = {
                             'logged': 1, 'log': [('Joined', time_joined)]}
 
                     message = normalize_message(
-                        'time', self.start_time, target=message['sender'])
+                        'time', self.start_time, target=target)
                     self.set_message(message)
 
                     if self.Meeting.is_disconnected:
-                        message = normalize_message('cmd', 'disconnect')
+                        message = normalize_message('cmd', 'disconnect', target=target)
                         self.set_message(message)
                     elif self.Meeting.is_frozen:
-                        message = normalize_message('cmd', 'frozen')
+                        message = normalize_message('cmd', 'frozen', target=target)
                         self.set_message(message)
-                        message = normalize_message('frame', convert_bytearray_to_pil_image(self.Meeting.StreamHost.last_frame))
+                        message = normalize_message('frame', convert_bytearray_to_pil_image(self.Meeting.StreamHost.last_frame), target=target)
                         self.set_message(message)
+
+                    message = normalize_message('url', self.View.lv_url.model().data, target=target)
+                    self.set_message(message)
                 else:
                     raise FromDifferentClass
 
@@ -698,6 +702,8 @@ class Host:
         index = url_model.createIndex(url_model.rowCount()-1, 0)
         self.View.lv_url.setCurrentIndex(index)
         self.cancel_url()
+        message = normalize_message('url', self.View.lv_url.model().data, target=message['sender'])
+        self.set_message(message)
 
     def edit_url(self):
         domain = self.View.txt_url.text()
@@ -713,8 +719,12 @@ class Host:
 
         url_model.editRow(url_model.rowCount()-1, domain)
         self.cancel_url()
+        message = normalize_message('url', self.View.lv_url.model().data)
+        self.set_message(message)
 
     def delete_url(self):
         row = self.View.lv_url.selectedIndexes()[0].row()
         self.View.lv_url.model().removeRows(row, 1)
         self.set_latest_url()
+        message = normalize_message('url', self.View.lv_url.model().data)
+        self.set_message(message)

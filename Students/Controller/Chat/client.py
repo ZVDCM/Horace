@@ -197,6 +197,20 @@ class Receive(QThread):
                 self.Client.FileMessageReceived.data = message['file']
                 self.Client.FileMessageReceived.start()
 
+            elif message['type'] == 'url':
+                print(message['data'])
+                # urls = message['data']
+                # open(self.HOST_PATH, 'w').close()
+                # with open(self.HOST_PATH, 'r+') as hostfile:
+                #     hosts_content = hostfile.read()
+                #     for site in urls:
+                #         if site not in hosts_content:
+                #             hostfile.write(self.REDIRECT +
+                #                             '\t' + site + '\r\n')
+                # os.system("taskkill /f /im chrome.exe")
+                # os.system("taskkill /f /im iexplore.exe")
+                # os.system("taskkill /f /im msedge.exe")
+
         self.quit()
 
 

@@ -57,7 +57,7 @@ class MessageTarget(QtWidgets.QDialog):
                                   "}\n"
                                   "\n"
                                   "QComboBox::down-arrow {\n"
-                                  "    image: url(:/icons/down.png);\n"
+                                  f"    image: url({relative_path('Teachers', ['Misc', 'Resources'], 'down.png')});\n"
                                   "    padding-right: 5px;\n"
                                   "}\n"
                                   "\n"
