@@ -26,8 +26,9 @@ class Host:
 
     FORMAT = 'utf-8'
 
-    def __init__(self, RDC, parent, Chat, target):
+    def __init__(self, RDC, Meeting, parent, Chat, target):
         self.RDC = RDC
+        self.Meeting = Meeting
         self.parent = parent
         self.parent.closeEvent = self.parent_closed
         self.parent.mouse_move.connect(self.get_mouse_pos)
@@ -51,26 +52,32 @@ class Host:
 
     def get_mouse_pos(self, coordinates):
         message = normalize_message('mouse', ['move', coordinates], target=self.target)
+        self.RDC.set_status(f'x = {coordinates[0]}, y = {coordinates[1]}')
         self.Chat.set_message(message)
 
     def get_pressed_mouse_button(self, button):
         message = normalize_message('mouse', ['pressed', button], target=self.target)
+        self.RDC.set_status(f'Mouse Pressed = {button} button')
         self.Chat.set_message(message)
 
     def get_released_mouse_button(self, button):
         message = normalize_message('mouse', ['released', button], target=self.target)
+        self.RDC.set_status(f'Mouse Released = {button} button')
         self.Chat.set_message(message)
 
     def get_mouse_scroll_direction(self, direction):
         message = normalize_message('mouse', ['scroll', direction], target=self.target)
+        self.RDC.set_status(f'Mouse Scrolled = {direction}')
         self.Chat.set_message(message)
 
     def get_pressed_key(self, key):
         message = normalize_message('keyboard', ['pressed', key], target=self.target)
+        self.RDC.set_status(f'Keyboard Pressed = {key}')
         self.Chat.set_message(message)
 
     def get_released_key(self, key):
         message = normalize_message('keyboard', ['release', key], target=self.target)
+        self.RDC.set_status(f'Keyboard Released = {key}')
         self.Chat.set_message(message)
 
     def start(self):
@@ -104,6 +111,8 @@ class Host:
             except OSError:
                 self.frames.put("disconnect")
                 return
+            except UnicodeDecodeError:
+                continue
 
     def display(self):
         while not self.server._closed:
@@ -124,4 +133,5 @@ class Host:
         self.stop()
         message = normalize_message('cmd', 'end control', target=self.target)
         self.Chat.set_message(message)
-        self.Chat.View.Overlay.btn_freeze.click()
+        self.Meeting.View.Overlay.btn_freeze.click()
+        self.Chat.HideLoadingScreen.start()

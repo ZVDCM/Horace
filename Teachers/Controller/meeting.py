@@ -48,10 +48,11 @@ class Meeting:
         self.is_frozen = False
         self.is_connected = True
         self.is_disconnected = False
-        self.is_controlling = False
 
         student_model = self.Model.ListModel(self.View.lv_student, [])
         self.View.lv_student.setModel(student_model)
+
+        self.View.title_bar.title.setText(self.Class.Name)
 
         self.connect_signals()
         self.View.run()

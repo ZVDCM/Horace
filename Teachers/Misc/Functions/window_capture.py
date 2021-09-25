@@ -3,7 +3,7 @@ import win32gui
 import win32ui
 import numpy as np
 from mss import mss
-from PIL import Image, ImageFilter
+from PIL import Image
 from win32api import GetSystemMetrics
 
 

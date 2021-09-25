@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QSizePolicy
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QMovie, QPainter
+from PyQt5.QtGui import QMovie, QPainter, QPixmap
 
 
 class LoadingScreen(QWidget):

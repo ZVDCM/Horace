@@ -36,6 +36,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.close_buttons = [self.btn_close_student_list,
                               self.btn_close_chat, self.btn_close_url]
 
+        self.LoadingScreen = LoadingScreen(self.widget, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         self.LoadingScreenURL = LoadingScreen(self.w_url, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
         self.LoadingScreenURLList = LoadingScreen(self.w_url_list, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
 
@@ -615,7 +616,6 @@ class Meeting(QtWidgets.QMainWindow):
         self.sa_chat.setObjectName("sa_chat")
         self.sa_chat.setStyleSheet("QScrollArea{\n"
                                     "    border: 1px solid #0B1A30;\n"
-                                    "    border-radius: 5px\n"
                                     "}\n"
                                     "QScrollBar:vertical{\n"
                                     "    width: 12px;\n"
@@ -973,7 +973,7 @@ class Meeting(QtWidgets.QMainWindow):
                                      "    padding-left: 3px;\n"
                                      "}")
         self.status_bar.setObjectName("statusbar")
-        self.lbl_meeting_status = QtWidgets.QLabel(self.status_bar)
+        self.lbl_meeting_status = QtWidgets.QLabel('x = 0, y = 0',self.status_bar)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(1)

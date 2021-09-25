@@ -101,7 +101,6 @@ class Client:
 
                     self.frames.put(buffer)
             except OSError:
-                self.frames.put('disconnect')
                 return
             except UnicodeDecodeError:
                 continue
@@ -112,6 +111,12 @@ class Client:
             if frame == 'disconnect':
                 self.DisconnectScreen.start()
                 break
+            elif frame == 'frozen':
+                try:
+                    self.set_last_frame()
+                    break
+                except AttributeError:
+                    continue
             try:
                 self.last_frame = pickle.loads(zlib.decompress(frame))
                 frame = convert_pil_image_to_QPixmap(self.last_frame)
@@ -120,16 +125,13 @@ class Client:
             except zlib.error:
                 continue
 
-        if self.Meeting.is_frozen:
-            frame = convert_pil_image_to_QPixmap(self.last_frame)
-            frame = frame.scaled(
-                    self.View.w_left.width(), self.View.w_left.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
-            self.View.screen.setPixmap(frame)
+    def set_last_frame(self):
+        frame = convert_pil_image_to_QPixmap(self.last_frame)
+        frame = frame.scaled(
+                self.View.w_left.width(), self.View.w_left.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        self.View.screen.setPixmap(frame)
 
     def screen_resized(self, event):
         if self.Meeting.is_frozen:
-            frame = convert_pil_image_to_QPixmap(self.last_frame)
-            frame = frame.scaled(
-                    self.View.w_left.width(), self.View.w_left.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
-            self.View.screen.setPixmap(frame)
+            self.set_last_frame()
         self.View.LoadingScreen.parent_resized(None)

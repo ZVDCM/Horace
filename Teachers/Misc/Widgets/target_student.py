@@ -71,6 +71,6 @@ class TargetStudent(QtWidgets.QWidget):
 
     def remove_self(self):
         self.parent.targets.remove(self.name)
-        self.close()
+        self.deleteLater()
         if len(self.parent.targets) == 0:
             self.parent.w_reply.hide()

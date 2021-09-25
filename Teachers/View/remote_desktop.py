@@ -40,7 +40,6 @@ class RemoteDesktop(QtWidgets.QMainWindow):
         MainWindow.setMinimumSize(QtCore.QSize(800, 570))
         MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setStyleSheet("")
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -50,7 +49,7 @@ class RemoteDesktop(QtWidgets.QMainWindow):
         self.title_bar.setObjectName("title_bar")
         self.verticalLayout.addWidget(self.title_bar)
         self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setStyleSheet("background: #0B1A30;")
+        self.widget.setStyleSheet("background: #081425;")
         self.widget.setObjectName("widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -70,8 +69,8 @@ class RemoteDesktop(QtWidgets.QMainWindow):
         self.horizontalLayout.addWidget(self.screen, alignment=QtCore.Qt.AlignCenter)
         self.verticalLayout.addWidget(self.widget)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setStyleSheet("QStatusBar {\n"
+        self.status_bar = QtWidgets.QStatusBar(MainWindow)
+        self.status_bar.setStyleSheet("QStatusBar {\n"
                                      "    background: #081222;\n"
                                      "}\n"
                                      "\n"
@@ -79,8 +78,22 @@ class RemoteDesktop(QtWidgets.QMainWindow):
                                      "    color: white;\n"
                                      "    padding-left: 3px;\n"
                                      "}")
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        self.status_bar.setObjectName("statusbar")
+        self.lbl_control_status = QtWidgets.QLabel(self.status_bar)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.lbl_control_status.sizePolicy().hasHeightForWidth())
+        self.lbl_control_status.setSizePolicy(sizePolicy)
+        self.lbl_control_status.setMinimumSize(QtCore.QSize(500, 20))
+        self.lbl_control_status.setMaximumSize(QtCore.QSize(16777215, 20))
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(9)
+        self.lbl_control_status.setFont(font)
+        MainWindow.setStatusBar(self.status_bar)
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -146,3 +159,6 @@ class RemoteDesktop(QtWidgets.QMainWindow):
 
     def on_release(self, key):
         self.key_release.emit(key)
+
+    def set_control_status(self, status):
+        self.lbl_control_status.setText(status)

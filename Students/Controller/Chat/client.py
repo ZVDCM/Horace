@@ -97,6 +97,12 @@ class Receive(QThread):
                 time.sleep(3)
                 break
 
+            elif message['type'] == 'frame':
+                self.StreamClient.last_frame = message['data']
+                frame = convert_pil_image_to_QPixmap(self.StreamClient.last_frame)
+                self.StreamClient.SetFrame.frame = frame
+                self.StreamClient.SetFrame.start()
+
             elif message['type'] == 'cmd':
                 if message['data'] == 'reconnect':
                     self.Client.Meeting.is_connected = True
@@ -108,6 +114,7 @@ class Receive(QThread):
                     self.Client.Meeting.is_connected = False
                     self.Client.Meeting.is_disconnected = True
                     self.StreamClient.stop()
+                    self.StreamClient.frames.put('disconnect')
 
                     if self.Client.Meeting.is_frozen:
                         self.StreamClient.DisconnectScreen.start()
@@ -115,6 +122,7 @@ class Receive(QThread):
                 elif message['data'] == 'frozen':
                     self.Client.Meeting.is_frozen = True
                     self.StreamClient.stop()
+                    self.StreamClient.frames.put('frozen')
 
                 elif message['data'] == 'thawed':
                     self.Client.Meeting.is_frozen = False
@@ -141,12 +149,6 @@ class Receive(QThread):
 
                 elif message['data'] == 'end control':
                     self.RDCClient.stop()
-
-            elif message['type'] == 'frame':
-                self.StreamClient.last_frame = message['data']
-                frame = convert_pil_image_to_QPixmap(self.StreamClient.last_frame)
-                self.StreamClient.SetFrame.frame = frame
-                self.StreamClient.SetFrame.start()
 
             # elif message['type'] == 'mouse':
             #     print(message)

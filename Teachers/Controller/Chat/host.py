@@ -188,6 +188,10 @@ class Host:
         self.View.btn_add_edit_url.clicked.connect(self.init_add_edit_url)
         self.View.btn_cancel_url.clicked.connect(self.cancel_url)
 
+        self.View.btn_search_student.clicked.connect(self.search)
+        self.View.txt_search_student.returnPressed.connect(self.search)
+        self.View.lv_student.hideEvent = self.reset_list_target
+
         self.View.btn_shutdown.clicked.connect(
             lambda: self.btn_commands_clicked('shutdown'))
         self.View.btn_restart.clicked.connect(
@@ -234,6 +238,12 @@ class Host:
         self.GetUrls.finished.connect(self.View.LoadingScreenURL.hide)
         self.GetUrls.finished.connect(self.View.LoadingScreenURLList.hide)
         self.GetUrls.start()
+
+        self.ShowLoadingScreen = Operation()
+        self.ShowLoadingScreen.operation.connect(self.View.LoadingScreen.show)
+
+        self.HideLoadingScreen = Operation()
+        self.HideLoadingScreen.operation.connect(self.View.LoadingScreen.hide)
 
     def set_meeting_status(self):
         return SetMeetingStatus(self.View.set_meeting_status)
@@ -673,6 +683,13 @@ class Host:
         class_end = self.now()
         self.time['Teacher']['End'] = class_end
 
+        try:
+            if self.Meeting.is_frozen:
+                self.View.Overlay.btn_freeze.click()
+            self.Controller.View.RemoteDesktop.title_bar.btn_close.click()
+        except AttributeError:
+            pass
+
         for student_name, student_info in list(self.time.items())[1:]:
             if 2 % student_info['logged'] != 0:
                 self.time[student_name]['log'].append(('Left', class_end))
@@ -732,6 +749,7 @@ class Host:
         self.set_message(message)
         self.Controller.View.init_remote_desktop(self.View)
         self.Controller.init_remote_desktop(name)
+        self.ShowLoadingScreen.start()
 
     def set_url_list(self, urls):
         url_model = self.Model.ListModel(self.View.lv_url, urls)
@@ -795,8 +813,6 @@ class Host:
         self.cancel_url()
         message = normalize_message('url', self.View.lv_url.model().data)
         self.set_message(message)
-        self.SetMeetingStatus.val = f"Blacklisted {domain}"
-        self.SetMeetingStatus.start()
 
     def edit_url(self):
         domain = self.View.txt_url.text()
@@ -818,9 +834,27 @@ class Host:
     def delete_url(self):
         row = self.View.lv_url.selectedIndexes()[0].row()
         url_model = self.View.lv_url.model()
-        self.SetMeetingStatus.val = f"Whitelisted {url_model.getRowData(row)}"
-        self.SetMeetingStatus.start()
         url_model.removeRows(row, 1)
         self.set_latest_url()
         message = normalize_message('url', self.View.lv_url.model().data)
         self.set_message(message)
+
+    def search(self):
+        target_student = self.View.txt_search_student.text()
+        student_model = self.View.lv_student.model()
+        students = student_model.data
+        target_indices = []
+        for index, student in enumerate(students):
+            if target_student in student:
+                target_indices.append(index)
+            self.View.lv_student.setRowHidden(index, True)
+        
+        for target_index in target_indices:
+            self.View.lv_student.setRowHidden(target_index, False)
+
+    def reset_list_target(self, event):
+        self.View.txt_search_student.clear()
+        student_model = self.View.lv_student.model()
+        students = student_model.data
+        for index, student in enumerate(students):
+            self.View.lv_student.setRowHidden(index, False)

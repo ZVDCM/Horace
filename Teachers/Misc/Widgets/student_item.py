@@ -40,7 +40,7 @@ class StudentItem(QtWidgets.QWidget):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def mousePressEvent(self, event):
-        if event.buttons() == QtCore.Qt.LeftButton:
+        if event.buttons() == QtCore.Qt.RightButton:
             self.mouse_pos = self.mapToGlobal(event.pos())
             self.ContextMenu.show()
             self.operation.emit(self.name)
