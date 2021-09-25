@@ -52,12 +52,13 @@ class Lobby:
             self.View.add_class_item(_class)
 
     def class_item_clicked(self, Class):
+        self.TargetClass = Class
         self.get_class_section_address_handler = self.GetClassSectionAddress()
         self.get_class_section_address_handler.val = Class, self.Controller.User
         self.get_class_section_address_handler.operation.connect(self.init_meeting)
         self.get_class_section_address_handler.start()
 
-    def init_meeting(self, Class):
+    def init_meeting(self, ClassTeacher):
         self.Controller.Model.init_meeting()
         self.Controller.View.init_meeting()
-        self.Controller.init_meeting(Class)
+        self.Controller.init_meeting(self.TargetClass, ClassTeacher)

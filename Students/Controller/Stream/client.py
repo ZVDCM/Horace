@@ -41,9 +41,9 @@ class Client:
 
     FORMAT = 'utf-8'
 
-    def __init__(self, Meeting, Class, Model, View, Controller):
+    def __init__(self, Meeting, ClassTeacher, Model, View, Controller):
         self.Meeting = Meeting
-        self.Class = Class
+        self.ClassTeacher = ClassTeacher
         self.Model = Model
         self.View = View
         self.Controller = Controller

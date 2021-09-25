@@ -973,7 +973,7 @@ class Meeting(QtWidgets.QMainWindow):
                                      "    padding-left: 3px;\n"
                                      "}")
         self.status_bar.setObjectName("statusbar")
-        self.lbl_meeting_status = QtWidgets.QLabel('x = 0, y = 0',self.status_bar)
+        self.lbl_meeting_status = QtWidgets.QLabel(self.status_bar)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(1)

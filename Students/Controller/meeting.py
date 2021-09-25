@@ -37,16 +37,20 @@ class Operation(QtCore.QThread):
 
 class Meeting:
 
-    def __init__(self, Controller, Class):
+    def __init__(self, Controller, Class, ClassTeacher):
         self.Model = Controller.Model.Meeting
         self.View = Controller.View.Meeting
         self.Controller = Controller
         self.Class = Class
+        self.ClassTeacher = ClassTeacher
         self.is_frozen = False
         self.is_connected = True
         self.is_disconnected = False
 
-        self.ChatClient = ChatClient(self, self.Class, self.Model, self.View, self.Controller)
+
+        self.View.title_bar.title.setText(self.Class.Name)
+
+        self.ChatClient = ChatClient(self, self.Class, self.ClassTeacher, self.Model, self.View, self.Controller)
         self.connect_signals()
         self.View.run()
 

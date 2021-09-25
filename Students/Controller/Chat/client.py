@@ -65,13 +65,15 @@ class Connect(QThread):
         self.address = address
 
     def run(self):
+        counter = 0
         while self.Client.View.isVisible():
             try:
                 self.Client.client.connect(self.address)
                 break
             except OSError:
-                print('Connecting')
-                time.sleep(2)
+                counter += 1
+                self.Client.set_meeting_status_handler('Connecting' + '.' * (counter % 4))
+                time.sleep(0.5)
         self.quit()
 
 
@@ -85,6 +87,7 @@ class Receive(QThread):
         super().__init__()
         self.Client = Client
         self.client_socket = Client.client
+        self.blacklisted_sites = []
 
     def run(self):
         while True:
@@ -94,7 +97,7 @@ class Receive(QThread):
                 break
             
             if message['type'] == 'permission':
-                time.sleep(3)
+                time.sleep(5)
                 break
 
             elif message['type'] == 'frame':
@@ -110,6 +113,8 @@ class Receive(QThread):
                     self.Client.Meeting.is_frozen = False
                     self.StreamClient.start()
 
+                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} reconnected the screen")
+
                 elif message['data'] == 'disconnect':
                     self.Client.Meeting.is_connected = False
                     self.Client.Meeting.is_disconnected = True
@@ -119,14 +124,18 @@ class Receive(QThread):
                     if self.Client.Meeting.is_frozen:
                         self.StreamClient.DisconnectScreen.start()
 
+                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} disconnected the screen")
+
                 elif message['data'] == 'frozen':
                     self.Client.Meeting.is_frozen = True
                     self.StreamClient.stop()
                     self.StreamClient.frames.put('frozen')
+                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} froze the screen")
 
                 elif message['data'] == 'thawed':
                     self.Client.Meeting.is_frozen = False
                     self.StreamClient.start()
+                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} thawed the screen")
 
                 elif message['data'] == 'shutdown':
                     print(message['data'])
@@ -141,14 +150,16 @@ class Receive(QThread):
                     # subprocess.call('rundll32.exe user32.dll,LockWorkStation',
                     #                     creationflags=self.DETACHED_PROCESS)
                 elif message['data'] == 'start control':
-                    self.RDCClient = RDCClient(self.Client.Class, self.Client.View)
+                    self.RDCClient = RDCClient(self.Client.ClassTeacher, self.Client.View)
 
                     width, height = GetSystemMetrics(0), GetSystemMetrics(1)
                     message = normalize_message('res', (width, height))
                     self.Client.send(message)
+                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} started remote desktop control")
 
                 elif message['data'] == 'end control':
                     self.RDCClient.stop()
+                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} ended remote desktop control")
 
             # elif message['type'] == 'mouse':
             #     print(message)
@@ -189,15 +200,18 @@ class Receive(QThread):
                 self.Client.SetTime.time = message['data'].toString("hh:mm:ss")
                 self.Client.SetTime.start()
                 self.Client.ShowLabel.start()
+                self.Client.InitScreenshot.start()
 
                 self.StreamClient = StreamClient(
-                    self.Client.Meeting, self.Client.Class, self.Client.Model, self.Client.View, self.Client.Controller)
+                    self.Client.Meeting, self.Client.ClassTeacher, self.Client.Model, self.Client.View, self.Client.Controller)
+                self.Client.set_meeting_status_handler(f"Joined {self.Client.Class.Name}")
 
             elif message['type'] == 'msg':
                 self.Client.IncrementBadge.start()
                 self.Client.MessageReceived.message = message['data']
                 self.Client.MessageReceived.sender = message['sender']
                 self.Client.MessageReceived.start()
+                self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} sent a message")
 
             elif message['type'] == 'fls':
                 self.Client.IncrementBadge.start()
@@ -205,9 +219,18 @@ class Receive(QThread):
                 self.Client.FileMessageReceived.filename = message['data']
                 self.Client.FileMessageReceived.data = message['file']
                 self.Client.FileMessageReceived.start()
+                self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} sent a file")
 
             elif message['type'] == 'url':
+                if self.blacklisted_sites:
+                    if len(message['data']) > len(self.blacklisted_sites):
+                        self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} blacklisted {message['data'][-1]}")
+                    else:
+                        self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} whitelisted {self.blacklisted_sites[-1]}")
+
                 print(message['data'])
+                self.blacklisted_sites = message['data']
+
                 # urls = message['data']
                 # open(self.HOST_PATH, 'w').close()
                 # with open(self.HOST_PATH, 'r+') as hostfile:
@@ -221,15 +244,44 @@ class Receive(QThread):
                 # os.system("taskkill /f /im msedge.exe")
 
             elif message['type'] == 'student':
-                self.Client.SetStudentList.val = message['data']
+                new_list_students = message['data']
+                try:
+                    old_list_students = self.Client.View.lv_student.model().data
+
+                    if len(new_list_students) > len(old_list_students):
+                        self.Client.set_meeting_status_handler(f"{new_list_students[0]} joined the class")
+                    else:
+                        self.Client.set_meeting_status_handler(f"{old_list_students[-1]} left the class")
+                except AttributeError:
+                    pass
+
+                self.Client.SetStudentList.val = new_list_students
                 self.Client.SetStudentList.start()
 
             elif message['type'] == 'popup':
+                print(message['data'])
                 self.Client.Popup.val = message['data']
                 self.Client.Popup.start()
+                self.Client.set_meeting_status_handler(f'Teacher {self.Client.ClassTeacher.Teacher} sent a popup')
 
         self.quit()
 
+class Screenshot(QThread):
+    operation = pyqtSignal()
+
+    def __init__(self, Client):
+        super().__init__()
+        self.Client = Client
+        self.View = Client.View
+        self.client_socket = Client.client
+
+    def run(self):
+        while self.View.isVisible() and not self.client_socket._closed:
+            sct = screenshot()
+            message = normalize_message('frame', sct)
+            self.Client.send(message)
+            time.sleep(2)
+        self.quit()
 
 class SetTime(QThread):
     operation = pyqtSignal(str)
@@ -264,20 +316,34 @@ class Popup(QThread):
         self.fn(*self.val)
         self.quit()
 
+class SetMeetingStatus(QtCore.QThread):
+    operation = QtCore.pyqtSignal(str)
+
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+        self.val = None
+
+    def run(self):
+        self.fn(self.val)
+        self.quit()
 
 class Client:
 
     PORT = 43200
-    start_time = QtCore.QTime(0, 0, 0)
 
-    def __init__(self, Meeting, Class, Model, View, Controller):
+    def __init__(self, Meeting, Class, ClassTeacher, Model, View, Controller):
         self.Meeting = Meeting
         self.Class = Class
+        self.ClassTeacher = ClassTeacher
         self.Model = Model
         self.View = View
         self.Controller = Controller
         self.Sender = Controller.User.Username
-        self.from_another_class = False
+
+        self.start_time = QtCore.QTime(0, 0, 0)
+        self.status_time = 0
+
         self.connect_signals()
         self.init_client()
 
@@ -323,30 +389,21 @@ class Client:
 
     def init_client(self):
         self.client = socket.socket()
-        address = (self.Class.HostAddress, self.PORT)
+        address = (self.ClassTeacher.HostAddress, self.PORT)
         self.Connect = Connect(self, address)
         self.Connect.started.connect(self.View.LoadingScreen.run)
+        self.Connect.started.connect(lambda: self.set_meeting_status_handler('Connecting'))
         self.Connect.finished.connect(self.start)
         self.Connect.start()
+        self.InitScreenshot = Screenshot(self)
 
     def start(self):
-        message = normalize_message('section', self.Class.Code)
+        message = normalize_message('section', self.ClassTeacher.Code)
         self.send(message)
 
         self.Receive = Receive(self)
         self.Receive.finished.connect(self.init_client)
         self.Receive.start()
-
-        send_screenshot_thread = threading.Thread(
-            target=self.send_screenshot, daemon=True, name='ChatScreenshotThread')
-        send_screenshot_thread.start()
-
-    def send_screenshot(self):
-        while self.View.isVisible() and not self.client._closed:
-            sct = screenshot()
-            message = normalize_message('frame', sct)
-            self.send(message)
-            time.sleep(2)
 
     def send(self, message):
         try:
@@ -413,9 +470,22 @@ class Client:
         self.SetTime.time = self.start_time.toString("hh:mm:ss")
         self.SetTime.start()
 
+        self.status_time += 1
+        if self.status_time == 5:
+            self.View.lbl_meeting_status.clear()
+
     def meeting_closed(self, event):
         self.client.close()
 
     def set_student_list(self, students):
         student_model = self.Model.ListModel(self.View.lv_student, students)
         self.View.lv_student.setModel(student_model)
+
+    def set_meeting_status(self):
+        return SetMeetingStatus(self.View.set_meeting_status)
+
+    def set_meeting_status_handler(self, status):
+        self.status_time = 0
+        self.handler = self.set_meeting_status()
+        self.handler.val = status
+        self.handler.start()

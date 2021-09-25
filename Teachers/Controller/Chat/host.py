@@ -832,6 +832,7 @@ class Host:
         self.set_message(message)
 
     def delete_url(self):
+        self.View.txt_url.clear()
         row = self.View.lv_url.selectedIndexes()[0].row()
         url_model = self.View.lv_url.model()
         url_model.removeRows(row, 1)

@@ -17,5 +17,5 @@ class Controller:
     def init_lobby(self):
         self.Lobby = Lobby(self)
 
-    def init_meeting(self, Class):
-        self.Meeting = Meeting(self, Class)
+    def init_meeting(self, Class, ClassTeacher):
+        self.Meeting = Meeting(self, Class, ClassTeacher)

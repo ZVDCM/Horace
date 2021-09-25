@@ -13,10 +13,10 @@ class Client:
 
     FORMAT = 'utf-8'
 
-    def __init__(self, Class, View):
-        self.Class = Class
+    def __init__(self, ClassTeacher, View):
+        self.ClassTeacher = ClassTeacher
         self.View = View
-        self.destination = (self.Class.HostAddress, self.PORT) 
+        self.destination = (self.ClassTeacher.HostAddress, self.PORT) 
         self.client = socket.socket(type=socket.SOCK_DGRAM)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 

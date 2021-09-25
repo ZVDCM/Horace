@@ -339,7 +339,6 @@ class Meeting(QtWidgets.QMainWindow):
                                     "\n"
                                     "QScrollArea{\n"
                                     "    border: 1px solid #0b1a30;\n"
-                                    "    border-radius: 5px\n"
                                     "}\n"
                                     "QScrollBar:vertical{\n"
                                     "    width: 12px;\n"
@@ -522,8 +521,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.verticalLayout_2.addLayout(self.horizontalLayout_12)
         self.verticalLayout.addWidget(self.widget)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setStyleSheet("QStatusBar {\n"
+        self.status_bar = QtWidgets.QStatusBar(MainWindow)
+        self.status_bar.setStyleSheet("QStatusBar {\n"
                                      "    background: #081222;\n"
                                      "}\n"
                                      "\n"
@@ -531,8 +530,22 @@ class Meeting(QtWidgets.QMainWindow):
                                      "    color: white;\n"
                                      "    padding-left: 3px;\n"
                                      "}")
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        self.status_bar.setObjectName("statusbar")
+        self.lbl_meeting_status = QtWidgets.QLabel(self.status_bar)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.lbl_meeting_status.sizePolicy().hasHeightForWidth())
+        self.lbl_meeting_status.setSizePolicy(sizePolicy)
+        self.lbl_meeting_status.setMinimumSize(QtCore.QSize(500, 20))
+        self.lbl_meeting_status.setMaximumSize(QtCore.QSize(16777215, 20))
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(9)
+        self.lbl_meeting_status.setFont(font)
+        MainWindow.setStatusBar(self.status_bar)
 
         self.retranslateUi(MainWindow)
         self.sw_right.setCurrentIndex(0)
@@ -584,16 +597,19 @@ class Meeting(QtWidgets.QMainWindow):
     def set_timer(self, time):
         self.lbl_timer.setText(time)
 
-    def run_popup(self, message, icon='information'):
-        if icon == 'question':
+    def run_popup(self, message, icon='Information'):
+        if icon == 'Question':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Teachers', ['Misc', 'Resources'], 'question.png')))
-        elif icon == 'warning':
+            'Students', ['Misc', 'Resources'], 'question.png')))
+        elif icon == 'Warning':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Teachers', ['Misc', 'Resources'], 'warning.png')))
-        elif icon == 'critical':
+            'Students', ['Misc', 'Resources'], 'warning.png')))
+        elif icon == 'Critical':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Teachers', ['Misc', 'Resources'], 'critical.png')))
+            'Students', ['Misc', 'Resources'], 'critical.png')))
         
         self.Popup.lbl_message.setText(message)
         self.Popup.run()
+
+    def set_meeting_status(self, status):
+        self.lbl_meeting_status.setText(status)

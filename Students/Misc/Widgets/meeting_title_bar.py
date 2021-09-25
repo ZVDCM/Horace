@@ -20,9 +20,26 @@ class TitleBar(QtWidgets.QWidget):
         Form.setMinimumSize(QtCore.QSize(0, 30))
         Form.setMaximumSize(QtCore.QSize(16777215, 30))
         self.horizontalLayout = QtWidgets.QHBoxLayout(Form)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setContentsMargins(10, 0, 0, 0)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
+
+        self.logo = QtWidgets.QLabel(Form)
+        self.logo.setFixedSize(QtCore.QSize(18, 18))
+        self.logo.setMaximumSize(QtCore.QSize(18, 18))
+        qpixmap = QtGui.QPixmap(relative_path('Students', ['Misc', 'Resources'], 'horace.png'))
+        self.logo.setScaledContents(True)
+        self.logo.setPixmap(qpixmap)
+        self.logo.setStyleSheet("margin-top: 2px")
+        self.horizontalLayout.addWidget(self.logo, alignment=QtCore.Qt.AlignCenter)
+
+        self.title = QtWidgets.QLabel('PDC 60', Form)
+        self.title.setStyleSheet("margin-top: 2px; margin-left: 5px; color: gray")
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        self.title.setFont(font)
+        self.horizontalLayout.addWidget(self.title, alignment=QtCore.Qt.AlignCenter)
+
         spacerItem = QtWidgets.QSpacerItem(
             537, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
