@@ -1,4 +1,3 @@
-from Teachers.Misc.Widgets.create_class import CreateClass
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow
@@ -46,6 +45,7 @@ class Lobby:
 
         self.connect_signals()
         self.get_classes()
+        self.get_attendances()
 
         self.View.run()
 
@@ -54,18 +54,31 @@ class Lobby:
             side_nav.operation.connect(self.change_page)
         self.View.resizeEvent = self.resize
 
-        self.View.btn_init_create_class.clicked.connect(self.init_create_class)
+        self.View.lv_attendance.clicked.connect(self.attendance_list_clicked)
 
     def GetAllClass(self):
         handler = Get(self.Model.get_all_class)
-        handler.started.connect(self.View.ClassLoadingScreen.run)
+        handler.started.connect(self.View.ClassLoadingScreen.show)
         handler.operation.connect(self.set_classes)
         handler.finished.connect(self.View.ClassLoadingScreen.hide)
         return handler
 
-    
     def SetClassTeacherAddress(self):
         return Operation(self.Model.set_class_teacher_address)
+        
+    def GetAllAttendances(self):
+        handler = Get(self.Model.get_all_attendances)
+        handler.started.connect(self.View.AttendanceListLoadingScreen.show)
+        handler.operation.connect(self.set_attendances)
+        handler.finished.connect(self.View.AttendanceListLoadingScreen.hide)
+        return handler
+
+    def GetAttendanceData(self):
+        handler = Get(self.Model.get_attendance_data)
+        handler.started.connect(self.View.AttendanceTableLoadingScreen.show)
+        handler.operation.connect(self.set_attendance_data)
+        handler.finished.connect(self.View.AttendanceTableLoadingScreen.hide)
+        return handler
 
     def get_classes(self):
         self.get_all_class_handler = self.GetAllClass()
@@ -104,7 +117,13 @@ class Lobby:
 
     def resize(self, event):
         self.View.ClassLoadingScreen.resize_loader()
-        self.View.AttendanceLoadingScreen.resize_loader()
+        self.View.AttendanceTableLoadingScreen.resize_loader()
+        self.View.AttendanceListLoadingScreen.resize_loader()
+        try:
+            self.View.tv_attendance.model().layoutChanged.emit()
+            self.View.lv_attendance.model().layoutChanged.emit()
+        except AttributeError:
+            pass
         super(QMainWindow, self.View).resizeEvent(event)
 
     def init_meeting(self, Class):
@@ -112,6 +131,44 @@ class Lobby:
         self.Controller.View.init_meeting()
         self.Controller.init_meeting(Class)
 
-    def init_create_class(self):
-        self.CreateClass = CreateClass(self.View, self.Model)
-        self.CreateClass.run()
+    def get_attendances(self):
+        self.get_all_attendances_handler = self.GetAllAttendances()
+        self.get_all_attendances_handler.val = self.Controller.User,
+        self.get_all_attendances_handler.start()
+
+    def set_attendances(self, attendances):
+        attendance_model = self.Model.ListModel(self.View.lv_attendance, attendances)
+        self.View.lv_attendance.setModel(attendance_model)
+        index = attendance_model.createIndex(0,0)
+        self.View.lv_attendance.setCurrentIndex(index)
+        self.View.lv_attendance.model().layoutChanged.emit()
+        self.get_attendance_data(attendances[0])
+
+    def attendance_list_clicked(self, index):
+        row = index.row()
+        attendance_model = self.View.lv_attendance.model()
+        attendance = attendance_model.getRowData(row)
+        self.get_attendance_data(attendance)
+
+    def get_attendance_data(self, attendance):
+        self.get_attendance_data_handler = self.GetAttendanceData()
+        self.get_attendance_data_handler.val = self.Controller.User, attendance
+        self.get_attendance_data_handler.start()
+    
+    def set_attendance_data(self, attendance_data):
+        data = attendance_data.decode('utf-8')
+        table_data = []
+        rows = data.split('\n')
+        for row in rows:
+            table_row = ["","",""]
+            current_row = [*row.split(',')]
+            for i in range(len(current_row)):
+                table_row[i] = current_row[i]
+            table_data.append(table_row)
+
+        attendance_model = self.Model.TableModel(self.View.tv_attendance, table_data)
+        self.View.tv_attendance.setModel(attendance_model)
+        self.View.tv_attendance.horizontalHeader().setMinimumSectionSize(300)
+
+
+

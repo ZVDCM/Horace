@@ -1,3 +1,4 @@
+from typing import List
 from Teachers.Misc.Widgets.loading_screen import LoadingScreen
 from Teachers.Misc.Widgets.nav import Nav
 from Teachers.Misc.Functions.relative_path import relative_path
@@ -19,8 +20,11 @@ class Lobby(QtWidgets.QMainWindow):
         self.side_navs = [self.w_class, self.w_attendance]
         self.ClassLoadingScreen = LoadingScreen(self.classes, relative_path(
             'Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
-        self.AttendanceLoadingScreen = LoadingScreen(self.attendances, relative_path(
+        self.AttendanceTableLoadingScreen = LoadingScreen(self.tv_attendance, relative_path(
             'Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+        self.AttendanceListLoadingScreen = LoadingScreen(self.lv_attendance, relative_path(
+            'Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
+
 
     def run(self):
         self.raise_()
@@ -42,7 +46,7 @@ class Lobby(QtWidgets.QMainWindow):
         self.verticalLayout_5.setSpacing(0)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.title_bar = TitleBar(self)
-        self.title_bar.setStyleSheet("background: #0B1A30;")
+        self.title_bar.setStyleSheet("background: #081425;")
         self.title_bar.setObjectName("title_bar")
         self.verticalLayout_5.addWidget(self.title_bar)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -112,7 +116,7 @@ class Lobby(QtWidgets.QMainWindow):
         self.horizontalLayout.addWidget(self.side_bar)
         self.sw_all = QtWidgets.QStackedWidget(self.centralwidget)
         self.sw_all.setStyleSheet("QWidget {\n"
-                                  "    background: #0B1A30;\n"
+                                  "    background: #081425;\n"
                                   "    color: white; \n"
                                   "    font-family: Barlow\n"
                                   "}\n"
@@ -141,41 +145,19 @@ class Lobby(QtWidgets.QMainWindow):
                                   "  background-color: #072f49;\n"
                                   "}\n"
                                   "\n"
-                                  "QScrollBar:vertical{\n"
-                                  "    width: 18px;\n"
-                                  "    margin: 0px 3px 0px 7px;\n"
+                                  "QGroupBox {\n"
+                                  "    border: 1px solid #083654;\n"
                                   "    border-radius: 5px;\n"
+                                  "    margin-top: 15px;\n"
                                   "}\n"
-                                  "\n"
-                                  "QScrollBar::handle:vertical{\n"
-                                  "    background-color: #97b9f4;    \n"
-                                  "    min-height: 5px;\n"
-                                  "     border-radius: 4px;\n"
+                                  "QGroupBox::title{\n"
+                                  "    subcontrol-origin: margin;\n"
+                                  "    subcontrol-position: top left;\n"
+                                  "    margin-top: 2px;\n"
+                                  "    margin-left: 20px;\n"
+                                  "    background-color: transparent;\n"
                                   "}\n"
-                                  "\n"
-                                  "QScrollBar::sub-line:vertical{\n"
-                                  "     height: 0;\n"
-                                  "     width: 0;\n"
-                                  "}\n"
-                                  "\n"
-                                  "QScrollBar::add-line:vertical{\n"
-                                  "        height: 0;\n"
-                                  "     width: 0;\n"
-                                  "}\n"
-                                  "\n"
-                                  "QScrollBar::add-page:vertical{\n"
-                                  "    background: #0b1a30;\n"
-                                  "    border-bottom-left-radius: 4px;\n"
-                                  "    border-bottom-right-radius: 4px;\n"
-                                  "    margin-top: -3px;\n"
-                                  " }\n"
-                                  "\n"
-                                  "QScrollBar::sub-page:vertical{\n"
-                                  "      background: #0b1a30;\n"
-                                  "    border-top-left-radius: 4px;\n"
-                                  "    border-top-right-radius: 4px;\n"
-                                  "    margin-bottom: -3px;\n"
-                                  "}")
+                                  )
         self.sw_all.setObjectName("sw_all")
         self.classes = QtWidgets.QWidget()
         self.classes.setStyleSheet("")
@@ -200,26 +182,6 @@ class Lobby(QtWidgets.QMainWindow):
         spacerItem4 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem4)
-        self.btn_init_create_class = QtWidgets.QPushButton(self.classes)
-        self.btn_init_create_class.setMinimumSize(QtCore.QSize(0, 30))
-        font = QtGui.QFont()
-        font.setFamily("Barlow")
-        font.setPointSize(11)
-        self.btn_init_create_class.setFont(font)
-        self.btn_init_create_class.setStyleSheet("QPushButton{\n"
-                                      "    border-radius: 5px;\n"
-                                      "    background: none;\n"
-                                      "    padding: 5px 10px;\n"
-                                      "}\n"
-                                      "\n"
-                                      "\n"
-                                      "QPushButton:pressed {\n"
-                                      "     background-color: #072f49;\n"
-                                      "}")
-        self.btn_init_create_class.setCursor(
-            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_init_create_class.setObjectName("btn_init_create_class")
-        self.horizontalLayout_2.addWidget(self.btn_init_create_class)
         self.verticalLayout_7.addLayout(self.horizontalLayout_2)
         self.sa_class = QtWidgets.QScrollArea(self.classes)
         self.sa_class.setStyleSheet("")
@@ -248,6 +210,11 @@ class Lobby(QtWidgets.QMainWindow):
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setSpacing(15)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+
+        self.horizontalLayout_69 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_69.setContentsMargins(0,0,5,0)
+        self.horizontalLayout_69.setSpacing(0)
+
         self.label_7 = QtWidgets.QLabel(self.attendances)
         font = QtGui.QFont()
         font.setFamily("Barlow")
@@ -258,59 +225,83 @@ class Lobby(QtWidgets.QMainWindow):
             QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.label_7.setIndent(1)
         self.label_7.setObjectName("label_7")
-        self.horizontalLayout_3.addWidget(self.label_7)
-        self.horizontalLayout_47 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_47.setSizeConstraint(
-            QtWidgets.QLayout.SetMinimumSize)
-        self.horizontalLayout_47.setSpacing(0)
-        self.horizontalLayout_47.setObjectName("horizontalLayout_47")
-        self.txt_search_section = QtWidgets.QLineEdit(self.attendances)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.txt_search_section.sizePolicy().hasHeightForWidth())
-        self.txt_search_section.setSizePolicy(sizePolicy)
-        self.txt_search_section.setMinimumSize(QtCore.QSize(0, 30))
-        self.txt_search_section.setMaximumSize(QtCore.QSize(250, 30))
-        font = QtGui.QFont()
-        font.setFamily("Barlow")
-        font.setPointSize(10)
-        self.txt_search_section.setFont(font)
-        self.txt_search_section.setStyleSheet("border-radius: none;\n"
-                                              "border-top-left-radius: 5px;\n"
-                                              "border-bottom-left-radius: 5px;")
-        self.txt_search_section.setObjectName("txt_search_section")
-        self.horizontalLayout_47.addWidget(self.txt_search_section)
-        self.btn_search_sections = QtWidgets.QPushButton(self.attendances)
+        self.horizontalLayout_69.addWidget(self.label_7)
+
+        self.btn_download = QtWidgets.QPushButton(self.attendances)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.btn_search_sections.sizePolicy().hasHeightForWidth())
-        self.btn_search_sections.setSizePolicy(sizePolicy)
-        self.btn_search_sections.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_search_sections.setMaximumSize(QtCore.QSize(30, 30))
+            self.btn_download.sizePolicy().hasHeightForWidth())
+        self.btn_download.setSizePolicy(sizePolicy)
+        self.btn_download.setMinimumSize(
+            QtCore.QSize(30, 30))
+        self.btn_download.setMaximumSize(
+            QtCore.QSize(30, 30))
+        self.btn_download.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_download.setStyleSheet("border-radius: 5px;\n"
+                                    f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'download.png')});\n"
+                                    "background-repeat: no-repeat;\n"
+                                    "background-position: center center;")
+        self.btn_download.setObjectName(
+            "btn_download")
+        self.horizontalLayout_69.addWidget(self.btn_download)
+        self.horizontalLayout_3.addLayout(self.horizontalLayout_69)
+        
+        self.horizontalLayout_47 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_47.setSizeConstraint(
+            QtWidgets.QLayout.SetMinimumSize)
+        self.horizontalLayout_47.setSpacing(0)
+        self.horizontalLayout_47.setObjectName("horizontalLayout_47")
+        self.txt_search_attendance = QtWidgets.QLineEdit(self.attendances)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.txt_search_attendance.sizePolicy().hasHeightForWidth())
+        self.txt_search_attendance.setSizePolicy(sizePolicy)
+        self.txt_search_attendance.setMinimumSize(QtCore.QSize(0, 30))
+        self.txt_search_attendance.setMaximumSize(QtCore.QSize(250, 30))
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(10)
+        self.txt_search_attendance.setFont(font)
+        self.txt_search_attendance.setStyleSheet("border-radius: none;\n"
+                                              "border-top-left-radius: 5px;\n"
+                                              "border-bottom-left-radius: 5px;")
+        self.txt_search_attendance.setObjectName("txt_search_attendance")
+        self.horizontalLayout_47.addWidget(self.txt_search_attendance)
+        self.btn_search_attendance = QtWidgets.QPushButton(self.attendances)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_search_attendance.sizePolicy().hasHeightForWidth())
+        self.btn_search_attendance.setSizePolicy(sizePolicy)
+        self.btn_search_attendance.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_search_attendance.setMaximumSize(QtCore.QSize(30, 30))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(12)
         font.setBold(True)
         font.setWeight(75)
-        self.btn_search_sections.setFont(font)
-        self.btn_search_sections.setCursor(
+        self.btn_search_attendance.setFont(font)
+        self.btn_search_attendance.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_search_sections.setStyleSheet("border-top-right-radius: 5px;\n"
+        self.btn_search_attendance.setStyleSheet("border-top-right-radius: 5px;\n"
                                                "border-bottom-right-radius: 5px;")
-        self.btn_search_sections.setText("")
+        self.btn_search_attendance.setText("")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(relative_path('Teachers', ['Misc', 'Resources'], 'search.png')),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btn_search_sections.setIcon(icon)
-        self.btn_search_sections.setIconSize(QtCore.QSize(18, 18))
-        self.btn_search_sections.setObjectName("btn_search_sections")
-        self.horizontalLayout_47.addWidget(self.btn_search_sections)
+        self.btn_search_attendance.setIcon(icon)
+        self.btn_search_attendance.setIconSize(QtCore.QSize(18, 18))
+        self.btn_search_attendance.setObjectName("btn_search_attendance")
+        self.horizontalLayout_47.addWidget(self.btn_search_attendance)
         self.horizontalLayout_3.addLayout(self.horizontalLayout_47)
         self.horizontalLayout_3.setStretch(0, 2)
         self.horizontalLayout_3.setStretch(1, 1)
@@ -318,18 +309,49 @@ class Lobby(QtWidgets.QMainWindow):
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setSpacing(20)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.tv_attendance = TableView(self.attendances)
-        self.tv_attendance.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+
+        self.groupBox = QtWidgets.QGroupBox('Content', self.attendances)
+        self.groupBox.setObjectName("groupBox")
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(12)
+        self.groupBox.setFont(font)
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.groupBox)
+        self.verticalLayout_6.setContentsMargins(20,20,20,20)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+
+        self.tv_attendance = TableView(self.groupBox)
         self.tv_attendance.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff)
+            QtCore.Qt.ScrollBarAsNeeded)
+        self.tv_attendance.setVerticalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAsNeeded)
         self.tv_attendance.setObjectName("tv_attendance")
-        self.horizontalLayout_4.addWidget(self.tv_attendance)
-        self.lv_attendance = ListView(self.attendances)
-        self.lv_attendance.setMaximumSize(QtCore.QSize(280, 16777215))
+        
+        self.verticalLayout_6.addWidget(self.tv_attendance)
+        self.horizontalLayout_4.addWidget(self.groupBox)
+        self.groupBox_2 = QtWidgets.QGroupBox('File', self.attendances)
+        self.groupBox_2.setMaximumSize(QtCore.QSize(280, 16777215))
+        self.groupBox_2.setObjectName("groupBox_2")
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(12)
+        self.groupBox_2.setFont(font)
+        self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.groupBox_2)
+        self.verticalLayout_9.setContentsMargins(20, 20, 20, 20)
+        self.verticalLayout_9.setObjectName("verticalLayout_9")
+
+        self.lv_attendance = ListView(self.groupBox_2)
+        self.lv_attendance.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff)
+        self.lv_attendance.setVerticalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAsNeeded)
         self.lv_attendance.setObjectName("lv_attendance")
-        self.horizontalLayout_4.addWidget(self.lv_attendance)
+
+        self.verticalLayout_9.addWidget(self.lv_attendance)
+        self.horizontalLayout_4.addWidget(self.groupBox_2)
         self.horizontalLayout_4.setStretch(0, 2)
         self.horizontalLayout_4.setStretch(1, 1)
+
         self.verticalLayout_8.addLayout(self.horizontalLayout_4)
         self.sw_all.addWidget(self.attendances)
         self.horizontalLayout.addWidget(self.sw_all)
@@ -337,7 +359,7 @@ class Lobby(QtWidgets.QMainWindow):
         MainWindow.setCentralWidget(self.centralwidget)
         self.status_bar = QtWidgets.QStatusBar(MainWindow)
         self.status_bar.setStyleSheet("QStatusBar {\n"
-                                      "    background: #081222;\n"
+                                      "    background: #060d18;\n"
                                       "}\n"
                                       "\n"
                                       "QStatusBar QLabel {\n"
@@ -371,7 +393,6 @@ class Lobby(QtWidgets.QMainWindow):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.label_6.setText(_translate("MainWindow", "Classes"))
-        self.btn_init_create_class.setText(_translate("MainWindow", "Create Class"))
         self.label_7.setText(_translate("MainWindow", "Attendances"))
 
     def add_class_item(self, Class):

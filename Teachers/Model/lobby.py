@@ -3,10 +3,7 @@ class Lobby:
     def __init__(self, Model):
         self.Model = Model
         self.Class = Model.Class
-        self.Section = Model.Section
-        self.SectionStudent = Model.SectionStudent
         self.ListModel = Model.ListModel
-        self.ReadOnlyListModel = Model.ReadOnlyListModel
         self.TableModel = Model.TableModel
         self.Database = Model.Database
 
@@ -42,34 +39,34 @@ class Lobby:
 
         return 'successful'
 
-    def get_all_section(self):
+    def get_all_attendances(self, User):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT Name FROM Sections ORDER BY ID"
-        cursor.execute(select_query)
+        select_query = "SELECT Name FROM Attendances WHERE Teacher=%s"
+        cursor.execute(select_query, (User.Username,))
 
-        sections = cursor.fetchall()
+        attendances = cursor.fetchall()
 
         cursor.close()
         db.close()
 
-        if sections:
-            return [section[0] for section in sections]
+        if attendances:
+            return [attendance[0] for attendance in attendances]
         return []
 
-    def get_all_section_student(self, section):
+    def get_attendance_data(self, User, attendance):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT Student FROM Section_Students WHERE Section=%s ORDER BY ID DESC"
-        cursor.execute(select_query, (section,))
+        select_query = "SELECT File FROM Attendances WHERE Teacher=%s and Name=%s"
+        cursor.execute(select_query, (User.Username, attendance))
 
-        section_students = cursor.fetchall()
+        attendance = cursor.fetchone()
 
         cursor.close()
         db.close()
 
-        if section_students:
-            return [section_student[0] for section_student in section_students]
-        return () 
+        if attendance:
+            return attendance[0]
+        return None

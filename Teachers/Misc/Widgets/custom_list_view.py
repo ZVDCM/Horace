@@ -20,7 +20,7 @@ class ListView(QListView):
 
             QListView::item{
                 border: none;
-                padding: 4px 6px;
+                padding: 8px;
             }
 
             QListView::item:hover{
@@ -45,7 +45,7 @@ class ListView(QListView):
 
             QScrollBar:vertical{
                 width: 8px;
-                background: #0B1A30;
+                background: #102542;
             }
             
             QScrollBar::handle:vertical{
@@ -98,7 +98,7 @@ class ReadOnlyListView(QListView):
 
             QScrollBar:vertical{
                 width: 8px;
-                background: #0B1A30;
+                background: #102542;
             }
             
             QScrollBar::handle:vertical{

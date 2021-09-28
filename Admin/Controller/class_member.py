@@ -194,7 +194,7 @@ class ClassMember:
         end = ":".join([str(end.hour()), str(end.minute()), str(end.second())])
 
         if is_blank(code) or is_blank(name):
-            self.View.run_popup(f'Class fields must be filled')
+            self.View.run_popup('Class fields must be filled')
             return
 
         self.get_all_class_handler = self.GetAllClass()

@@ -1,3 +1,4 @@
+from PyQt5 import QtGui
 from PyQt5.QtWidgets import QTableView, QAbstractItemView
 from PyQt5.QtCore import Qt
 
@@ -5,17 +6,28 @@ class TableView(QTableView):
 
     def __init__(self, parent):
         super().__init__(parent=parent)
-        self.verticalHeader().setMinimumSectionSize(40)
+        self.verticalHeader().setMinimumSectionSize(50)
         self.verticalHeader().setDefaultAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.setSelectionBehavior(QTableView.SelectRows)
         self.setSelectionMode(
             QAbstractItemView.SingleSelection)
         self.setWordWrap(False)
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(12)
+        self.setFont(font)
+        self.verticalHeader().setFont(font)
+        self.horizontalHeader().setFont(font)
         self.setStyleSheet("""
             QTableView {
                 outline: 0;
                 border: 1px solid #0e4884;
                 gridline-color: #97b9f4;
+            }
+
+            QTableView::item {
+                border: none;
+                padding-left: 10px;
             }
 
             QTableView::item:selected:active {
@@ -45,11 +57,12 @@ class TableView(QTableView):
             
             QScrollBar:horizontal{
                 height: 9px;
+                background-color: #102542;    
             }
             
             QScrollBar:vertical{
+                background-color: #102542;    
                 width: 9px;
-                margin: 0;
             }
             
             QScrollBar::handle:vertical{

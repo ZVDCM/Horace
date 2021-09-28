@@ -338,7 +338,6 @@ class Meeting(QtWidgets.QMainWindow):
         self.sa_inspector = QtWidgets.QScrollArea(self.page_2)
         self.sa_inspector.setStyleSheet("QScrollArea{\n"
                                          "    border: 1px solid #102542;\n"
-                                         "    border-radius: 5px\n"
                                          "}\n"
                                          "QScrollBar:vertical{\n"
                                          "    width: 12px;\n"

@@ -740,8 +740,8 @@ class Host:
                               f"Class Name,{self.Class.Name}\n",
                               f"Scheduled Start,{self.Class.Start}\n",
                               f"Scheduled End,{self.Class.End}\n",
-                              f"Class Start,\"{self.time['Teacher']['Start']}\"\n",
-                              f"Class End,\"{self.time['Teacher']['End']}\"\n",
+                              f"Class Start,{self.time['Teacher']['Start']}\n",
+                              f"Class End,{self.time['Teacher']['End']}\n",
                               f"\nUsername,Join Time,Leave Time\n",
                               ))
 
