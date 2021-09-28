@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>296</width>
+    <height>78</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>296</width>
+    <height>78</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>296</width>
+    <height>78</height>
+   </size>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background: #256eff</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>10</number>
+   </property>
+   <property name="topMargin">
+    <number>10</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>10</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="icon">
+     <property name="minimumSize">
+      <size>
+       <width>30</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="C:/Users/moral/Desktop/Resources/Resources.qrc">:/icons/clip_2.png</pixmap>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="title">
+     <property name="font">
+      <font>
+       <family>Barlow</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">padding-bottom: 3px; color: white;</string>
+     </property>
+     <property name="text">
+      <string>Downloading File</string>
+     </property>
+     <property name="indent">
+      <number>10</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="close">
+     <property name="minimumSize">
+      <size>
+       <width>50</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="C:/Users/moral/Desktop/Resources/Resources.qrc">:/icons/close_2.png</pixmap>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="C:/Users/moral/Desktop/Resources/Resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

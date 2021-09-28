@@ -1,3 +1,5 @@
+from Students.Misc.Widgets.alert import Alert
+from Students.Misc.Widgets.alert_item import AlertItem
 from Students.Misc.Widgets.pop_up import Popup
 from Students.Misc.Widgets.badge_overlay import BadgeOverlay
 from Students.Misc.Widgets.active_overlay import ActiveOverlay
@@ -29,6 +31,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.close_buttons = [self.btn_close_student_list, self.btn_close_chat]
 
         self.BadgeOverlay = BadgeOverlay(self.btn_chat)
+        self.alert = Alert()
+
 
     def run(self):
         self.raise_()
@@ -613,3 +617,9 @@ class Meeting(QtWidgets.QMainWindow):
 
     def set_meeting_status(self, status):
         self.lbl_meeting_status.setText(status)
+
+    def show_alert(self, type, message):
+        if type == 'file':
+            item = AlertItem(self.alert, 'clip_2.png', message)
+        self.alert.add_item(item)
+        self.alert.show()

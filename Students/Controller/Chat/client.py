@@ -9,7 +9,7 @@ from Students.Misc.Widgets.teacher_file_message_received import FileMessageRecei
 from PyQt5.QtCore import QThread, pyqtSignal
 from Students.Misc.Functions.messages import *
 from Students.Controller.RDC.client import Client as RDCClient
-from pynput.mouse import Controller as MouseController
+from pynput.mouse import Button, Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController
 import os
 import time
@@ -72,7 +72,8 @@ class Connect(QThread):
                 break
             except OSError:
                 counter += 1
-                self.Client.set_meeting_status_handler('Connecting' + '.' * (counter % 4))
+                self.Client.set_meeting_status_handler(
+                    'Connecting' + '.' * (counter % 4))
                 time.sleep(0.5)
         self.quit()
 
@@ -95,14 +96,15 @@ class Receive(QThread):
 
             if not message:
                 break
-            
+
             if message['type'] == 'permission':
                 time.sleep(5)
                 break
 
             elif message['type'] == 'frame':
                 self.StreamClient.last_frame = message['data']
-                frame = convert_pil_image_to_QPixmap(self.StreamClient.last_frame)
+                frame = convert_pil_image_to_QPixmap(
+                    self.StreamClient.last_frame)
                 self.StreamClient.SetFrame.frame = frame
                 self.StreamClient.SetFrame.start()
 
@@ -113,7 +115,8 @@ class Receive(QThread):
                     self.Client.Meeting.is_frozen = False
                     self.StreamClient.start()
 
-                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} reconnected the screen")
+                    self.Client.set_meeting_status_handler(
+                        f"Teacher {self.Client.ClassTeacher.Teacher} reconnected the screen")
 
                 elif message['data'] == 'disconnect':
                     self.Client.Meeting.is_connected = False
@@ -124,75 +127,76 @@ class Receive(QThread):
                     if self.Client.Meeting.is_frozen:
                         self.StreamClient.DisconnectScreen.start()
 
-                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} disconnected the screen")
+                    self.Client.set_meeting_status_handler(
+                        f"Teacher {self.Client.ClassTeacher.Teacher} disconnected the screen")
 
                 elif message['data'] == 'frozen':
                     self.Client.Meeting.is_frozen = True
                     self.StreamClient.stop()
                     self.StreamClient.frames.put('frozen')
-                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} froze the screen")
+                    self.Client.set_meeting_status_handler(
+                        f"Teacher {self.Client.ClassTeacher.Teacher} froze the screen")
 
                 elif message['data'] == 'thawed':
                     self.Client.Meeting.is_frozen = False
                     self.StreamClient.start()
-                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} thawed the screen")
+                    self.Client.set_meeting_status_handler(
+                        f"Teacher {self.Client.ClassTeacher.Teacher} thawed the screen")
 
                 elif message['data'] == 'shutdown':
-                    print(message['data'])
-                    # subprocess.call('shutdown /s /f /t 0',
-                    #                     creationflags=self.DETACHED_PROCESS)
+                    subprocess.call('shutdown /s /f /t 0',
+                                        creationflags=self.DETACHED_PROCESS)
                 elif message['data'] == 'restart':
-                    print(message['data'])
-                    # subprocess.call('shutdown /r /f /t 0',
-                    #                     creationflags=self.DETACHED_PROCESS)
+                    subprocess.call('shutdown /r /f /t 0',
+                                        creationflags=self.DETACHED_PROCESS)
                 elif message['data'] == 'lock':
-                    print(message['data'])
-                    # subprocess.call('rundll32.exe user32.dll,LockWorkStation',
-                    #                     creationflags=self.DETACHED_PROCESS)
+                    subprocess.call('rundll32.exe user32.dll,LockWorkStation',
+                                        creationflags=self.DETACHED_PROCESS)
                 elif message['data'] == 'start control':
-                    self.RDCClient = RDCClient(self.Client.ClassTeacher, self.Client.View)
+                    self.RDCClient = RDCClient(
+                        self.Client.ClassTeacher, self.Client.View)
 
                     width, height = GetSystemMetrics(0), GetSystemMetrics(1)
                     message = normalize_message('res', (width, height))
                     self.Client.send(message)
-                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} started remote desktop control")
+                    self.Client.set_meeting_status_handler(
+                        f"Teacher {self.Client.ClassTeacher.Teacher} started remote desktop control")
 
                 elif message['data'] == 'end control':
                     self.RDCClient.stop()
-                    self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} ended remote desktop control")
+                    self.Client.set_meeting_status_handler(
+                        f"Teacher {self.Client.ClassTeacher.Teacher} ended remote desktop control")
 
-            # elif message['type'] == 'mouse':
-            #     print(message)
-                # mouse = MouseController()
-                # if message['data'][0] == 'move':
-                #     mouse.position = message['data'][1]
-                # elif message['data'][0] == 'pressed':
-                #     if message['data'][1] == 'left':
-                #         mouse.press(Button.left)
-                #     if message['data'][1] == 'middle':
-                #         mouse.press(Button.middle)
-                #     if message['data'][1] == 'right':
-                #         mouse.press(Button.right)
-                # elif message['data'][0] == 'released':
-                #     if message['data'][1] == 'left':
-                #         mouse.release(Button.left)
-                #     if message['data'][1] == 'middle':
-                #         mouse.release(Button.middle)
-                #     if message['data'][1] == 'right':
-                #         mouse.release(Button.right)
-                # elif message['data'][0] == 'scroll':
-                #     if message['data'][1] == 'up':
-                #         mouse.scroll(0, 1)
-                #     if message['data'][1] == 'down':
-                #         mouse.scroll(0, -1)
+            elif message['type'] == 'mouse':
+                mouse = MouseController()
+                if message['data'][0] == 'move':
+                    mouse.position = message['data'][1]
+                elif message['data'][0] == 'pressed':
+                    if message['data'][1] == 'left':
+                        mouse.press(Button.left)
+                    if message['data'][1] == 'middle':
+                        mouse.press(Button.middle)
+                    if message['data'][1] == 'right':
+                        mouse.press(Button.right)
+                elif message['data'][0] == 'released':
+                    if message['data'][1] == 'left':
+                        mouse.release(Button.left)
+                    if message['data'][1] == 'middle':
+                        mouse.release(Button.middle)
+                    if message['data'][1] == 'right':
+                        mouse.release(Button.right)
+                elif message['data'][0] == 'scroll':
+                    if message['data'][1] == 'up':
+                        mouse.scroll(0, 1)
+                    if message['data'][1] == 'down':
+                        mouse.scroll(0, -1)
 
-            # elif message['type'] == 'keyboard':
-                # print(message['data'])
-                # keyboard = KeyboardController()
-                # if "pressed" == message['data'][0]:
-                #     keyboard.press(message['data'][1])
-                # if "released" == message['data'][0]:
-                #     keyboard.release(message['data'][1])
+            elif message['type'] == 'keyboard':
+                keyboard = KeyboardController()
+                if "pressed" == message['data'][0]:
+                    keyboard.press(message['data'][1])
+                if "released" == message['data'][0]:
+                    keyboard.release(message['data'][1])
 
             elif message['type'] == 'time':
                 self.Client.EndLoading.start()
@@ -204,14 +208,16 @@ class Receive(QThread):
 
                 self.StreamClient = StreamClient(
                     self.Client.Meeting, self.Client.ClassTeacher, self.Client.Model, self.Client.View, self.Client.Controller)
-                self.Client.set_meeting_status_handler(f"Joined {self.Client.Class.Name}")
+                self.Client.set_meeting_status_handler(
+                    f"Joined {self.Client.Class.Name}")
 
             elif message['type'] == 'msg':
                 self.Client.IncrementBadge.start()
                 self.Client.MessageReceived.message = message['data']
                 self.Client.MessageReceived.sender = message['sender']
                 self.Client.MessageReceived.start()
-                self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} sent a message")
+                self.Client.set_meeting_status_handler(
+                    f"Teacher {self.Client.ClassTeacher.Teacher} sent a message")
 
             elif message['type'] == 'fls':
                 self.Client.IncrementBadge.start()
@@ -219,14 +225,17 @@ class Receive(QThread):
                 self.Client.FileMessageReceived.filename = message['data']
                 self.Client.FileMessageReceived.data = message['file']
                 self.Client.FileMessageReceived.start()
-                self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} sent a file")
+                self.Client.set_meeting_status_handler(
+                    f"Teacher {self.Client.ClassTeacher.Teacher} sent a file")
 
             elif message['type'] == 'url':
                 if self.blacklisted_sites:
                     if len(message['data']) > len(self.blacklisted_sites):
-                        self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} blacklisted {message['data'][-1]}")
+                        self.Client.set_meeting_status_handler(
+                            f"Teacher {self.Client.ClassTeacher.Teacher} blacklisted {message['data'][-1]}")
                     else:
-                        self.Client.set_meeting_status_handler(f"Teacher {self.Client.ClassTeacher.Teacher} whitelisted {self.blacklisted_sites[-1]}")
+                        self.Client.set_meeting_status_handler(
+                            f"Teacher {self.Client.ClassTeacher.Teacher} whitelisted {self.blacklisted_sites[-1]}")
 
                 print(message['data'])
                 self.blacklisted_sites = message['data']
@@ -249,9 +258,12 @@ class Receive(QThread):
                     old_list_students = self.Client.View.lv_student.model().data
 
                     if len(new_list_students) > len(old_list_students):
-                        self.Client.set_meeting_status_handler(f"{new_list_students[0]} joined the class")
+                        self.Client.set_meeting_status_handler(
+                            f"{new_list_students[0]} joined the class")
                     else:
-                        self.Client.set_meeting_status_handler(f"{old_list_students[-1]} left the class")
+                        if len(new_list_students) != 1 or len(new_list_students) == len(old_list_students):
+                            self.Client.set_meeting_status_handler(
+                                f"{old_list_students[-1]} left the class")
                 except AttributeError:
                     pass
 
@@ -262,9 +274,11 @@ class Receive(QThread):
                 print(message['data'])
                 self.Client.Popup.val = message['data']
                 self.Client.Popup.start()
-                self.Client.set_meeting_status_handler(f'Teacher {self.Client.ClassTeacher.Teacher} sent a popup')
+                self.Client.set_meeting_status_handler(
+                    f'Teacher {self.Client.ClassTeacher.Teacher} sent a popup')
 
         self.quit()
+
 
 class Screenshot(QThread):
     operation = pyqtSignal()
@@ -283,6 +297,7 @@ class Screenshot(QThread):
             time.sleep(2)
         self.quit()
 
+
 class SetTime(QThread):
     operation = pyqtSignal(str)
 
@@ -293,6 +308,7 @@ class SetTime(QThread):
     def run(self):
         self.operation.emit(self.time)
         self.quit()
+
 
 class SetStudentList(QThread):
     operation = pyqtSignal(object)
@@ -305,6 +321,7 @@ class SetStudentList(QThread):
         self.operation.emit(self.val)
         self.quit()
 
+
 class Popup(QThread):
 
     def __init__(self, fn):
@@ -315,6 +332,7 @@ class Popup(QThread):
     def run(self):
         self.fn(*self.val)
         self.quit()
+
 
 class SetMeetingStatus(QtCore.QThread):
     operation = QtCore.pyqtSignal(str)
@@ -327,6 +345,19 @@ class SetMeetingStatus(QtCore.QThread):
     def run(self):
         self.fn(self.val)
         self.quit()
+
+
+class Alert(QtCore.QThread):
+    operation = pyqtSignal(str, str)
+
+    def __init__(self):
+        super().__init__()
+        self.val = ()
+
+    def run(self):
+        self.operation.emit(*self.val)
+        self.quit()
+
 
 class Client:
 
@@ -387,12 +418,19 @@ class Client:
 
         self.Popup = Popup(self.View.run_popup)
 
+    def show_alert(self, type, message):
+        self.ShowAlert = Alert()
+        self.ShowAlert.operation.connect(self.View.show_alert)
+        self.ShowAlert.val = type, message
+        self.ShowAlert.start()
+
     def init_client(self):
         self.client = socket.socket()
         address = (self.ClassTeacher.HostAddress, self.PORT)
         self.Connect = Connect(self, address)
         self.Connect.started.connect(self.View.LoadingScreen.run)
-        self.Connect.started.connect(lambda: self.set_meeting_status_handler('Connecting'))
+        self.Connect.started.connect(
+            lambda: self.set_meeting_status_handler('Connecting'))
         self.Connect.finished.connect(self.start)
         self.Connect.start()
         self.InitScreenshot = Screenshot(self)
@@ -462,8 +500,10 @@ class Client:
         path = QFileDialog.getSaveFileName(
             self.View, 'Save File', path, ext)[0]
         if path:
+            self.show_alert('file', 'Downloading file...')
             with open(path, 'wb') as file:
                 file.write(data)
+            self.show_alert('file', 'File downloaded')
 
     def timer_event(self):
         self.start_time = self.start_time.addSecs(1)

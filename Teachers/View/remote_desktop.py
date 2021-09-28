@@ -125,7 +125,7 @@ class RemoteDesktop(QtWidgets.QMainWindow):
     def mouse_moved(self, event):
         if self.target_resolution:
             size_ratio = (self.screen.width()/self.target_resolution[0], self.screen.height()/self.target_resolution[1])
-            pos = self.screen.mapToParent(event.pos())
+            pos = event.pos()
             scaled_coordinates = (pos.x()//size_ratio[0], pos.y()//size_ratio[1])
             self.mouse_move.emit(scaled_coordinates)
         super(QtWidgets.QLabel, self.screen).mouseMoveEvent(event)

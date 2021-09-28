@@ -131,7 +131,6 @@ class GetUrls(QtCore.QThread):
 
 
 class SetMeetingStatus(QtCore.QThread):
-    operation = QtCore.pyqtSignal(str)
 
     def __init__(self, fn):
         super().__init__()
@@ -140,6 +139,18 @@ class SetMeetingStatus(QtCore.QThread):
 
     def run(self):
         self.fn(self.val)
+        self.quit()
+
+
+class Alert(QtCore.QThread):
+    operation = pyqtSignal(str, str)
+
+    def __init__(self):
+        super().__init__()
+        self.val = ()
+
+    def run(self):
+        self.operation.emit(*self.val)
         self.quit()
 
 
@@ -177,7 +188,7 @@ class Host:
         self.View.ChatInput.btn_file.clicked.connect(self.get_file)
         self.View.Overlay.reconnect.connect(self.reconnect)
         self.View.Overlay.disconnect.connect(self.disconnect)
-        self.View.Overlay.btn_freeze.clicked.connect(self.freeze)
+        self.View.Overlay.btn_freeze.clicked.connect(self.init_freeze_thaw)
         self.View.btn_send_many.clicked.connect(self.init_message_target)
         self.View.closeEvent = self.meeting_closed
         self.View.lv_url.clicked.connect(self.url_list_clicked)
@@ -226,7 +237,7 @@ class Host:
         self.timer.start(1000)
 
         self.AddAttendance = Attendance(self.Model.create_attendance)
-        self.AddAttendance.operation.connect(lambda: print("Success"))
+        self.AddAttendance.operation.connect(lambda: self.show_alert('attendance', 'Attendance Stored'))
 
         self.IncrementBadge = Operation()
         self.IncrementBadge.operation.connect(self.View.BadgeOverlay.increment)
@@ -245,12 +256,15 @@ class Host:
         self.HideLoadingScreen = Operation()
         self.HideLoadingScreen.operation.connect(self.View.LoadingScreen.hide)
 
-    def set_meeting_status(self):
-        return SetMeetingStatus(self.View.set_meeting_status)
+    def show_alert(self, type, message):
+        self.ShowAlert = Alert()
+        self.ShowAlert.operation.connect(self.View.show_alert)
+        self.ShowAlert.val = type, message
+        self.ShowAlert.start()
 
     def set_meeting_status_handler(self, status):
         self.status_time = 0
-        self.handler = self.set_meeting_status()
+        self.handler = SetMeetingStatus(self.View.set_meeting_status)
         self.handler.val = status
         self.handler.start()
 
@@ -360,7 +374,8 @@ class Host:
                     self.set_meeting_status_handler(
                         f"{target} joined the class")
                 else:
-                    message = normalize_message('permission', False, target=message['sender'])
+                    message = normalize_message(
+                        'permission', False, target=message['sender'])
                     message = serialize_message(message)
                     send_message(message, readable)
                     raise FromDifferentClass
@@ -423,18 +438,27 @@ class Host:
         if exceptional in self.outputs:
             self.outputs.remove(exceptional)
         if exceptional in self.clients_name.keys():
+            student = self.clients_name[exceptional]
+            try:
+                if self.Controller.View.RemoteDesktop.isVisible():
+                    if student in self.Controller.View.RemoteDesktop.title_bar.title.text():
+                        self.Controller.View.RemoteDesktop.title_bar.btn_close.click()
+            except AttributeError:
+                pass
             student_model = self.View.lv_student.model()
-            row = student_model.findRow(self.clients_name[exceptional])
+            row = student_model.findRow(student)
             student_model.removeRows(row, 1)
             message = normalize_message(
                 'student', self.View.lv_student.model().data)
             self.set_message(message)
 
-            self.RemoveStudentItem.name = self.clients_name[exceptional]
+            self.RemoveStudentItem.name = student
             self.RemoveStudentItem.start()
             del self.clients_name[exceptional]
         if exceptional in self.clients_socket.keys():
             del self.clients_socket[exceptional]
+
+
         exceptional.close()
 
     def set_message(self, message):
@@ -549,8 +573,11 @@ class Host:
         ext = filename.split('.')[-1]
         path = QFileDialog.getSaveFileName(
             self.View, 'Save File', path, ext)[0]
-        with open(path, 'wb') as file:
-            file.write(data)
+        if path:
+            self.show_alert('file', 'Downloading file...')
+            with open(path, 'wb') as file:
+                file.write(data)
+            self.show_alert('file', 'File downloaded')
 
     def display_file_message_received(self, sender, filename, data):
         file_message_received = _FileMessageReceived(
@@ -598,16 +625,23 @@ class Host:
         self.set_message(message)
         self.set_meeting_status_handler('Screen disconnected')
 
-    def freeze(self):
+    def init_freeze_thaw(self):
         if self.Meeting.is_frozen:
-            self.Meeting.is_frozen = False
-            message = normalize_message('cmd', 'thawed')
-            self.Meeting.StreamHost.init_stream()
-            self.set_meeting_status_handler('Screen thawed')
+            self.thaw()
         else:
-            self.Meeting.is_frozen = True
-            message = normalize_message('cmd', 'frozen')
-            self.set_meeting_status_handler('Screen frozen')
+            self.freeze()
+
+    def freeze(self):
+        self.Meeting.is_frozen = True
+        message = normalize_message('cmd', 'frozen')
+        self.set_meeting_status_handler('Screen frozen')
+        self.set_message(message)
+    
+    def thaw(self):
+        self.Meeting.is_frozen = False
+        message = normalize_message('cmd', 'thawed')
+        self.Meeting.StreamHost.init_stream()
+        self.set_meeting_status_handler('Screen thawed')
         self.set_message(message)
 
     def init_message_target(self):
@@ -699,6 +733,7 @@ class Host:
         attendance_thread.start()
 
     def record_attendance(self):
+        self.show_alert('attendance', 'Storing Attendance...')
         attendance = "".join(("Class Meeting Summary\n",
                               f"Total Number of Students,{len(list(self.time.items())[1:])}\n",
                               f"Teacher,{self.Controller.User.Username}\n",
@@ -745,7 +780,7 @@ class Host:
     def control_desktop(self, name):
         self.is_controlling = True
         self.View.Overlay.btn_freeze.click()
-        message = normalize_message('cmd', 'start control')
+        message = normalize_message('cmd', 'start control', target=name)
         self.set_message(message)
         self.Controller.View.init_remote_desktop(self.View)
         self.Controller.init_remote_desktop(name)
@@ -849,7 +884,7 @@ class Host:
             if target_student in student:
                 target_indices.append(index)
             self.View.lv_student.setRowHidden(index, True)
-        
+
         for target_index in target_indices:
             self.View.lv_student.setRowHidden(target_index, False)
 

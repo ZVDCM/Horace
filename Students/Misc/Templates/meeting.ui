@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>849</width>
+    <height>686</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,7 +48,7 @@
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background: red;</string>
+       <string notr="true"/>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_10">
        <property name="spacing">
@@ -423,7 +423,7 @@ QScrollBar::sub-page:vertical{
 }</string>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page_8">
             <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -724,7 +724,7 @@ QPushButton:hover{
                   <x>0</x>
                   <y>0</y>
                   <width>270</width>
-                  <height>307</height>
+                  <height>393</height>
                  </rect>
                 </property>
                 <property name="styleSheet">

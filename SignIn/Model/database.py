@@ -118,7 +118,7 @@ class Database:
             return mc.connect(
                 user="root",
                 password="root123",
-                host="127.0.0.1",
+                host="192.168.0.100",
                 database=database
             )
         except mc.Error as e:

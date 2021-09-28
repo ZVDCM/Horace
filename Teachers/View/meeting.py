@@ -1,3 +1,4 @@
+from Teachers.Misc.Widgets.alert_item import AlertItem
 from Teachers.Misc.Functions.is_blank import is_blank
 from Teachers.Misc.Widgets.pop_up import Popup
 from Teachers.Misc.Widgets.badge_overlay import BadgeOverlay
@@ -13,6 +14,7 @@ from Teachers.Misc.Widgets.custom_list_view import ListView
 from Teachers.Misc.Widgets.flow_layout import FlowLayout
 from Teachers.Misc.Widgets.message_sent import MessageSent
 from Teachers.Misc.Widgets.chat_input import ChatInput
+from Teachers.Misc.Widgets.alert import Alert
 
 
 class Meeting(QtWidgets.QMainWindow):
@@ -41,6 +43,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.LoadingScreenURLList = LoadingScreen(self.w_url_list, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
 
         self.url_state = 'Read'
+        self.alert = Alert()
 
     def run(self):
         self.raise_()
@@ -1101,3 +1104,11 @@ class Meeting(QtWidgets.QMainWindow):
 
     def set_meeting_status(self, status):
         self.lbl_meeting_status.setText(status)
+
+    def show_alert(self, type, message):
+        if type == 'file':
+            item = AlertItem(self.alert, 'clip_2.png', message)
+        elif type == 'attendance':
+            item = AlertItem(self.alert, 'attendance_3.png', message)
+        self.alert.add_item(item)
+        self.alert.show()

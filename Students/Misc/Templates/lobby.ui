@@ -48,7 +48,7 @@
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background: red;</string>
+       <string notr="true">background: #0B1A30;</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="spacing">

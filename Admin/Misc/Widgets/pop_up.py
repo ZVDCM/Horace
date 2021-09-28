@@ -20,7 +20,7 @@ class Popup(QtWidgets.QDialog):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(299, 139)
-        Dialog.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint |
+        Dialog.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
                               QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Dialog.setFocusPolicy(QtCore.Qt.StrongFocus)
         Dialog.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)

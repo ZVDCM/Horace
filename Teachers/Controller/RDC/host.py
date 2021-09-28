@@ -1,3 +1,4 @@
+from PyQt5.QtWidgets import QMainWindow
 from Teachers.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
 from PyQt5 import QtGui
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -133,5 +134,6 @@ class Host:
         self.stop()
         message = normalize_message('cmd', 'end control', target=self.target)
         self.Chat.set_message(message)
-        self.Meeting.View.Overlay.btn_freeze.click()
         self.Chat.HideLoadingScreen.start()
+        self.Chat.thaw()
+        super(QMainWindow, self.parent).closeEvent(event)
