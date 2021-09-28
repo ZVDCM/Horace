@@ -2,16 +2,17 @@ from PyQt5.QtCore import QAbstractListModel, QModelIndex, Qt
 
 class ListModel(QAbstractListModel):
 
-    def __init__(self, parent, data):
+    def __init__(self, parent, data, disable_defaults=False):
         super().__init__(parent=parent)
         self.parent = parent
+        self.disable_defaults = disable_defaults
 
         self.data = []
         self.default_size = 0
         if len(data) != 0:
             self.default_size = len(data)
             for datum in data:
-                self.data.insert(len(self.data)-1, datum)
+                self.data.append(datum)
 
     def rowCount(self, parent=None):
         return len(self.data)
@@ -24,12 +25,12 @@ class ListModel(QAbstractListModel):
             return value
 
     def flags(self, index):
-        if index.row() < self.default_size:
+        if self.disable_defaults and index.row() < self.default_size:
             return Qt.NoItemFlags
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
     def getRowData(self, index):
-        if index < self.default_size:
+        if self.disable_defaults and index < self.default_size:
             return None
         return self.data[index]
 
@@ -73,7 +74,7 @@ class ReadOnlyListModel(QAbstractListModel):
         if len(data) != 0:
             self.default_size = len(data)
             for datum in data:
-                self.data.insert(len(self.data)-1, datum)
+                self.data.append(datum)
 
     def rowCount(self, parent=None):
         return len(self.data)

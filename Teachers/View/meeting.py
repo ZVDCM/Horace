@@ -372,6 +372,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.sa_inspector.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.sa_inspector.setVerticalScrollBarPolicy(
             QtCore.Qt.ScrollBarAsNeeded)
+        self.sa_inspector.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff)
         self.sa_inspector.setWidgetResizable(True)
         self.sa_inspector.setObjectName("sa_inspector")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()

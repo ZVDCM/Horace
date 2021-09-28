@@ -1,3 +1,4 @@
+from Teachers.Misc.Widgets.create_class import CreateClass
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow
@@ -53,18 +54,24 @@ class Lobby:
             side_nav.operation.connect(self.change_page)
         self.View.resizeEvent = self.resize
 
-        self.get_all_class = Get(self.Model.get_all_class)
-        self.get_all_class.started.connect(self.View.ClassLoadingScreen.run)
-        self.get_all_class.operation.connect(self.set_classes)
-        self.get_all_class.finished.connect(self.View.ClassLoadingScreen.hide)
+        self.View.btn_init_create_class.clicked.connect(self.init_create_class)
+
+    def GetAllClass(self):
+        handler = Get(self.Model.get_all_class)
+        handler.started.connect(self.View.ClassLoadingScreen.run)
+        handler.operation.connect(self.set_classes)
+        handler.finished.connect(self.View.ClassLoadingScreen.hide)
+        return handler
+
     
     def SetClassTeacherAddress(self):
         return Operation(self.Model.set_class_teacher_address)
 
     def get_classes(self):
-        self.get_all_class.val = self.Controller.User,
-        self.get_all_class.finished.connect(self.set_classes_operation)
-        self.get_all_class.start()
+        self.get_all_class_handler = self.GetAllClass()
+        self.get_all_class_handler.val = self.Controller.User,
+        self.get_all_class_handler.finished.connect(self.set_classes_operation)
+        self.get_all_class_handler.start()
 
     def set_classes_operation(self):
         for index in range(self.View.flow_layout.count()):
@@ -104,3 +111,7 @@ class Lobby:
         self.Controller.Model.init_meeting()
         self.Controller.View.init_meeting()
         self.Controller.init_meeting(Class)
+
+    def init_create_class(self):
+        self.CreateClass = CreateClass(self.View, self.Model)
+        self.CreateClass.run()

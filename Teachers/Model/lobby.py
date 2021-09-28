@@ -3,6 +3,10 @@ class Lobby:
     def __init__(self, Model):
         self.Model = Model
         self.Class = Model.Class
+        self.Section = Model.Section
+        self.SectionStudent = Model.SectionStudent
+        self.ListModel = Model.ListModel
+        self.ReadOnlyListModel = Model.ReadOnlyListModel
         self.TableModel = Model.TableModel
         self.Database = Model.Database
 
@@ -37,3 +41,35 @@ class Lobby:
         db.close()
 
         return 'successful'
+
+    def get_all_section(self):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = "SELECT Name FROM Sections ORDER BY ID"
+        cursor.execute(select_query)
+
+        sections = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        if sections:
+            return [section[0] for section in sections]
+        return []
+
+    def get_all_section_student(self, section):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = "SELECT Student FROM Section_Students WHERE Section=%s ORDER BY ID DESC"
+        cursor.execute(select_query, (section,))
+
+        section_students = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        if section_students:
+            return [section_student[0] for section_student in section_students]
+        return () 

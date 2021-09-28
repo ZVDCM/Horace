@@ -787,7 +787,7 @@ class Host:
         self.ShowLoadingScreen.start()
 
     def set_url_list(self, urls):
-        url_model = self.Model.ListModel(self.View.lv_url, urls)
+        url_model = self.Model.ListModel(self.View.lv_url, urls, True)
         self.View.lv_url.setModel(url_model)
 
     def set_latest_url(self):

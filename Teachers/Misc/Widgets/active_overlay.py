@@ -19,6 +19,10 @@ class ActiveOverlay(QWidget):
         self.parent.resizeEvent = self.resize
         self.resized.connect(self.resize_overlay)
 
+    def showEvent(self, event):
+        self.resized.emit()
+        super().showEvent(event)
+
     def paintEvent(self, event):
         painter = QPainter(self)
 

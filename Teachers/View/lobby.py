@@ -200,13 +200,13 @@ class Lobby(QtWidgets.QMainWindow):
         spacerItem4 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem4)
-        self.pushButton = QtWidgets.QPushButton(self.classes)
-        self.pushButton.setMinimumSize(QtCore.QSize(0, 30))
+        self.btn_init_create_class = QtWidgets.QPushButton(self.classes)
+        self.btn_init_create_class.setMinimumSize(QtCore.QSize(0, 30))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(11)
-        self.pushButton.setFont(font)
-        self.pushButton.setStyleSheet("QPushButton{\n"
+        self.btn_init_create_class.setFont(font)
+        self.btn_init_create_class.setStyleSheet("QPushButton{\n"
                                       "    border-radius: 5px;\n"
                                       "    background: none;\n"
                                       "    padding: 5px 10px;\n"
@@ -216,8 +216,10 @@ class Lobby(QtWidgets.QMainWindow):
                                       "QPushButton:pressed {\n"
                                       "     background-color: #072f49;\n"
                                       "}")
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout_2.addWidget(self.pushButton)
+        self.btn_init_create_class.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_init_create_class.setObjectName("btn_init_create_class")
+        self.horizontalLayout_2.addWidget(self.btn_init_create_class)
         self.verticalLayout_7.addLayout(self.horizontalLayout_2)
         self.sa_class = QtWidgets.QScrollArea(self.classes)
         self.sa_class.setStyleSheet("")
@@ -369,7 +371,7 @@ class Lobby(QtWidgets.QMainWindow):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.label_6.setText(_translate("MainWindow", "Classes"))
-        self.pushButton.setText(_translate("MainWindow", "Create Class"))
+        self.btn_init_create_class.setText(_translate("MainWindow", "Create Class"))
         self.label_7.setText(_translate("MainWindow", "Attendances"))
 
     def add_class_item(self, Class):
