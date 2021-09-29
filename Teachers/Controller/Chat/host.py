@@ -289,9 +289,12 @@ class Host:
         self.set_meeting_status_handler('Meeting initialized')
 
     def handler(self):
-        while self.View.isVisible():
-            readables, writables, exceptionals = select.select(
-                self.inputs, self.outputs, self.inputs)
+        while self.inputs:
+            try:
+                readables, writables, exceptionals = select.select(
+                    self.inputs, self.outputs, self.inputs)
+            except ValueError:
+                return
 
             for readable in readables:
                 if not self.host_readable(readable):
@@ -307,17 +310,16 @@ class Host:
             for exceptional in exceptionals:
                 self.exceptional(exceptional)
 
-        else:
-            for socket in self.inputs:
-                socket.close()
-
     def host_readable(self, readable):
         if readable is not self.host:
             return False
 
-        client_socket, client_address = readable.accept()
-        self.inputs.append(client_socket)
-        self.messages[client_socket] = queue.Queue()
+        try:
+            client_socket, client_address = readable.accept()
+            self.inputs.append(client_socket)
+            self.messages[client_socket] = queue.Queue()
+        except OSError:
+            pass
 
         return True
 
@@ -459,7 +461,6 @@ class Host:
             del self.clients_name[exceptional]
         if exceptional in self.clients_socket.keys():
             del self.clients_socket[exceptional]
-
 
         exceptional.close()
 
@@ -719,6 +720,9 @@ class Host:
         class_end = self.now()
         self.time['Teacher']['End'] = class_end
 
+        for _socket in self.inputs:
+            _socket.close()
+
         try:
             if self.Meeting.is_frozen:
                 self.View.Overlay.btn_freeze.click()
@@ -738,6 +742,8 @@ class Host:
             self.Controller.SignInController.View.init_sign_in()
             self.Controller.SignInController.Model.init_sign_in()
             self.Controller.SignInController.init_sign_in()
+
+        self.timer.stop()
 
     def record_attendance(self):
         self.show_alert('attendance', 'Storing Attendance...')
@@ -765,8 +771,6 @@ class Host:
         data = bytearray(attendance.encode('utf-8'))
         self.AddAttendance.val = self.Controller.User.Username, "%s %s.csv" % (
             self.Class.Code,  date.today().strftime("%B %d, %Y")), data, datetime.today()
-        # if self.Controller.View.Lobby.isVisible():
-            # self.AddAttendance.operation.connect(self.Controller.Lobby.get_attendances)
         self.AddAttendance.start()
 
     def timer_event(self):

@@ -47,28 +47,6 @@ class ClassItem(QtWidgets.QWidget):
         spacerItem = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.pushButton = QtWidgets.QPushButton(self.widget)
-        self.pushButton.setMinimumSize(QtCore.QSize(20, 20))
-        self.pushButton.setMaximumSize(QtCore.QSize(20, 20))
-        self.pushButton.setStyleSheet("QPushButton{\n"
-                                      "    border: none;\n"
-                                      "    border-radius: none;\n"
-                                      "    background: none;\n"
-                                      "    background-repeat: none;\n"
-                                      f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'menu_alt')});\n"
-                                      "    background-position: center center;\n"
-                                      "}\n"
-                                      "\n"
-                                      "QPushButton:hover{\n"
-                                      "    background: none;\n"
-                                      "    background-repeat: none;\n"
-                                      f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'menu_alt_2')});\n"
-                                      "    background-position: center center;\n"
-                                      "}")
-        self.pushButton.setCursor(
-            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.label_2 = QtWidgets.QLabel(self.widget)
         font = QtGui.QFont()

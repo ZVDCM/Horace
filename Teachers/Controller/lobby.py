@@ -125,13 +125,13 @@ class Lobby:
         self.get_all_class_handler = self.GetAllClass()
         self.get_all_class_handler.val = self.Controller.User,
         self.get_all_class_handler.finished.connect(self.set_classes_operation)
-        self.get_all_class_handler.finished.connect(lambda: self.set_lobby_status_handler(f'Classes loaded successfully'))
         self.get_all_class_handler.start()
 
     def set_classes_operation(self):
         for index in range(self.View.flow_layout.count()):
             target_class_item = self.View.flow_layout.itemAt(index).widget()
             target_class_item.operation.connect(self.class_item_clicked)
+        self.set_lobby_status_handler(f'Classes loaded successfully')
 
     def set_classes(self, classes):
         for _class in classes:
@@ -177,7 +177,6 @@ class Lobby:
     def get_attendances(self):
         self.get_all_attendances_handler = self.GetAllAttendances()
         self.get_all_attendances_handler.val = self.Controller.User,
-        self.get_all_attendances_handler.finished.connect(lambda: self.set_lobby_status_handler('Attendances loaded successfully'))
         self.get_all_attendances_handler.start()
 
     def set_attendances(self, attendances):
@@ -190,6 +189,7 @@ class Lobby:
 
             self.target_attendance = attendances[0]
             self.get_attendance_data(self.target_attendance)
+            self.set_lobby_status_handler('Attendances loaded successfully')
 
     def attendance_list_clicked(self, index):
         row = index.row()
@@ -292,4 +292,4 @@ class Lobby:
         self.handler = SetLobbyStatus(self.View.set_lobby_status)
         self.handler.val = status
         self.handler.start()
-        QtCore.QTimer.singleShot(5000, self.View.lbl_lobby_status.clear)
+        self.timer = QtCore.QTimer.singleShot(5000, self.View.lbl_lobby_status.clear)

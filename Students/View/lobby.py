@@ -1,4 +1,6 @@
-from Teachers.Misc.Widgets.class_item import ClassItem
+from Students.Misc.Widgets.account_context_menu import AccountContextMenu
+from Students.Misc.Widgets.active_overlay import ActiveOverlay
+from Students.Misc.Widgets.class_item import ClassItem
 from Students.Misc.Widgets.flow_layout import FlowLayout
 from Students.Misc.Functions.relative_path import relative_path
 from Students.Misc.Widgets.loading_screen import LoadingScreen
@@ -15,6 +17,11 @@ class Lobby(QtWidgets.QMainWindow):
 
         self.ClassLoadingScreen = LoadingScreen(self.widget, relative_path(
             'Students', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+
+        QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
+        self.ActiveOverlay = ActiveOverlay(self)
+        self.ContextMenu = AccountContextMenu(self)
+
 
     def run(self):
         self.raise_()
@@ -38,6 +45,7 @@ class Lobby(QtWidgets.QMainWindow):
         self.verticalLayout_2.addWidget(self.title_bar)
         self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget.setStyleSheet("QWidget{\n"
+                                  "    background: #081425;\n"
                                   "    color: white; \n"
                                   "    font-family: Barlow\n"
                                   "}")
@@ -59,10 +67,10 @@ class Lobby(QtWidgets.QMainWindow):
         spacerItem = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.pushButton = QtWidgets.QPushButton(self.widget)
-        self.pushButton.setCursor(
+        self.btn_more = QtWidgets.QPushButton(self.widget)
+        self.btn_more.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.pushButton.setStyleSheet("QPushButton{\n"
+        self.btn_more.setStyleSheet("QPushButton{\n"
                                       "    border: none;\n"
                                       "    border-radius: none;\n"
                                       "    background: none;\n"
@@ -78,8 +86,8 @@ class Lobby(QtWidgets.QMainWindow):
                                       "    background-position: center center;\n"
                                       "}\n"
                                       "")
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout.addWidget(self.pushButton)
+        self.btn_more.setObjectName("btn_more")
+        self.horizontalLayout.addWidget(self.btn_more)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.scrollArea = QtWidgets.QScrollArea(self.widget)
         self.scrollArea.setFrameShape(QtWidgets.QFrame.NoFrame)
@@ -96,17 +104,31 @@ class Lobby(QtWidgets.QMainWindow):
         self.verticalLayout.addWidget(self.scrollArea)
         self.verticalLayout_2.addWidget(self.widget)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setStyleSheet("QStatusBar {\n"
-                                     "    background: #081222;\n"
+        self.status_bar = QtWidgets.QStatusBar(MainWindow)
+        self.status_bar.setStyleSheet("QStatusBar {\n"
+                                     "    background: #060d18;\n"
                                      "}\n"
                                      "\n"
                                      "QStatusBar QLabel {\n"
                                      "    color: white;\n"
                                      "    padding-left: 3px;\n"
                                      "}")
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        self.status_bar.setObjectName("status_bar")
+        self.lbl_lobby_status = QtWidgets.QLabel(self.status_bar)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.lbl_lobby_status.sizePolicy().hasHeightForWidth())
+        self.lbl_lobby_status.setSizePolicy(sizePolicy)
+        self.lbl_lobby_status.setMinimumSize(QtCore.QSize(500, 20))
+        self.lbl_lobby_status.setMaximumSize(QtCore.QSize(16777215, 20))
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(9)
+        self.lbl_lobby_status.setFont(font)
+        MainWindow.setStatusBar(self.status_bar)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -116,7 +138,17 @@ class Lobby(QtWidgets.QMainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Classes"))
 
+    def on_focus_change(self):
+        if self.isActiveWindow():
+            self.ActiveOverlay.is_focused = True
+            self.ActiveOverlay.update()
+        else:
+            self.ActiveOverlay.is_focused = False
+            self.ActiveOverlay.update()
 
     def add_class_item(self, Class):
         self.ClassItem = ClassItem(self, Class) 
         self.flow_layout.addWidget(self.ClassItem)
+
+    def set_lobby_status(self, status):
+        self.lbl_lobby_status.setText(status)

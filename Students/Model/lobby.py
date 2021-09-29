@@ -1,3 +1,6 @@
+from Students.Misc.Functions.hash import check_password, generate_salt, get_hashed_password
+
+
 class Lobby:
 
     def __init__(self, Model):
@@ -49,3 +52,23 @@ class Lobby:
         if _class:
             return self.ClassTeacher(*_class)
         return None
+
+    def update_password(self, username, password):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        salt = generate_salt()
+        hashed_password = get_hashed_password(password, salt)
+
+        update_query = "UPDATE Users SET Salt=%s, Hash=%s WHERE Username=%s"
+        cursor.execute(update_query, (salt, hashed_password, username))
+        db.commit()
+        
+        cursor.close()
+        db.close()
+        
+        return True
+
+    def is_match(self, salt, _hash, password):
+        hashed_password = salt+_hash
+        return check_password(password, hashed_password) 

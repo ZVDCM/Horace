@@ -66,15 +66,18 @@ class Connect(QThread):
 
     def run(self):
         counter = 0
-        while self.Client.View.isVisible():
-            try:
-                self.Client.client.connect(self.address)
-                break
-            except OSError:
-                counter += 1
-                self.Client.set_meeting_status_handler(
-                    'Connecting' + '.' * (counter % 4))
-                time.sleep(0.5)
+        try:
+            while self.Client.View.isVisible():
+                try:
+                    self.Client.client.connect(self.address)
+                    break
+                except OSError:
+                    counter += 1
+                    self.Client.set_meeting_status_handler(
+                        'Connecting' + '.' * (counter % 4))
+                    time.sleep(0.5)
+        except RuntimeError:
+            pass
         self.quit()
 
 
@@ -91,191 +94,201 @@ class Receive(QThread):
         self.blacklisted_sites = []
 
     def run(self):
-        while True:
-            message = receive_message(self.client_socket)
+        try:
+            while self.Client.View.isVisible():
+                message = receive_message(self.client_socket)
 
-            if not message:
-                break
+                if not message:
+                    break
 
-            if message['type'] == 'permission':
-                time.sleep(5)
-                break
+                if message['type'] == 'permission':
+                    time.sleep(5)
+                    break
 
-            elif message['type'] == 'frame':
-                self.StreamClient.last_frame = message['data']
-                frame = convert_pil_image_to_QPixmap(
-                    self.StreamClient.last_frame)
-                self.StreamClient.SetFrame.frame = frame
-                self.StreamClient.SetFrame.start()
+                elif message['type'] == 'frame':
+                    self.StreamClient.last_frame = message['data']
+                    frame = convert_pil_image_to_QPixmap(
+                        self.StreamClient.last_frame)
+                    self.StreamClient.SetFrame.frame = frame
+                    self.StreamClient.SetFrame.start()
 
-            elif message['type'] == 'cmd':
-                if message['data'] == 'reconnect':
-                    self.Client.Meeting.is_connected = True
-                    self.Client.Meeting.is_disconnected = False
-                    self.Client.Meeting.is_frozen = False
-                    self.StreamClient.start()
+                elif message['type'] == 'cmd':
+                    if message['data'] == 'reconnect':
+                        self.Client.Meeting.is_connected = True
+                        self.Client.Meeting.is_disconnected = False
+                        self.Client.Meeting.is_frozen = False
+                        self.StreamClient.start()
 
-                    self.Client.set_meeting_status_handler(
-                        f"Teacher {self.Client.ClassTeacher.Teacher} reconnected the screen")
-
-                elif message['data'] == 'disconnect':
-                    self.Client.Meeting.is_connected = False
-                    self.Client.Meeting.is_disconnected = True
-                    self.StreamClient.stop()
-                    self.StreamClient.frames.put('disconnect')
-
-                    if self.Client.Meeting.is_frozen:
-                        self.StreamClient.DisconnectScreen.start()
-
-                    self.Client.set_meeting_status_handler(
-                        f"Teacher {self.Client.ClassTeacher.Teacher} disconnected the screen")
-
-                elif message['data'] == 'frozen':
-                    self.Client.Meeting.is_frozen = True
-                    self.StreamClient.stop()
-                    self.StreamClient.frames.put('frozen')
-                    self.Client.set_meeting_status_handler(
-                        f"Teacher {self.Client.ClassTeacher.Teacher} froze the screen")
-
-                elif message['data'] == 'thawed':
-                    self.Client.Meeting.is_frozen = False
-                    self.StreamClient.start()
-                    self.Client.set_meeting_status_handler(
-                        f"Teacher {self.Client.ClassTeacher.Teacher} thawed the screen")
-
-                elif message['data'] == 'shutdown':
-                    subprocess.call('shutdown /s /f /t 0',
-                                        creationflags=self.DETACHED_PROCESS)
-                elif message['data'] == 'restart':
-                    subprocess.call('shutdown /r /f /t 0',
-                                        creationflags=self.DETACHED_PROCESS)
-                elif message['data'] == 'lock':
-                    subprocess.call('rundll32.exe user32.dll,LockWorkStation',
-                                        creationflags=self.DETACHED_PROCESS)
-                elif message['data'] == 'start control':
-                    self.RDCClient = RDCClient(
-                        self.Client.ClassTeacher, self.Client.View)
-
-                    width, height = GetSystemMetrics(0), GetSystemMetrics(1)
-                    message = normalize_message('res', (width, height))
-                    self.Client.send(message)
-                    self.Client.set_meeting_status_handler(
-                        f"Teacher {self.Client.ClassTeacher.Teacher} started remote desktop control")
-
-                elif message['data'] == 'end control':
-                    self.RDCClient.stop()
-                    self.Client.set_meeting_status_handler(
-                        f"Teacher {self.Client.ClassTeacher.Teacher} ended remote desktop control")
-
-            elif message['type'] == 'mouse':
-                mouse = MouseController()
-                if message['data'][0] == 'move':
-                    mouse.position = message['data'][1]
-                elif message['data'][0] == 'pressed':
-                    if message['data'][1] == 'left':
-                        mouse.press(Button.left)
-                    if message['data'][1] == 'middle':
-                        mouse.press(Button.middle)
-                    if message['data'][1] == 'right':
-                        mouse.press(Button.right)
-                elif message['data'][0] == 'released':
-                    if message['data'][1] == 'left':
-                        mouse.release(Button.left)
-                    if message['data'][1] == 'middle':
-                        mouse.release(Button.middle)
-                    if message['data'][1] == 'right':
-                        mouse.release(Button.right)
-                elif message['data'][0] == 'scroll':
-                    if message['data'][1] == 'up':
-                        mouse.scroll(0, 1)
-                    if message['data'][1] == 'down':
-                        mouse.scroll(0, -1)
-
-            elif message['type'] == 'keyboard':
-                keyboard = KeyboardController()
-                if "pressed" == message['data'][0]:
-                    keyboard.press(message['data'][1])
-                if "released" == message['data'][0]:
-                    keyboard.release(message['data'][1])
-
-            elif message['type'] == 'time':
-                self.Client.EndLoading.start()
-                self.Client.start_time = message['data']
-                self.Client.SetTime.time = message['data'].toString("hh:mm:ss")
-                self.Client.SetTime.start()
-                self.Client.ShowLabel.start()
-                self.Client.InitScreenshot.start()
-
-                self.StreamClient = StreamClient(
-                    self.Client.Meeting, self.Client.ClassTeacher, self.Client.Model, self.Client.View, self.Client.Controller)
-                self.Client.set_meeting_status_handler(
-                    f"Joined {self.Client.Class.Name}")
-
-            elif message['type'] == 'msg':
-                self.Client.IncrementBadge.start()
-                self.Client.MessageReceived.message = message['data']
-                self.Client.MessageReceived.sender = message['sender']
-                self.Client.MessageReceived.start()
-                self.Client.set_meeting_status_handler(
-                    f"Teacher {self.Client.ClassTeacher.Teacher} sent a message")
-
-            elif message['type'] == 'fls':
-                self.Client.IncrementBadge.start()
-                self.Client.FileMessageReceived.sender = message['sender']
-                self.Client.FileMessageReceived.filename = message['data']
-                self.Client.FileMessageReceived.data = message['file']
-                self.Client.FileMessageReceived.start()
-                self.Client.set_meeting_status_handler(
-                    f"Teacher {self.Client.ClassTeacher.Teacher} sent a file")
-
-            elif message['type'] == 'url':
-                if self.blacklisted_sites:
-                    if len(message['data']) > len(self.blacklisted_sites):
                         self.Client.set_meeting_status_handler(
-                            f"Teacher {self.Client.ClassTeacher.Teacher} blacklisted {message['data'][-1]}")
-                    else:
+                            f"Teacher {self.Client.ClassTeacher.Teacher} reconnected the screen")
+
+                    elif message['data'] == 'disconnect':
+                        self.Client.Meeting.is_connected = False
+                        self.Client.Meeting.is_disconnected = True
+                        self.StreamClient.stop()
+                        self.StreamClient.frames.put('disconnect')
+
+                        if self.Client.Meeting.is_frozen:
+                            self.StreamClient.DisconnectScreen.start()
+
                         self.Client.set_meeting_status_handler(
-                            f"Teacher {self.Client.ClassTeacher.Teacher} whitelisted {self.blacklisted_sites[-1]}")
+                            f"Teacher {self.Client.ClassTeacher.Teacher} disconnected the screen")
 
-                print(message['data'])
-                self.blacklisted_sites = message['data']
-
-                # urls = message['data']
-                # open(self.HOST_PATH, 'w').close()
-                # with open(self.HOST_PATH, 'r+') as hostfile:
-                #     hosts_content = hostfile.read()
-                #     for site in urls:
-                #         if site not in hosts_content:
-                #             hostfile.write(self.REDIRECT +
-                #                             '\t' + site + '\r\n')
-                # os.system("taskkill /f /im chrome.exe")
-                # os.system("taskkill /f /im iexplore.exe")
-                # os.system("taskkill /f /im msedge.exe")
-
-            elif message['type'] == 'student':
-                new_list_students = message['data']
-                try:
-                    old_list_students = self.Client.View.lv_student.model().data
-
-                    if len(new_list_students) > len(old_list_students):
+                    elif message['data'] == 'frozen':
+                        self.Client.Meeting.is_frozen = True
+                        self.StreamClient.stop()
+                        self.StreamClient.frames.put('frozen')
                         self.Client.set_meeting_status_handler(
-                            f"{new_list_students[0]} joined the class")
-                    else:
-                        if len(new_list_students) != 1 or len(new_list_students) == len(old_list_students):
+                            f"Teacher {self.Client.ClassTeacher.Teacher} froze the screen")
+
+                    elif message['data'] == 'thawed':
+                        self.Client.Meeting.is_frozen = False
+                        self.StreamClient.start()
+                        self.Client.set_meeting_status_handler(
+                            f"Teacher {self.Client.ClassTeacher.Teacher} thawed the screen")
+
+                    elif message['data'] == 'shutdown':
+                        print(message['data'])
+                        # subprocess.call('shutdown /s /f /t 0',
+                        #                     creationflags=self.DETACHED_PROCESS)
+                    elif message['data'] == 'restart':
+                        print(message['data'])
+                        # subprocess.call('shutdown /r /f /t 0',
+                        #                     creationflags=self.DETACHED_PROCESS)
+                    elif message['data'] == 'lock':
+                        print(message['data'])
+                        # subprocess.call('rundll32.exe user32.dll,LockWorkStation',
+                        #                     creationflags=self.DETACHED_PROCESS)
+                    elif message['data'] == 'start control':
+                        print(message['data'])
+                        self.RDCClient = RDCClient(
+                            self.Client.ClassTeacher, self.Client.View)
+
+                        width, height = GetSystemMetrics(0), GetSystemMetrics(1)
+                        message = normalize_message('res', (width, height))
+                        self.Client.send(message)
+                        self.Client.set_meeting_status_handler(
+                            f"Teacher {self.Client.ClassTeacher.Teacher} started remote desktop control")
+
+                    elif message['data'] == 'end control':
+                        self.RDCClient.stop()
+                        self.Client.set_meeting_status_handler(
+                            f"Teacher {self.Client.ClassTeacher.Teacher} ended remote desktop control")
+
+                elif message['type'] == 'mouse':
+                    print(message['data'])
+                    # mouse = MouseController()
+                    # if message['data'][0] == 'move':
+                    #     mouse.position = message['data'][1]
+                    # elif message['data'][0] == 'pressed':
+                    #     if message['data'][1] == 'left':
+                    #         mouse.press(Button.left)
+                    #     if message['data'][1] == 'middle':
+                    #         mouse.press(Button.middle)
+                    #     if message['data'][1] == 'right':
+                    #         mouse.press(Button.right)
+                    # elif message['data'][0] == 'released':
+                    #     if message['data'][1] == 'left':
+                    #         mouse.release(Button.left)
+                    #     if message['data'][1] == 'middle':
+                    #         mouse.release(Button.middle)
+                    #     if message['data'][1] == 'right':
+                    #         mouse.release(Button.right)
+                    # elif message['data'][0] == 'scroll':
+                    #     if message['data'][1] == 'up':
+                    #         mouse.scroll(0, 1)
+                    #     if message['data'][1] == 'down':
+                    #         mouse.scroll(0, -1)
+
+                elif message['type'] == 'keyboard':
+                    print(message['data'])
+                    # keyboard = KeyboardController()
+                    # if "pressed" == message['data'][0]:
+                    #     keyboard.press(message['data'][1])
+                    # if "released" == message['data'][0]:
+                    #     keyboard.release(message['data'][1])
+
+                elif message['type'] == 'time':
+                    self.Client.EndLoading.start()
+                    self.Client.start_time = message['data']
+                    self.Client.SetTime.time = message['data'].toString("hh:mm:ss")
+                    self.Client.SetTime.start()
+                    self.Client.ShowLabel.start()
+                    self.Client.InitScreenshot.start()
+
+                    self.StreamClient = StreamClient(self.client_socket,
+                        self.Client.Meeting, self.Client.ClassTeacher, self.Client.Model, self.Client.View, self.Client.Controller)
+                    self.Client.set_meeting_status_handler(
+                        f"Joined {self.Client.Class.Name}")
+
+                elif message['type'] == 'msg':
+                    self.Client.IncrementBadge.start()
+                    self.Client.MessageReceived.message = message['data']
+                    self.Client.MessageReceived.sender = message['sender']
+                    self.Client.MessageReceived.start()
+                    self.Client.set_meeting_status_handler(
+                        f"Teacher {self.Client.ClassTeacher.Teacher} sent a message")
+
+                elif message['type'] == 'fls':
+                    self.Client.IncrementBadge.start()
+                    self.Client.FileMessageReceived.sender = message['sender']
+                    self.Client.FileMessageReceived.filename = message['data']
+                    self.Client.FileMessageReceived.data = message['file']
+                    self.Client.FileMessageReceived.start()
+                    self.Client.set_meeting_status_handler(
+                        f"Teacher {self.Client.ClassTeacher.Teacher} sent a file")
+
+                elif message['type'] == 'url':
+                    if self.blacklisted_sites:
+                        if len(message['data']) > len(self.blacklisted_sites):
                             self.Client.set_meeting_status_handler(
-                                f"{old_list_students[-1]} left the class")
-                except AttributeError:
-                    pass
+                                f"Teacher {self.Client.ClassTeacher.Teacher} blacklisted {message['data'][-1]}")
+                        else:
+                            self.Client.set_meeting_status_handler(
+                                f"Teacher {self.Client.ClassTeacher.Teacher} whitelisted {self.blacklisted_sites[-1]}")
 
-                self.Client.SetStudentList.val = new_list_students
-                self.Client.SetStudentList.start()
+                    print(message['data'])
+                    self.blacklisted_sites = message['data']
 
-            elif message['type'] == 'popup':
-                print(message['data'])
-                self.Client.Popup.val = message['data']
-                self.Client.Popup.start()
-                self.Client.set_meeting_status_handler(
-                    f'Teacher {self.Client.ClassTeacher.Teacher} sent a popup')
+                    # urls = message['data']
+                    # open(self.HOST_PATH, 'w').close()
+                    # with open(self.HOST_PATH, 'r+') as hostfile:
+                    #     hosts_content = hostfile.read()
+                    #     for site in urls:
+                    #         if site not in hosts_content:
+                    #             hostfile.write(self.REDIRECT +
+                    #                             '\t' + site + '\r\n')
+                    # os.system("taskkill /f /im chrome.exe")
+                    # os.system("taskkill /f /im iexplore.exe")
+                    # os.system("taskkill /f /im msedge.exe")
+
+                elif message['type'] == 'student':
+                    new_list_students = message['data']
+                    try:
+                        old_list_students = self.Client.View.lv_student.model().data
+
+                        if len(new_list_students) > len(old_list_students):
+                            self.Client.set_meeting_status_handler(
+                                f"{new_list_students[0]} joined the class")
+                        else:
+                            if len(new_list_students) != 1 or len(new_list_students) == len(old_list_students):
+                                self.Client.set_meeting_status_handler(
+                                    f"{old_list_students[-1]} left the class")
+                    except AttributeError:
+                        pass
+
+                    self.Client.SetStudentList.val = new_list_students
+                    self.Client.SetStudentList.start()
+
+                elif message['type'] == 'popup':
+                    print(message['data'])
+                    self.Client.Popup.val = message['data']
+                    self.Client.Popup.start()
+                    self.Client.set_meeting_status_handler(
+                        f'Teacher {self.Client.ClassTeacher.Teacher} sent a popup')
+                        
+        except RuntimeError:
+            pass
 
         self.quit()
 
@@ -290,11 +303,14 @@ class Screenshot(QThread):
         self.client_socket = Client.client
 
     def run(self):
-        while self.View.isVisible() and not self.client_socket._closed:
-            sct = screenshot()
-            message = normalize_message('frame', sct)
-            self.Client.send(message)
-            time.sleep(2)
+        try:
+            while self.View.isVisible() and not self.client_socket._closed:
+                sct = screenshot()
+                message = normalize_message('frame', sct)
+                self.Client.send(message)
+                time.sleep(2)
+        except RuntimeError:
+            pass
         self.quit()
 
 
@@ -406,9 +422,9 @@ class Client:
         self.SetTime = SetTime()
         self.SetTime.operation.connect(self.View.set_timer)
 
-        self.Timer = QtCore.QTimer()
-        self.Timer.timeout.connect(self.timer_event)
-        self.Timer.start(1000)
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.timer_event)
+        self.timer.start(1000)
 
         self.IncrementBadge = Operation()
         self.IncrementBadge.operation.connect(self.View.BadgeOverlay.increment)
@@ -520,6 +536,13 @@ class Client:
 
     def meeting_closed(self, event):
         self.client.close()
+
+        if not self.Controller.View.Lobby.isVisible():
+            self.Controller.SignInController.View.init_sign_in()
+            self.Controller.SignInController.Model.init_sign_in()
+            self.Controller.SignInController.init_sign_in()
+        
+        self.timer.stop()
 
     def set_student_list(self, students):
         student_model = self.Model.ListModel(self.View.lv_student, students)

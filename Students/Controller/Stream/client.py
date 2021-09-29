@@ -41,7 +41,8 @@ class Client:
 
     FORMAT = 'utf-8'
 
-    def __init__(self, Meeting, ClassTeacher, Model, View, Controller):
+    def __init__(self, chat_socket, Meeting, ClassTeacher, Model, View, Controller):
+        self.chat_socket = chat_socket
         self.Meeting = Meeting
         self.ClassTeacher = ClassTeacher
         self.Model = Model
@@ -89,7 +90,7 @@ class Client:
         display_thread.start()
 
     def receive(self):
-        while self.Meeting.is_connected and not self.Meeting.is_frozen and not self.client._closed:
+        while self.Meeting.is_connected and not self.Meeting.is_frozen and not self.client._closed and not self.chat_socket._closed:
             try:
                 data, _ = self.client.recvfrom(self.MAX_DGRAM)
                 if len(data) < 100:
@@ -106,7 +107,7 @@ class Client:
                 continue
 
     def display(self):
-        while True:
+        while not self.chat_socket._closed:
             frame = self.frames.get()
             if frame == 'disconnect':
                 self.DisconnectScreen.start()

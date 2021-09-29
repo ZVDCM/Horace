@@ -37,7 +37,7 @@ class Lobby(QtWidgets.QMainWindow):
     def run(self):
         self.raise_()
         self.show()
-        # self.title_bar.btn_maximize_restore.click()
+        self.title_bar.btn_maximize_restore.click()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -422,4 +422,3 @@ class Lobby(QtWidgets.QMainWindow):
 
     def set_lobby_status(self, status):
         self.lbl_lobby_status.setText(status)
-        

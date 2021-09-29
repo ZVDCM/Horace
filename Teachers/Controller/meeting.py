@@ -71,6 +71,7 @@ class Meeting:
             close_button.clicked.connect(self.View.close_right)
 
         self.View.btn_leave.clicked.connect(self.list_all_threads)
+        self.View.hideEvent = self.parent_hid
 
     def change_left_page(self, index):
         for screen in self.View.screens:
@@ -100,3 +101,10 @@ class Meeting:
         os.system('cls')
         for i in threading.enumerate():
             print(i)
+
+    def parent_hid(self, event):
+        self.View.sw_right.hide()
+        for interactor in self.View.interactors:
+            if interactor.is_active:
+                interactor.deactivate()
+                break
