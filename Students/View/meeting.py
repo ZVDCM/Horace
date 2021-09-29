@@ -341,18 +341,14 @@ class Meeting(QtWidgets.QMainWindow):
                                     "  background-color: #072f49;\n"
                                     "}"
                                     "\n"
-                                    "QScrollArea{\n"
-                                    "    border: 1px solid #0b1a30;\n"
-                                    "}\n"
                                     "QScrollBar:vertical{\n"
-                                    "    width: 12px;\n"
+                                    "   width: 8px;\n"
+                                    "   background: #102542;\n"
                                     "}\n"
                                     "\n"
                                     "QScrollBar::handle:vertical{\n"
-                                    "    background-color: #97b9f4;    \n"
+                                    "    background-color: #97b9f4;\n"
                                     "    min-height: 5px;\n"
-                                    "    border-radius: 4px;\n"
-                                    "    margin: 2px;\n\n"
                                     "}\n"
                                     "\n"
                                     "QScrollBar::sub-line:vertical{\n"
@@ -361,16 +357,16 @@ class Meeting(QtWidgets.QMainWindow):
                                     "}\n"
                                     "\n"
                                     "QScrollBar::add-line:vertical{\n"
-                                    "        height: 0;\n"
+                                    "     height: 0;\n"
                                     "     width: 0;\n"
                                     "}\n"
                                     "\n"
                                     "QScrollBar::add-page:vertical{\n"
-                                    "    background: #0b1a30;\n"
+                                    "    background: none;\n"
                                     " }\n"
                                     "\n"
                                     "QScrollBar::sub-page:vertical{\n"
-                                    "      background: #0b1a30;\n"
+                                    "      background: none;\n"
                                     "}")
         self.page_9.setObjectName("page_9")
         self.verticalLayout_11 = QtWidgets.QVBoxLayout(self.page_9)
@@ -421,7 +417,6 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout_15.addWidget(self.btn_close_chat)
         self.verticalLayout_11.addLayout(self.horizontalLayout_15)
         self.sa_chat = QtWidgets.QScrollArea(self.page_9)
-        self.sa_chat.setStyleSheet("background: #0B1A30")
         self.sa_chat.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.sa_chat.setWidgetResizable(True)
         self.sa_chat.setObjectName("sa_chat")
@@ -430,6 +425,7 @@ class Meeting(QtWidgets.QMainWindow):
             QtCore.QRect(0, 0, 270, 307))
         self.scrollAreaWidgetContents_4.setObjectName(
             "scrollAreaWidgetContents_4")
+        self.scrollAreaWidgetContents_4.setStyleSheet("background: #0B1A30")
         self.sa_chat.setWidget(self.scrollAreaWidgetContents_4)
 
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_4)
@@ -527,7 +523,7 @@ class Meeting(QtWidgets.QMainWindow):
         MainWindow.setCentralWidget(self.centralwidget)
         self.status_bar = QtWidgets.QStatusBar(MainWindow)
         self.status_bar.setStyleSheet("QStatusBar {\n"
-                                     "    background: #081222;\n"
+                                     "    background: #060d18;\n"
                                      "}\n"
                                      "\n"
                                      "QStatusBar QLabel {\n"

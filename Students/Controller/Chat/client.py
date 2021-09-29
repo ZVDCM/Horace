@@ -418,6 +418,10 @@ class Client:
 
         self.Popup = Popup(self.View.run_popup)
 
+        self.View.btn_search_student.clicked.connect(self.search)
+        self.View.txt_search_student.returnPressed.connect(self.search)
+        self.View.lv_student.hideEvent = self.reset_list_target
+
     def show_alert(self, type, message):
         self.ShowAlert = Alert()
         self.ShowAlert.operation.connect(self.View.show_alert)
@@ -529,3 +533,25 @@ class Client:
         self.handler = self.set_meeting_status()
         self.handler.val = status
         self.handler.start()
+
+    def search(self):
+        target_student = self.View.txt_search_student.text()
+        student_model = self.View.lv_student.model()
+        students = student_model.data
+        target_indices = []
+        for index, student in enumerate(students):
+            if target_student in student:
+                target_indices.append(index)
+            self.View.lv_student.setRowHidden(index, True)
+
+        for target_index in target_indices:
+            self.View.lv_student.setRowHidden(target_index, False)
+
+        self.View.txt_search_student.clear()
+
+    def reset_list_target(self, event):
+        self.View.txt_search_student.clear()
+        student_model = self.View.lv_student.model()
+        students = student_model.data
+        for index, student in enumerate(students):
+            self.View.lv_student.setRowHidden(index, False)

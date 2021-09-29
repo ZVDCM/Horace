@@ -25,7 +25,7 @@ class ListView(QListView):
 
             QScrollBar:vertical{
                 width: 8px;
-                background: #0B1A30;
+                background: #102542;
             }
             
             QScrollBar::handle:vertical{

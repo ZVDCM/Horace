@@ -175,6 +175,7 @@ class Host:
         self.time = {}
 
         self.start_time = QtCore.QTime(0, 0, 0)
+        self.status_time = 0
 
         self.connect_signals()
         self.init_host()
@@ -264,10 +265,10 @@ class Host:
         self.ShowAlert.start()
 
     def set_meeting_status_handler(self, status):
+        self.status_time = 0
         self.handler = SetMeetingStatus(self.View.set_meeting_status)
         self.handler.val = status
         self.handler.start()
-        QtCore.QTimer.singleShot(5000, self.View.lbl_meeting_status.clear)
 
     def init_host(self):
         self.host = socket.socket()
@@ -772,6 +773,10 @@ class Host:
         self.start_time = self.start_time.addSecs(1)
         self.SetTime.time = self.start_time.toString("hh:mm:ss")
         self.SetTime.start()
+
+        self.status_time += 1
+        if self.status_time == 5:
+            self.View.lbl_meeting_status.clear()
 
     def now(self):
         now = datetime.now()

@@ -75,6 +75,8 @@ class Lobby:
         self.get_classes()
         self.get_attendances()
 
+        self.View.title_bar.title.setText('Lobby')
+
         self.View.run()
 
     def connect_signals(self):
@@ -175,7 +177,7 @@ class Lobby:
     def get_attendances(self):
         self.get_all_attendances_handler = self.GetAllAttendances()
         self.get_all_attendances_handler.val = self.Controller.User,
-        self.get_all_attendances_handler.finished.connect(lambda: self.set_lobby_status_handler(f'Attendances loaded successfully'))
+        self.get_all_attendances_handler.finished.connect(lambda: self.set_lobby_status_handler('Attendances loaded successfully'))
         self.get_all_attendances_handler.start()
 
     def set_attendances(self, attendances):
