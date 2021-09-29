@@ -175,7 +175,6 @@ class Host:
         self.time = {}
 
         self.start_time = QtCore.QTime(0, 0, 0)
-        self.status_time = 0
 
         self.connect_signals()
         self.init_host()
@@ -196,6 +195,7 @@ class Host:
         self.View.btn_init_add_url.clicked.connect(self.init_add_url)
         self.View.btn_init_edit_url.clicked.connect(self.init_edit_url)
         self.View.btn_delete_url.clicked.connect(self.delete_url)
+        self.View.txt_url.returnPressed.connect(self.init_add_edit_url)
         self.View.btn_add_edit_url.clicked.connect(self.init_add_edit_url)
         self.View.btn_cancel_url.clicked.connect(self.cancel_url)
 
@@ -238,6 +238,7 @@ class Host:
 
         self.AddAttendance = Attendance(self.Model.create_attendance)
         self.AddAttendance.operation.connect(lambda: self.show_alert('attendance', 'Attendance Stored'))
+        self.AddAttendance.operation.connect(self.Controller.Lobby.get_attendances)
 
         self.IncrementBadge = Operation()
         self.IncrementBadge.operation.connect(self.View.BadgeOverlay.increment)
@@ -263,10 +264,10 @@ class Host:
         self.ShowAlert.start()
 
     def set_meeting_status_handler(self, status):
-        self.status_time = 0
         self.handler = SetMeetingStatus(self.View.set_meeting_status)
         self.handler.val = status
         self.handler.start()
+        QtCore.QTimer.singleShot(5000, self.View.lbl_meeting_status.clear)
 
     def init_host(self):
         self.host = socket.socket()
@@ -732,6 +733,11 @@ class Host:
             target=self.record_attendance, daemon=True, name="AttendanceThread")
         attendance_thread.start()
 
+        if not self.Controller.View.Lobby.isVisible():
+            self.Controller.SignInController.View.init_sign_in()
+            self.Controller.SignInController.Model.init_sign_in()
+            self.Controller.SignInController.init_sign_in()
+
     def record_attendance(self):
         self.show_alert('attendance', 'Storing Attendance...')
         attendance = "".join(("Class Meeting Summary\n",
@@ -758,16 +764,14 @@ class Host:
         data = bytearray(attendance.encode('utf-8'))
         self.AddAttendance.val = self.Controller.User.Username, "%s %s.csv" % (
             self.Class.Code,  date.today().strftime("%B %d, %Y")), data, datetime.today()
+        # if self.Controller.View.Lobby.isVisible():
+            # self.AddAttendance.operation.connect(self.Controller.Lobby.get_attendances)
         self.AddAttendance.start()
 
     def timer_event(self):
         self.start_time = self.start_time.addSecs(1)
         self.SetTime.time = self.start_time.toString("hh:mm:ss")
         self.SetTime.start()
-
-        self.status_time += 1
-        if self.status_time == 5:
-            self.View.lbl_meeting_status.clear()
 
     def now(self):
         now = datetime.now()
@@ -887,6 +891,8 @@ class Host:
 
         for target_index in target_indices:
             self.View.lv_student.setRowHidden(target_index, False)
+
+        self.View.txt_search_student.clear()
 
     def reset_list_target(self, event):
         self.View.txt_search_student.clear()

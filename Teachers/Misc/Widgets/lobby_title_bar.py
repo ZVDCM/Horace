@@ -20,14 +20,27 @@ class TitleBar(QtWidgets.QWidget):
         Form.setMinimumSize(QtCore.QSize(0, 30))
         Form.setMaximumSize(QtCore.QSize(16777215, 30))
         self.horizontalLayout = QtWidgets.QHBoxLayout(Form)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setContentsMargins(10, 0, 0, 0)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.widget_5 = QtWidgets.QWidget(Form)
-        self.widget_5.setMinimumSize(QtCore.QSize(92, 0))
-        self.widget_5.setStyleSheet("background: #0D3C6E;")
-        self.widget_5.setObjectName("widget_5")
-        self.horizontalLayout.addWidget(self.widget_5)
+        
+        self.logo = QtWidgets.QLabel(Form)
+        self.logo.setFixedSize(QtCore.QSize(18, 18))
+        self.logo.setMaximumSize(QtCore.QSize(18, 18))
+        qpixmap = QtGui.QPixmap(relative_path('Teachers', ['Misc', 'Resources'], 'horace.png'))
+        self.logo.setScaledContents(True)
+        self.logo.setPixmap(qpixmap)
+        self.logo.setStyleSheet("margin-top: 2px; background: transparent")
+        self.horizontalLayout.addWidget(self.logo, alignment=QtCore.Qt.AlignCenter)
+
+        self.title = QtWidgets.QLabel('PDC 60', Form)
+        self.title.setStyleSheet("margin-top: 2px; margin-left: 5px; color: gray; background: transparent")
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        self.title.setFont(font)
+        self.horizontalLayout.addWidget(self.title, alignment=QtCore.Qt.AlignCenter)
+
+
         spacerItem = QtWidgets.QSpacerItem(
             537, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
@@ -167,6 +180,7 @@ class TitleBar(QtWidgets.QWidget):
 
     def set_minimum(self):
         self.parent.showNormal()
+        self.parent.ActiveOverlay.show()
         self.btn_maximize_restore.setStyleSheet("QPushButton{\n"
                                                 "    border: none;\n"
                                                 "    border-radius: none;\n"
@@ -187,6 +201,7 @@ class TitleBar(QtWidgets.QWidget):
     def set_maximum(self):
         self.prev_size = self.parent.size()
         self.parent.showMaximized()
+        self.parent.ActiveOverlay.hide()
         self.btn_maximize_restore.setStyleSheet("QPushButton{\n"
                                                 "    border: none;\n"
                                                 "    border-radius: none;\n"

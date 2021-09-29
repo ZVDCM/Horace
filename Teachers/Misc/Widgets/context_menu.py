@@ -20,12 +20,11 @@ class ContextMenu(QtWidgets.QWidget):
         Form.resize(230, 190)
         Form.setMinimumSize(QtCore.QSize(230, 190))
         Form.setMaximumSize(QtCore.QSize(230, 190))
-        Form.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint |
+        Form.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Popup |
                             QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Form.setFocusPolicy(QtCore.Qt.StrongFocus)
-        Form.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Form)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 9)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.widget = QtWidgets.QWidget(Form)
@@ -36,10 +35,6 @@ class ContextMenu(QtWidgets.QWidget):
                                   "}\n"
                                   "")
         self.widget.setObjectName("widget")
-
-        shadow_effect = QtWidgets.QGraphicsDropShadowEffect(
-            blurRadius=4, xOffset=0, yOffset=2, color=QtGui.QColor("#222222"))
-        self.widget.setGraphicsEffect(shadow_effect)
 
         self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -239,7 +234,3 @@ class ContextMenu(QtWidgets.QWidget):
     def left_item(self, event, item):
         self.hovering = False
         item.setStyleSheet("background: transparent;")
-
-    def focusOutEvent(self, event):
-        self.close()
-        super().focusOutEvent(event)

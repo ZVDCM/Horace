@@ -25,22 +25,25 @@ class Meeting(QtWidgets.QMainWindow):
         self.setupUi(self)
 
         self.Popup = Popup(self)
-        
+
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
-        
+
         self.ActiveOverlay = ActiveOverlay(self)
         self.Overlay = Overlay(self.page)
         self.BadgeOverlay = BadgeOverlay(self.btn_chat)
-        
+
         self.screens = [self.btn_screenshare, self.btn_inspector]
         self.interactors = [self.btn_student_list,
                             self.btn_chat, self.btn_block]
         self.close_buttons = [self.btn_close_student_list,
                               self.btn_close_chat, self.btn_close_url]
 
-        self.LoadingScreen = LoadingScreen(self.widget, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
-        self.LoadingScreenURL = LoadingScreen(self.w_url, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
-        self.LoadingScreenURLList = LoadingScreen(self.w_url_list, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
+        self.LoadingScreen = LoadingScreen(self.widget, relative_path(
+            'Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+        self.LoadingScreenURL = LoadingScreen(self.w_url, relative_path(
+            'Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
+        self.LoadingScreenURLList = LoadingScreen(self.w_url_list, relative_path(
+            'Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
 
         self.url_state = 'Read'
         self.alert = Alert()
@@ -239,21 +242,21 @@ class Meeting(QtWidgets.QMainWindow):
         self.page_2 = QtWidgets.QWidget()
         self.page_2.setObjectName("page_2")
         self.page_2.setStyleSheet("QPushButton {\n"
-                                "  padding: 5px;\n"
-                                "  border-radius: 5px;\n"
-                                "  border: 1px solid #0e4884;\n"
-                                "  background-color: #0e4884;\n"
-                                "}\n"
-                                "\n"
-                                "QPushButton:focus,\n"
-                                "QPushButton:hover {\n"
-                                "  border: 1px solid #256eff;\n"
-                                "  outline: none;\n"
-                                "}\n"
-                                "\n"
-                                "QPushButton:pressed {\n"
-                                "  background-color: #072f49;\n"
-                                "}\n")
+                                  "  padding: 5px;\n"
+                                  "  border-radius: 5px;\n"
+                                  "  border: 1px solid #0e4884;\n"
+                                  "  background-color: #0e4884;\n"
+                                  "}\n"
+                                  "\n"
+                                  "QPushButton:focus,\n"
+                                  "QPushButton:hover {\n"
+                                  "  border: 1px solid #256eff;\n"
+                                  "  outline: none;\n"
+                                  "}\n"
+                                  "\n"
+                                  "QPushButton:pressed {\n"
+                                  "  background-color: #072f49;\n"
+                                  "}\n")
         self.verticalLayout_100 = QtWidgets.QVBoxLayout(self.page_2)
         self.verticalLayout_100.setContentsMargins(25, 29, 25, 25)
         self.verticalLayout_100.setObjectName("verticalLayout_100")
@@ -288,10 +291,10 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_shutdown.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_shutdown.setStyleSheet("QPushButton{\n"
-                                           "    background-repeat: none;\n"
-                                           f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'shutdown.png')});\n"
-                                           "    background-position: center center;\n"
-                                           "}\n")
+                                        "    background-repeat: none;\n"
+                                        f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'shutdown.png')});\n"
+                                        "    background-position: center center;\n"
+                                        "}\n")
         self.btn_shutdown.setObjectName("btn_shutdown")
         self.horizontalLayout_101.addWidget(self.btn_shutdown)
 
@@ -308,10 +311,10 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_restart.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_restart.setStyleSheet("QPushButton{\n"
-                                           "    background-repeat: none;\n"
-                                           f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'restart.png')});\n"
-                                           "    background-position: center center;\n"
-                                           "}\n")
+                                       "    background-repeat: none;\n"
+                                       f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'restart.png')});\n"
+                                       "    background-position: center center;\n"
+                                       "}\n")
         self.btn_restart.setObjectName("btn_restart")
         self.horizontalLayout_101.addWidget(self.btn_restart)
 
@@ -328,46 +331,41 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_lock.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_lock.setStyleSheet("QPushButton{\n"
-                                           "    background-repeat: none;\n"
-                                           f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'lock.png')});\n"
-                                           "    background-position: center center;\n"
-                                           "}\n")
+                                    "    background-repeat: none;\n"
+                                    f"   background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'lock.png')});\n"
+                                    "    background-position: center center;\n"
+                                    "}\n")
         self.btn_lock.setObjectName("btn_lock")
         self.horizontalLayout_101.addWidget(self.btn_lock)
 
         self.sa_inspector = QtWidgets.QScrollArea(self.page_2)
-        self.sa_inspector.setStyleSheet("QScrollArea{\n"
-                                         "    border: 1px solid #102542;\n"
-                                         "}\n"
-                                         "QScrollBar:vertical{\n"
-                                         "    width: 12px;\n"
-                                         "    background: #102542;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QScrollBar::handle:vertical{\n"
-                                         "    background-color: #97b9f4;    \n"
-                                         "    min-height: 5px;\n"
-                                         "    border-radius: 4px;\n"
-                                         "    margin: 2px;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QScrollBar::sub-line:vertical{\n"
-                                         "     height: 0;\n"
-                                         "     width: 0;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QScrollBar::add-line:vertical{\n"
-                                         "     height: 0;\n"
-                                         "     width: 0;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QScrollBar::add-page:vertical{\n"
-                                         "    background: none;\n"
-                                         " }\n"
-                                         "\n"
-                                         "QScrollBar::sub-page:vertical{\n"
-                                         "     background: none;\n"
-                                         "}")
+        self.sa_inspector.setStyleSheet("QScrollBar:vertical{\n"
+                                        "    width: 8px;\n"
+                                        "    background: #102542;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QScrollBar::handle:vertical{\n"
+                                        "    background-color: #97b9f4;    \n"
+                                        "    min-height: 5px;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QScrollBar::sub-line:vertical{\n"
+                                        "     height: 0;\n"
+                                        "     width: 0;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QScrollBar::add-line:vertical{\n"
+                                        "     height: 0;\n"
+                                        "     width: 0;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QScrollBar::add-page:vertical{\n"
+                                        "    background: none;\n"
+                                        " }\n"
+                                        "\n"
+                                        "QScrollBar::sub-page:vertical{\n"
+                                        "     background: none;\n"
+                                        "}")
         self.sa_inspector.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.sa_inspector.setVerticalScrollBarPolicy(
             QtCore.Qt.ScrollBarAsNeeded)
@@ -478,10 +476,32 @@ class Meeting(QtWidgets.QMainWindow):
         self.verticalLayout_5.addLayout(self.horizontalLayout_6)
 
         self.horizontalLayout_102 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_102.setContentsMargins(0,0,0,0)
-        self.horizontalLayout_102.setSpacing(6)
+        self.horizontalLayout_102.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_102.setSpacing(15)
         self.horizontalLayout_102.setObjectName("horizontalLayout_102")
         self.verticalLayout_5.addLayout(self.horizontalLayout_102)
+
+        self.btn_send_many = QtWidgets.QPushButton(self.page_5)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_send_many.sizePolicy().hasHeightForWidth())
+        self.btn_send_many.setSizePolicy(sizePolicy)
+        self.btn_send_many.setMinimumSize(
+            QtCore.QSize(30, 30))
+        self.btn_send_many.setMaximumSize(
+            QtCore.QSize(30, 30))
+        self.btn_send_many.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_send_many.setStyleSheet("border-radius: 5px;\n"
+                                         f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'send_many.png')});\n"
+                                         "background-repeat: no-repeat;\n"
+                                         "background-position: center center;")
+        self.btn_send_many.setObjectName(
+            "btn_send_many")
+        self.horizontalLayout_102.addWidget(self.btn_send_many)
 
         self.horizontalLayout_47 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_47.setSizeConstraint(
@@ -537,30 +557,9 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout_47.addWidget(self.btn_search_student)
         self.horizontalLayout_102.addLayout(self.horizontalLayout_47)
 
-        self.btn_send_many = QtWidgets.QPushButton(self.page_5)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.btn_send_many.sizePolicy().hasHeightForWidth())
-        self.btn_send_many.setSizePolicy(sizePolicy)
-        self.btn_send_many.setMinimumSize(
-            QtCore.QSize(30, 30))
-        self.btn_send_many.setMaximumSize(
-            QtCore.QSize(30, 30))
-        self.btn_send_many.setCursor(
-            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_send_many.setStyleSheet("border-radius: 5px;\n"
-                                    f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'send_many.png')});\n"
-                                    "background-repeat: no-repeat;\n"
-                                    "background-position: center center;")
-        self.btn_send_many.setObjectName(
-            "btn_send_many")
-        self.horizontalLayout_102.addWidget(self.btn_send_many)
-
         self.lv_student = ListView(self.page_5)
-        self.lv_student.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.lv_student.setSelectionMode(
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.lv_student.setObjectName("lv_student")
         self.verticalLayout_5.addWidget(self.lv_student)
         self.sw_right.addWidget(self.page_5)
@@ -618,38 +617,33 @@ class Meeting(QtWidgets.QMainWindow):
         self.sa_chat.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.sa_chat.setWidgetResizable(True)
         self.sa_chat.setObjectName("sa_chat")
-        self.sa_chat.setStyleSheet("QScrollArea{\n"
-                                    "    border: 1px solid #0B1A30;\n"
-                                    "}\n"
-                                    "QScrollBar:vertical{\n"
-                                    "    width: 12px;\n"
-                                    "    background: #0B1A30;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::handle:vertical{\n"
-                                    "    background-color: #97b9f4;    \n"
-                                    "    min-height: 5px;\n"
-                                    "    border-radius: 4px;\n"
-                                    "    margin: 2px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::sub-line:vertical{\n"
-                                    "     height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-line:vertical{\n"
-                                    "     height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-page:vertical{\n"
-                                    "    background: none;\n"
-                                    " }\n"
-                                    "\n"
-                                    "QScrollBar::sub-page:vertical{\n"
-                                    "     background: none;\n"
-                                    "}")
+        self.sa_chat.setStyleSheet("QScrollBar:vertical{\n"
+                                   "    width: 8px;\n"
+                                   "    background: #102542;\n"
+                                   "}\n"
+                                   "\n"
+                                   "QScrollBar::handle:vertical{\n"
+                                   "    background-color: #97b9f4;    \n"
+                                   "    min-height: 5px;\n"
+                                   "}\n"
+                                   "\n"
+                                   "QScrollBar::sub-line:vertical{\n"
+                                   "     height: 0;\n"
+                                   "     width: 0;\n"
+                                   "}\n"
+                                   "\n"
+                                   "QScrollBar::add-line:vertical{\n"
+                                   "     height: 0;\n"
+                                   "     width: 0;\n"
+                                   "}\n"
+                                   "\n"
+                                   "QScrollBar::add-page:vertical{\n"
+                                   "    background: none;\n"
+                                   " }\n"
+                                   "\n"
+                                   "QScrollBar::sub-page:vertical{\n"
+                                   "     background: none;\n"
+                                   "}")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 270, 394))
         self.scrollAreaWidgetContents.setStyleSheet("background: #0B1A30;")
@@ -674,16 +668,16 @@ class Meeting(QtWidgets.QMainWindow):
         self.page_4 = QtWidgets.QWidget()
         self.page_4.setObjectName("page_4")
         self.page_4.setStyleSheet("QWidget{\n"
-                                    "   background-color:  #083654;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QLineEdit::disabled {\n"
-                                    "   border: 1px solid #072f49;\n"
-                                    "   border-radius: 5px;\n"
-                                    "   background-color: #072f49;\n"
-                                    "}\n"
-                                    "\n"
-                                    )
+                                  "   background-color:  #083654;\n"
+                                  "}\n"
+                                  "\n"
+                                  "QLineEdit::disabled {\n"
+                                  "   border: 1px solid #072f49;\n"
+                                  "   border-radius: 5px;\n"
+                                  "   background-color: #072f49;\n"
+                                  "}\n"
+                                  "\n"
+                                  )
         self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.page_4)
         self.verticalLayout_9.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_9.setSpacing(0)
@@ -816,29 +810,29 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_init_edit_url.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_init_edit_url.setStyleSheet("QPushButton{\n"
-                                            "   border-radius: 5px;\n"
-                                            "   background: none;\n"
-                                            "   background-color: #0e4884;\n"
-                                            f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'edit.png')});\n"
-                                            "   background-repeat: no-repeat;\n"
-                                            "   background-position: center center;\n"
-                                            "}"
-                                            "\n"
-                                            "QPushButton::disabled {\n"
-                                            "   padding: 5px;\n"
-                                            "   border: 1px solid #102542;\n"
-                                            "   background: none;\n"
-                                            "   background-color: #102542;\n"
-                                            f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'edit_2.png')});\n"
-                                            "   background-repeat: no-repeat;\n"
-                                            "   background-position: center center;\n"
-                                            "}"
-                                            "\n"
-                                            "QPushButton:focus,"
-                                            "QPushButton:hover {\n"
-                                            "   border: 1px solid #256eff;\n"
-                                            "}"
-                                            )
+                                             "   border-radius: 5px;\n"
+                                             "   background: none;\n"
+                                             "   background-color: #0e4884;\n"
+                                             f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'edit.png')});\n"
+                                             "   background-repeat: no-repeat;\n"
+                                             "   background-position: center center;\n"
+                                             "}"
+                                             "\n"
+                                             "QPushButton::disabled {\n"
+                                             "   padding: 5px;\n"
+                                             "   border: 1px solid #102542;\n"
+                                             "   background: none;\n"
+                                             "   background-color: #102542;\n"
+                                             f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'edit_2.png')});\n"
+                                             "   background-repeat: no-repeat;\n"
+                                             "   background-position: center center;\n"
+                                             "}"
+                                             "\n"
+                                             "QPushButton:focus,"
+                                             "QPushButton:hover {\n"
+                                             "   border: 1px solid #256eff;\n"
+                                             "}"
+                                             )
         self.btn_init_edit_url.setObjectName(
             "btn_init_edit_url")
         self.horizontalLayout_8.addWidget(self.btn_init_edit_url)
@@ -858,28 +852,28 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_delete_url.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_delete_url.setStyleSheet("QPushButton{\n"
-                                            "   border-radius: 5px;\n"
-                                            "   background: none;\n"
-                                            "   border: 1px solid #0e4884;\n"
-                                            f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'trash.png')});\n"
-                                            "   background-repeat: no-repeat;\n"
-                                            "   background-position: center center;\n"
-                                            "}"
-                                            "\n"
-                                            "QPushButton::disabled {\n"
-                                            "   padding: 5px;\n"
-                                            "   background: none;\n"
-                                            "   border: 1px solid #102542;\n"
-                                            f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'trash_2.png')});\n"
-                                            "   background-repeat: no-repeat;\n"
-                                            "   background-position: center center;\n"
-                                            "}"
-                                            "\n"
-                                            "QPushButton:focus,"
-                                            "QPushButton:hover {\n"
-                                            "   border: 1px solid #256eff;\n"
-                                            "}"
-                                            )
+                                          "   border-radius: 5px;\n"
+                                          "   background: none;\n"
+                                          "   border: 1px solid #0e4884;\n"
+                                          f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'trash.png')});\n"
+                                          "   background-repeat: no-repeat;\n"
+                                          "   background-position: center center;\n"
+                                          "}"
+                                          "\n"
+                                          "QPushButton::disabled {\n"
+                                          "   padding: 5px;\n"
+                                          "   background: none;\n"
+                                          "   border: 1px solid #102542;\n"
+                                          f"  background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'trash_2.png')});\n"
+                                          "   background-repeat: no-repeat;\n"
+                                          "   background-position: center center;\n"
+                                          "}"
+                                          "\n"
+                                          "QPushButton:focus,"
+                                          "QPushButton:hover {\n"
+                                          "   border: 1px solid #256eff;\n"
+                                          "}"
+                                          )
         self.btn_delete_url.setDisabled(True)
         self.btn_delete_url.setIconSize(QtCore.QSize(20, 20))
         self.btn_delete_url.setObjectName(
@@ -914,13 +908,13 @@ class Meeting(QtWidgets.QMainWindow):
         self.btn_add_edit_url.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_add_edit_url.setStyleSheet("QPushButton{\n"
-                                          "    border-radius: 5px;\n"
-                                          "    background: #0e4884;\n"
-                                          "}\n"
-                                          "\n"
-                                          "QPushButton:pressed {\n"
-                                          "     background-color: #072f49;\n"
-                                          "}")
+                                            "    border-radius: 5px;\n"
+                                            "    background: #0e4884;\n"
+                                            "}\n"
+                                            "\n"
+                                            "QPushButton:pressed {\n"
+                                            "     background-color: #072f49;\n"
+                                            "}")
         self.btn_add_edit_url.setObjectName("btn_add_edit_url")
         self.verticalLayout_41.addWidget(self.btn_add_edit_url)
         self.btn_cancel_url = QtWidgets.QPushButton(self.w_url_btn)
@@ -969,13 +963,13 @@ class Meeting(QtWidgets.QMainWindow):
         MainWindow.setCentralWidget(self.centralwidget)
         self.status_bar = QtWidgets.QStatusBar(MainWindow)
         self.status_bar.setStyleSheet("QStatusBar {\n"
-                                     "    background: #081222;\n"
-                                     "}\n"
-                                     "\n"
-                                     "QStatusBar QLabel {\n"
-                                     "    color: white;\n"
-                                     "    padding-left: 3px;\n"
-                                     "}")
+                                      "    background: #060d18;\n"
+                                      "}\n"
+                                      "\n"
+                                      "QStatusBar QLabel {\n"
+                                      "    color: white;\n"
+                                      "    padding-left: 3px;\n"
+                                      "}")
         self.status_bar.setObjectName("statusbar")
         self.lbl_meeting_status = QtWidgets.QLabel(self.status_bar)
         sizePolicy = QtWidgets.QSizePolicy(
@@ -1047,14 +1041,16 @@ class Meeting(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot(str, QtGui.QPixmap)
     def set_student_frame(self, name, frame):
-        student_item = self.scrollAreaWidgetContents_2.findChild(QtWidgets.QWidget, name)
+        student_item = self.scrollAreaWidgetContents_2.findChild(
+            QtWidgets.QWidget, name)
         if student_item:
             target_lbl = student_item.verticalLayout.itemAt(1).widget()
             target_lbl.setPixmap(frame)
 
     @QtCore.pyqtSlot(str)
     def remove_student_item(self, name):
-        student_item = self.scrollAreaWidgetContents_2.findChild(QtWidgets.QWidget, name)
+        student_item = self.scrollAreaWidgetContents_2.findChild(
+            QtWidgets.QWidget, name)
         student_item.deleteLater()
 
     def disconnect_screen(self):
@@ -1066,17 +1062,17 @@ class Meeting(QtWidgets.QMainWindow):
     def run_popup(self, message, icon='information'):
         if icon == 'question':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Teachers', ['Misc', 'Resources'], 'question.png')))
+                'Teachers', ['Misc', 'Resources'], 'question.png')))
         elif icon == 'warning':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Teachers', ['Misc', 'Resources'], 'warning.png')))
+                'Teachers', ['Misc', 'Resources'], 'warning.png')))
         elif icon == 'critical':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Teachers', ['Misc', 'Resources'], 'critical.png')))
-        
+                'Teachers', ['Misc', 'Resources'], 'critical.png')))
+
         self.Popup.lbl_message.setText(message)
         self.Popup.run()
-    
+
     def clear_url_inputs(self):
         self.txt_url.clear()
 

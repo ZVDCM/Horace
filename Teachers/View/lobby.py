@@ -1,4 +1,7 @@
-from typing import List
+from Teachers.Misc.Widgets.account_context_menu import AccountContextMenu
+from Teachers.Misc.Widgets.alert import Alert
+from Teachers.Misc.Widgets.alert_item import AlertItem
+from Teachers.Misc.Widgets.active_overlay import ActiveOverlay
 from Teachers.Misc.Widgets.loading_screen import LoadingScreen
 from Teachers.Misc.Widgets.nav import Nav
 from Teachers.Misc.Functions.relative_path import relative_path
@@ -17,6 +20,9 @@ class Lobby(QtWidgets.QMainWindow):
         self.View = View
         self.setupUi(self)
 
+        QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
+        self.ActiveOverlay = ActiveOverlay(self)
+
         self.side_navs = [self.w_class, self.w_attendance]
         self.ClassLoadingScreen = LoadingScreen(self.classes, relative_path(
             'Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
@@ -25,11 +31,13 @@ class Lobby(QtWidgets.QMainWindow):
         self.AttendanceListLoadingScreen = LoadingScreen(self.lv_attendance, relative_path(
             'Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
 
+        self.alert = Alert()
+        self.ContextMenu = AccountContextMenu(self)
 
     def run(self):
         self.raise_()
         self.show()
-        self.title_bar.btn_maximize_restore.click()
+        # self.title_bar.btn_maximize_restore.click()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -64,7 +72,7 @@ class Lobby(QtWidgets.QMainWindow):
         self.side_bar.setStyleSheet("background: #0D3C6E;")
         self.side_bar.setObjectName("side_bar")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.side_bar)
-        self.verticalLayout_3.setContentsMargins(0, 16, 0, 20)
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 20)
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.w_class = Nav(self, 0, 'Classes', relative_path('Teachers', ['Misc', 'Resources'], 'class_3.png'), relative_path('Teachers', ['Misc', 'Resources'], 'class.png'), relative_path('Teachers', ['Misc', 'Resources'], 'class_2.png'), True)
@@ -81,11 +89,11 @@ class Lobby(QtWidgets.QMainWindow):
         spacerItem2 = QtWidgets.QSpacerItem(
             0, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_7.addItem(spacerItem2)
-        self.btn_more_2 = QtWidgets.QPushButton(self.side_bar)
-        self.btn_more_2.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_more_2.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_more_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_more_2.setStyleSheet("QPushButton{\n"
+        self.btn_more = QtWidgets.QPushButton(self.side_bar)
+        self.btn_more.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_more.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_more.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_more.setStyleSheet("QPushButton{\n"
                                       "    border: none;\n"
                                       "    border-radius: none;\n"
                                       "    background: none;\n"
@@ -100,8 +108,8 @@ class Lobby(QtWidgets.QMainWindow):
                                       f"    background-image: url({relative_path('Teachers', ['Misc', 'Resources'], 'menu_2.png')});\n"
                                       "    background-position: center center;\n"
                                       "}")
-        self.btn_more_2.setObjectName("btn_more_2")
-        self.horizontalLayout_7.addWidget(self.btn_more_2)
+        self.btn_more.setObjectName("btn_more")
+        self.horizontalLayout_7.addWidget(self.btn_more)
         spacerItem3 = QtWidgets.QSpacerItem(
             0, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_7.addItem(spacerItem3)
@@ -369,21 +377,20 @@ class Lobby(QtWidgets.QMainWindow):
                                       "}")
         self.status_bar.setSizeGripEnabled(True)
         self.status_bar.setObjectName("status_bar")
-        self.lbl_database_status = QtWidgets.QLabel(
-            "Database Initialized", self.status_bar)
+        self.lbl_lobby_status = QtWidgets.QLabel(self.status_bar)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.lbl_database_status.sizePolicy().hasHeightForWidth())
-        self.lbl_database_status.setSizePolicy(sizePolicy)
-        self.lbl_database_status.setMinimumSize(QtCore.QSize(500, 20))
-        self.lbl_database_status.setMaximumSize(QtCore.QSize(16777215, 20))
+            self.lbl_lobby_status.sizePolicy().hasHeightForWidth())
+        self.lbl_lobby_status.setSizePolicy(sizePolicy)
+        self.lbl_lobby_status.setMinimumSize(QtCore.QSize(500, 20))
+        self.lbl_lobby_status.setMaximumSize(QtCore.QSize(16777215, 20))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(9)
-        self.lbl_database_status.setFont(font)
+        self.lbl_lobby_status.setFont(font)
         MainWindow.setStatusBar(self.status_bar)
 
         self.retranslateUi(MainWindow)
@@ -398,3 +405,21 @@ class Lobby(QtWidgets.QMainWindow):
     def add_class_item(self, Class):
         self.ClassItem = ClassItem(self, Class) 
         self.flow_layout.addWidget(self.ClassItem)
+
+    def show_alert(self, type, message):
+        if type == 'file':
+            item = AlertItem(self.alert, 'clip_2.png', message)
+        self.alert.add_item(item)
+        self.alert.show()
+
+    def on_focus_change(self):
+        if self.isActiveWindow():
+            self.ActiveOverlay.is_focused = True
+            self.ActiveOverlay.update()
+        else:
+            self.ActiveOverlay.is_focused = False
+            self.ActiveOverlay.update()
+
+    def set_lobby_status(self, status):
+        self.lbl_lobby_status.setText(status)
+        

@@ -71,7 +71,7 @@ class RemoteDesktop(QtWidgets.QMainWindow):
         MainWindow.setCentralWidget(self.centralwidget)
         self.status_bar = QtWidgets.QStatusBar(MainWindow)
         self.status_bar.setStyleSheet("QStatusBar {\n"
-                                     "    background: #081222;\n"
+                                     "    background: #060d18;\n"
                                      "}\n"
                                      "\n"
                                      "QStatusBar QLabel {\n"

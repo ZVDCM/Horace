@@ -16,7 +16,7 @@ class ActiveOverlay(QWidget):
 
         self.is_focused = True
 
-        self.parent.resizeEvent = self.resize
+        self.parent.resizeEvent = self.resize_parent
         self.resized.connect(self.resize_overlay)
 
     def showEvent(self, event):
@@ -41,5 +41,5 @@ class ActiveOverlay(QWidget):
         self.setGeometry(0, 0, self.width, self.height)
         self.update()
 
-    def resize(self, _):
+    def resize_parent(self, _):
         self.resized.emit()
