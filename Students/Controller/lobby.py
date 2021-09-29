@@ -86,6 +86,18 @@ class Lobby:
         self.Controller.View.init_meeting()
         self.Controller.init_meeting(self.TargetClass, ClassTeacher)
 
+        self.disable_classes()
+
+    def disable_classes(self):
+        if self.View.flow_layout.count():
+            for i in range(self.View.flow_layout.count()):
+                self.View.flow_layout.itemAt(i).widget().disable()
+
+    def enable_classes(self):
+        if self.View.flow_layout.count():
+            for i in range(self.View.flow_layout.count()):
+                self.View.flow_layout.itemAt(i).widget().activate()
+
     def more_clicked(self):
         pos = self.View.btn_more.mapToGlobal(self.View.btn_more.rect().bottomRight())
         height = GetSystemMetrics(1)

@@ -9,6 +9,7 @@ class ClassItem(QtWidgets.QWidget):
         super().__init__(parent=parent)
         self.Class = Class
         self.setupUi(self)
+        self.is_active = True
 
     def setupUi(self, Form):
         Form.setObjectName(self.Class.Code)
@@ -94,10 +95,33 @@ class ClassItem(QtWidgets.QWidget):
         self.label_3.setText(_translate("Form", self.Class.Start))
         self.label_4.setText(_translate("Form", self.Class.End))
 
+    def disable(self):
+        self.is_active = False
+        self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.setStyleSheet("QWidget{\n"
+                           "    background: #6b6b6b;\n"
+                           "    color: #363636; \n"
+                           "    font-family: Barlow\n"
+                           "}")
+        self.label_3.setStyleSheet("color: #363636")
+        self.label_4.setStyleSheet("color: #363636")
+    
+    def activate(self):
+        self.is_active = True
+        self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.setStyleSheet("QWidget{\n"
+                           "    background: #102542;\n"
+                           "    color: white; \n"
+                           "    font-family: Barlow\n"
+                           "}")
+        self.label_3.setStyleSheet("color: gray")
+        self.label_4.setStyleSheet("color: gray")
+
     def enterEvent(self, event):
-        self.widget.setStyleSheet("QWidget#widget{\n"
-                                  "    border: 1px solid #256eff; \n"
-                                  "}")
+        if self.is_active:
+            self.widget.setStyleSheet("QWidget#widget{\n"
+                                    "    border: 1px solid #256eff; \n"
+                                    "}")
         super().enterEvent(event)
 
     def leaveEvent(self, event):
@@ -107,5 +131,6 @@ class ClassItem(QtWidgets.QWidget):
         super().leaveEvent(event)
 
     def mousePressEvent(self, event):
-        self.operation.emit(self.Class)
+        if self.is_active:
+            self.operation.emit(self.Class)
         super().mousePressEvent(event)

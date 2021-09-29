@@ -744,6 +744,7 @@ class Host:
             self.Controller.SignInController.init_sign_in()
 
         self.timer.stop()
+        self.Controller.Lobby.enable_classes()
 
     def record_attendance(self):
         self.show_alert('attendance', 'Storing Attendance...')

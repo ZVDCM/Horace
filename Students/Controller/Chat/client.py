@@ -543,6 +543,7 @@ class Client:
             self.Controller.SignInController.init_sign_in()
         
         self.timer.stop()
+        self.Controller.Lobby.enable_classes()
 
     def set_student_list(self, students):
         student_model = self.Model.ListModel(self.View.lv_student, students)
