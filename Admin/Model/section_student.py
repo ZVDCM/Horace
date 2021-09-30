@@ -67,6 +67,21 @@ class SectionStudent:
             return self.Section(*section)
         return None
 
+    def assign_student_section(self, section_students):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        insert_query = "INSERT INTO Section_Students (Section, Student) VALUES (%s, %s)"
+        cursor.executemany(insert_query, (section_students))
+        db.commit()
+
+        res = 'successful'
+
+        cursor.close()
+        db.close()
+
+        return res
+
     # Section
     def get_all_section(self):
         db = self.Database.connect()
@@ -215,9 +230,10 @@ class SectionStudent:
                     insert_query, (username, 'Student', salt, hashed_password))
                 db.commit()
 
-                insert_query = "INSERT INTO Section_Students (Section, Student) VALUES (%s,%s)"
-                cursor.execute(insert_query, (section, username))
-                db.commit()
+                if section:
+                    insert_query = "INSERT INTO Section_Students (Section, Student) VALUES (%s,%s)"
+                    cursor.execute(insert_query, (section, username))
+                    db.commit()
 
                 res = "successful"
 
@@ -231,7 +247,7 @@ class SectionStudent:
         cursor = db.cursor(buffered=True)
 
         select_query = "SELECT * FROM Users WHERE Username=%s"
-        cursor.execute(select_query, (username,))
+        cursor.execute(select_query, (username, userid))
 
         student_exist = cursor.fetchone()
         res = "exists"

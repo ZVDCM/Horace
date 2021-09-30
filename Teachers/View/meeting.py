@@ -477,7 +477,7 @@ class Meeting(QtWidgets.QMainWindow):
 
         self.horizontalLayout_102 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_102.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_102.setSpacing(15)
+        self.horizontalLayout_102.setSpacing(6)
         self.horizontalLayout_102.setObjectName("horizontalLayout_102")
         self.verticalLayout_5.addLayout(self.horizontalLayout_102)
 

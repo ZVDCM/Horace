@@ -34,8 +34,7 @@ class Database:
                     Student VARCHAR(32) BINARY,
                     PRIMARY KEY (ID),
                     CONSTRAINT FK_Section FOREIGN KEY (Section) REFERENCES Horace.Sections (Name) ON DELETE CASCADE ON UPDATE CASCADE,
-                    CONSTRAINT FK_Section_Student FOREIGN KEY (Student) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE,
-                    UNIQUE INDEX Student_UNIQUE (Student)
+                    CONSTRAINT FK_Section_Student FOREIGN KEY (Student) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE
                     ) ENGINE = InnoDB;
 
                 CREATE TABLE Horace.Attendances (

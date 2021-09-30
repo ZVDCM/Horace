@@ -66,6 +66,8 @@ class Admin:
         self.connect_signals()
         self.init_databases()
 
+        self.View.title_bar.title.setText("Admin")
+
         self.View.run()
 
     def connect_signals(self):
@@ -134,6 +136,7 @@ class Admin:
         section_model = self.View.tv_sections.model()
         if section_model.rowCount() <= 1:
             self.View.TableSectionStudentLoadingScreen.hide()
+            self.View.disable_student_edit_delete()
             return
 
         self.SectionStudent.target_section_row = section_model.rowCount() - 2
@@ -148,6 +151,7 @@ class Admin:
         section_students = self.View.lv_section_student.model().getData()
 
         if section_students != []:
+            self.View.enable_student_edit_delete()
             student_model = self.View.tv_students.model()
             student = section_students[0]
             self.SectionStudent.target_student_row = student_model.findRow(student)
@@ -156,6 +160,8 @@ class Admin:
 
             self.View.tv_students.selectRow(self.SectionStudent.target_student_row)
             self.set_latest_section_student_inputs()
+        else:
+            self.View.disable_student_edit_delete()
 
     def set_latest_section_inputs(self):
         Section = self.SectionStudent.TargetSection

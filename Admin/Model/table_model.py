@@ -20,9 +20,16 @@ class TableModel(QAbstractTableModel):
         return len(self.data[0])
 
     def findRow(self, text):
-        for index, user in enumerate(self.data):
-            if text in user:
+        for index, datum in enumerate(self.data):
+            if text in datum:
                 return index
+
+    def getColumn(self, column):
+        column_values = {}
+        for index, datum in enumerate(self.data):
+            if datum[column] != 'NULL':
+                column_values[datum[column]] = index
+        return column_values
 
     def flags(self, index):
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
@@ -54,7 +61,7 @@ class TableModel(QAbstractTableModel):
             else:
                 if section == len(self.data) - 1:
                     return '⁕'
-                return str(section)
+                return str(section + 1)
 
     def insertRow(self, new_user, parent=QModelIndex()):
         first = len(self.data)-1

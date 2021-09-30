@@ -5,6 +5,7 @@ from Admin.Misc.Widgets.active_overlay import ActiveOverlay
 from Admin.Misc.Widgets.custom_table_view import TableView
 from Admin.Misc.Functions.relative_path import relative_path
 
+
 class DataTable(QtWidgets.QDialog):
 
     def __init__(self, parent, target_table):
@@ -28,17 +29,15 @@ class DataTable(QtWidgets.QDialog):
 
     def set_model(self, table_model):
         self.tv_target_data.setModel(table_model)
-        self.target_row = table_model.rowCount() - 2
         self.tv_target_data.horizontalHeader().setMinimumSectionSize(150)
         self.tv_target_data.setFocus(True)
-        self.tv_target_data.selectRow(self.target_row)
         self.remove_null_row()
 
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.setFixedSize(711, 427)
         Form.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint |
-                              QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
+                            QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Form.setFocusPolicy(QtCore.Qt.StrongFocus)
         Form.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         Form.setStyleSheet("QWidget{\n"
@@ -154,6 +153,8 @@ class DataTable(QtWidgets.QDialog):
         self.horizontalLayout.addLayout(self.horizontalLayout_54)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.tv_target_data = TableView(self.widget)
+        self.tv_target_data.setSelectionMode(
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.tv_target_data.setObjectName("tv_target_data")
         self.verticalLayout.addWidget(self.tv_target_data)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
@@ -210,6 +211,13 @@ class DataTable(QtWidgets.QDialog):
     def connect_signals(self):
         self.tv_target_data.clicked.connect(self.table_clicked)
         self.btn_cancel.clicked.connect(self.close)
+        self.btn_add.clicked.connect(self.add)
+
+    def add(self):
+        if self.tv_target_data.selectedIndexes():
+            self.close()
+            return
+        self.parent.run_popup('A row must be selected')
 
     def table_clicked(self, item):
         self.target_row = item.row()
@@ -220,9 +228,9 @@ class DataTable(QtWidgets.QDialog):
         self.tv_target_data.setRowHidden(last_row_index, True)
 
     def get_target_row_data(self):
-        table_model = self.tv_target_data.model()
-        return table_model.getRowData(self.target_row)
-
-
-
-
+        indices = self.tv_target_data.selectedIndexes()
+        indices = set([index.row() for index in indices])
+        targets = []
+        for index in indices:
+            targets.append(self.tv_target_data.model().getRowData(index)[1])
+        return targets

@@ -26,6 +26,9 @@ class RegisterAdmin:
         self.results = queue.Queue()
 
         self.connect_signals()
+
+        self.View.title_bar.title.setText("Register")
+
         self.View.run()
 
     def connect_signals(self):

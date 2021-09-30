@@ -59,6 +59,7 @@ class Admin(QtWidgets.QMainWindow):
             'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         self.hide_buttons()
+        self.disable_edit_delete()
         self.disable_student_inputs()
         self.disable_section_inputs()
         self.disable_teacher_inputs()
@@ -264,7 +265,7 @@ class Admin(QtWidgets.QMainWindow):
         self.verticalLayout_5.addLayout(self.horizontalLayout_7)
         self.horizontalLayout.addWidget(self.side_bar)
         self.widget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.widget_2.setStyleSheet("")
+        self.widget_2.setStyleSheet("background: #081425")
         self.widget_2.setObjectName("widget_2")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.widget_2)
         self.verticalLayout_2.setContentsMargins(15, 15, 15, 15)
@@ -278,7 +279,6 @@ class Admin(QtWidgets.QMainWindow):
         sizePolicy.setHeightForWidth(
             self.sw_all.sizePolicy().hasHeightForWidth())
         self.sw_all.setSizePolicy(sizePolicy)
-        self.sw_all.setStyleSheet("")
         self.sw_all.setObjectName("sw_all")
         self.section_student = QtWidgets.QWidget()
         self.section_student.setObjectName("section_student")
@@ -1154,6 +1154,189 @@ class Admin(QtWidgets.QMainWindow):
         self.line_3.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_3.setObjectName("line_3")
         self.verticalLayout_39.addWidget(self.line_3)
+
+        self.w_section_student = QtWidgets.QWidget(self.widget_5)
+        self.w_section_student.setObjectName("w_section_student")
+        self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.w_section_student)
+        self.verticalLayout_15.setContentsMargins(15, 20, 15, 15)
+        self.verticalLayout_15.setSpacing(15)
+        self.verticalLayout_15.setObjectName("verticalLayout_15")
+        self.horizontalLayout_20 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_20.setSpacing(6)
+        self.horizontalLayout_20.setObjectName("horizontalLayout_20")
+        self.btn_section_students_status = QtWidgets.QLabel(
+            self.w_section_student)
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(10)
+        self.btn_section_students_status.setFont(font)
+        self.btn_section_students_status.setAlignment(QtCore.Qt.AlignCenter)
+        self.btn_section_students_status.setIndent(1)
+        self.btn_section_students_status.setObjectName(
+            "btn_section_students_status")
+        self.horizontalLayout_20.addWidget(self.btn_section_students_status)
+        spacerItem12 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_20.addItem(spacerItem12)
+        self.btn_init_add_section_student = QtWidgets.QPushButton(
+            self.w_section_student)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_init_add_section_student.sizePolicy().hasHeightForWidth())
+        self.btn_init_add_section_student.setSizePolicy(sizePolicy)
+        self.btn_init_add_section_student.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_init_add_section_student.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_init_add_section_student.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_init_add_section_student.setStyleSheet("QPushButton{\n"
+                                                        "    border-radius: 5px;\n"
+                                                        f"    background-image:  url({relative_path('Admin', ['Misc', 'Resources'], 'add.png')});\n"
+                                                        "    background-repeat: no-repeat;\n"
+                                                        "    background-position: center center;\n"
+                                                        "}\n"
+                                                        "\n"
+                                                        "QPushButton::disabled{\n"
+                                                        "    border-radius: 5px;\n"
+                                                        f"    background-image:  url({relative_path('Admin', ['Misc', 'Resources'], 'add_2.png')});\n"
+                                                        "    background-repeat: no-repeat;\n"
+                                                        "    background-position: center center;\n"
+                                                        "}")
+        self.btn_init_add_section_student.setIconSize(QtCore.QSize(17, 17))
+        self.btn_init_add_section_student.setObjectName(
+            "btn_init_add_section_student")
+        self.horizontalLayout_20.addWidget(self.btn_init_add_section_student)
+        self.btn_delete_section_student = QtWidgets.QPushButton(
+            self.w_section_student)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_delete_section_student.sizePolicy().hasHeightForWidth())
+        self.btn_delete_section_student.setSizePolicy(sizePolicy)
+        self.btn_delete_section_student.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_delete_section_student.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_delete_section_student.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_delete_section_student.setStyleSheet("QPushButton{\n"
+                                                      "    border-radius: 5px;\n"
+                                                      "    background: none;\n"
+                                                      "}\n"
+                                                      "\n"
+                                                      "\n"
+                                                      "QPushButton:pressed {\n"
+                                                      "     background-color: #072f49;\n"
+                                                      "}")
+        icon10 = QtGui.QIcon()
+        icon10.addPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'trash.png')),
+                         QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_delete_section_student.setIcon(icon10)
+        self.btn_delete_section_student.setIconSize(QtCore.QSize(21, 21))
+        self.btn_delete_section_student.setObjectName(
+            "btn_delete_section_student")
+        self.horizontalLayout_20.addWidget(self.btn_delete_section_student)
+        self.btn_clear_section_student_table = QtWidgets.QPushButton(
+            self.w_section_student)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_clear_section_student_table.sizePolicy().hasHeightForWidth())
+        self.btn_clear_section_student_table.setSizePolicy(sizePolicy)
+        self.btn_clear_section_student_table.setMinimumSize(
+            QtCore.QSize(30, 30))
+        self.btn_clear_section_student_table.setMaximumSize(
+            QtCore.QSize(30, 30))
+        self.btn_clear_section_student_table.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_clear_section_student_table.setStyleSheet("QPushButton{\n"
+                                                           "    border-radius: 5px;\n"
+                                                           "    background: none;\n"
+                                                           "}\n"
+                                                           "\n"
+                                                           "\n"
+                                                           "QPushButton:pressed {\n"
+                                                           "     background-color: #072f49;\n"
+                                                           "}")
+        self.btn_clear_section_student_table.setIcon(icon2)
+        self.btn_clear_section_student_table.setIconSize(QtCore.QSize(20, 20))
+        self.btn_clear_section_student_table.setObjectName(
+            "btn_clear_section_student_table")
+        self.horizontalLayout_20.addWidget(
+            self.btn_clear_section_student_table)
+        self.verticalLayout_15.addLayout(self.horizontalLayout_20)
+        self.horizontalLayout_55 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_55.setSizeConstraint(
+            QtWidgets.QLayout.SetDefaultConstraint)
+        self.horizontalLayout_55.setSpacing(0)
+        self.horizontalLayout_55.setObjectName("horizontalLayout_55")
+        self.txt_search_section_student = QtWidgets.QLineEdit(
+            self.w_section_student)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.txt_search_section_student.sizePolicy().hasHeightForWidth())
+        self.txt_search_section_student.setSizePolicy(sizePolicy)
+        self.txt_search_section_student.setMinimumSize(QtCore.QSize(0, 30))
+        self.txt_search_section_student.setMaximumSize(
+            QtCore.QSize(16777215, 35))
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(10)
+        self.txt_search_section_student.setFont(font)
+        self.txt_search_section_student.setStyleSheet("border-radius: none;\n"
+                                                      "border-top-left-radius: 5px;\n"
+                                                      "border-bottom-left-radius: 5px;")
+        self.txt_search_section_student.setObjectName(
+            "txt_search_section_student")
+        self.horizontalLayout_55.addWidget(self.txt_search_section_student)
+        self.btn_search_section_student = QtWidgets.QPushButton(
+            self.w_section_student)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_search_section_student.sizePolicy().hasHeightForWidth())
+        self.btn_search_section_student.setSizePolicy(sizePolicy)
+        self.btn_search_section_student.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_search_section_student.setMaximumSize(QtCore.QSize(30, 30))
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btn_search_section_student.setFont(font)
+        self.btn_search_section_student.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_search_section_student.setStyleSheet("border-top-right-radius: 5px;\n"
+                                                      "border-bottom-right-radius: 5px;")
+        self.btn_search_section_student.setText("")
+        self.btn_search_section_student.setIcon(icon4)
+        self.btn_search_section_student.setIconSize(QtCore.QSize(18, 18))
+        self.btn_search_section_student.setObjectName(
+            "btn_search_section_student")
+        self.horizontalLayout_55.addWidget(self.btn_search_section_student)
+        self.verticalLayout_15.addLayout(self.horizontalLayout_55)
+        self.lv_section_student = ListView(self.w_section_student)
+        self.lv_section_student.setObjectName("lv_section_student")
+        self.verticalLayout_15.addWidget(self.lv_section_student)
+        self.verticalLayout_39.addWidget(self.w_section_student)
+
+        self.line_4 = QtWidgets.QFrame(self.widget_5)
+        self.line_4.setStyleSheet("color: #0e4177;")
+        self.line_4.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.line_4.setLineWidth(2)
+        self.line_4.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_4.setObjectName("line_4")
+        self.verticalLayout_39.addWidget(self.line_4)
+
         self.w_student_input = QtWidgets.QWidget(self.widget_5)
         self.w_student_input.setObjectName("w_student_input")
         self.verticalLayout_11 = QtWidgets.QVBoxLayout(self.w_student_input)
@@ -1349,186 +1532,7 @@ class Admin(QtWidgets.QMainWindow):
         self.verticalLayout_10.addWidget(self.btn_cancel_student)
         self.verticalLayout_11.addWidget(self.w_student_btn)
         self.verticalLayout_39.addWidget(self.w_student_input)
-        self.line_4 = QtWidgets.QFrame(self.widget_5)
-        self.line_4.setStyleSheet("color: #0e4177;")
-        self.line_4.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.line_4.setLineWidth(2)
-        self.line_4.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_4.setObjectName("line_4")
-        self.verticalLayout_39.addWidget(self.line_4)
-        self.w_section_student = QtWidgets.QWidget(self.widget_5)
-        self.w_section_student.setObjectName("w_section_student")
-        self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.w_section_student)
-        self.verticalLayout_15.setContentsMargins(15, 20, 15, 15)
-        self.verticalLayout_15.setSpacing(15)
-        self.verticalLayout_15.setObjectName("verticalLayout_15")
-        self.horizontalLayout_20 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_20.setSpacing(6)
-        self.horizontalLayout_20.setObjectName("horizontalLayout_20")
-        self.btn_section_students_status = QtWidgets.QLabel(
-            self.w_section_student)
-        font = QtGui.QFont()
-        font.setFamily("Barlow")
-        font.setPointSize(10)
-        self.btn_section_students_status.setFont(font)
-        self.btn_section_students_status.setAlignment(QtCore.Qt.AlignCenter)
-        self.btn_section_students_status.setIndent(1)
-        self.btn_section_students_status.setObjectName(
-            "btn_section_students_status")
-        self.horizontalLayout_20.addWidget(self.btn_section_students_status)
-        spacerItem12 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_20.addItem(spacerItem12)
-        self.btn_init_add_section_student = QtWidgets.QPushButton(
-            self.w_section_student)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.btn_init_add_section_student.sizePolicy().hasHeightForWidth())
-        self.btn_init_add_section_student.setSizePolicy(sizePolicy)
-        self.btn_init_add_section_student.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_init_add_section_student.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_init_add_section_student.setCursor(
-            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_init_add_section_student.setStyleSheet("QPushButton{\n"
-                                                        "    border-radius: 5px;\n"
-                                                        f"    background-image:  url({relative_path('Admin', ['Misc', 'Resources'], 'add.png')});\n"
-                                                        "    background-repeat: no-repeat;\n"
-                                                        "    background-position: center center;\n"
-                                                        "}\n"
-                                                        "\n"
-                                                        "QPushButton::disabled{\n"
-                                                        "    border-radius: 5px;\n"
-                                                        f"    background-image:  url({relative_path('Admin', ['Misc', 'Resources'], 'add_2.png')});\n"
-                                                        "    background-repeat: no-repeat;\n"
-                                                        "    background-position: center center;\n"
-                                                        "}")
-        self.btn_init_add_section_student.setIconSize(QtCore.QSize(17, 17))
-        self.btn_init_add_section_student.setObjectName(
-            "btn_init_add_section_student")
-        self.horizontalLayout_20.addWidget(self.btn_init_add_section_student)
-        self.btn_delete_section_student = QtWidgets.QPushButton(
-            self.w_section_student)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.btn_delete_section_student.sizePolicy().hasHeightForWidth())
-        self.btn_delete_section_student.setSizePolicy(sizePolicy)
-        self.btn_delete_section_student.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_delete_section_student.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_delete_section_student.setCursor(
-            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_delete_section_student.setStyleSheet("QPushButton{\n"
-                                                      "    border-radius: 5px;\n"
-                                                      "    background: none;\n"
-                                                      "}\n"
-                                                      "\n"
-                                                      "\n"
-                                                      "QPushButton:pressed {\n"
-                                                      "     background-color: #072f49;\n"
-                                                      "}")
-        icon10 = QtGui.QIcon()
-        icon10.addPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'trash.png')),
-                         QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btn_delete_section_student.setIcon(icon10)
-        self.btn_delete_section_student.setIconSize(QtCore.QSize(21, 21))
-        self.btn_delete_section_student.setObjectName(
-            "btn_delete_section_student")
-        self.horizontalLayout_20.addWidget(self.btn_delete_section_student)
-        self.btn_clear_section_student_table = QtWidgets.QPushButton(
-            self.w_section_student)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.btn_clear_section_student_table.sizePolicy().hasHeightForWidth())
-        self.btn_clear_section_student_table.setSizePolicy(sizePolicy)
-        self.btn_clear_section_student_table.setMinimumSize(
-            QtCore.QSize(30, 30))
-        self.btn_clear_section_student_table.setMaximumSize(
-            QtCore.QSize(30, 30))
-        self.btn_clear_section_student_table.setCursor(
-            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_clear_section_student_table.setStyleSheet("QPushButton{\n"
-                                                           "    border-radius: 5px;\n"
-                                                           "    background: none;\n"
-                                                           "}\n"
-                                                           "\n"
-                                                           "\n"
-                                                           "QPushButton:pressed {\n"
-                                                           "     background-color: #072f49;\n"
-                                                           "}")
-        self.btn_clear_section_student_table.setIcon(icon2)
-        self.btn_clear_section_student_table.setIconSize(QtCore.QSize(20, 20))
-        self.btn_clear_section_student_table.setObjectName(
-            "btn_clear_section_student_table")
-        self.horizontalLayout_20.addWidget(
-            self.btn_clear_section_student_table)
-        self.verticalLayout_15.addLayout(self.horizontalLayout_20)
-        self.horizontalLayout_55 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_55.setSizeConstraint(
-            QtWidgets.QLayout.SetDefaultConstraint)
-        self.horizontalLayout_55.setSpacing(0)
-        self.horizontalLayout_55.setObjectName("horizontalLayout_55")
-        self.txt_search_section_student = QtWidgets.QLineEdit(
-            self.w_section_student)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.txt_search_section_student.sizePolicy().hasHeightForWidth())
-        self.txt_search_section_student.setSizePolicy(sizePolicy)
-        self.txt_search_section_student.setMinimumSize(QtCore.QSize(0, 30))
-        self.txt_search_section_student.setMaximumSize(
-            QtCore.QSize(16777215, 35))
-        font = QtGui.QFont()
-        font.setFamily("Barlow")
-        font.setPointSize(10)
-        self.txt_search_section_student.setFont(font)
-        self.txt_search_section_student.setStyleSheet("border-radius: none;\n"
-                                                      "border-top-left-radius: 5px;\n"
-                                                      "border-bottom-left-radius: 5px;")
-        self.txt_search_section_student.setObjectName(
-            "txt_search_section_student")
-        self.horizontalLayout_55.addWidget(self.txt_search_section_student)
-        self.btn_search_section_student = QtWidgets.QPushButton(
-            self.w_section_student)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.btn_search_section_student.sizePolicy().hasHeightForWidth())
-        self.btn_search_section_student.setSizePolicy(sizePolicy)
-        self.btn_search_section_student.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_search_section_student.setMaximumSize(QtCore.QSize(30, 30))
-        font = QtGui.QFont()
-        font.setFamily("Barlow")
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        self.btn_search_section_student.setFont(font)
-        self.btn_search_section_student.setCursor(
-            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_search_section_student.setStyleSheet("border-top-right-radius: 5px;\n"
-                                                      "border-bottom-right-radius: 5px;")
-        self.btn_search_section_student.setText("")
-        self.btn_search_section_student.setIcon(icon4)
-        self.btn_search_section_student.setIconSize(QtCore.QSize(18, 18))
-        self.btn_search_section_student.setObjectName(
-            "btn_search_section_student")
-        self.horizontalLayout_55.addWidget(self.btn_search_section_student)
-        self.verticalLayout_15.addLayout(self.horizontalLayout_55)
-        self.lv_section_student = ListView(self.w_section_student)
-        self.lv_section_student.setObjectName("lv_section_student")
-        self.verticalLayout_15.addWidget(self.lv_section_student)
-        self.verticalLayout_39.addWidget(self.w_section_student)
+
         self.horizontalLayout_3.addWidget(self.widget_5)
         self.horizontalLayout_3.setStretch(0, 2)
         self.horizontalLayout_3.setStretch(1, 1)
@@ -3860,7 +3864,7 @@ class Admin(QtWidgets.QMainWindow):
         MainWindow.setCentralWidget(self.centralwidget)
         self.status_bar = QtWidgets.QStatusBar(MainWindow)
         self.status_bar.setStyleSheet("QStatusBar {\n"
-                                      "    background: #081222;\n"
+                                      "    background: #060d18;\n"
                                       "}\n"
                                       "\n"
                                       "QStatusBar QLabel {\n"
@@ -3959,6 +3963,10 @@ class Admin(QtWidgets.QMainWindow):
         self.lbl_class_table_status_2.setText(
             _translate("MainWindow", "URL: 100"))
 
+    def disable_edit_delete(self):
+        self.disable_section_edit_delete()
+        self.disable_student_edit_delete()
+
     def hide_buttons(self):
         self.w_student_btn.hide()
         self.w_section_btn.hide()
@@ -3975,6 +3983,14 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_init_edit_section.setDisabled(True)
         self.btn_delete_section.setDisabled(True)
         self.w_section_btn.show()
+
+    def disable_section_edit_delete(self):
+        self.btn_init_edit_section.setDisabled(True)
+        self.btn_delete_section.setDisabled(True)
+
+    def enable_section_edit_delete(self):
+        self.btn_init_edit_section.setDisabled(False)
+        self.btn_delete_section.setDisabled(False)
 
     def enable_section_buttons(self):
         self.btn_init_add_section.setDisabled(False)
@@ -4002,6 +4018,14 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_init_edit_student.setDisabled(True)
         self.btn_delete_student.setDisabled(True)
         self.w_student_btn.show()
+
+    def disable_student_edit_delete(self):
+        self.btn_init_edit_student.setDisabled(True)
+        self.btn_delete_student.setDisabled(True)
+
+    def enable_student_edit_delete(self):
+        self.btn_init_edit_student.setDisabled(False)
+        self.btn_delete_student.setDisabled(False)
 
     def enable_student_buttons(self):
         self.btn_init_add_student.setDisabled(False)

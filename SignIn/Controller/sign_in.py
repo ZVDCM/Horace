@@ -47,8 +47,10 @@ class SignIn:
         self.Controller = Controller
 
         self.User = None
-        self.View.txt_input.setText("Juan")
+        self.View.txt_input.setText("Admin")
         self.connect_signals()
+
+        self.View.title_bar.title.setText("Horace")
 
         self.View.run()
 

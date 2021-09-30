@@ -58,6 +58,9 @@ class ForgotPassword:
 
         self.connect_signals()
         self.get_qna.start()
+
+        self.View.title_bar.title.setText("Forgot Password")
+
         self.View.run()
 
     def connect_signals(self):

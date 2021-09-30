@@ -25,22 +25,26 @@ class TitleBar(QtWidgets.QWidget):
         Form.setMinimumSize(QtCore.QSize(0, 30))
         Form.setMaximumSize(QtCore.QSize(16777215, 30))
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(Form)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2.setContentsMargins(10, 0, 0, 0)
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.widget = QtWidgets.QWidget(Form)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.widget.sizePolicy().hasHeightForWidth())
-        self.widget.setSizePolicy(sizePolicy)
-        self.widget.setMinimumSize(QtCore.QSize(230, 0))
-        self.widget.setMaximumSize(QtCore.QSize(230, 16777215))
-        self.widget.setStyleSheet("background: #0D3C6E;")
-        self.widget.setObjectName("widget")
-        self.horizontalLayout_2.addWidget(self.widget)
+
+        self.logo = QtWidgets.QLabel(Form)
+        self.logo.setFixedSize(QtCore.QSize(18, 18))
+        self.logo.setMaximumSize(QtCore.QSize(18, 18))
+        qpixmap = QtGui.QPixmap(relative_path('Students', ['Misc', 'Resources'], 'horace.png'))
+        self.logo.setScaledContents(True)
+        self.logo.setPixmap(qpixmap)
+        self.logo.setStyleSheet("margin-top: 2px")
+        self.horizontalLayout_2.addWidget(self.logo, alignment=QtCore.Qt.AlignCenter)
+
+        self.title = QtWidgets.QLabel('PDC 60', Form)
+        self.title.setStyleSheet("margin-top: 2px; margin-left: 5px; color: gray")
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        self.title.setFont(font)
+        self.horizontalLayout_2.addWidget(self.title, alignment=QtCore.Qt.AlignCenter)
+      
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -165,6 +169,7 @@ class TitleBar(QtWidgets.QWidget):
                 self.btn_maximize_restore.click()
                 self.parent.move(self.start.x() - (self.prev_size.width() // 2), 0)
                 self.parent.setFixedSize(self.prev_size)
+                return
 
             self.end = self.mapToGlobal(event.pos())
             self.movement = self.end-self.start

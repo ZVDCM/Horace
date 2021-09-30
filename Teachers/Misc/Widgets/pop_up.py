@@ -8,8 +8,8 @@ class Popup(QtWidgets.QDialog):
         super().__init__()
         self.parent = parent
         self.setupUi(self)
+        QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self.widget)
-        self.ActiveOverlay.show()
         self.btn_ok.clicked.connect(self.close)
 
     def run(self):
@@ -20,7 +20,7 @@ class Popup(QtWidgets.QDialog):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(299, 139)
-        Dialog.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
+        Dialog.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint | 
                               QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Dialog.setFocusPolicy(QtCore.Qt.StrongFocus)
         Dialog.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
@@ -115,3 +115,11 @@ class Popup(QtWidgets.QDialog):
     def mouseReleaseEvent(self, event):
         self.pressing = False
         super().mouseReleaseEvent(event)
+
+    def on_focus_change(self):
+        if self.isActiveWindow():
+            self.ActiveOverlay.is_focused = True
+            self.ActiveOverlay.update()
+        else:
+            self.ActiveOverlay.is_focused = False
+            self.ActiveOverlay.update()
