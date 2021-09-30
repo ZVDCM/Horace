@@ -1,3 +1,5 @@
+from Admin.Misc.Widgets.context_menu import ContextMenu
+from Admin.Misc.Widgets.confirm import Confirm
 from Admin.Misc.Widgets.custom_label import SideNav
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Admin.Misc.Widgets.admin_title_bar import TitleBar
@@ -580,6 +582,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_46.addLayout(self.horizontalLayout_47)
         self.verticalLayout_8.addLayout(self.horizontalLayout_46)
         self.tv_sections = TableView(self.groupBox_2)
+        self.tv_sections.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.tv_sections.setObjectName("tv_sections")
         self.verticalLayout_8.addWidget(self.tv_sections)
         self.horizontalLayout_11.addWidget(self.groupBox_2)
@@ -668,6 +671,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_44.addLayout(self.horizontalLayout_45)
         self.verticalLayout_7.addLayout(self.horizontalLayout_44)
         self.tv_students = TableView(self.groupBox)
+        self.tv_students.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.tv_students.setObjectName("tv_students")
         self.verticalLayout_7.addWidget(self.tv_students)
         self.horizontalLayout_11.addWidget(self.groupBox)
@@ -4160,4 +4164,15 @@ class Admin(QtWidgets.QMainWindow):
 
     def set_database_status(self, text):
         self.lbl_database_status.setText(text)
-        
+    
+    def show_confirm(self, next_step, message=None):
+        self.Confirm = Confirm(self.View, message)
+        self.Confirm.operation.connect(next_step)
+        self.Confirm.operation.connect(self.Confirm.close)
+        self.Confirm.run()
+
+    def show_menu(self, next_step, pos):
+        self.ContextMenu = ContextMenu(self)
+        self.ContextMenu.delete.connect(next_step)
+        self.ContextMenu.move(pos.x(), pos.y())
+        self.ContextMenu.show()

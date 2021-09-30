@@ -7,6 +7,7 @@ from Admin.Misc.Functions.relative_path import relative_path
 
 
 class DataTable(QtWidgets.QDialog):
+    operation = QtCore.pyqtSignal()
 
     def __init__(self, parent, target_table):
         super().__init__()
@@ -28,6 +29,7 @@ class DataTable(QtWidgets.QDialog):
         self.tv_target_data.setModel(table_model)
         self.tv_target_data.verticalHeader().setMinimumSectionSize(45)
         self.tv_target_data.horizontalHeader().setMinimumSectionSize(150)
+        self.tv_target_data.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
         self.tv_target_data.setFocus(True)
         self.remove_null_row()
 
@@ -151,8 +153,6 @@ class DataTable(QtWidgets.QDialog):
         self.horizontalLayout.addLayout(self.horizontalLayout_54)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.tv_target_data = TableView(self.widget)
-        self.tv_target_data.setSelectionMode(
-            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.tv_target_data.setObjectName("tv_target_data")
         self.verticalLayout.addWidget(self.tv_target_data)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
@@ -236,7 +236,7 @@ class DataTable(QtWidgets.QDialog):
 
     def add(self):
         if self.tv_target_data.selectionModel().selectedRows():
-            self.close()
+            self.operation.emit()
             return
         self.parent.run_popup('A row must be selected')
 
@@ -246,7 +246,7 @@ class DataTable(QtWidgets.QDialog):
     def remove_null_row(self):
         table_model = self.tv_target_data.model()
         last_row_index = table_model.rowCount() - 1
-        self.tv_target_data.setRowHidden(last_row_index, True)
+        table_model.removeRows(last_row_index, 1)
 
     def get_target_row_data(self):
         indices = self.tv_target_data.selectionModel().selectedRows()
@@ -254,4 +254,4 @@ class DataTable(QtWidgets.QDialog):
         targets = []
         for index in indices:
             targets.append(self.tv_target_data.model().getRowData(index)[1])
-        return targets[:len(targets)-1]
+        return targets

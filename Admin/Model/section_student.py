@@ -216,6 +216,19 @@ class SectionStudent:
 
         return 'successful'
 
+    def delete_many_sections(self, sections):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Sections WHERE ID=%s"
+        cursor.executemany(delete_query, (sections))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
+
     # Student
     def get_all_student(self):
         db = self.Database.connect()
@@ -292,7 +305,7 @@ class SectionStudent:
         cursor = db.cursor(buffered=True)
 
         select_query = "SELECT * FROM Users WHERE Username=%s"
-        cursor.execute(select_query, (username, userid))
+        cursor.execute(select_query, (username,))
 
         student_exist = cursor.fetchone()
         res = "exists"
@@ -319,6 +332,19 @@ class SectionStudent:
 
         delete_query = "DELETE FROM Users WHERE UserID=%s AND Privilege=%s"
         cursor.execute(delete_query, (Student.UserID, 'Student'))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
+    
+    def delete_many_students(self, students):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Users WHERE Privilege='Student' AND UserID=%s"
+        cursor.executemany(delete_query, (students))
         db.commit()
 
         cursor.close()

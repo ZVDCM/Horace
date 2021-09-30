@@ -3,14 +3,19 @@ from Admin.Misc.Widgets.active_overlay import ActiveOverlay
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Popup(QtWidgets.QDialog):
-    def __init__(self, parent):
+class Confirm(QtWidgets.QDialog):
+    operation = QtCore.pyqtSignal()
+
+    def __init__(self, parent, message=None):
         super().__init__()
         self.parent = parent
         self.setupUi(self)
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self.widget)
-        self.btn_ok.clicked.connect(self.close)
+        self.btn_yes.clicked.connect(self.operation.emit)
+        self.btn_no.clicked.connect(self.close)
+        if message:
+            self.lbl_message.setText(message)
 
     def run(self):
         self.activateWindow()
@@ -30,12 +35,7 @@ class Popup(QtWidgets.QDialog):
                              "    font-family: Barlow;\n"
                              "}\n"
                              "\n"
-                             "QPushButton {\n"
-                             "    padding: 5px;\n"
-                             "    border-radius: 5px;\n"
-                             "    border: 1px solid #0e4884;\n"
-                             "    background-color: #0e4884;\n"
-                             "}")
+                             )
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(Dialog)
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 20)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
@@ -55,7 +55,7 @@ class Popup(QtWidgets.QDialog):
         self.lbl_icon.setMaximumSize(QtCore.QSize(60, 60))
         self.lbl_icon.setText("")
         self.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Admin', ['Misc', 'Resources'], 'information.png')))
+            'Admin', ['Misc', 'Resources'], 'question.png')))
         self.lbl_icon.setScaledContents(False)
         self.lbl_icon.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl_icon.setObjectName("lbl_icon")
@@ -79,6 +79,11 @@ class Popup(QtWidgets.QDialog):
         self.btn_no = QtWidgets.QPushButton(self.widget)
         self.btn_no.setMinimumSize(QtCore.QSize(100, 0))
         self.btn_no.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_no.setStyleSheet("QPushButton {\n"
+                                  "    padding: 5px;\n"
+                                  "    border-radius: 5px;\n"
+                                  "    border: 1px solid #0e4884;\n"
+                                  "}")
         self.btn_no.setObjectName("btn_no")
         self.horizontalLayout_2.addWidget(self.btn_no)
         spacerItem = QtWidgets.QSpacerItem(
@@ -87,6 +92,12 @@ class Popup(QtWidgets.QDialog):
         self.btn_yes = QtWidgets.QPushButton(self.widget)
         self.btn_yes.setMinimumSize(QtCore.QSize(100, 0))
         self.btn_yes.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_yes.setStyleSheet("QPushButton {\n"
+                                   "    padding: 5px;\n"
+                                   "    border-radius: 5px;\n"
+                                   "    border: 1px solid #0e4884;\n"
+                                   "    background-color: #0e4884;\n"
+                                   "}")
         self.btn_yes.setObjectName("btn_yes")
         self.horizontalLayout_2.addWidget(self.btn_yes)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
@@ -99,7 +110,7 @@ class Popup(QtWidgets.QDialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.lbl_message.setText(_translate(
-            "Dialog", "Student fields must not be empty"))
+            "Dialog", "Are you sure you want to delete this?"))
         self.btn_no.setText(_translate("Dialog", "No"))
         self.btn_yes.setText(_translate("Dialog", "Yes"))
 

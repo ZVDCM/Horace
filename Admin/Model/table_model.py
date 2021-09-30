@@ -17,7 +17,7 @@ class TableModel(QAbstractTableModel):
         return len(self.data)
 
     def columnCount(self, parent=None):
-        return len(self.data[0])
+        return len(self.headers)
 
     def findRow(self, text):
         for index, datum in enumerate(self.data):
@@ -27,11 +27,12 @@ class TableModel(QAbstractTableModel):
     def getColumn(self, column):
         column_values = {}
         for index, datum in enumerate(self.data):
-            if datum[column] != 'NULL':
-                column_values[datum[column]] = index
+            column_values[datum[column]] = index
         return column_values
 
     def flags(self, index):
+        if self.data[index.row()][index.column()] == 'NULL':
+            return Qt.ItemIsEnabled
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
     def data(self, index, role=Qt.DisplayRole):
