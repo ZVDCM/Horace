@@ -7,9 +7,10 @@ class ListModel(QAbstractListModel):
         self.parent = parent
 
         self.data = []
-        if len(data) != 0:
+        data.reverse()
+        if data:
             for datum in data:
-                self.data.insert(len(self.data)-1, datum.get_display())
+                self.data.append(datum.get_display())
 
     def rowCount(self, parent=None):
         return len(self.data)

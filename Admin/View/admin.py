@@ -461,6 +461,8 @@ class Admin(QtWidgets.QMainWindow):
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'delete_table.png')),
                         QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'delete_table_2.png')),
+                        QtGui.QIcon.Disabled, QtGui.QIcon.Off)
         self.btn_clear_students_sections_table.setIcon(icon2)
         self.btn_clear_students_sections_table.setIconSize(
             QtCore.QSize(20, 20))
@@ -1164,17 +1166,17 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_20 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_20.setSpacing(6)
         self.horizontalLayout_20.setObjectName("horizontalLayout_20")
-        self.btn_section_students_status = QtWidgets.QLabel(
+        self.lbl_section_students_status = QtWidgets.QLabel(
             self.w_section_student)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
-        self.btn_section_students_status.setFont(font)
-        self.btn_section_students_status.setAlignment(QtCore.Qt.AlignCenter)
-        self.btn_section_students_status.setIndent(1)
-        self.btn_section_students_status.setObjectName(
-            "btn_section_students_status")
-        self.horizontalLayout_20.addWidget(self.btn_section_students_status)
+        self.lbl_section_students_status.setFont(font)
+        self.lbl_section_students_status.setAlignment(QtCore.Qt.AlignCenter)
+        self.lbl_section_students_status.setIndent(1)
+        self.lbl_section_students_status.setObjectName(
+            "lbl_section_students_status")
+        self.horizontalLayout_20.addWidget(self.lbl_section_students_status)
         spacerItem12 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_20.addItem(spacerItem12)
@@ -1230,10 +1232,7 @@ class Admin(QtWidgets.QMainWindow):
                                                       "QPushButton:pressed {\n"
                                                       "     background-color: #072f49;\n"
                                                       "}")
-        icon10 = QtGui.QIcon()
-        icon10.addPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'trash.png')),
-                         QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btn_delete_section_student.setIcon(icon10)
+        self.btn_delete_section_student.setIcon(icon8)
         self.btn_delete_section_student.setIconSize(QtCore.QSize(21, 21))
         self.btn_delete_section_student.setObjectName(
             "btn_delete_section_student")
@@ -1325,6 +1324,8 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_55.addWidget(self.btn_search_section_student)
         self.verticalLayout_15.addLayout(self.horizontalLayout_55)
         self.lv_section_student = ListView(self.w_section_student)
+        self.lv_section_student.setSelectionMode(
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.lv_section_student.setObjectName("lv_section_student")
         self.verticalLayout_15.addWidget(self.lv_section_student)
         self.verticalLayout_39.addWidget(self.w_section_student)
@@ -2242,7 +2243,7 @@ class Admin(QtWidgets.QMainWindow):
                                                  "QPushButton:pressed {\n"
                                                  "     background-color: #072f49;\n"
                                                  "}")
-        self.btn_delete_attendance.setIcon(icon10)
+        self.btn_delete_attendance.setIcon(icon8)
         self.btn_delete_attendance.setIconSize(QtCore.QSize(21, 21))
         self.btn_delete_attendance.setObjectName("btn_delete_attendance")
         self.horizontalLayout_31.addWidget(self.btn_delete_attendance)
@@ -3199,7 +3200,7 @@ class Admin(QtWidgets.QMainWindow):
                                                     "QPushButton:pressed {\n"
                                                     "     background-color: #072f49;\n"
                                                     "}")
-        self.btn_delete_class_teacher.setIcon(icon10)
+        self.btn_delete_class_teacher.setIcon(icon8)
         self.btn_delete_class_teacher.setIconSize(QtCore.QSize(21, 21))
         self.btn_delete_class_teacher.setObjectName("btn_delete_class_teacher")
         self.horizontalLayout_32.addWidget(self.btn_delete_class_teacher)
@@ -3357,7 +3358,7 @@ class Admin(QtWidgets.QMainWindow):
                                                     "QPushButton:pressed {\n"
                                                     "     background-color: #072f49;\n"
                                                     "}")
-        self.btn_delete_class_section.setIcon(icon10)
+        self.btn_delete_class_section.setIcon(icon8)
         self.btn_delete_class_section.setIconSize(QtCore.QSize(21, 21))
         self.btn_delete_class_section.setObjectName("btn_delete_class_section")
         self.horizontalLayout_22.addWidget(self.btn_delete_class_section)
@@ -3908,9 +3909,9 @@ class Admin(QtWidgets.QMainWindow):
         self.lbl_blacklisted_url.setText(
             _translate("MainWindow", "Blacklisted URLs"))
         self.lbl_sections_table_status.setText(
-            _translate("MainWindow", "Sections: 100"))
+            _translate("MainWindow", "Sections: 0"))
         self.lbl_students_table_status.setText(
-            _translate("MainWindow", "Students: 100"))
+            _translate("MainWindow", "Students: 0"))
         self.groupBox_2.setTitle(_translate("MainWindow", "Sections"))
         self.groupBox.setTitle(_translate("MainWindow", "Students"))
         self.label_11.setText(_translate("MainWindow", "Section"))
@@ -3922,8 +3923,8 @@ class Admin(QtWidgets.QMainWindow):
         self.label_10.setText(_translate("MainWindow", "Password"))
         self.btn_add_edit_student.setText(_translate("MainWindow", "Add"))
         self.btn_cancel_student.setText(_translate("MainWindow", "Cancel"))
-        self.btn_section_students_status.setText(
-            _translate("MainWindow", "Students: 100"))
+        self.lbl_section_students_status.setText(
+            _translate("MainWindow", "Students: 0"))
         self.lbl_teachers_table_status.setText(
             _translate("MainWindow", "Teachers: 100"))
         self.groupBox_3.setTitle(_translate("MainWindow", "Teachers"))
@@ -3988,9 +3989,17 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_init_edit_section.setDisabled(True)
         self.btn_delete_section.setDisabled(True)
 
+    def disable_section_student_delete_clear(self):
+        self.btn_delete_section_student.setDisabled(True)
+        self.btn_clear_section_student_table.setDisabled(True)
+
     def enable_section_edit_delete(self):
         self.btn_init_edit_section.setDisabled(False)
         self.btn_delete_section.setDisabled(False)
+
+    def enable_section_student_delete_clear(self):
+        self.btn_delete_section_student.setDisabled(False)
+        self.btn_clear_section_student_table.setDisabled(False)
 
     def enable_section_buttons(self):
         self.btn_init_add_section.setDisabled(False)

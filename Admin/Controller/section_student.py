@@ -112,11 +112,52 @@ class SectionStudent:
         self.View.lv_section_student.clicked.connect(
             self.list_sectionstudent_clicked)
         self.View.btn_init_add_section_student.clicked.connect(
-            self.get_unassigned_students)
+            self.get_all_unassigned_students)
+        self.View.btn_delete_section_student.clicked.connect(
+            self.delete_section_student)
+        self.View.btn_clear_section_student_table.clicked.connect(
+            self.remove_all_section_students)
+
+        self.View.txt_search_section_student.returnPressed.connect(self.search_section_student)
+        self.View.btn_search_section_student.clicked.connect(self.search_section_student)
+
+    def search_section_student(self):
+        target_student = self.View.txt_search_section_student.text()
+        section_student_model = self.View.lv_section_student.model()
+        students = section_student_model.data
+        target_indices = []
+        for index, student in enumerate(students):
+            if target_student in student:
+                target_indices.append(index)
+            self.View.lv_section_student.setRowHidden(index, True)
+
+        for target_index in target_indices:
+            self.View.lv_section_student.setRowHidden(target_index, False)
+
+        self.View.txt_search_section_student.clear()
 
     # SectionStudent Operation
+    def GetAllUnassignedStudents(self):
+        handler = Get(self.Model.get_all_unassigned_students)
+        handler.started.connect(self.View.SectionStudentLoadingScreen.show)
+        handler.operation.connect(self.init_add_section_student)
+        handler.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+        return handler
+
     def AssignStudentSection(self):
         handler = Operation(self.Model.assign_student_section)
+        handler.started.connect(self.View.SectionStudentLoadingScreen.show)
+        handler.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+        return handler
+
+    def DeleteStudentSection(self):
+        handler = Operation(self.Model.delete_section_student)
+        handler.started.connect(self.View.SectionStudentLoadingScreen.show)
+        handler.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+        return handler
+
+    def RemoveAllStudentSection(self):
+        handler = Operation(self.Model.remove_all_section_students)
         handler.started.connect(self.View.SectionStudentLoadingScreen.show)
         handler.finished.connect(self.View.SectionStudentLoadingScreen.hide)
         return handler
@@ -154,47 +195,57 @@ class SectionStudent:
         except AttributeError:
             return
 
-    def get_unassigned_students(self):
-        self.get_difference_handler = GetDifference(self.unassigned_students)
-        self.get_difference_handler.started.connect(
-            self.View.AttendanceStudentLoadingScreen.show)
-        self.get_difference_handler.operation.connect(
-            self.init_add_section_student)
-        self.get_difference_handler.finished.connect(
-            self.View.AttendanceStudentLoadingScreen.hide)
-        self.get_difference_handler.start()
-
-    def unassigned_students(self):
-        section_student_model = self.View.lv_section_student.model()
-        section_students = section_student_model.data
-        students = self.View.tv_students.model().getColumn(1)
-        temp_targets = set(list(students.keys())
-                           ).intersection(section_students)
-        targets = {}
-        for target in temp_targets:
-            targets[target] = students[target]
-        return targets
+    def get_all_unassigned_students(self):
+        self.get_all_unassigned_students_handler = self.GetAllUnassignedStudents()
+        self.get_all_unassigned_students_handler.start()
 
     def init_add_section_student(self, students):
         self.DataTable = DataTable(self.View, "Students")
         self.DataTable.closeEvent = self.assign_student_section
-        self.DataTable.set_model(self.View.tv_students.model())
-        if students:
-            for student in students.values():
-                self.DataTable.tv_target_data.setRowHidden(student, True)
+        target_model = self.Model.TableModel(self.DataTable.tv_target_data, students, self.Model.Student.get_headers())
+        self.DataTable.set_model(target_model)
         self.DataTable.run()
 
+    # Add
     def assign_student_section(self, event):
         section_students = [[self.TargetSection.Name, student]
                             for student in self.DataTable.get_target_row_data()]
 
         self.assign_student_section_handler = self.AssignStudentSection()
         self.assign_student_section_handler.val = section_students,
+        self.assign_student_section_handler.finished.connect(lambda: self.View.lbl_section_students_status.setText(f'Students: {len(section_students)}'))
 
         self.get_target_section_student_handler = self.GetTargetSectionStudent()
         self.get_target_section_student_handler.value = self.TargetSection,
+
         self.assign_student_section_handler.operation.connect(self.get_target_section_student_handler.start)
         self.assign_student_section_handler.start()
+
+    # Delete
+    def delete_section_student(self):
+        indices = self.View.lv_section_student.selectedIndexes()
+        indices = [index.row() for index in indices]
+        section_student_model = self.View.lv_section_student.model()
+        targets = [[self.TargetSection.Name, section_student_model.getRowData(index)] for index in indices]
+
+        self.delete_section_student_handler = self.DeleteStudentSection()
+        self.delete_section_student_handler.val = targets,
+
+        self.get_target_section_student_handler = self.GetTargetSectionStudent()
+        self.get_target_section_student_handler.value = self.TargetSection,
+
+        self.delete_section_student_handler.operation.connect(self.get_target_section_student_handler.start)
+        self.delete_section_student_handler.start()
+
+    def remove_all_section_students(self):
+        self.remove_all_section_students_handler = self.RemoveAllStudentSection()
+        self.remove_all_section_students_handler.val = self.TargetSection.Name,
+
+        self.get_target_section_student_handler = self.GetTargetSectionStudent()
+        self.get_target_section_student_handler.value = self.TargetSection,
+
+        self.remove_all_section_students_handler.operation.connect(self.get_target_section_student_handler.start)
+        self.remove_all_section_students_handler.start()
 
     # *Section
     def section_signals(self):
@@ -218,6 +269,9 @@ class SectionStudent:
             self.get_target_section_student)
         handler.operation.connect(
             self.View.enable_student_edit_delete)
+        handler.operation.connect(
+            self.View.enable_section_student_delete_clear
+        )
         handler.validation.connect(
             self.View.tv_students.clearSelection)
         handler.validation.connect(
@@ -228,6 +282,11 @@ class SectionStudent:
             self.View.disable_student_edit_delete)
         handler.validation.connect(
             self.reset_target_student)
+        handler.validation.connect(
+            lambda: self.View.lbl_section_students_status.setText('Students: 0'))
+        handler.validation.connect(
+            self.View.disable_section_student_delete_clear
+        )
         return handler
 
     def GetAllSection(self):
@@ -268,6 +327,7 @@ class SectionStudent:
         if row == section_model.rowCount() - 1:
             self.View.tv_sections.clearSelection()
             self.View.tv_students.clearSelection()
+            self.empty_section_student_list()
             self.View.btn_init_add_section.click()
             self.View.txt_section_name.setFocus(True)
             return
@@ -293,6 +353,7 @@ class SectionStudent:
                     *student_model.getRowData(student_model.findRow(target_section_student.Student)))
 
                 self.set_section_student_list(sectionstudents)
+                self.View.lbl_section_students_status.setText(f'Students: {len(sectionstudents)}')
                 self.set_target_section_student(target_section_student)
                 self.set_target_student(target_student)
             else:
@@ -314,7 +375,7 @@ class SectionStudent:
                 self.TargetSection.Name)
             self.View.tv_sections.selectRow(self.target_section_row)
             self.set_section_inputs()
-        except:
+        except AttributeError:
             self.View.clear_section_inputs()
             self.View.disable_section_edit_delete()
 
@@ -326,11 +387,13 @@ class SectionStudent:
         if not sections:
             self.View.disable_section_edit_delete()
             self.View.disable_student_edit_delete()
+            self.View.lbl_sections_table_status.setText(f'Sections: 0')
         self.View.enable_section_edit_delete()
         section_model = self.Model.TableModel(
             self.View.tv_sections, sections, self.Model.Section.get_headers())
         self.View.tv_sections.setModel(section_model)
         self.View.tv_sections.horizontalHeader().setMinimumSectionSize(150)
+        self.View.lbl_sections_table_status.setText(f'Sections: {len(sections)}')
 
     def select_latest_section(self, section):
         section_model = self.View.tv_sections.model()
@@ -342,6 +405,7 @@ class SectionStudent:
         if section_model.rowCount() - 1 == 0:
             self.View.txt_section_name.clear()
             self.View.disable_section_edit_delete()
+            self.reset_target_section()
             return
         self.set_target_section(self.Model.Section(
             *section_model.getRowData(section_model.rowCount() - 2)))
@@ -357,6 +421,10 @@ class SectionStudent:
         self.View.disable_section_buttons()
         self.View.enable_section_inputs()
         self.View.set_section('Add')
+        self.View.tv_sections.clearSelection()
+        self.View.tv_students.clearSelection()
+        self.View.lv_section_student.clearSelection()
+        self.View.lbl_section_students_status.setText("Students: 0")
 
     def init_edit_section(self):
         self.View.disable_section_buttons()
@@ -366,8 +434,9 @@ class SectionStudent:
     def cancel_section(self):
         self.View.enable_section_buttons()
         self.View.disable_section_inputs()
-        self.select_target_section_row()
         self.View.set_section('Read')
+        index = self.View.tv_sections.model().createIndex(self.target_section_row, 0)
+        self.table_section_clicked(index)
 
     def init_add_edit_section(self):
         if self.View.section_state == "Add":
@@ -461,6 +530,9 @@ class SectionStudent:
         handler.operation.connect(
             self.get_target_student_section)
         handler.operation.connect(
+            self.View.enable_section_student_delete_clear
+        )
+        handler.operation.connect(
             self.View.enable_section_edit_delete)
         handler.validation.connect(
             self.empty_section_student_list
@@ -476,6 +548,12 @@ class SectionStudent:
         )
         handler.validation.connect(
             self.reset_target_section
+        )
+        handler.validation.connect(
+            self.View.disable_section_student_delete_clear
+        )
+        handler.validation.connect(
+            lambda: self.View.lbl_section_students_status.setText('Students: 0')
         )
         return handler
 
@@ -547,6 +625,7 @@ class SectionStudent:
                     break
             self.set_target_section(Section)
             self.set_section_student_list(sectionstudents)
+            self.View.lbl_section_students_status.setText(f'Students: {len(sectionstudents)}')
             self.set_target_section_student(target_section_student)
 
     def set_target_student(self, Student):
@@ -576,6 +655,7 @@ class SectionStudent:
         self.View.tv_students.setModel(student_model)
         self.View.tv_students.horizontalHeader().setMinimumSectionSize(150)
         self.View.tv_students.setFocus(True)
+        self.View.lbl_students_table_status.setText(f'Students: {len(students)}')
 
     def select_latest_student(self, username):
         student_model = self.View.tv_students.model()
@@ -599,6 +679,8 @@ class SectionStudent:
         self.View.disable_student_buttons()
         self.View.enable_student_inputs()
         self.View.set_student('Add')
+        self.View.tv_students.clearSelection()
+        self.View.lv_section_student.clearSelection()
 
     def init_edit_student(self):
         self.View.disable_student_buttons()
@@ -608,8 +690,9 @@ class SectionStudent:
     def cancel_student(self):
         self.View.enable_student_buttons()
         self.View.disable_student_inputs()
-        self.select_target_student_row()
         self.View.set_student('Read')
+        index = self.View.tv_students.model().createIndex(self.target_student_row, 0)
+        self.table_student_clicked(index)
 
     def init_add_edit_student(self):
         if self.View.student_state == "Add":

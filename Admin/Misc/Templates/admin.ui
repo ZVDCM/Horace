@@ -408,7 +408,7 @@ QPushButton:hover{
             <string notr="true"/>
            </property>
            <property name="currentIndex">
-            <number>3</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="section_student">
             <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1">
@@ -2559,7 +2559,7 @@ QPushButton:pressed {
                       <number>6</number>
                      </property>
                      <item>
-                      <widget class="QLabel" name="btn_section_students_status">
+                      <widget class="QLabel" name="lbl_section_students_status">
                        <property name="font">
                         <font>
                          <family>Barlow</family>

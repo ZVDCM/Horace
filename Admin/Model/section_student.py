@@ -27,7 +27,7 @@ class SectionStudent:
 
         if section_students:
             return [self.SectionStudent(*section_student) for section_student in section_students]
-        return ()
+        return []
 
     def get_section_student(self, Section):
         db = self.Database.connect()
@@ -67,6 +67,23 @@ class SectionStudent:
             return self.Section(*section)
         return None
 
+    def get_all_unassigned_students(self):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = """SELECT UserID, Username, Salt, Hash FROM Users WHERE Privilege='Student' AND Username NOT IN (
+            SELECT Student FROM Section_Students)"""
+        cursor.execute(select_query)
+
+        students = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        if students:
+            return [self.Student(*student) for student in students]
+        return []
+
     def assign_student_section(self, section_students):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
@@ -81,6 +98,34 @@ class SectionStudent:
         db.close()
 
         return res
+
+    def delete_section_student(self, section_students):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Section_Students WHERE Section=%s AND Student=%s"
+        cursor.executemany(delete_query, (section_students))
+        db.commit()
+
+        res = 'successful'
+
+        cursor.close()
+        db.close()
+
+        return res
+
+    def remove_all_section_students(self, section):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Section_Students WHERE Section=%s"
+        cursor.execute(delete_query, (section,))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
 
     # Section
     def get_all_section(self):

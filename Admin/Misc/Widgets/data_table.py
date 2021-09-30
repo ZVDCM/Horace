@@ -16,9 +16,6 @@ class DataTable(QtWidgets.QDialog):
         self.lbl_target_table.setText(self.target_table)
 
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
-
-        self.LoadingScreen = LoadingScreen(self.widget, relative_path(
-            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.ActiveOverlay = ActiveOverlay(self)
 
         self.connect_signals()
@@ -29,6 +26,7 @@ class DataTable(QtWidgets.QDialog):
 
     def set_model(self, table_model):
         self.tv_target_data.setModel(table_model)
+        self.tv_target_data.verticalHeader().setMinimumSectionSize(45)
         self.tv_target_data.horizontalHeader().setMinimumSectionSize(150)
         self.tv_target_data.setFocus(True)
         self.remove_null_row()
@@ -104,24 +102,24 @@ class DataTable(QtWidgets.QDialog):
             QtWidgets.QLayout.SetDefaultConstraint)
         self.horizontalLayout_54.setSpacing(0)
         self.horizontalLayout_54.setObjectName("horizontalLayout_54")
-        self.tv_search_target = QtWidgets.QLineEdit(self.widget)
+        self.txt_search_target = QtWidgets.QLineEdit(self.widget)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.tv_search_target.sizePolicy().hasHeightForWidth())
-        self.tv_search_target.setSizePolicy(sizePolicy)
-        self.tv_search_target.setMinimumSize(QtCore.QSize(0, 30))
+            self.txt_search_target.sizePolicy().hasHeightForWidth())
+        self.txt_search_target.setSizePolicy(sizePolicy)
+        self.txt_search_target.setMinimumSize(QtCore.QSize(0, 30))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
-        self.tv_search_target.setFont(font)
-        self.tv_search_target.setStyleSheet("border-radius: none;\n"
+        self.txt_search_target.setFont(font)
+        self.txt_search_target.setStyleSheet("border-radius: none;\n"
                                             "border-top-left-radius: 5px;\n"
                                             "border-bottom-left-radius: 5px;")
-        self.tv_search_target.setObjectName("tv_search_target")
-        self.horizontalLayout_54.addWidget(self.tv_search_target)
+        self.txt_search_target.setObjectName("txt_search_target")
+        self.horizontalLayout_54.addWidget(self.txt_search_target)
         self.btn_search_target = QtWidgets.QPushButton(self.widget)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -194,6 +192,11 @@ class DataTable(QtWidgets.QDialog):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
+    def keyPressEvent(self, event):
+        if event.key() == 16777220:
+            return
+        super().keyPressEvent(event)
+
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         self.lbl_target_table.setText(_translate("Form", "Table"))
@@ -213,8 +216,26 @@ class DataTable(QtWidgets.QDialog):
         self.btn_cancel.clicked.connect(self.close)
         self.btn_add.clicked.connect(self.add)
 
+        self.txt_search_target.returnPressed.connect(self.search_target)
+        self.btn_search_target.clicked.connect(self.search_target)
+
+    def search_target(self):
+        target_student = self.txt_search_target.text()
+        target_model = self.tv_target_data.model()
+        students = target_model.getColumn(1)
+        target_indices = []
+        for index, student in enumerate(students):
+            if target_student in student:
+                target_indices.append(index)
+            self.tv_target_data.setRowHidden(index, True)
+
+        for target_index in target_indices:
+            self.tv_target_data.setRowHidden(target_index, False)
+
+        self.txt_search_target.clear()
+
     def add(self):
-        if self.tv_target_data.selectedIndexes():
+        if self.tv_target_data.selectionModel().selectedRows():
             self.close()
             return
         self.parent.run_popup('A row must be selected')
@@ -228,9 +249,9 @@ class DataTable(QtWidgets.QDialog):
         self.tv_target_data.setRowHidden(last_row_index, True)
 
     def get_target_row_data(self):
-        indices = self.tv_target_data.selectedIndexes()
+        indices = self.tv_target_data.selectionModel().selectedRows()
         indices = set([index.row() for index in indices])
         targets = []
         for index in indices:
             targets.append(self.tv_target_data.model().getRowData(index)[1])
-        return targets
+        return targets[:len(targets)-1]

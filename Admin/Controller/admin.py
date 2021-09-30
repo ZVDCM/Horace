@@ -131,6 +131,7 @@ class Admin:
         self.View.lv_section_student.setModel(section_student_model)
         index = section_student_model.createIndex(0,0)
         self.View.lv_section_student.setCurrentIndex(index)
+        self.View.lbl_section_students_status.setText(f'Students: {len(students)}')
 
     def get_model_latest_section(self):
         section_model = self.View.tv_sections.model()
