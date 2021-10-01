@@ -1,3 +1,4 @@
+from Admin.Misc.Widgets.section_item import SectionItem
 from Admin.Misc.Widgets.context_menu import ContextMenu
 from Admin.Misc.Widgets.confirm import Confirm
 from Admin.Misc.Widgets.custom_label import SideNav
@@ -21,6 +22,10 @@ class Admin(QtWidgets.QMainWindow):
                           self.lbl_classes_and_members, self.lbl_blacklisted_url]
 
         self.Popup = Popup(self)
+
+        # Bulk
+        self.StudentSectionSectionBulkLoadingScreen = LoadingScreen(self.student_section_section_bulk, relative_path(
+            'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
 
         # Table
         self.TableSectionStudentLoadingScreen = LoadingScreen(self.w_table_section_student, relative_path(
@@ -516,6 +521,8 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_init_section_bulk.setSizePolicy(sizePolicy)
         self.btn_init_section_bulk.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_init_section_bulk.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_init_section_bulk.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_init_section_bulk.setStyleSheet("border-radius: 5px")
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'add_batch.png')),
@@ -704,9 +711,11 @@ class Admin(QtWidgets.QMainWindow):
         self.verticalLayout_38.setContentsMargins(0, 0, 10, 0)
         self.verticalLayout_38.setSpacing(20)
         self.verticalLayout_38.setObjectName("verticalLayout_38")
+
         spacerItem6 = QtWidgets.QSpacerItem(
             20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_38.addItem(spacerItem6)
+        
         self.sa_student_bulk.setWidget(self.widget_11)
         self.horizontalLayout_27.addWidget(self.sa_student_bulk)
         self.verticalLayout_33 = QtWidgets.QVBoxLayout()
@@ -718,10 +727,12 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_add_student_bulk.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_add_student_bulk.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_add_student_bulk.setStyleSheet("border-radius: 5px")
+        self.btn_add_student_bulk.setStyleSheet("border-radius: 5px;")
         icon5 = QtGui.QIcon()
         icon5.addPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'check.png')),
                         QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'check_2.png')),
+                        QtGui.QIcon.Disabled, QtGui.QIcon.Off)
         self.btn_add_student_bulk.setIcon(icon5)
         self.btn_add_student_bulk.setIconSize(QtCore.QSize(19, 19))
         self.btn_add_student_bulk.setObjectName("btn_add_student_bulk")
@@ -818,9 +829,19 @@ class Admin(QtWidgets.QMainWindow):
         self.verticalLayout_53.setContentsMargins(0, 0, 10, 0)
         self.verticalLayout_53.setSpacing(20)
         self.verticalLayout_53.setObjectName("verticalLayout_53")
+
+        sectionItem = SectionItem(self)
+        sectionItem.setObjectName(f"sectionItem_1")
+        self.verticalLayout_53.addWidget(sectionItem)
+
+        sectionItem = SectionItem(self)
+        sectionItem.setObjectName(f"sectionItem_2")
+        self.verticalLayout_53.addWidget(sectionItem)
+
         spacerItem8 = QtWidgets.QSpacerItem(
             20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_53.addItem(spacerItem8)
+
         self.sa_section_bulk.setWidget(self.scrollAreaWidgetContents_5)
         self.horizontalLayout_9.addWidget(self.sa_section_bulk)
         self.verticalLayout_52 = QtWidgets.QVBoxLayout()
@@ -832,7 +853,13 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_add_section_bulk.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_add_section_bulk.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_add_section_bulk.setStyleSheet("border-radius: 5px")
+        self.btn_add_section_bulk.setStyleSheet("QPushButton{\n"
+                                                "  border-radius: 5px;"
+                                                "}\n"
+                                                "QPushButton::disabled {\n"
+                                                "  border: 1px solid #0b1a30;\n"
+                                                "  background-color: #0b1a30;\n"
+                                                "}\n")
         self.btn_add_section_bulk.setIcon(icon5)
         self.btn_add_section_bulk.setIconSize(QtCore.QSize(19, 19))
         self.btn_add_section_bulk.setObjectName("btn_add_section_bulk")
@@ -4176,3 +4203,16 @@ class Admin(QtWidgets.QMainWindow):
         self.ContextMenu.delete.connect(next_step)
         self.ContextMenu.move(pos.x(), pos.y())
         self.ContextMenu.show()
+
+    def add_section_item(self):
+        sectionItem = SectionItem(self)
+        sectionItem.setObjectName(f"sectionItem_{self.verticalLayout_53.count()}")
+        self.verticalLayout_53.insertWidget(0, sectionItem)
+        self.btn_add_section_bulk.setDisabled(False)
+
+    def clear_section_item(self):
+        for index in range(self.verticalLayout_53.count()-1):
+            target = self.verticalLayout_53.itemAt(index).widget()
+            target.close()
+            target.deleteLater()
+        self.btn_add_section_bulk.setDisabled(True)

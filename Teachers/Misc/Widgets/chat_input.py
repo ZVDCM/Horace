@@ -203,7 +203,7 @@ class ChatInput(QtWidgets.QWidget):
     def hide_targets(self):
         self.targets = []
         for i in range(self.horizontalLayout_15.count()-1):
-            self.horizontalLayout_15.itemAt(i).widget().deleteLater()
+            self.horizontalLayout_15.removeWidget(self.horizontalLayout_15.itemAt(i).widget())
         self.w_reply.hide()
 
     def add_student(self, name):

@@ -1,7 +1,9 @@
-from PyQt5.QtWidgets import QTableView
+from PyQt5.QtWidgets import QTableView, QWidget
 from Admin.Misc.Widgets.data_table import DataTable
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
+
+from Admin.Misc.Widgets.section_item import SectionItem
 
 
 class GetTargetSectionStudent(QtCore.QThread):
@@ -84,6 +86,35 @@ class GetDifference(QtCore.QThread):
     def run(self):
         res = self.fn()
         self.operation.emit(res)
+        self.quit()
+
+
+class AddItem(QtCore.QThread):
+    operation = QtCore.pyqtSignal()
+    error = QtCore.pyqtSignal()
+
+    def __init__(self, fn, layout, widget, tag):
+        super().__init__()
+        self.fn = fn
+        self.layout = layout
+        self.widget = widget
+        self.tag = tag
+
+    def run(self):
+        error_items = []
+        for index in range(self.layout.count()):
+            target_item = self.widget.findChild(QWidget, f'{self.tag}{index+1}')
+            if target_item:
+                value = target_item.get_value()
+                if is_blank(value):
+                    error_items.append(value)
+                res = self.fn(value)
+                if res == 'successful':
+                    target_item.close_item()
+        if error_items:
+            self.error.emit()
+        else:
+            self.operation.emit()
         self.quit()
 
 
@@ -250,7 +281,8 @@ class SectionStudent:
         self.delete_section_student_handler.start()
 
     def init_remove_all_section_students(self):
-        self.View.show_confirm(self.remove_all_section_students, "Are you sure you want to remove everyone?")
+        self.View.show_confirm(
+            self.remove_all_section_students, "Are you sure you want to remove everyone?")
 
     def remove_all_section_students(self):
         self.remove_all_section_students_handler = self.RemoveAllStudentSection()
@@ -284,6 +316,40 @@ class SectionStudent:
             self.search_section)
         self.View.btn_search_sections.clicked.connect(
             self.search_section)
+
+        self.View.btn_init_section_bulk.clicked.connect(
+            lambda: self.View.sw_student_section.setCurrentIndex(2)
+        )
+        self.View.btn_back_section_bulk.clicked.connect(
+            self.go_back_section
+        )
+
+        self.View.btn_add_section_item.clicked.connect(
+            self.View.add_section_item)
+        self.View.btn_clear_section_items.clicked.connect(
+            self.View.clear_section_item)
+        self.View.btn_add_section_bulk.clicked.connect(
+            self.add_section_bulk)
+
+    def add_section_bulk(self):
+        self.AddItem = AddItem(self.Model.create_section, self.View.verticalLayout_53, self.View.scrollAreaWidgetContents_5, 'sectionItem_')
+        self.AddItem.started.connect(self.View.StudentSectionSectionBulkLoadingScreen.run)
+        self.AddItem.operation.connect(self.go_back_section)
+        self.AddItem.operation.connect(self.View.add_section_item)
+        self.AddItem.operation.connect(self.View.add_section_item)
+        self.AddItem.error.connect(self.section_bulk_error)
+        self.AddItem.finished.connect(self.View.StudentSectionSectionBulkLoadingScreen.hide)
+        self.AddItem.start()
+
+    def go_back_section(self):
+        self.View.sw_student_section.setCurrentIndex(0)
+        self.get_all_section_handler = self.GetAllSection()
+        self.get_all_section_handler.finished.connect(
+            self.get_latest_target_section_student)
+        self.get_all_section_handler.start()
+
+    def section_bulk_error(self):
+        self.View.run_popup(f"Section creation error\nAlready existing or blank")
 
     def search_section(self):
         target_student = self.View.txt_search_section.text()
@@ -394,7 +460,7 @@ class SectionStudent:
         self.delete_many_section_handler.val = target_sections,
         self.delete_many_section_handler.operation.connect(
             self.get_all_section_handler.start)
-
+        
         self.get_all_section_handler.finished.connect(
             self.get_latest_target_section_student)
         self.delete_many_section_handler.start()
@@ -764,7 +830,6 @@ class SectionStudent:
         self.View.txt_student_password.operation.emit()
 
     # Table
-
     def table_student_clicked(self, index):
         row = index.row()
         student_model = self.View.tv_students.model()
@@ -781,7 +846,6 @@ class SectionStudent:
         self.TargetStudent = self.Model.Student(
             *student_model.getRowData(row))
         self.target_student_row = row
-        self.View.tv_students.selectRow(row)
         self.set_student_inputs()
 
         if self.View.student_state == 'Add' or self.View.student_state == 'Edit':

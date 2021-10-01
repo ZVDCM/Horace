@@ -734,7 +734,7 @@ QPushButton:pressed {
                 <item>
                  <widget class="QStackedWidget" name="sw_student_section">
                   <property name="currentIndex">
-                   <number>0</number>
+                   <number>2</number>
                   </property>
                   <widget class="QWidget" name="student_section_table">
                    <property name="styleSheet">
@@ -1255,8 +1255,8 @@ border-bottom-right-radius: 5px;</string>
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>82</width>
-                         <height>30</height>
+                         <width>520</width>
+                         <height>735</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -1492,8 +1492,8 @@ QPushButton:hover{
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>82</width>
-                         <height>30</height>
+                         <width>520</width>
+                         <height>735</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_53">
