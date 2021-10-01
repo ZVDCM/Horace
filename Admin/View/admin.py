@@ -1,3 +1,5 @@
+from Admin.Misc.Widgets.alert import Alert
+from Admin.Misc.Widgets.alert_item import AlertItem
 from Admin.Misc.Widgets.section_item import SectionItem
 from Admin.Misc.Widgets.context_menu import ContextMenu
 from Admin.Misc.Widgets.confirm import Confirm
@@ -23,12 +25,7 @@ class Admin(QtWidgets.QMainWindow):
                           self.lbl_classes_and_members, self.lbl_blacklisted_url]
 
         self.Popup = Popup(self)
-
-        # Bulk
-        self.StudentSectionSectionBulkLoadingScreen = LoadingScreen(self.student_section_section_bulk, relative_path(
-            'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
-        self.StudentSectionStudentBulkLoadingScreen = LoadingScreen(self.student_section_student_bulk, relative_path(
-            'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+        self.alert = Alert()
 
         # Table
         self.TableSectionStudentLoadingScreen = LoadingScreen(self.w_table_section_student, relative_path(
@@ -4293,3 +4290,9 @@ class Admin(QtWidgets.QMainWindow):
             target.close()
             target.deleteLater()
         self.btn_add_student_bulk.setDisabled(True)
+
+    def show_alert(self, type, message):
+        if type == 'file':
+            item = AlertItem(self.alert, 'clip_2.png', message)
+        self.alert.add_item(item)
+        self.alert.show()

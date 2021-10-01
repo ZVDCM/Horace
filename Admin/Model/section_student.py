@@ -12,6 +12,44 @@ class SectionStudent:
         self.ListModel = Model.ListModel
         self.Database = Model.Database
 
+    def export_section_student_table(self):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = "SELECT * FROM Sections"
+        cursor.execute(select_query)
+        sections = cursor.fetchall()
+        select_query = "SELECT * FROM Users WHERE Privilege='Student'"
+        cursor.execute(select_query)
+        students = cursor.fetchall()
+        select_query = "SELECT * FROM Section_Students"
+        cursor.execute(select_query)
+        section_students = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        return [sections, students, section_students]
+
+    def clear_section_student_table(self):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Sections"
+        cursor.execute(delete_query)
+        db.commit()
+
+        delete_query = "DELETE FROM Users WHERE Privilege='Student'"
+        cursor.execute(delete_query)
+        db.commit()
+
+        res = 'successful'
+
+        cursor.close()
+        db.close()
+
+        return res
+
     # Section Student
     def get_all_section_student(self, Section):
         db = self.Database.connect()

@@ -162,4 +162,4 @@ class StudentItem(QtWidgets.QWidget):
             self.parent.btn_add_student_bulk.setDisabled(True)
 
     def get_value(self):
-        return self.parent.section_combobox.currentText(), self.txt_student_item_username.text(),  self.txt_student_item_password.text()
+        return self.txt_student_item_username.text(),  self.txt_student_item_password.text()
