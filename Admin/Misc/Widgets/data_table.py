@@ -25,11 +25,12 @@ class DataTable(QtWidgets.QDialog):
         self.activateWindow()
         self.exec_()
 
-    def set_model(self, table_model):
+    def set_model(self, table_model, multiselection=False):
         self.tv_target_data.setModel(table_model)
         self.tv_target_data.verticalHeader().setMinimumSectionSize(45)
         self.tv_target_data.horizontalHeader().setMinimumSectionSize(150)
-        self.tv_target_data.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        if multiselection:
+            self.tv_target_data.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
         self.tv_target_data.setFocus(True)
         self.remove_null_row()
 

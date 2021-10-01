@@ -4,6 +4,7 @@ from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 
 from Admin.Misc.Widgets.section_item import SectionItem
+from Admin.Misc.Widgets.student_item import StudentItem
 
 
 class GetTargetSectionStudent(QtCore.QThread):
@@ -105,10 +106,11 @@ class AddItem(QtCore.QThread):
         for index in range(self.layout.count()):
             target_item = self.widget.findChild(QWidget, f'{self.tag}{index+1}')
             if target_item:
-                value = target_item.get_value()
-                if is_blank(value):
-                    error_items.append(value)
-                res = self.fn(value)
+                values = target_item.get_value()
+                for value in values:
+                    if is_blank(value):
+                        error_items.append(value)
+                res = self.fn(*values)
                 if res == 'successful':
                     target_item.close_item()
         if error_items:
@@ -173,9 +175,6 @@ class SectionStudent:
     # SectionStudent Operation
     def GetAllUnassignedStudents(self):
         handler = Get(self.Model.get_all_unassigned_students)
-        handler.started.connect(self.View.SectionStudentLoadingScreen.show)
-        handler.operation.connect(self.init_add_section_student)
-        handler.finished.connect(self.View.SectionStudentLoadingScreen.hide)
         return handler
 
     def AssignStudentSection(self):
@@ -231,6 +230,9 @@ class SectionStudent:
 
     def get_all_unassigned_students(self):
         self.get_all_unassigned_students_handler = self.GetAllUnassignedStudents()
+        self.get_all_unassigned_students_handler.started.connect(self.View.SectionStudentLoadingScreen.show)
+        self.get_all_unassigned_students_handler.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+        self.get_all_unassigned_students_handler.operation.connect(self.init_add_section_student)
         self.get_all_unassigned_students_handler.start()
 
     def init_add_section_student(self, students):
@@ -238,7 +240,7 @@ class SectionStudent:
         self.DataTable.operation.connect(self.assign_student_section)
         target_model = self.Model.TableModel(
             self.DataTable.tv_target_data, students, self.Model.Student.get_headers())
-        self.DataTable.set_model(target_model)
+        self.DataTable.set_model(target_model, True)
         self.DataTable.run()
 
     # Add
@@ -350,14 +352,20 @@ class SectionStudent:
 
     def section_bulk_error(self):
         self.View.run_popup(f"Section creation error\nAlready existing or blank")
+        self.get_all_section_handler = self.GetAllSection()
+        self.get_all_section_handler.finished.connect(
+            self.get_latest_target_section_student)
+        self.get_all_section_handler.start()
 
     def search_section(self):
-        target_student = self.View.txt_search_section.text()
+        target_section = self.View.txt_search_section.text()
+        if target_section.lower() == "null":
+            return
         sections_model = self.View.tv_sections.model()
         sections = sections_model.getColumn(1)
         target_indices = []
         for index, section in enumerate(sections):
-            if target_student in section:
+            if target_section in section:
                 target_indices.append(index)
             self.View.tv_sections.setRowHidden(index, True)
 
@@ -691,8 +699,77 @@ class SectionStudent:
         self.View.btn_search_students.clicked.connect(
             self.search_student)
 
+        self.View.btn_init_student_bulk.clicked.connect(
+            self.init_add_student_bulk
+        )
+        self.View.btn_back_student_bulk.clicked.connect(
+            self.go_back_student
+        )
+        self.View.btn_add_student_item.clicked.connect(
+            self.View.add_student_item
+        )
+        self.View.btn_clear_student_items.clicked.connect(
+            self.View.clear_student_item
+        )
+        self.View.btn_add_student_bulk.clicked.connect(
+            self.add_student_bulk
+        )
+        self.View.section_combobox.currentIndexChanged.connect(self.combobox_index_changed)
+
+    def add_student_bulk(self):
+        self.AddItem = AddItem(self.Model.create_student, self.View.verticalLayout_38, self.View.widget_11, 'studentItem_')
+        self.AddItem.started.connect(self.View.StudentSectionStudentBulkLoadingScreen.run)
+        self.AddItem.operation.connect(self.go_back_student)
+        self.AddItem.operation.connect(self.View.add_student_item)
+        self.AddItem.operation.connect(self.View.add_student_item)
+        self.AddItem.error.connect(self.student_bulk_error)
+        self.AddItem.finished.connect(self.View.StudentSectionStudentBulkLoadingScreen.hide)
+        self.AddItem.start()
+    
+    def student_bulk_error(self):
+        self.View.run_popup(f"Student creation error\nAlready existing or blank")
+        self.get_all_student_handler = self.GetAllStudents()
+        self.get_all_section_student_handler = self.GetAllSectionStudents()
+        
+        self.get_all_student_handler.finished.connect(
+                self.get_all_section_student_handler.start)
+
+        self.get_all_section_student_handler.val = self.TargetSection,
+        self.get_all_section_student_handler.finished.connect(
+            self.View.btn_cancel_section.click)
+        self.get_all_student_handler.start()
+
+    def combobox_index_changed(self, index):
+        self.set_target_section(self.Model.Section(
+            *self.View.tv_sections.model().getRowData(index)))
+
+    def init_add_student_bulk(self):
+        self.View.section_combobox.clear()
+        sections = self.View.tv_sections.model().getColumn(1)
+        
+        for section in sections:
+            self.View.section_combobox.addItem(section)
+        
+        self.View.section_combobox.adjustSize()
+        self.View.sw_student_section.setCurrentIndex(1)
+
+    def go_back_student(self):
+        self.View.sw_student_section.setCurrentIndex(0) 
+        self.get_all_student_handler = self.GetAllStudents()
+        self.get_all_section_student_handler = self.GetAllSectionStudents()
+        
+        self.get_all_student_handler.finished.connect(
+                self.get_all_section_student_handler.start)
+
+        self.get_all_section_student_handler.val = self.TargetSection,
+        self.get_all_section_student_handler.finished.connect(
+            self.View.btn_cancel_section.click)
+        self.get_all_student_handler.start()
+
     def search_student(self):
         target_student = self.View.txt_search_student.text()
+        if target_student.lower() == "null":
+            return
         student_model = self.View.tv_students.model()
         students = student_model.getColumn(1)
         target_indices = []

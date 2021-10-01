@@ -10,6 +10,7 @@ from Admin.Misc.Widgets.custom_list_view import ListView
 from Admin.Misc.Widgets.custom_lineedit import PasswordGenerator
 from Admin.Misc.Widgets.pop_up import Popup
 from Admin.Misc.Functions.relative_path import relative_path
+from Admin.Misc.Widgets.student_item import StudentItem
 
 
 class Admin(QtWidgets.QMainWindow):
@@ -25,6 +26,8 @@ class Admin(QtWidgets.QMainWindow):
 
         # Bulk
         self.StudentSectionSectionBulkLoadingScreen = LoadingScreen(self.student_section_section_bulk, relative_path(
+            'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
+        self.StudentSectionStudentBulkLoadingScreen = LoadingScreen(self.student_section_student_bulk, relative_path(
             'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
 
         # Table
@@ -687,9 +690,56 @@ class Admin(QtWidgets.QMainWindow):
         self.student_section_student_bulk = QtWidgets.QWidget()
         self.student_section_student_bulk.setObjectName(
             "student_section_student_bulk")
-        self.horizontalLayout_27 = QtWidgets.QHBoxLayout(
-            self.student_section_student_bulk)
-        self.horizontalLayout_27.setContentsMargins(0, 15, 0, 0)
+
+        self.verticalLayout_100 = QtWidgets.QVBoxLayout(self.student_section_student_bulk)
+        self.verticalLayout_100.setContentsMargins(0,15,0,0)
+        self.verticalLayout_100.setSpacing(15)
+
+        self.horizontalLayout_100 = QtWidgets.QHBoxLayout()
+        self.verticalLayout_100.addLayout(self.horizontalLayout_100)
+        self.horizontalLayout_100.setContentsMargins(0,0,0,0)
+        self.horizontalLayout_100.setSpacing(6)
+
+        self.section_combobox = QtWidgets.QComboBox(self.student_section_student_bulk)
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(12)
+        self.section_combobox.setFont(font)
+        self.section_combobox.setStyleSheet("QComboBox {\n"
+                                            "     padding: 3px 7px;\n"
+                                            "     border: 1px solid #0e4884;\n"
+                                            "     border-radius: 5px;\n"
+                                            "}\n"
+                                            "\n"
+                                            "QComboBox:focus,\n"
+                                            "QComboBox:hover {\n"
+                                            "      border: 1px solid #256eff;\n"
+                                            "      outline: none;\n"
+                                            "}\n"
+                                            "\n"
+                                            "QComboBox::drop-down {\n"
+                                            "    subcontrol-origin: padding;\n"
+                                            "    subcontrol-position: top right;\n"
+                                            "    border: none;\n"
+                                            "}\n"
+                                            "\n"
+                                            "QComboBox::down-arrow {\n"
+                                            f"   image: url({relative_path('SignIn', ['Misc', 'Resources'], 'down.png')});\n"
+                                            "    padding-right: 10px;\n"
+                                            "}\n"
+                                            "\n"
+                                            "QComboBox QAbstractItemView {\n"
+                                            "    outline: none;\n"
+                                            "}")
+        self.horizontalLayout_100.addWidget(self.section_combobox)
+
+        spacerItem10 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_100.addItem(spacerItem10)
+
+        self.horizontalLayout_27 = QtWidgets.QHBoxLayout()
+        self.verticalLayout_100.addLayout(self.horizontalLayout_27)
+        self.horizontalLayout_27.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_27.setSpacing(6)
         self.horizontalLayout_27.setObjectName("horizontalLayout_27")
         self.sa_student_bulk = QtWidgets.QScrollArea(
@@ -712,6 +762,14 @@ class Admin(QtWidgets.QMainWindow):
         self.verticalLayout_38.setSpacing(20)
         self.verticalLayout_38.setObjectName("verticalLayout_38")
 
+        student_item = StudentItem(self)
+        student_item.setObjectName(f"studentItem_1")
+        self.verticalLayout_38.addWidget(student_item)
+
+        student_item = StudentItem(self)
+        student_item.setObjectName(f"studentItem_2")
+        self.verticalLayout_38.addWidget(student_item)
+
         spacerItem6 = QtWidgets.QSpacerItem(
             20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_38.addItem(spacerItem6)
@@ -727,7 +785,13 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_add_student_bulk.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_add_student_bulk.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_add_student_bulk.setStyleSheet("border-radius: 5px;")
+        self.btn_add_student_bulk.setStyleSheet("QPushButton{\n"
+                                                "  border-radius: 5px;"
+                                                "}\n"
+                                                "QPushButton::disabled {\n"
+                                                "  border: 1px solid #0b1a30;\n"
+                                                "  background-color: #0b1a30;\n"
+                                                "}\n")
         icon5 = QtGui.QIcon()
         icon5.addPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'check.png')),
                         QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -4216,3 +4280,16 @@ class Admin(QtWidgets.QMainWindow):
             target.close()
             target.deleteLater()
         self.btn_add_section_bulk.setDisabled(True)
+
+    def add_student_item(self):
+        student_item = StudentItem(self)
+        student_item.setObjectName(f"studentItem_{self.verticalLayout_38.count()}")
+        self.verticalLayout_38.insertWidget(0, student_item)
+        self.btn_add_student_bulk.setDisabled(False)
+        
+    def clear_student_item(self):
+        for index in range(self.verticalLayout_38.count()-1):
+            target = self.verticalLayout_38.itemAt(index).widget()
+            target.close()
+            target.deleteLater()
+        self.btn_add_student_bulk.setDisabled(True)

@@ -164,6 +164,9 @@ class SectionStudent:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
+        if not name:
+            return "Null"
+
         select_query = "SELECT * FROM Sections WHERE Name=%s"
         cursor.execute(select_query, (name,))
 
@@ -265,6 +268,9 @@ class SectionStudent:
     def create_student(self, section, username, password):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
+
+        if not username:
+            return "Null"
 
         select_query = "SELECT * FROM Users WHERE Username=%s"
         cursor.execute(select_query, (username,))

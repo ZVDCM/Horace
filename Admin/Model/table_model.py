@@ -27,7 +27,8 @@ class TableModel(QAbstractTableModel):
     def getColumn(self, column):
         column_values = {}
         for index, datum in enumerate(self.data):
-            column_values[datum[column]] = index
+            if datum[column] != 'NULL':
+                column_values[datum[column]] = index
         return column_values
 
     def flags(self, index):

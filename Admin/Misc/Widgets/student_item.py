@@ -1,9 +1,11 @@
 from Admin.Misc.Functions.is_blank import is_blank
 from Admin.Misc.Functions.relative_path import relative_path
+from Admin.Misc.Widgets.custom_lineedit import PasswordGenerator
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class SectionItem(QtWidgets.QWidget):
+class StudentItem(QtWidgets.QWidget):
+    search = QtCore.pyqtSignal()
 
     def __init__(self, parent):
         super().__init__()
@@ -11,11 +13,12 @@ class SectionItem(QtWidgets.QWidget):
         self.setupUi(self)
         self.connect_signals()
 
-    def setupUi(self, w_section_item):
-        w_section_item.resize(653, 93)
-        w_section_item.setMinimumHeight(93)
-        w_section_item.setMaximumHeight(93)
-        w_section_item.setStyleSheet("QLineEdit {\n"
+    def setupUi(self, w_student_item):
+        w_student_item.setObjectName("w_student_item")
+        w_student_item.resize(601, 147)
+        w_student_item.setMinimumHeight(147)
+        w_student_item.setMaximumHeight(147)
+        w_student_item.setStyleSheet("QLineEdit {\n"
                                      "      padding: 1px 5px;\n"
                                      "      border: 1px solid #0e4884;\n"
                                      "      border-radius: 5px;\n"
@@ -39,11 +42,11 @@ class SectionItem(QtWidgets.QWidget):
                                      "  background-color: #072f49;\n"
                                      "}\n"
                                      "")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(w_section_item)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(w_student_item)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.widget = QtWidgets.QWidget(w_section_item)
+        self.widget = QtWidgets.QWidget(w_student_item)
         self.widget.setObjectName("widget")
         self.widget.setStyleSheet("QWidget#widget {\n"
                                      "  padding: 1px 5px;\n"
@@ -52,44 +55,43 @@ class SectionItem(QtWidgets.QWidget):
                                      "}")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout.setContentsMargins(15, 15, 15, 15)
-        self.verticalLayout.setSpacing(6)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.horizontalLayout_36 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_36.setSizeConstraint(
+        self.horizontalLayout_32 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_32.setSizeConstraint(
             QtWidgets.QLayout.SetMinimumSize)
-        self.horizontalLayout_36.setSpacing(0)
-        self.horizontalLayout_36.setObjectName("horizontalLayout_36")
-        self.label_43 = QtWidgets.QLabel(self.widget)
+        self.horizontalLayout_32.setSpacing(0)
+        self.horizontalLayout_32.setObjectName("horizontalLayout_32")
+        self.label_38 = QtWidgets.QLabel(self.widget)
         sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.label_43.sizePolicy().hasHeightForWidth())
-        self.label_43.setSizePolicy(sizePolicy)
+            self.label_38.sizePolicy().hasHeightForWidth())
+        self.label_38.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
-        self.label_43.setFont(font)
-        self.label_43.setIndent(1)
-        self.label_43.setObjectName("label_43")
-        self.horizontalLayout_36.addWidget(self.label_43)
+        self.label_38.setFont(font)
+        self.label_38.setIndent(1)
+        self.label_38.setObjectName("label_38")
+        self.horizontalLayout_32.addWidget(self.label_38)
         spacerItem = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_36.addItem(spacerItem)
-        self.btn_section_item_close = QtWidgets.QPushButton(self.widget)
+        self.horizontalLayout_32.addItem(spacerItem)
+        self.btn_student_item_close = QtWidgets.QPushButton(self.widget)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.btn_section_item_close.sizePolicy().hasHeightForWidth())
-        self.btn_section_item_close.setSizePolicy(sizePolicy)
-        self.btn_section_item_close.setMinimumSize(QtCore.QSize(20, 20))
-        self.btn_section_item_close.setMaximumSize(QtCore.QSize(20, 20))
-        self.btn_section_item_close.setCursor(
+            self.btn_student_item_close.sizePolicy().hasHeightForWidth())
+        self.btn_student_item_close.setSizePolicy(sizePolicy)
+        self.btn_student_item_close.setMinimumSize(QtCore.QSize(20, 20))
+        self.btn_student_item_close.setMaximumSize(QtCore.QSize(20, 20))
+        self.btn_student_item_close.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_section_item_close.setStyleSheet("QPushButton{\n"
+        self.btn_student_item_close.setStyleSheet("QPushButton{\n"
                                                   "    border: none;\n"
                                                   "    border-radius: none;\n"
                                                   "    background: none;\n"
@@ -104,33 +106,60 @@ class SectionItem(QtWidgets.QWidget):
                                                   f"    background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'close_2.png')});\n"
                                                   "    background-position: center center;\n"
                                                   "}")
-        self.btn_section_item_close.setObjectName("btn_section_item_close")
-        self.horizontalLayout_36.addWidget(self.btn_section_item_close)
-        self.verticalLayout.addLayout(self.horizontalLayout_36)
-        self.txt_section_item_name = QtWidgets.QLineEdit(self.widget)
-        self.txt_section_item_name.setMinimumSize(QtCore.QSize(0, 30))
+        self.btn_student_item_close.setObjectName("btn_student_item_close")
+        self.horizontalLayout_32.addWidget(self.btn_student_item_close)
+        self.verticalLayout.addLayout(self.horizontalLayout_32)
+        self.txt_student_item_username = QtWidgets.QLineEdit(self.widget)
+        self.txt_student_item_username.setMinimumSize(QtCore.QSize(0, 30))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
-        self.txt_section_item_name.setFont(font)
-        self.txt_section_item_name.setObjectName("txt_section_item_name")
-        self.verticalLayout.addWidget(self.txt_section_item_name)
+        self.txt_student_item_username.setFont(font)
+        self.txt_student_item_username.setObjectName(
+            "txt_student_item_username")
+        self.verticalLayout.addWidget(self.txt_student_item_username)
+        self.label_33 = QtWidgets.QLabel(self.widget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.label_33.sizePolicy().hasHeightForWidth())
+        self.label_33.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(10)
+        self.label_33.setFont(font)
+        self.label_33.setIndent(1)
+        self.label_33.setObjectName("label_33")
+        self.verticalLayout.addWidget(self.label_33)
+        self.txt_student_item_password = PasswordGenerator(self.widget)
+        self.txt_student_item_password.operation.emit()
+        self.txt_student_item_password.setMinimumSize(QtCore.QSize(0, 30))
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(10)
+        self.txt_student_item_password.setFont(font)
+        self.txt_student_item_password.setObjectName(
+            "txt_student_item_password")
+        self.verticalLayout.addWidget(self.txt_student_item_password)
         self.verticalLayout_2.addWidget(self.widget)
 
-        self.retranslateUi(w_section_item)
-        QtCore.QMetaObject.connectSlotsByName(w_section_item)
+        self.retranslateUi(w_student_item)
+        QtCore.QMetaObject.connectSlotsByName(w_student_item)
 
-    def retranslateUi(self, w_section_item):
+    def retranslateUi(self, w_student_item):
         _translate = QtCore.QCoreApplication.translate
-        self.label_43.setText(_translate("w_section_item", "Name"))
+        self.label_38.setText(_translate("w_student_item", "Username"))
+        self.label_33.setText(_translate("w_student_item", "Password"))
 
     def connect_signals(self):
-        self.btn_section_item_close.clicked.connect(self.close_item)
+        self.btn_student_item_close.clicked.connect(self.close_item)
 
     def close_item(self):
-        self.parent.verticalLayout_53.removeWidget(self)
-        if self.parent.verticalLayout_53.count() == 1:
-            self.parent.btn_add_section_bulk.setDisabled(True)
+        self.parent.verticalLayout_38.removeWidget(self)
+        if self.parent.verticalLayout_38.count() == 1:
+            self.parent.btn_add_student_bulk.setDisabled(True)
 
     def get_value(self):
-        return self.txt_section_item_name.text(),
+        return self.parent.section_combobox.currentText(), self.txt_student_item_username.text(),  self.txt_student_item_password.text()
