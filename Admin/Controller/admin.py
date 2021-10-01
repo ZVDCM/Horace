@@ -162,6 +162,7 @@ class Admin:
             self.View.tv_students.selectRow(self.SectionStudent.target_student_row)
             self.set_latest_section_student_inputs()
         else:
+            self.View.disable_section_student_delete_clear()
             self.View.disable_student_edit_delete()
 
     def set_latest_section_inputs(self):

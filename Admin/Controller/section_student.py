@@ -5,6 +5,8 @@ from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 import csv
 
+from Admin.Misc.Widgets.import_section_student import Import
+
 
 class GetTargetSectionStudent(QtCore.QThread):
     operation = QtCore.pyqtSignal(object)
@@ -124,27 +126,64 @@ class AddItem(QtCore.QThread):
 class ExportSectionStudentTable(QtCore.QThread):
     operation = QtCore.pyqtSignal()
 
-    def __init__(self, fn, alert, View):
+    def __init__(self, fn, alert):
         super().__init__()
-        self.View = View
         self.alert = alert
         self.fn = fn
+        self.path = None
 
     def run(self):
-        default_path = os.path.expanduser('~/Documents')
-        path = QFileDialog.getExistingDirectory(
-                None, 'Export files to', default_path)
-        if path:
+        if self.path:
             self.alert('file', 'Exporting Tables')
             file_names = ['Sections.csv', 'Students.csv', 'Section Students.csv']
             file_headers = [('ID', 'Name'), ('UserID', 'Username', 'Privilege', 'Salt', 'Hash'), ('ID', 'Section', 'Student')]
             tables = self.fn()
             for index, table in enumerate(tables):
-                with open(f'{path}\{file_names[index]}', 'w', newline='') as file:
+                with open(f'{self.path}\{file_names[index]}', 'w', newline='') as file:
                     writer = csv.writer(file)
                     writer.writerow(file_headers[index])
                     writer.writerows(table)
             self.alert('file', 'Tables Exported')
+        self.quit()
+
+class ImportSectionStudentTable(QtCore.QThread):
+    error = QtCore.pyqtSignal(object)
+
+    def __init__(self, Model, alert):
+        super().__init__()
+        self.alert = alert
+        self.Model = Model
+        self.val = ()
+
+    def run(self):
+        sections, student, section_student = self.val
+        errors = []
+        if sections:
+            with open(sections, newline='') as csvfile:
+                sections_data = list(csv.reader(csvfile))[1:]
+                for index in range(len(sections_data)):
+                    sections_data[index] = sections_data[index][1:]
+                res = self.Model.import_section_table(sections_data)
+                if res != 'successful':
+                    errors.append('Section')
+        if student:
+            with open(student, newline='') as csvfile:
+                student_data = list(csv.reader(csvfile))[1:]
+                for index in range(len(student_data)):
+                    student_data[index] = student_data[index][1:]
+                res = self.Model.import_student_table(student_data)
+                if res != 'successful':
+                    errors.append('Student')
+        if section_student:
+            with open(section_student, newline='') as csvfile:
+                section_student_data = list(csv.reader(csvfile))[1:]
+                for index in range(len(section_student_data)):
+                    section_student_data[index] = section_student_data[index][1:]
+                res = self.Model.assign_student_section(section_student_data)
+                if res != 'successful':
+                    errors.append('Section Student')
+        if errors:
+            self.error.emit(errors)
         self.quit()
 
 class Alert(QtCore.QThread):
@@ -179,12 +218,19 @@ class SectionStudent:
         self.student_signals()
         self.sectionstudent_signals()
 
-        self.View.btn_import_students_sections.clicked.connect(self.import_section_student)
+        self.View.btn_import_students_sections.clicked.connect(self.get_import_files)
         self.View.btn_export_students_sections.clicked.connect(self.init_export_section_student)
         self.View.btn_clear_students_sections_table.clicked.connect(self.init_clear_section_student)
 
+    def ImportSectionStudentTable(self):
+        handler = ImportSectionStudentTable(self.Model, self.show_alert)
+        handler.started.connect(self.View.TableSectionStudentLoadingScreen.run)
+        handler.error.connect(self.import_error)
+        handler.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
+        return handler
+
     def ExportSectionStudentTable(self):
-        handler = ExportSectionStudentTable(self.Model.export_section_student_table, self.show_alert, self.View)
+        handler = ExportSectionStudentTable(self.Model.export_section_student_table, self.show_alert)
         handler.started.connect(self.View.TableSectionStudentLoadingScreen.run)
         handler.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
         return handler
@@ -195,12 +241,35 @@ class SectionStudent:
         handler.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
         return handler
 
-    def import_section_student(self):
-        print('import')
+    def import_error(self, errors):
+        self.View.run_popup(f"Import Error: {', '.join(errors)}", 'critical')
+
+    def get_import_files(self):
+        self.Import = Import(self.View)
+        self.Import.operation.connect(self.init_import_section_student)
+        self.Import.run()
+
+    def init_import_section_student(self, section, students, section_students):
+        self.init_import_section_student_handler = self.ImportSectionStudentTable()
+        self.init_import_section_student_handler.val = section, students, section_students
+
+        self.get_all_section_handler = self.GetAllSection()
+        self.get_all_student_handler = self.GetAllStudents()
+
+        self.init_import_section_student_handler.finished.connect(self.get_all_section_handler.start)
+        self.get_all_section_handler.finished.connect(self.get_all_student_handler.start)
+        self.get_all_student_handler.finished.connect(self.View.btn_cancel_section.click)
+
+        self.init_import_section_student_handler.start()
 
     def init_export_section_student(self):
-        self.init_export_section_student_handler = self.ExportSectionStudentTable()
-        self.init_export_section_student_handler.start()
+        default_path = os.path.expanduser('~/Documents')
+        path = QFileDialog.getExistingDirectory(
+                None, 'Export files to', default_path)
+        if path:
+            self.init_export_section_student_handler = self.ExportSectionStudentTable()
+            self.init_export_section_student_handler.path = path
+            self.init_export_section_student_handler.start()
     
     def show_alert(self, type, message):
         self.ShowAlert = Alert()
@@ -439,7 +508,7 @@ class SectionStudent:
         self.get_all_section_handler.start()
 
     def section_bulk_error(self):
-        self.View.run_popup(f"Section creation error\nAlready existing or blank")
+        self.View.run_popup(f"Section creation error\nAlready existing or blank", 'warning')
         self.get_all_section_handler = self.GetAllSection()
         self.get_all_section_handler.finished.connect(
             self.get_latest_target_section_student)
@@ -473,9 +542,6 @@ class SectionStudent:
             self.get_target_section_student)
         handler.operation.connect(
             self.View.enable_student_edit_delete)
-        handler.operation.connect(
-            self.View.enable_section_student_delete_clear
-        )
         handler.operation.connect(
             lambda: self.View.btn_init_add_section.setDisabled(False)
         )
@@ -638,7 +704,9 @@ class SectionStudent:
             self.View.disable_section_student_delete_clear()
             self.View.clear_section_inputs()
             self.View.lbl_sections_table_status.setText(f'Sections: 0')
+            self.View.btn_init_add_section_student.setDisabled(True)
         else:
+            self.View.btn_init_add_section_student.setDisabled(False)
             self.View.enable_section_edit_delete()
 
         section_model = self.Model.TableModel(
@@ -842,7 +910,7 @@ class SectionStudent:
         self.AddItem.start()
     
     def student_bulk_error(self):
-        self.View.run_popup(f"Student creation error\nAlready existing or blank")
+        self.View.run_popup(f"Student creation error\nAlready existing or blank", 'warning')
         self.get_all_student_handler = self.GetAllStudents()
         self.get_all_section_student_handler = self.GetAllSectionStudents()
         

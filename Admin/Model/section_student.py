@@ -1,4 +1,5 @@
 from Admin.Misc.Functions.hash import *
+import mysql
 
 
 class SectionStudent:
@@ -11,6 +12,48 @@ class SectionStudent:
         self.TableModel = Model.TableModel
         self.ListModel = Model.ListModel
         self.Database = Model.Database
+
+    def import_section_table(self, sections):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+        
+        try:
+            insert_query = "INSERT INTO Sections (Name) VALUES (%s)"
+            cursor.executemany(insert_query, (sections))
+            db.commit()
+            res = 'successful'
+        except mysql.connector.errors.ProgrammingError:
+            res = 'programming error'
+        except  mysql.connector.errors.InterfaceError:
+            res = 'programming error'
+        except mysql.connector.errors.IntegrityError:
+            res = 'integrity error'
+
+        cursor.close()
+        db.close()
+
+        return res
+
+    def import_student_table(self, students):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        try:
+            insert_query = "INSERT INTO Users (Username, Privilege, Salt, Hash) VALUES (%s,%s,%s,%s)"
+            cursor.executemany(insert_query, (students))
+            db.commit()
+            res = 'successful'
+        except mysql.connector.errors.ProgrammingError:
+            res = 'programming error'
+        except  mysql.connector.errors.InterfaceError:
+            res = 'programming error'
+        except mysql.connector.errors.IntegrityError:
+            res = 'integrity error'
+
+        cursor.close()
+        db.close()
+
+        return res
 
     def export_section_student_table(self):
         db = self.Database.connect()
@@ -126,11 +169,17 @@ class SectionStudent:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        insert_query = "INSERT INTO Section_Students (Section, Student) VALUES (%s, %s)"
-        cursor.executemany(insert_query, (section_students))
-        db.commit()
-
-        res = 'successful'
+        try:
+            insert_query = "INSERT INTO Section_Students (Section, Student) VALUES (%s, %s)"
+            cursor.executemany(insert_query, (section_students))
+            db.commit()
+            res = 'successful'
+        except mysql.connector.errors.ProgrammingError:
+            res = 'programming error'
+        except  mysql.connector.errors.InterfaceError:
+            res = 'programming error'
+        except mysql.connector.errors.IntegrityError:
+            res = 'integrity error'
 
         cursor.close()
         db.close()

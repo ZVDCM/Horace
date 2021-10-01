@@ -20,6 +20,7 @@ class DataTable(QtWidgets.QDialog):
         self.ActiveOverlay = ActiveOverlay(self)
 
         self.connect_signals()
+        self.btn_add.setEnabled(False)
 
     def run(self):
         self.activateWindow()
@@ -32,6 +33,10 @@ class DataTable(QtWidgets.QDialog):
         if multiselection:
             self.tv_target_data.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
         self.tv_target_data.setFocus(True)
+
+        if table_model.rowCount() > 1:
+            self.btn_add.setEnabled(True)
+
         self.remove_null_row()
 
     def setupUi(self, Form):
@@ -58,6 +63,12 @@ class DataTable(QtWidgets.QDialog):
                            "  border: 1px solid #0e4884;\n"
                            "  background-color: #0e4884;\n"
                            "}\n"
+                           "QPushButton::disabled {\n"
+                             "  padding: 5px;\n"
+                             "  color: gray;\n"
+                             "  border: 1px solid #0B1A30;\n"
+                             "  background-color: #0B1A30;\n"
+                             "}\n"
                            "\n"
                            "QLineEdit:focus,\n"
                            "QLineEdit:hover,\n"
@@ -162,8 +173,10 @@ class DataTable(QtWidgets.QDialog):
         self.btn_cancel.setMinimumSize(QtCore.QSize(150, 0))
         font = QtGui.QFont()
         font.setFamily("Barlow")
-        font.setPointSize(10)
+        font.setPointSize(11)
         self.btn_cancel.setFont(font)
+        self.btn_cancel.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_cancel.setStyleSheet("QPushButton{\n"
                                       "    border-radius: 5px;\n"
                                       "    background: none;\n"
@@ -182,7 +195,7 @@ class DataTable(QtWidgets.QDialog):
         self.btn_add.setMinimumSize(QtCore.QSize(150, 0))
         font = QtGui.QFont()
         font.setFamily("Barlow")
-        font.setPointSize(10)
+        font.setPointSize(11)
         self.btn_add.setFont(font)
         self.btn_add.setStyleSheet("border-radius: 5px;")
         self.btn_add.setObjectName("btn_add")
