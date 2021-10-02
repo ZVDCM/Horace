@@ -135,5 +135,6 @@ class Host:
         message = normalize_message('cmd', 'end control', target=self.target)
         self.Chat.set_message(message)
         self.Chat.HideLoadingScreen.start()
-        self.Chat.thaw()
+        if self.Meeting.is_frozen:
+            self.Chat.thaw()
         super(QMainWindow, self.parent).closeEvent(event)

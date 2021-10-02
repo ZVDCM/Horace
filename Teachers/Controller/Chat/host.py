@@ -793,7 +793,7 @@ class Host:
 
     def control_desktop(self, name):
         self.is_controlling = True
-        if not self.Meeting.is_frozen:
+        if not self.Meeting.is_frozen or not self.Meeting.is_disconnected:
             self.View.Overlay.btn_freeze.click()
         message = normalize_message('cmd', 'start control', target=name)
         self.set_message(message)
