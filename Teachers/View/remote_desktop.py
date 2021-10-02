@@ -21,15 +21,14 @@ class RemoteDesktop(QtWidgets.QMainWindow):
         self.target_resolution = None
         self.setupUi(self)
         self.connect_signals()
-        QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
         self.LoadingScreen = LoadingScreen(self.widget, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         
     def run(self):
         self.raise_()
         self.show()
+        QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.keyboard_listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
-
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")

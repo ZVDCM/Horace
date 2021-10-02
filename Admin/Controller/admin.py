@@ -243,7 +243,6 @@ class Admin:
         self.View.SectionStudentLoadingScreen.resize_loader()
         self.View.TeacherLoadingScreen.resize_loader()
         self.View.AttendanceLoadingScreen.resize_loader()
-        self.View.AttendanceStudentLoadingScreen.resize_loader()
         self.View.ClassLoadingScreen.resize_loader()
         self.View.ClassTeacherLoadingScreen.resize_loader()
         self.View.ClassSectionLoadingScreen.resize_loader()

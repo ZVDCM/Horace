@@ -50,8 +50,6 @@ class Admin(QtWidgets.QMainWindow):
             'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.AttendanceLoadingScreen = LoadingScreen(self.w_attendance, relative_path(
             'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
-        self.AttendanceStudentLoadingScreen = LoadingScreen(self.w_attendance_student, relative_path(
-            'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         # Class Member
         self.ClassLoadingScreen = LoadingScreen(self.w_class_input, relative_path(
@@ -2436,144 +2434,7 @@ class Admin(QtWidgets.QMainWindow):
         self.lv_attendance.setObjectName("lv_attendance")
         self.verticalLayout_43.addWidget(self.lv_attendance)
         self.verticalLayout_40.addWidget(self.w_attendance)
-        self.line_5 = QtWidgets.QFrame(self.widget_7)
-        self.line_5.setStyleSheet("color: #0e4177;")
-        self.line_5.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.line_5.setLineWidth(2)
-        self.line_5.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_5.setObjectName("line_5")
-        self.verticalLayout_40.addWidget(self.line_5)
-        self.w_attendance_student = QtWidgets.QWidget(self.widget_7)
-        self.w_attendance_student.setObjectName("w_attendance_student")
-        self.verticalLayout_20 = QtWidgets.QVBoxLayout(
-            self.w_attendance_student)
-        self.verticalLayout_20.setContentsMargins(15, 20, 15, 15)
-        self.verticalLayout_20.setSpacing(15)
-        self.verticalLayout_20.setObjectName("verticalLayout_20")
-        self.horizontalLayout_19 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_19.setSpacing(6)
-        self.horizontalLayout_19.setObjectName("horizontalLayout_19")
-        self.lbl_attendance_present_status = QtWidgets.QLabel(
-            self.w_attendance_student)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.lbl_attendance_present_status.sizePolicy().hasHeightForWidth())
-        self.lbl_attendance_present_status.setSizePolicy(sizePolicy)
-        self.lbl_attendance_present_status.setMinimumSize(QtCore.QSize(0, 30))
-        self.lbl_attendance_present_status.setMaximumSize(
-            QtCore.QSize(16777215, 30))
-        font = QtGui.QFont()
-        font.setFamily("Barlow")
-        font.setPointSize(10)
-        self.lbl_attendance_present_status.setFont(font)
-        self.lbl_attendance_present_status.setStyleSheet("")
-        self.lbl_attendance_present_status.setAlignment(QtCore.Qt.AlignCenter)
-        self.lbl_attendance_present_status.setIndent(1)
-        self.lbl_attendance_present_status.setObjectName(
-            "lbl_attendance_present_status")
-        self.horizontalLayout_19.addWidget(self.lbl_attendance_present_status)
-        self.line_10 = QtWidgets.QFrame(self.w_attendance_student)
-        self.line_10.setStyleSheet("color: #0e4177;")
-        self.line_10.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.line_10.setLineWidth(2)
-        self.line_10.setFrameShape(QtWidgets.QFrame.VLine)
-        self.line_10.setObjectName("line_10")
-        self.horizontalLayout_19.addWidget(self.line_10)
-        self.lbl_attendance_absent_status = QtWidgets.QLabel(
-            self.w_attendance_student)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.lbl_attendance_absent_status.sizePolicy().hasHeightForWidth())
-        self.lbl_attendance_absent_status.setSizePolicy(sizePolicy)
-        self.lbl_attendance_absent_status.setMinimumSize(QtCore.QSize(0, 30))
-        self.lbl_attendance_absent_status.setMaximumSize(
-            QtCore.QSize(16777215, 30))
-        font = QtGui.QFont()
-        font.setFamily("Barlow")
-        font.setPointSize(10)
-        self.lbl_attendance_absent_status.setFont(font)
-        self.lbl_attendance_absent_status.setAlignment(QtCore.Qt.AlignCenter)
-        self.lbl_attendance_absent_status.setIndent(1)
-        self.lbl_attendance_absent_status.setObjectName(
-            "lbl_attendance_absent_status")
-        self.horizontalLayout_19.addWidget(self.lbl_attendance_absent_status)
-        spacerItem19 = QtWidgets.QSpacerItem(
-            0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_19.addItem(spacerItem19)
-        self.verticalLayout_20.addLayout(self.horizontalLayout_19)
-        self.horizontalLayout_54 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_54.setSizeConstraint(
-            QtWidgets.QLayout.SetDefaultConstraint)
-        self.horizontalLayout_54.setSpacing(0)
-        self.horizontalLayout_54.setObjectName("horizontalLayout_54")
-        self.txt_search_attendance_student = QtWidgets.QLineEdit(
-            self.w_attendance_student)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.txt_search_attendance_student.sizePolicy().hasHeightForWidth())
-        self.txt_search_attendance_student.setSizePolicy(sizePolicy)
-        self.txt_search_attendance_student.setMinimumSize(QtCore.QSize(0, 30))
-        font = QtGui.QFont()
-        font.setFamily("Barlow")
-        font.setPointSize(10)
-        self.txt_search_attendance_student.setFont(font)
-        self.txt_search_attendance_student.setStyleSheet("border-radius: none;\n"
-                                                         "border-top-left-radius: 5px;\n"
-                                                         "border-bottom-left-radius: 5px;")
-        self.txt_search_attendance_student.setObjectName(
-            "txt_search_attendance_student")
-        self.horizontalLayout_54.addWidget(self.txt_search_attendance_student)
-        self.btn_search_attendance_student = QtWidgets.QPushButton(
-            self.w_attendance_student)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.btn_search_attendance_student.sizePolicy().hasHeightForWidth())
-        self.btn_search_attendance_student.setSizePolicy(sizePolicy)
-        self.btn_search_attendance_student.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_search_attendance_student.setMaximumSize(QtCore.QSize(30, 30))
-        font = QtGui.QFont()
-        font.setFamily("Barlow")
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        self.btn_search_attendance_student.setFont(font)
-        self.btn_search_attendance_student.setCursor(
-            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_search_attendance_student.setStyleSheet("border-top-right-radius: 5px;\n"
-                                                         "border-bottom-right-radius: 5px;")
-        self.btn_search_attendance_student.setText("")
-        self.btn_search_attendance_student.setIcon(icon4)
-        self.btn_search_attendance_student.setIconSize(QtCore.QSize(18, 18))
-        self.btn_search_attendance_student.setObjectName(
-            "btn_search_attendance_student")
-        self.horizontalLayout_54.addWidget(self.btn_search_attendance_student)
-        self.verticalLayout_20.addLayout(self.horizontalLayout_54)
-        self.tw_attendances = QtWidgets.QTabWidget(self.w_attendance_student)
-        self.tw_attendances.setStyleSheet("")
-        self.tw_attendances.setTabsClosable(True)
-        self.tw_attendances.setMovable(True)
-        self.tw_attendances.setTabBarAutoHide(False)
-        self.tw_attendances.setObjectName("tw_attendances")
-        self.tab = QtWidgets.QWidget()
-        self.tab.setObjectName("tab")
-        self.tw_attendances.addTab(self.tab, "")
-        self.tab_2 = QtWidgets.QWidget()
-        self.tab_2.setObjectName("tab_2")
-        self.tw_attendances.addTab(self.tab_2, "")
-        self.verticalLayout_20.addWidget(self.tw_attendances)
-        self.verticalLayout_40.addWidget(self.w_attendance_student)
+        
         self.verticalLayout_40.setStretch(4, 1)
         self.horizontalLayout_4.addWidget(self.widget_7)
         self.horizontalLayout_4.setStretch(0, 2)
@@ -3965,7 +3826,6 @@ class Admin(QtWidgets.QMainWindow):
         self.sw_all.setCurrentIndex(0)
         self.sw_student_section.setCurrentIndex(0)
         self.sw_teacher_attendance.setCurrentIndex(0)
-        self.tw_attendances.setCurrentIndex(0)
         self.sw_class.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -4006,14 +3866,6 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_cancel_teacher.setText(_translate("MainWindow", "Cancel"))
         self.lbl_attendance_status.setText(
             _translate("MainWindow", "Attendances: 100"))
-        self.lbl_attendance_present_status.setText(
-            _translate("MainWindow", "Present: 100"))
-        self.lbl_attendance_absent_status.setText(
-            _translate("MainWindow", "Absent: 100"))
-        self.tw_attendances.setTabText(self.tw_attendances.indexOf(
-            self.tab), _translate("MainWindow", "Tab 1"))
-        self.tw_attendances.setTabText(self.tw_attendances.indexOf(
-            self.tab_2), _translate("MainWindow", "Tab 2"))
         self.lbl_class_table_status.setText(
             _translate("MainWindow", "Classes: 100"))
         self.groupBox_5.setTitle(_translate("MainWindow", "Classes"))
