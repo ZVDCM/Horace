@@ -31,6 +31,9 @@ class TeacherAttendance:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
+        if not username:
+            return "Null"
+
         select_query = "SELECT * FROM Users WHERE Username=%s"
         cursor.execute(select_query, (username,))
 
@@ -85,6 +88,19 @@ class TeacherAttendance:
 
         delete_query = "DELETE FROM Users WHERE UserID=%s AND Privilege=%s"
         cursor.execute(delete_query, (Teacher.UserID, 'Teacher'))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
+
+    def delete_many_teachers(self, teachers):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Users WHERE Privilege='Teacher' AND UserID=%s"
+        cursor.executemany(delete_query, (teachers))
         db.commit()
 
         cursor.close()

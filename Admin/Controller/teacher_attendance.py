@@ -1,3 +1,4 @@
+from PyQt5.QtWidgets import QTableView, QWidget
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 
@@ -33,6 +34,37 @@ class Operation(QtCore.QThread):
             self.error.emit(res)
         self.quit()
 
+class AddItem(QtCore.QThread):
+    operation = QtCore.pyqtSignal()
+    error = QtCore.pyqtSignal()
+
+    def __init__(self, fn, layout, widget, tag, additional=None):
+        super().__init__()
+        self.fn = fn
+        self.layout = layout
+        self.widget = widget
+        self.tag = tag
+        self.additional = additional
+
+    def run(self):
+        error_items = []
+        for index in range(self.layout.count()):
+            target_item = self.widget.findChild(QWidget, f'{self.tag}{index+1}')
+            if target_item:
+                values = target_item.get_value()
+                for value in values:
+                    if is_blank(value):
+                        error_items.append(value)
+                if self.additional:
+                    values = (*self.additional, *values)
+                res = self.fn(*values)
+                if res == 'successful':
+                    target_item.close_item()
+        if error_items:
+            self.error.emit()
+        else:
+            self.operation.emit()
+        self.quit()
 
 class TeacherAttendance:
 
@@ -54,6 +86,44 @@ class TeacherAttendance:
             self.init_add_edit_teacher)
         self.View.btn_cancel_teacher.clicked.connect(self.cancel_teacher)
         self.View.btn_delete_teacher.clicked.connect(self.delete_teacher)
+
+        self.View.btn_init_teachers_bulk.clicked.connect(self.init_add_teacher_bulk)
+        self.View.btn_add_teacher_item.clicked.connect(self.View.add_teacher_item)
+        self.View.btn_clear_teacher_item.clicked.connect(self.View.clear_teacher_item)
+        self.View.btn_back_teacher_bulk.clicked.connect(self.go_back_teacher)
+        self.View.btn_add_teacher_bulk.clicked.connect(self.add_teacher_bulk)
+
+        self.View.tv_teachers.keyPressEvent = self.tv_teachers_key_pressed
+        self.View.tv_teachers.mousePressEvent = self.tv_teachers_mouse_press
+    
+    def init_add_teacher_bulk(self):
+        for index in range(self.View.verticalLayout_47.count()):
+            target_item = self.View.scrollAreaWidgetContents_3.findChild(QWidget, f'teacherItem_{index}')
+            if target_item:
+                target_item.close_item()
+        self.View.add_teacher_item()
+        self.View.add_teacher_item()
+        self.View.sw_teacher_attendance.setCurrentIndex(1)
+
+    def add_teacher_bulk(self):
+        self.AddItem = AddItem(self.Model.create_teacher, self.View.verticalLayout_47, self.View.scrollAreaWidgetContents_3, 'teacherItem_')
+        self.AddItem.started.connect(self.View.TableTeacherLoadingScreen.run)
+        self.AddItem.operation.connect(self.go_back_teacher)
+        self.AddItem.error.connect(self.teacher_bulk_error)
+        self.AddItem.finished.connect(self.View.TableTeacherLoadingScreen.hide)
+        self.AddItem.start()
+
+    def teacher_bulk_error(self):
+        self.View.run_popup(f"Teacher creation error\nAlready existing or blank", 'warning')
+        self.get_all_teacher_handler = self.GetAllTeacher()
+        self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
+        self.get_all_teacher_handler.start()
+
+    def go_back_teacher(self):
+        self.View.sw_teacher_attendance.setCurrentIndex(0)
+        self.get_all_teacher_handler = self.GetAllTeacher()
+        self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
+        self.get_all_teacher_handler.start()
 
     # Operations
     def GetAllTeacher(self):
@@ -85,21 +155,77 @@ class TeacherAttendance:
         handler.finished.connect(self.View.TeacherLoadingScreen.hide)
         return handler
 
+    def DeleteManyTeacher(self):
+        handler = Operation(self.Model.delete_many_teachers)
+        handler.started.connect(self.View.TableTeacherLoadingScreen.run)
+        handler.finished.connect(
+            self.View.TableTeacherLoadingScreen.hide)
+        return handler
+
+    def tv_teachers_mouse_press(self, event):
+        if event.button() == 2:
+            if self.View.tv_teachers.selectionModel().selectedRows():
+                self.View.show_menu(
+                    self.init_delete_many_teacher, self.View.tv_teachers.mapToGlobal(event.pos()))
+        super(QTableView, self.View.tv_teachers).mousePressEvent(event)
+
+    def tv_teachers_key_pressed(self, event):
+        if event.key() == 16777223:
+            self.init_delete_many_teacher()
+
+        super(QTableView, self.View.tv_teachers).keyPressEvent(event)
+
+    def init_delete_many_teacher(self):
+        self.View.show_confirm(self.delete_many_teacher)
+
+    def delete_many_teacher(self):
+        indices = self.View.tv_teachers.selectionModel().selectedRows()
+        indices = [index.row() for index in indices]
+        target_teachers = [[self.View.tv_teachers.model().getRowData(index)[
+            0]] for index in indices]
+
+        self.get_all_teacher_handler = self.GetAllTeacher()
+        self.delete_many_teacher_handler = self.DeleteManyTeacher()
+
+        self.delete_many_teacher_handler.val = target_teachers,
+        self.delete_many_teacher_handler.operation.connect(
+            self.get_all_teacher_handler.start)
+        
+        self.get_all_teacher_handler.finished.connect(
+            self.get_latest_teacher)
+        self.delete_many_teacher_handler.start()
+
     # Table
     def set_teacher_table(self, teachers):
+        if not teachers:
+            self.View.disable_teacher_attendance_edit_delete()
+            self.View.disable_teacher_edit_delete()
+            self.View.lbl_teachers_table_status.setText(f'Teachers: 0')
+        else:
+            self.View.enable_teacher_edit_delete()
+
         teacher_model = self.Model.TableModel(
             self.View.tv_teachers, teachers, self.Model.Teacher.get_headers())
         self.View.tv_teachers.setModel(teacher_model)
         self.View.tv_teachers.horizontalHeader().setMinimumSectionSize(150)
+        self.View.lbl_teachers_table_status.setText(
+            f'Teachers: {len(teachers)}')
 
     def table_teacher_clicked(self, index):
         row = index.row()
         teacher_model = self.View.tv_teachers.model()
+
         if row == teacher_model.rowCount() - 1:
+            self.View.btn_init_add_teacher.click()
             return
 
-        self.set_target_teacher(self.Model.Teacher(
-            *teacher_model.getRowData(row)))
+        self.TargetTeacher = self.Model.Teacher(
+            *teacher_model.getRowData(row))
+        self.set_teacher_inputs()
+
+        if self.View.teacher_state == 'Add' or self.View.teacher_state == 'Edit':
+            self.View.btn_cancel_teacher.click()
+            return
 
     def set_target_teacher(self, Teacher):
         self.TargetTeacher = Teacher

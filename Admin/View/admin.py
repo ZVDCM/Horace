@@ -13,6 +13,7 @@ from Admin.Misc.Widgets.custom_lineedit import PasswordGenerator
 from Admin.Misc.Widgets.pop_up import Popup
 from Admin.Misc.Functions.relative_path import relative_path
 from Admin.Misc.Widgets.student_item import StudentItem
+from Admin.Misc.Widgets.teacher_item import TeacherItem
 
 
 class Admin(QtWidgets.QMainWindow):
@@ -1727,13 +1728,6 @@ class Admin(QtWidgets.QMainWindow):
         self.lbl_teachers_table_status.setObjectName(
             "lbl_teachers_table_status")
         self.horizontalLayout_14.addWidget(self.lbl_teachers_table_status)
-        self.line_9 = QtWidgets.QFrame(self.w_table_teacher)
-        self.line_9.setStyleSheet("color: #083654;")
-        self.line_9.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.line_9.setLineWidth(2)
-        self.line_9.setFrameShape(QtWidgets.QFrame.VLine)
-        self.line_9.setObjectName("line_9")
-        self.horizontalLayout_14.addWidget(self.line_9)
         spacerItem13 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_14.addItem(spacerItem13)
@@ -1903,6 +1897,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_48.addLayout(self.horizontalLayout_49)
         self.verticalLayout_17.addLayout(self.horizontalLayout_48)
         self.tv_teachers = TableView(self.groupBox_3)
+        self.tv_teachers.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.tv_teachers.setObjectName("tv_teachers")
         self.verticalLayout_17.addWidget(self.tv_teachers)
         self.horizontalLayout_17.addWidget(self.groupBox_3)
@@ -1932,9 +1927,19 @@ class Admin(QtWidgets.QMainWindow):
         self.verticalLayout_47.setContentsMargins(0, 0, 10, 0)
         self.verticalLayout_47.setSpacing(20)
         self.verticalLayout_47.setObjectName("verticalLayout_47")
+
+        teacher_item = TeacherItem(self)
+        teacher_item.setObjectName("teacherItem_1")
+        self.verticalLayout_47.addWidget(teacher_item)
+
+        teacher_item = TeacherItem(self)
+        teacher_item.setObjectName("teacherItem_2")
+        self.verticalLayout_47.addWidget(teacher_item)
+
         spacerItem15 = QtWidgets.QSpacerItem(
             20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_47.addItem(spacerItem15)
+
         self.sa_teacher_bulk.setWidget(self.scrollAreaWidgetContents_3)
         self.horizontalLayout_29.addWidget(self.sa_teacher_bulk)
         self.verticalLayout_34 = QtWidgets.QVBoxLayout()
@@ -1945,7 +1950,13 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_add_teacher_bulk.setMaximumSize(QtCore.QSize(30, 30))
         self.btn_add_teacher_bulk.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_add_teacher_bulk.setStyleSheet("border-radius: 5px")
+        self.btn_add_teacher_bulk.setStyleSheet("QPushButton{\n"
+                                                "  border-radius: 5px;"
+                                                "}\n"
+                                                "QPushButton::disabled {\n"
+                                                "  border: 1px solid #0b1a30;\n"
+                                                "  background-color: #0b1a30;\n"
+                                                "}\n")
         self.btn_add_teacher_bulk.setIcon(icon5)
         self.btn_add_teacher_bulk.setIconSize(QtCore.QSize(19, 19))
         self.btn_add_teacher_bulk.setObjectName("btn_add_teacher_bulk")
@@ -2797,6 +2808,7 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_52.addLayout(self.horizontalLayout_53)
         self.verticalLayout_31.addLayout(self.horizontalLayout_52)
         self.tv_class = TableView(self.groupBox_5)
+        self.tv_class.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.tv_class.setObjectName("tv_class")
         self.verticalLayout_31.addWidget(self.tv_class)
         self.horizontalLayout_26.addWidget(self.groupBox_5)
@@ -4154,13 +4166,29 @@ class Admin(QtWidgets.QMainWindow):
     def disable_teacher_buttons(self):
         self.btn_init_add_teacher.setDisabled(True)
         self.btn_init_edit_teacher.setDisabled(True)
-        self.btn_delete_url.setDisabled(True)
+        self.btn_delete_teacher.setDisabled(True)
         self.w_teacher_btn.show()
+    
+    def disable_teacher_edit_delete(self):
+        self.btn_init_edit_teacher.setDisabled(True)
+        self.btn_delete_teacher.setDisabled(True)
+
+    def enable_teacher_edit_delete(self):
+        self.btn_init_edit_teacher.setDisabled(False)
+        self.btn_delete_teacher.setDisabled(False)
+
+    def disable_teacher_attendance_edit_delete(self):
+        self.btn_delete_attendance.setDisabled(True)
+        self.btn_clear_attendance_table.setDisabled(True)
+
+    def enable_teacher_attendance_edit_delete(self):
+        self.btn_delete_attendance.setDisabled(False)
+        self.btn_clear_attendance_table.setDisabled(False)
 
     def enable_teacher_buttons(self):
         self.btn_init_add_teacher.setDisabled(False)
         self.btn_init_edit_teacher.setDisabled(False)
-        self.btn_delete_url.setDisabled(False)
+        self.btn_delete_teacher.setDisabled(False)
         self.w_teacher_btn.hide()
 
     def disable_teacher_inputs(self):
@@ -4187,6 +4215,31 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_init_edit_class.setDisabled(True)
         self.btn_delete_class.setDisabled(True)
         self.w_class_btn.show()
+        
+    def disable_class_edit_delete(self):
+        self.btn_init_edit_class.setDisabled(True)
+        self.btn_delete_class.setDisabled(True)
+
+    def disable_class_teacher_delete_clear(self):
+        self.btn_delete_class_teacher.setDisabled(True)
+        self.btn_clear_class_teacher.setDisabled(True)
+
+    def disable_class_section_delete_clear(self):
+        self.btn_delete_class_section.setDisabled(True)
+        self.btn_clear_class_student.setDisabled(True)
+
+    def enable_class_edit_delete(self):
+        self.btn_init_edit_class.setDisabled(False)
+        self.btn_delete_class.setDisabled(False)
+
+    def enable_class_teacher_delete_clear(self):
+        self.btn_delete_class_teacher.setDisabled(False)
+        self.btn_clear_class_teacher.setDisabled(False)
+
+    def enable_class_section_delete_clear(self):
+        self.btn_init_add_class_teacher.setDisabled(False)
+        self.btn_delete_class_section.setDisabled(False)
+        self.btn_clear_class_student.setDisabled(False)
 
     def enable_class_buttons(self):
         self.btn_init_add_class.setDisabled(False)
@@ -4290,6 +4343,19 @@ class Admin(QtWidgets.QMainWindow):
             target.close()
             target.deleteLater()
         self.btn_add_student_bulk.setDisabled(True)
+
+    def add_teacher_item(self):
+        teacher_item = TeacherItem(self)
+        teacher_item.setObjectName(f"teacherItem_{self.verticalLayout_47.count()}")
+        self.verticalLayout_47.insertWidget(0, teacher_item)
+        self.btn_add_teacher_bulk.setDisabled(False)
+        
+    def clear_teacher_item(self):
+        for index in range(self.verticalLayout_47.count()-1):
+            target = self.verticalLayout_47.itemAt(index).widget()
+            target.close()
+            target.deleteLater()
+        self.btn_add_teacher_bulk.setDisabled(True)
 
     def show_alert(self, type, message):
         if type == 'file':

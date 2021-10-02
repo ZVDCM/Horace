@@ -68,6 +68,11 @@ class ClassMember:
         self.View.btn_cancel_class.clicked.connect(self.cancel_class)
         self.View.btn_delete_class.clicked.connect(self.delete_class)
 
+        self.View.btn_init_class_bulk.clicked.connect(self.init_add_class_bulk)
+    
+    def init_add_class_bulk(self):
+        self.View.sw_class.setCurrentIndex(1)
+
     # Operations
     def GetAllClass(self):
         handler = Get(self.Model.get_all_class)
@@ -102,21 +107,38 @@ class ClassMember:
     def table_class_clicked(self, index):
         row = index.row()
         class_model = self.View.tv_class.model()
+
         if row == class_model.rowCount() - 1:
+            self.View.btn_init_add_class.click()
             return
 
-        self.set_target_class(self.Model.Class(
-            *class_model.getRowData(row)))
+        self.TargetClass = self.Model.Class(
+            *class_model.getRowData(row))
+        self.set_class_inputs()
+
+        if self.View.class_state == 'Add' or self.View.class_state == 'Edit':
+            self.View.btn_cancel_class.click()
+            return
 
         self.get_target_class_teacher_handler = self.GetTargetClassTeacher()
         self.get_target_class_teacher_handler.val = self.TargetClass,
         self.get_target_class_teacher_handler.start()
 
     def set_class_table(self, classes):
+        if not classes:
+            self.View.disable_class_edit_delete()
+            self.View.disable_class_teacher_delete_clear()
+            self.View.disable_class_section_delete_clear()
+            self.View.lbl_class_table_status.setText('Class: 0')
+        else:
+            self.View.enable_class_edit_delete()
+
         class_model = self.Model.TableModel(
             self.View.tv_class, classes, self.Model.Class.get_headers())
         self.View.tv_class.setModel(class_model)
         self.View.tv_class.horizontalHeader().setMinimumSectionSize(150)
+        self.View.lbl_class_table_status.setText(
+            f'Class: {len(classes)}')
 
     def set_target_class(self, Class):
         self.TargetClass = Class
@@ -295,12 +317,18 @@ class ClassMember:
 
     def set_class_teacher_list(self, teachers):
         try:
-            class_teacher_model = self.Model.ListModel(
-                self.View.lv_class_teacher, teachers)
-            self.View.lv_class_teacher.setModel(class_teacher_model)
-            self.target_class_teacher_row = class_teacher_model.createIndex(0,0).row()
-            self.TargetClassTeacher = self.Model.ClassTeacher(None, self.TargetClass.Code, class_teacher_model.getRowData(self.target_class_teacher_row))
-            self.select_latest_class_teacher()
+            if teachers:
+                class_teacher_model = self.Model.ListModel(
+                    self.View.lv_class_teacher, teachers)
+                self.View.lv_class_teacher.setModel(class_teacher_model)
+                self.target_class_teacher_row = class_teacher_model.createIndex(0,0).row()
+                self.TargetClassTeacher = self.Model.ClassTeacher(None, self.TargetClass.Code, class_teacher_model.getRowData(self.target_class_teacher_row))
+                self.select_latest_class_teacher()
+                self.View.enable_class_teacher_delete_clear()
+                self.View.lbl_class_teacher_status.setText(f'Teachers: {len(teachers)}')
+            else:
+                self.View.lbl_class_teacher_status.setText('Teachers: 0')
+                self.View.disable_class_teacher_delete_clear()
 
         except IndexError:
             pass
@@ -309,6 +337,9 @@ class ClassMember:
             self.get_target_class_section_handler = self.GetTargetClassSection()
             self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
             self.get_target_class_section_handler.start()
+        else:
+            self.View.lbl_class_section_status.setText('Sections: 0')
+            self.View.disable_class_section_delete_clear()
 
     def select_latest_class_teacher(self):
         class_teachers_model = self.View.lv_class_teacher.model()
@@ -403,6 +434,8 @@ class ClassMember:
             self.target_class_section_row = class_section_model.createIndex(0,0).row()
             self.TargetClassSection = self.Model.ClassSection(None, self.TargetClass.Code, self.TargetClassTeacher.Teacher, class_section_model.getRowData(self.target_class_section_row))
             self.select_latest_class_section()
+            self.View.enable_class_section_delete_clear()
+            self.View.lbl_class_section_status.setText(f'Sections: {len(sections)}')
         except IndexError:
             return
 

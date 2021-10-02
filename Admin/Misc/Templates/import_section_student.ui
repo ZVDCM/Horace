@@ -10,6 +10,18 @@
     <height>396</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>583</width>
+    <height>396</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>583</width>
+    <height>396</height>
+   </size>
+  </property>
   <property name="styleSheet">
    <string notr="true">QWidget{
 	background: #102542;
