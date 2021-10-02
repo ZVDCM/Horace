@@ -1,5 +1,6 @@
 from Admin.Misc.Widgets.alert import Alert
 from Admin.Misc.Widgets.alert_item import AlertItem
+from Admin.Misc.Widgets.class_item import ClassItem
 from Admin.Misc.Widgets.section_item import SectionItem
 from Admin.Misc.Widgets.context_menu import ContextMenu
 from Admin.Misc.Widgets.confirm import Confirm
@@ -2838,9 +2839,19 @@ class Admin(QtWidgets.QMainWindow):
         self.verticalLayout_50.setContentsMargins(0, 0, 10, 0)
         self.verticalLayout_50.setSpacing(20)
         self.verticalLayout_50.setObjectName("verticalLayout_50")
+
+        class_item = ClassItem(self)
+        class_item.setObjectName("classItem_1")
+        self.verticalLayout_50.addWidget(class_item)
+
+        class_item = ClassItem(self)
+        class_item.setObjectName("classItem_2")
+        self.verticalLayout_50.addWidget(class_item)
+
         spacerItem22 = QtWidgets.QSpacerItem(
             20, 460, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_50.addItem(spacerItem22)
+
         self.scrollArea_4.setWidget(self.scrollAreaWidgetContents_4)
         self.horizontalLayout_30.addWidget(self.scrollArea_4)
         self.verticalLayout_35 = QtWidgets.QVBoxLayout()
@@ -2949,6 +2960,8 @@ class Admin(QtWidgets.QMainWindow):
                                     "  background-color: #102542;\n"
                                     "}\n"
                                     "\n"
+                                    "QTimeEdit:focus,\n"
+                                    "QTimeEdit:hover,\n"
                                     "QLineEdit:focus,\n"
                                     "QLineEdit:hover,\n"
                                     "QPushButton:focus,\n"
@@ -4356,6 +4369,19 @@ class Admin(QtWidgets.QMainWindow):
             target.close()
             target.deleteLater()
         self.btn_add_teacher_bulk.setDisabled(True)
+
+    def add_class_item(self):
+        class_item = ClassItem(self)
+        class_item.setObjectName(f"classItem_{self.verticalLayout_50.count()}")
+        self.verticalLayout_50.insertWidget(0, class_item)
+        self.btn_add_class_bulk.setDisabled(False)
+        
+    def clear_class_item(self):
+        for index in range(self.verticalLayout_50.count()-1):
+            target = self.verticalLayout_50.itemAt(index).widget()
+            target.close()
+            target.deleteLater()
+        self.btn_add_class_bulk.setDisabled(True)
 
     def show_alert(self, type, message):
         if type == 'file':

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QWidget
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 from Admin.Misc.Widgets.data_table import DataTable
@@ -35,6 +35,37 @@ class Operation(QtCore.QThread):
             self.error.emit(res)
         self.quit()
 
+class AddItem(QtCore.QThread):
+    operation = QtCore.pyqtSignal()
+    error = QtCore.pyqtSignal()
+
+    def __init__(self, fn, layout, widget, tag, additional=None):
+        super().__init__()
+        self.fn = fn
+        self.layout = layout
+        self.widget = widget
+        self.tag = tag
+        self.additional = additional
+
+    def run(self):
+        error_items = []
+        for index in range(self.layout.count()):
+            target_item = self.widget.findChild(QWidget, f'{self.tag}{index+1}')
+            if target_item:
+                values = target_item.get_value()
+                for value in values:
+                    if is_blank(value):
+                        error_items.append(value)
+                if self.additional:
+                    values = (*self.additional, *values)
+                res = self.fn(*values)
+                if res == 'successful':
+                    target_item.close_item()
+        if error_items:
+            self.error.emit()
+        else:
+            self.operation.emit()
+        self.quit()
 
 class ClassMember:
 
@@ -69,10 +100,40 @@ class ClassMember:
         self.View.btn_delete_class.clicked.connect(self.delete_class)
 
         self.View.btn_init_class_bulk.clicked.connect(self.init_add_class_bulk)
+        self.View.btn_back_class_bulk.clicked.connect(self.go_back_class)
+        self.View.btn_add_class_item.clicked.connect(self.View.add_class_item)
+        self.View.btn_clear_class_item.clicked.connect(self.View.clear_class_item)
+        self.View.btn_add_class_bulk.clicked.connect(self.add_class_bulk)
     
+    def add_class_bulk(self):
+        self.AddItem = AddItem(self.Model.create_class, self.View.verticalLayout_50, self.View.scrollAreaWidgetContents_4, 'classItem_')
+        self.AddItem.started.connect(self.View.TableClassLoadingScreen.run)
+        self.AddItem.operation.connect(self.go_back_class)
+        self.AddItem.error.connect(self.class_bulk_error)
+        self.AddItem.finished.connect(self.View.TableClassLoadingScreen.hide)
+        self.AddItem.start()
+
     def init_add_class_bulk(self):
+        for index in range(self.View.verticalLayout_50.count()):
+            target_item = self.View.scrollAreaWidgetContents_4.findChild(QWidget, f'classItem_{index}')
+            if target_item:
+                target_item.close_item()
+        self.View.add_class_item()
+        self.View.add_class_item()
         self.View.sw_class.setCurrentIndex(1)
 
+    def go_back_class(self):
+        self.View.sw_class.setCurrentIndex(0)
+        self.get_all_class_handler = self.GetAllClass()
+        self.get_all_class_handler.finished.connect(self.get_latest_class)
+        self.get_all_class_handler.start()
+
+    def class_bulk_error(self):
+        self.View.run_popup(f"Class creation error\nAlready existing or blank", 'warning')
+        self.get_all_class_handler = self.GetAllClass()
+        self.get_all_class_handler.finished.connect(self.get_latest_class)
+        self.get_all_class_handler.start()
+        
     # Operations
     def GetAllClass(self):
         handler = Get(self.Model.get_all_class)

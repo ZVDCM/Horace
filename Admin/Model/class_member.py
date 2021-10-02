@@ -35,6 +35,9 @@ class ClassMember:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
+        if not code or not name:
+            return 'Null'
+
         select_query = "SELECT * FROM Classes WHERE Code=%s"
         cursor.execute(select_query, (code,))
 

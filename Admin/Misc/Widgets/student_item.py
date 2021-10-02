@@ -5,7 +5,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class StudentItem(QtWidgets.QWidget):
-    search = QtCore.pyqtSignal()
 
     def __init__(self, parent):
         super().__init__()
