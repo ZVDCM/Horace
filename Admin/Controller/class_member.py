@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QWidget
+from PyQt5.QtWidgets import QDialog, QTableView, QWidget
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 from Admin.Misc.Widgets.data_table import DataTable
@@ -104,6 +104,9 @@ class ClassMember:
         self.View.btn_add_class_item.clicked.connect(self.View.add_class_item)
         self.View.btn_clear_class_item.clicked.connect(self.View.clear_class_item)
         self.View.btn_add_class_bulk.clicked.connect(self.add_class_bulk)
+
+        self.View.tv_class.keyPressEvent = self.tv_class_key_pressed
+        self.View.tv_class.mousePressEvent = self.tv_class_mouse_press
     
     def add_class_bulk(self):
         self.AddItem = AddItem(self.Model.create_class, self.View.verticalLayout_50, self.View.scrollAreaWidgetContents_4, 'classItem_')
@@ -163,6 +166,45 @@ class ClassMember:
         handler.started.connect(self.View.ClassLoadingScreen.run)
         handler.finished.connect(self.View.ClassLoadingScreen.hide)
         return handler 
+
+    def DeleteManyClass(self):
+        handler = Operation(self.Model.delete_many_class)
+        handler.started.connect(self.View.ClassLoadingScreen.run)
+        handler.finished.connect(self.View.ClassLoadingScreen.hide)
+        return handler
+    
+    def tv_class_mouse_press(self, event):
+        if event.button() == 2:
+            if self.View.tv_class.selectionModel().selectedRows():
+                self.View.show_menu(
+                    self.init_delete_many_class, self.View.tv_class.mapToGlobal(event.pos()))
+        super(QTableView, self.View.tv_class).mousePressEvent(event)
+
+    def tv_class_key_pressed(self, event):
+        if event.key() == 16777223:
+            self.init_delete_many_class()
+
+        super(QTableView, self.View.tv_class).keyPressEvent(event)
+
+    def init_delete_many_class(self):
+        self.View.show_confirm(self.delete_many_class)
+
+    def delete_many_class(self):
+        indices = self.View.tv_class.selectionModel().selectedRows()
+        indices = [index.row() for index in indices]
+        target_classes = [[self.View.tv_class.model().getRowData(index)[
+            0]] for index in indices]
+
+        self.get_all_class_handler = self.GetAllClass()
+        self.delete_many_class_handler = self.DeleteManyClass()
+
+        self.delete_many_class_handler.val = target_classes,
+        self.delete_many_class_handler.operation.connect(
+            self.get_all_class_handler.start)
+        
+        self.get_all_class_handler.finished.connect(
+            self.get_latest_class)
+        self.delete_many_class_handler.start()
 
     # Table
     def table_class_clicked(self, index):
@@ -399,6 +441,7 @@ class ClassMember:
             self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
             self.get_target_class_section_handler.start()
         else:
+            self.View.btn_init_add_class_section.setDisabled(True)
             self.View.lbl_class_section_status.setText('Sections: 0')
             self.View.disable_class_section_delete_clear()
 
@@ -418,7 +461,7 @@ class ClassMember:
     def run_teacher_data_table(self, teachers):
         self.DataTable = DataTable(self.View, 'Teachers')
         teacher_model = self.Model.TableModel(self.DataTable.tv_target_data, teachers, self.Model.ClassTeacher.get_headers()) 
-        self.DataTable.set_model(teacher_model)
+        self.DataTable.set_model(teacher_model, True)
         self.DataTable.btn_add.clicked.connect(self.add_target_teacher_data)
         self.DataTable.run()
 

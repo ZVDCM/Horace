@@ -92,6 +92,19 @@ class ClassMember:
 
         return 'successful'
 
+    def delete_many_class(self, classes):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Classes WHERE ID=%s"
+        cursor.executemany(delete_query, (classes))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
+
     # *Class Teacher
     def get_target_class_teacher(self, Class):
         db = self.Database.connect()
