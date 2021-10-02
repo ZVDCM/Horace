@@ -573,7 +573,7 @@ class SectionStudent:
         handler.operation.connect(
             self.View.enable_section_student_delete_clear)
         handler.operation.connect(
-            lambda: self.View.btn_init_add_section.setDisabled(False)
+            lambda: self.View.btn_init_add_section_student.setDisabled(False)
         )
         handler.validation.connect(
             self.View.tv_students.clearSelection)
@@ -666,6 +666,9 @@ class SectionStudent:
         section_model = self.View.tv_sections.model()
 
         if section_model.getRowData(row)[0] == 'NULL':
+            self.View.disable_student_edit_delete()
+            self.View.disable_section_student_delete_clear()
+            self.View.btn_init_add_section_student.setDisabled(True)
             self.View.tv_sections.clearSelection()
             self.View.tv_students.clearSelection()
             self.empty_section_student_list()
@@ -700,11 +703,15 @@ class SectionStudent:
                     f'Students: {len(sectionstudents)}')
                 self.set_target_section_student(target_section_student)
                 self.set_target_student(target_student)
+                self.View.enable_section_edit_delete()
+                self.View.enable_section_student_delete_clear()
             else:
                 self.View.tv_students.clearSelection()
                 self.View.clear_student_inputs()
                 self.View.lv_section_student.model().removeRows(
                     0, self.View.lv_section_student.model().rowCount())
+                self.View.disable_section_edit_delete()
+                self.View.disable_section_student_delete_clear()
         except AttributeError:
             return
 

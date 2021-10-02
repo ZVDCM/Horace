@@ -152,8 +152,10 @@ class BlacklistURL:
 
     def set_url_list(self, urls):
         if not urls:
+            self.View.web_viewer.setUrl(QtCore.QUrl("https://www.google.com"))
             self.View.disable_url_edit_delete()
             self.View.btn_clear_url_table.setDisabled(True)
+            self.View.lbl_url_status.setText("URL: 0")
         else:
             self.View.enable_url_edit_delete()
             self.View.btn_clear_url_table.setDisabled(False)
@@ -161,6 +163,7 @@ class BlacklistURL:
         url_model = self.Model.ListModel(
             self.View.lv_url, urls)
         self.View.lv_url.setModel(url_model)
+        self.View.lbl_url_status.setText(f"URL: {len(urls)}")
 
     def empty_url_list(self):
         try:

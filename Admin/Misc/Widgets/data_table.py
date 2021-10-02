@@ -16,6 +16,8 @@ class DataTable(QtWidgets.QDialog):
         self.target_table = target_table
         self.lbl_target_table.setText(self.target_table)
 
+        self.title_bar.title.setText('Select a row')
+
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
 

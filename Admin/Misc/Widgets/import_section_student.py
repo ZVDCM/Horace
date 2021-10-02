@@ -13,6 +13,8 @@ class Import(QtWidgets.QDialog):
         self.setupUi(self)
         self.connect_signals()
 
+        self.title_bar.title.setText('Import sections and students files')
+
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
 

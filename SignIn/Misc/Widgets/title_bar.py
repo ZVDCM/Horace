@@ -24,7 +24,7 @@ class TitleBar(QtWidgets.QWidget):
         self.logo = QtWidgets.QLabel(Form)
         self.logo.setFixedSize(QtCore.QSize(18, 18))
         self.logo.setMaximumSize(QtCore.QSize(18, 18))
-        qpixmap = QtGui.QPixmap(relative_path('Students', ['Misc', 'Resources'], 'horace.png'))
+        qpixmap = QtGui.QPixmap(relative_path('SignIn', ['Misc', 'Resources'], 'Horace.png'))
         self.logo.setScaledContents(True)
         self.logo.setPixmap(qpixmap)
         self.logo.setStyleSheet("margin-top: 2px")

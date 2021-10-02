@@ -392,6 +392,7 @@ class ClassMember:
 
         self.TargetClass = self.Model.Class(
             *class_model.getRowData(row))
+        self.target_class_row = row
         self.set_class_inputs()
 
         if self.View.class_state == 'Add' or self.View.class_state == 'Edit':
@@ -416,6 +417,7 @@ class ClassMember:
             self.View.disable_class_section_delete_clear()
         else:
             self.View.enable_class_edit_delete()
+            self.View.btn_init_add_class_teacher.setDisabled(False)
 
         class_model = self.Model.TableModel(
             self.View.tv_class, classes, self.Model.Class.get_headers())

@@ -7,7 +7,6 @@ class PasswordGenerator(QLineEdit):
 
     def __init__(self, parent):
         super().__init__(parent=parent)
-        self.selectionChanged.connect(lambda: self.setSelection(0, 0))
         self.operation.connect(self.set_text)
         self.operation.emit()
 

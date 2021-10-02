@@ -3592,7 +3592,6 @@ class Admin(QtWidgets.QMainWindow):
         self.verticalLayout_69.setObjectName("w_website_viewer")
 
         self.web_viewer = QtWebEngineWidgets.QWebEngineView()
-        self.web_viewer.setUrl(QtCore.QUrl("https://www.google.com"))
         self.verticalLayout_69.addWidget(self.web_viewer)
 
         self.horizontalLayout_10.addWidget(self.w_website_viewer)
@@ -3828,22 +3827,22 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_24.setContentsMargins(-1, -1, -1, 0)
         self.horizontalLayout_24.setSpacing(6)
         self.horizontalLayout_24.setObjectName("horizontalLayout_24")
-        self.lbl_class_table_status_2 = QtWidgets.QLabel(self.w_url)
+        self.lbl_url_status = QtWidgets.QLabel(self.w_url)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.lbl_class_table_status_2.sizePolicy().hasHeightForWidth())
-        self.lbl_class_table_status_2.setSizePolicy(sizePolicy)
+            self.lbl_url_status.sizePolicy().hasHeightForWidth())
+        self.lbl_url_status.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
-        self.lbl_class_table_status_2.setFont(font)
-        self.lbl_class_table_status_2.setAlignment(QtCore.Qt.AlignCenter)
-        self.lbl_class_table_status_2.setIndent(1)
-        self.lbl_class_table_status_2.setObjectName("lbl_class_table_status_2")
-        self.horizontalLayout_24.addWidget(self.lbl_class_table_status_2)
+        self.lbl_url_status.setFont(font)
+        self.lbl_url_status.setAlignment(QtCore.Qt.AlignCenter)
+        self.lbl_url_status.setIndent(1)
+        self.lbl_url_status.setObjectName("lbl_url_status")
+        self.horizontalLayout_24.addWidget(self.lbl_url_status)
         spacerItem28 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_24.addItem(spacerItem28)
@@ -4033,7 +4032,7 @@ class Admin(QtWidgets.QMainWindow):
         self.label_19.setText(_translate("MainWindow", "Domain"))
         self.btn_add_edit_url.setText(_translate("MainWindow", "Add"))
         self.btn_cancel_url.setText(_translate("MainWindow", "Cancel"))
-        self.lbl_class_table_status_2.setText(
+        self.lbl_url_status.setText(
             _translate("MainWindow", "URL: 100"))
 
     def disable_edit_delete(self):

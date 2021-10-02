@@ -232,6 +232,7 @@ class Admin:
     def set_latest_url_inputs(self):
         Url = self.BlacklistURL.TargetUrl
         self.View.txt_url.setText(Url.Domain)
+        self.View.web_viewer.setUrl(QtCore.QUrl(f'https://{Url.Domain}'))
 
     def resize(self, event):
         self.View.TableSectionStudentLoadingScreen.resize_loader()
