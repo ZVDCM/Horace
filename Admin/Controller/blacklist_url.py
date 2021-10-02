@@ -46,6 +46,7 @@ class BlacklistURL:
 
         self.connect_signals()
 
+
     def connect_signals(self):
         self.View.lv_url.clicked.connect(self.list_url_clicked)
         self.View.btn_init_add_url.clicked.connect(self.init_add_url)
@@ -54,6 +55,36 @@ class BlacklistURL:
             self.init_add_edit_url)
         self.View.btn_cancel_url.clicked.connect(self.cancel_url)
         self.View.btn_delete_url.clicked.connect(self.delete_url)
+
+        self.View.txt_url.returnPressed.connect(self.set_url)
+        self.View.web_viewer.loadStarted.connect(self.View.URLViewerLoadingScreen.run)
+        self.View.web_viewer.loadFinished.connect(self.View.URLViewerLoadingScreen.hide)
+
+        self.View.btn_clear_url_table.clicked.connect(self.init_clear_url_table)
+
+        self.View.txt_search_url.returnPressed.connect(self.search_url)
+        self.View.btn_search_url.clicked.connect(self.search_url)
+
+    def search_url(self):
+        target_url = self.View.txt_search_url.text()
+        if target_url.lower() == "null":
+            return
+        url_model = self.View.lv_url.model()
+        urls = url_model.data
+        target_indices = []
+        for index, url in enumerate(urls):
+            if target_url in url:
+                target_indices.append(index)
+            self.View.lv_url.setRowHidden(index, True)
+
+        for target_index in target_indices:
+            self.View.lv_url.setRowHidden(target_index, False)
+
+        self.View.txt_search_url.clear()
+
+    def set_url(self):
+        domain = f'https://{self.View.txt_url.text()}'
+        self.View.web_viewer.setUrl(QtCore.QUrl(domain))
 
     # Operations
     def GetAllURL(self):
@@ -85,6 +116,12 @@ class BlacklistURL:
         handler.finished.connect(self.View.URLLoadingScreen.hide)
         return handler
 
+    def TruncateTable(self):
+        handler = Operation(self.Model.truncate_url_table)
+        handler.started.connect(self.View.URLSLoadingScreen.run)
+        handler.finished.connect(self.View.URLSLoadingScreen.hide)
+        return handler
+
     # List
     def list_url_clicked(self, index):
         row = index.row()
@@ -111,11 +148,27 @@ class BlacklistURL:
 
     def set_url_inputs(self):
         self.View.txt_url.setText(self.TargetUrl.Domain)
+        self.View.web_viewer.setUrl(QtCore.QUrl(f'https://{self.TargetUrl.Domain}'))
 
     def set_url_list(self, urls):
+        if not urls:
+            self.View.disable_url_edit_delete()
+            self.View.btn_clear_url_table.setDisabled(True)
+        else:
+            self.View.enable_url_edit_delete()
+            self.View.btn_clear_url_table.setDisabled(False)
+
         url_model = self.Model.ListModel(
             self.View.lv_url, urls)
         self.View.lv_url.setModel(url_model)
+
+    def empty_url_list(self):
+        try:
+            if self.View.lv_url.model().rowCount() != 0:
+                self.View.lv_url.model().removeRows(
+                    0, self.View.lv_url.model().rowCount())
+        except AttributeError:
+            return
 
     def select_latest_url(self, domain):
         url_model = self.View.lv_url.model()
@@ -143,6 +196,7 @@ class BlacklistURL:
         self.View.set_url('Edit')
 
     def cancel_url(self):
+        self.View.clear_url_inputs()
         self.select_target_url_row()
         self.View.enable_url_buttons()
         self.View.disable_url_inputs()
@@ -205,3 +259,14 @@ class BlacklistURL:
 
         self.get_all_url_handler.finished.connect(self.get_latest_url)
         self.delete_url_handler.start()
+
+    def init_clear_url_table(self):
+        self.View.show_confirm(self.clear_url_table, "Are you sure you want to remove everything?")
+
+    def clear_url_table(self):
+        self.get_all_url_handler = self.GetAllURL()
+        self.truncate_url_handler = self.TruncateTable()
+        self.truncate_url_handler.operation.connect(self.get_all_url_handler.start)
+        self.get_all_url_handler.finished.connect(lambda: self.View.web_viewer.setUrl(QtCore.QUrl("https://www.google.com")))
+        self.get_all_url_handler.finished.connect(self.get_latest_url)
+        self.truncate_url_handler.start()

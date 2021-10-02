@@ -5,7 +5,7 @@ from Admin.Misc.Widgets.section_item import SectionItem
 from Admin.Misc.Widgets.context_menu import ContextMenu
 from Admin.Misc.Widgets.confirm import Confirm
 from Admin.Misc.Widgets.custom_label import SideNav
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, QtWebEngineWidgets
 from Admin.Misc.Widgets.admin_title_bar import TitleBar
 from Admin.Misc.Widgets.loading_screen import LoadingScreen
 from Admin.Misc.Widgets.custom_table_view import TableView
@@ -62,10 +62,13 @@ class Admin(QtWidgets.QMainWindow):
             'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
 
         # URL
+        self.URLViewerLoadingScreen = LoadingScreen(self.w_website_viewer, relative_path(
+            'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         self.URLLoadingScreen = LoadingScreen(self.w_url_input, relative_path(
             'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.URLSLoadingScreen = LoadingScreen(self.w_url, relative_path(
             'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
+
 
         self.hide_buttons()
         self.disable_edit_delete()
@@ -3582,68 +3585,16 @@ class Admin(QtWidgets.QMainWindow):
         self.w_website_viewer.setMinimumSize(QtCore.QSize(377, 0))
         self.w_website_viewer.setStyleSheet("QWidget{\n"
                                             "    background: #102542;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QLineEdit {\n"
-                                            "      padding: 1px 5px;\n"
-                                            "      border: 1px solid #0e4884;\n"
-                                            "      border-radius: 5px;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QPushButton {\n"
-                                            "  padding: 5px;\n"
-                                            "  border: 1px solid #0e4884;\n"
-                                            "  background-color: #0e4884;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QLineEdit:focus,\n"
-                                            "QLineEdit:hover,\n"
-                                            "QPushButton:focus,\n"
-                                            "QPushButton:hover {\n"
-                                            "  border: 1px solid #256eff;\n"
-                                            "  outline: none;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QPushButton:pressed {\n"
-                                            "  background-color: #072f49;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QScrollBar:vertical{\n"
-                                            "    width: 18px;\n"
-                                            "    margin: 0px 3px 0px 7px;\n"
-                                            "    border-radius: 5px;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QScrollBar::handle:vertical{\n"
-                                            "    background-color: #97b9f4;    \n"
-                                            "    min-height: 5px;\n"
-                                            "     border-radius: 4px;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QScrollBar::sub-line:vertical{\n"
-                                            "     height: 0;\n"
-                                            "     width: 0;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QScrollBar::add-line:vertical{\n"
-                                            "        height: 0;\n"
-                                            "     width: 0;\n"
-                                            "}\n"
-                                            "\n"
-                                            "QScrollBar::add-page:vertical{\n"
-                                            "    background: #0b1a30;\n"
-                                            "    border-bottom-left-radius: 4px;\n"
-                                            "    border-bottom-right-radius: 4px;\n"
-                                            "    margin-top: -3px;\n"
-                                            " }\n"
-                                            "\n"
-                                            "QScrollBar::sub-page:vertical{\n"
-                                            "      background: #0b1a30;\n"
-                                            "    border-top-left-radius: 4px;\n"
-                                            "    border-top-right-radius: 4px;\n"
-                                            "    margin-bottom: -3px;\n"
-                                            "}")
+                                            "}\n")
         self.w_website_viewer.setObjectName("w_website_viewer")
+
+        self.verticalLayout_69 = QtWidgets.QVBoxLayout(self.w_website_viewer)
+        self.verticalLayout_69.setObjectName("w_website_viewer")
+
+        self.web_viewer = QtWebEngineWidgets.QWebEngineView()
+        self.web_viewer.setUrl(QtCore.QUrl("https://www.google.com"))
+        self.verticalLayout_69.addWidget(self.web_viewer)
+
         self.horizontalLayout_10.addWidget(self.w_website_viewer)
         self.widget_12 = QtWidgets.QWidget(self.blacklisted_url)
         self.widget_12.setMinimumSize(QtCore.QSize(234, 0))
@@ -4284,11 +4235,19 @@ class Admin(QtWidgets.QMainWindow):
     def clear_url_inputs(self):
         self.txt_url.clear()
 
+    def disable_url_edit_delete(self):
+        self.btn_init_edit_url.setDisabled(True)
+        self.btn_delete_url.setDisabled(True)
+
     def disable_url_buttons(self):
         self.btn_init_add_url.setDisabled(True)
         self.btn_init_edit_url.setDisabled(True)
         self.btn_delete_url.setDisabled(True)
         self.w_url_btn.show()
+
+    def enable_url_edit_delete(self):
+        self.btn_init_edit_url.setDisabled(False)
+        self.btn_delete_url.setDisabled(False)
 
     def enable_url_buttons(self):
         self.btn_init_add_url.setDisabled(False)

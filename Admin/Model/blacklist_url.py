@@ -10,6 +10,19 @@ class BlacklistURL:
         self.ListModel = Model.ListModel
         self.Database = Model.Database
 
+    def truncate_url_table(self):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        truncate_query = "TRUNCATE TABLE Urls"
+        cursor.execute(truncate_query)
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
+
     def get_all_url(self):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
