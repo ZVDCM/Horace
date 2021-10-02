@@ -543,6 +543,8 @@ class SectionStudent:
         handler.operation.connect(
             self.View.enable_student_edit_delete)
         handler.operation.connect(
+            self.View.enable_section_student_delete_clear)
+        handler.operation.connect(
             lambda: self.View.btn_init_add_section.setDisabled(False)
         )
         handler.validation.connect(

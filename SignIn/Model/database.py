@@ -55,7 +55,7 @@ class Database:
                     Start TIME NOT NULL,
                     End TIME NOT NULL,
                     PRIMARY KEY (ID),
-                    UNIQUE INDEX Code_UNIQUE (Code)) ENGINE = InnoDB;
+                    KEY Code (Code)) ENGINE = InnoDB;
 
                 CREATE TABLE Horace.Class_Teachers ( 
                     ID INT NOT NULL AUTO_INCREMENT,
@@ -73,8 +73,8 @@ class Database:
                     Teacher VARCHAR(32) BINARY,
                     Section VARCHAR(32) BINARY,
                     PRIMARY KEY (ID),
-                    CONSTRAINT FK_Class_Section_Teacher FOREIGN KEY (Teacher) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE,
                     CONSTRAINT FK_Class_Section_Code FOREIGN KEY (Code) REFERENCES Horace.Classes (Code) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT FK_Class_Section_Teacher FOREIGN KEY (Teacher) REFERENCES Horace.Users (Username) ON DELETE CASCADE ON UPDATE CASCADE,
                     CONSTRAINT FK_Class_Section FOREIGN KEY (Section) REFERENCES Horace.Sections (Name) ON DELETE CASCADE ON UPDATE CASCADE
                     ) ENGINE = InnoDB;
 

@@ -197,6 +197,8 @@ class DataTable(QtWidgets.QDialog):
         font.setFamily("Barlow")
         font.setPointSize(11)
         self.btn_add.setFont(font)
+        self.btn_add.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_add.setStyleSheet("border-radius: 5px;")
         self.btn_add.setObjectName("btn_add")
         self.horizontalLayout_3.addWidget(self.btn_add)

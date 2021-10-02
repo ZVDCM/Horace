@@ -95,6 +95,9 @@ class TeacherAttendance:
 
         self.View.tv_teachers.keyPressEvent = self.tv_teachers_key_pressed
         self.View.tv_teachers.mousePressEvent = self.tv_teachers_mouse_press
+
+        self.View.txt_search_teacher.returnPressed.connect(self.search_teacher)
+        self.View.btn_search_teacher.clicked.connect(self.search_teacher)
     
     def init_add_teacher_bulk(self):
         for index in range(self.View.verticalLayout_47.count()):
@@ -124,6 +127,23 @@ class TeacherAttendance:
         self.get_all_teacher_handler = self.GetAllTeacher()
         self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
         self.get_all_teacher_handler.start()
+
+    def search_teacher(self):
+        target_teacher = self.View.txt_search_teacher.text()
+        if target_teacher.lower() == "null":
+            return
+        teachers_model = self.View.tv_teachers.model()
+        teachers = teachers_model.getColumn(1)
+        target_indices = []
+        for index, teacher in enumerate(teachers):
+            if target_teacher in teacher:
+                target_indices.append(index)
+            self.View.tv_teachers.setRowHidden(index, True)
+
+        for target_index in target_indices:
+            self.View.tv_teachers.setRowHidden(target_index, False)
+
+        self.View.txt_search_teacher.clear()
 
     # Operations
     def GetAllTeacher(self):

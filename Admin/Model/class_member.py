@@ -38,8 +38,8 @@ class ClassMember:
         if not code or not name:
             return 'Null'
 
-        select_query = "SELECT * FROM Classes WHERE Code=%s"
-        cursor.execute(select_query, (code,))
+        select_query = "SELECT * FROM Classes WHERE Code=%s AND Start=%s"
+        cursor.execute(select_query, (code, start))
 
         class_exist = cursor.fetchone()
         res = "exists"
@@ -141,13 +141,12 @@ class ClassMember:
             return [self.Teacher(*teacher_not_in_class) for teacher_not_in_class in teachers_not_in_class]
         return []
 
-    def register_teacher_class(self, Class, Teacher):
+    def register_teachers_class(self, Teachers):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        insert_query = "INSERT INTO Class_Teachers (Code, Teacher) VALUES (%s,%s)"
-        cursor.execute(
-            insert_query, (Class.Code, Teacher.Username))
+        insert_query = "INSERT INTO Class_Teachers (Code, Teacher) VALUES (%s, %s)"
+        cursor.executemany(insert_query, (Teachers))
         db.commit()
 
         cursor.close()
@@ -155,12 +154,25 @@ class ClassMember:
 
         return 'successful'
 
-    def delete_class_teacher(self, ClassTeacher):
+    def delete_class_teacher(self, teachers):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        delete_query = "DELETE FROM Class_Teachers WHERE Teacher=%s"
-        cursor.execute(delete_query, (ClassTeacher.Teacher,))
+        delete_query = "DELETE FROM Class_Teachers WHERE Code=%s AND Teacher=%s"
+        cursor.executemany(delete_query, (teachers))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
+
+    def clear_class_teacher(self, code):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Class_Teachers WHERE Code=%s"
+        cursor.execute(delete_query, (code,))
         db.commit()
 
         cursor.close()
@@ -204,13 +216,12 @@ class ClassMember:
             return [self.Section(*section_not_in_class) for section_not_in_class in sections_not_in_class]
         return []
 
-    def register_section_class(self, Class, ClassTeacher, Section):
+    def register_sections_class(self, class_sections):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
         insert_query = "INSERT INTO Class_Sections (Code, Teacher, Section) VALUES (%s,%s,%s)"
-        cursor.execute(
-            insert_query, (Class.Code, ClassTeacher.Teacher, Section.Name))
+        cursor.executemany(insert_query, (class_sections))
         db.commit()
 
         cursor.close()
@@ -218,12 +229,25 @@ class ClassMember:
 
         return 'successful'
 
-    def delete_class_section(self, ClassSection):
+    def delete_class_section(self, class_sections):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
         delete_query = "DELETE FROM Class_Sections WHERE Code=%s AND Teacher=%s AND Section=%s"
-        cursor.execute(delete_query, (ClassSection.Code, ClassSection.Teacher, ClassSection.Section))
+        cursor.executemany(delete_query, (class_sections))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
+
+    def clear_class_section(self, code, teacher):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Class_Sections WHERE Code=%s AND Teacher=%s"
+        cursor.execute(delete_query, (code, teacher))
         db.commit()
 
         cursor.close()
