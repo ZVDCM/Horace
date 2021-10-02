@@ -1,7 +1,10 @@
-from PyQt5.QtWidgets import QTableView, QWidget
+import os
+from PyQt5.QtWidgets import QFileDialog, QTableView, QWidget
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
+import csv
 
+from Admin.Misc.Widgets.import_teachers import Import
 
 class Get(QtCore.QThread):
     operation = QtCore.pyqtSignal(object)
@@ -66,6 +69,64 @@ class AddItem(QtCore.QThread):
             self.operation.emit()
         self.quit()
 
+class Alert(QtCore.QThread):
+    operation = QtCore.pyqtSignal(str, str)
+
+    def __init__(self):
+        super().__init__()
+        self.val = ()
+
+    def run(self):
+        self.operation.emit(*self.val)
+        self.quit()
+
+class ExportTeacher(QtCore.QThread):
+    operation = QtCore.pyqtSignal()
+
+    def __init__(self, fn, alert):
+        super().__init__()
+        self.alert = alert
+        self.fn = fn
+        self.path = None
+
+    def run(self):
+        if self.path:
+            self.alert('file', 'Exporting Tables')
+            file_names = ['Teachers.csv']
+            file_headers = [('UserID', 'Username','Privilege', 'Salt', 'Hash')]
+            tables = self.fn()
+            for index, table in enumerate(tables):
+                with open(f'{self.path}\{file_names[index]}', 'w', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(file_headers[index])
+                    writer.writerows(table)
+            self.alert('file', 'Tables Exported')
+        self.quit()
+
+class ImportTeacherTable(QtCore.QThread):
+    error = QtCore.pyqtSignal(object)
+
+    def __init__(self, Model, alert):
+        super().__init__()
+        self.alert = alert
+        self.Model = Model
+        self.val = None
+
+    def run(self):
+        teachers = self.val
+        errors = []
+        if teachers:
+            with open(teachers, newline='') as csvfile:
+                teachers_data = list(csv.reader(csvfile))[1:]
+                for index in range(len(teachers_data)):
+                    teachers_data[index] = teachers_data[index][1:]
+                res = self.Model.import_teacher_table(teachers_data)
+                if res != 'successful':
+                    errors.append('Teacher')
+        if errors:
+            self.error.emit(errors)
+        self.quit()
+
 class TeacherAttendance:
 
     def __init__(self, Model, View, Contoller):
@@ -85,7 +146,7 @@ class TeacherAttendance:
         self.View.btn_add_edit_teacher.clicked.connect(
             self.init_add_edit_teacher)
         self.View.btn_cancel_teacher.clicked.connect(self.cancel_teacher)
-        self.View.btn_delete_teacher.clicked.connect(self.delete_teacher)
+        self.View.btn_delete_teacher.clicked.connect(self.init_delete_teacher)
 
         self.View.btn_init_teachers_bulk.clicked.connect(self.init_add_teacher_bulk)
         self.View.btn_add_teacher_item.clicked.connect(self.View.add_teacher_item)
@@ -98,7 +159,48 @@ class TeacherAttendance:
 
         self.View.txt_search_teacher.returnPressed.connect(self.search_teacher)
         self.View.btn_search_teacher.clicked.connect(self.search_teacher)
+        self.View.btn_delete_attendance.clicked.connect(self.init_delete_teacher_attendances)
+        self.View.btn_clear_attendance_table.clicked.connect(self.init_clear_teacher_attendances)
+
+        self.View.btn_import_teachers.clicked.connect(self.get_import_files)
+        self.View.btn_export_teachers.clicked.connect(self.init_export_teachers)
+        self.View.btn_clear_teachers_table.clicked.connect(self.init_clear_teacher_table)
+
+    def get_import_files(self):
+        self.Import = Import(self.View)
+        self.Import.operation.connect(self.init_import_teachers)
+        self.Import.run()
+
+    def init_import_teachers(self, teachers):
+        self.init_import_teachers_handler = self.ImportTeachersTable()
+        self.init_import_teachers_handler.val = teachers
+
+        self.get_all_teacher_handler = self.GetAllTeacher()
+        self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
     
+        self.init_import_teachers_handler.finished.connect(self.get_all_teacher_handler.start)
+        self.init_import_teachers_handler.start()
+
+    def init_export_teachers(self):
+        default_path = os.path.expanduser('~/Documents')
+        path = QFileDialog.getExistingDirectory(
+                self.View, 'Export files to', default_path)
+        if path:
+            self.export_teachers_handler = self.ExportTeacher()
+            self.export_teachers_handler.path = path
+            self.export_teachers_handler.start()
+
+    def init_clear_teacher_table(self):
+        self.View.show_confirm(self.clear_teacher_table, "Are you sure you want to clear the table?")
+
+    def clear_teacher_table(self):
+        self.clear_teacher_table_handler = self.ClearTeacherTable()
+        self.get_all_teacher_handler = self.GetAllTeacher()
+        self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
+    
+        self.clear_teacher_table_handler.finished.connect(self.get_all_teacher_handler.start)
+        self.clear_teacher_table_handler.start()
+
     def init_add_teacher_bulk(self):
         for index in range(self.View.verticalLayout_47.count()):
             target_item = self.View.scrollAreaWidgetContents_3.findChild(QWidget, f'teacherItem_{index}')
@@ -144,8 +246,30 @@ class TeacherAttendance:
             self.View.tv_teachers.setRowHidden(target_index, False)
 
         self.View.txt_search_teacher.clear()
+    
+    def import_error(self, errors):
+        self.View.run_popup(f"Import Error: {', '.join(errors)}", 'critical')
 
     # Operations
+    def ImportTeachersTable(self):
+        handler = ImportTeacherTable(self.Model, self.show_alert)
+        handler.started.connect(self.View.TableTeacherLoadingScreen.run)
+        handler.error.connect(self.import_error)
+        handler.finished.connect(self.View.TableTeacherLoadingScreen.hide)
+        return handler
+
+    def ExportTeacher(self):
+        handler = ExportTeacher(self.Model.export_teacher_table, self.show_alert)
+        handler.started.connect(self.View.TableTeacherLoadingScreen.run)
+        handler.finished.connect(self.View.TableTeacherLoadingScreen.hide)
+        return handler
+
+    def ClearTeacherTable(self):
+        handler = Operation(self.Model.clear_teacher_table)
+        handler.started.connect(self.View.TableTeacherLoadingScreen.run)
+        handler.finished.connect(self.View.TableTeacherLoadingScreen.hide)
+        return handler
+
     def GetAllTeacher(self):
         handler = Get(self.Model.get_all_teacher)
         handler.started.connect(self.View.TableTeacherLoadingScreen.run)
@@ -247,6 +371,10 @@ class TeacherAttendance:
             self.View.btn_cancel_teacher.click()
             return
 
+        self.get_target_teacher_attendances_handler = self.GetTargetTeacherAttendances()
+        self.get_target_teacher_attendances_handler.val = self.TargetTeacher,
+        self.get_target_teacher_attendances_handler.start()
+
     def set_target_teacher(self, Teacher):
         self.TargetTeacher = Teacher
         self.select_target_teacher_row()
@@ -281,14 +409,23 @@ class TeacherAttendance:
         if "NULL" not in target_teacher_data:
             self.set_target_teacher(self.Model.Teacher(*target_teacher_data))
         else:
+            self.View.tv_teachers.clearSelection()
+            self.View.disable_teacher_attendance_delete_clear()
+            self.empty_attendance_list()
+            self.View.lbl_attendance_status.setText('Attendances: 0')
             self.View.clear_teacher_inputs()
 
     # Buttons
     def init_add_teacher(self):
+        self.View.tv_teachers.clearSelection()
+        self.View.disable_teacher_attendance_delete_clear()
+        self.empty_attendance_list()
+        self.View.lbl_attendance_status.setText('Attendances: 0')
         self.View.clear_teacher_inputs()
         self.View.disable_teacher_buttons()
         self.View.enable_teacher_inputs()
         self.View.set_teacher('Add')
+        self.View.txt_teacher_username.setFocus(True)
 
     def init_edit_teacher(self):
         self.View.disable_teacher_buttons()
@@ -300,6 +437,20 @@ class TeacherAttendance:
         self.View.enable_teacher_buttons()
         self.View.disable_teacher_inputs()
         self.View.set_teacher('Read')
+        if not self.TargetTeacher:
+            self.View.clear_teacher_inputs()
+            self.View.disable_teacher_edit_delete()
+            self.View.disable_teacher_attendance_delete_clear()
+            
+        if len(self.View.tv_teachers.model().data) != 1:
+            self.View.enable_teacher_attendance_delete_clear()
+            index = self.View.tv_teachers.model().createIndex(self.target_teacher_row, 0)
+            self.table_teacher_clicked(index)
+            self.View.tv_teachers.selectRow(self.target_teacher_row)
+        else:
+            self.View.clear_teacher_inputs()
+            self.View.disable_teacher_edit_delete()
+            self.View.disable_teacher_attendance_delete_clear()
 
     def init_add_edit_teacher(self):
         if self.View.teacher_state == "Add":
@@ -352,6 +503,9 @@ class TeacherAttendance:
         self.get_all_teacher_handler.finished.connect(lambda: self.select_latest_teacher(username))
         self.edit_teacher_handler.start()
 
+    def init_delete_teacher(self):
+        self.View.show_confirm(self.delete_teacher)
+
     # Teacher Delete
     def delete_teacher(self):
         self.get_all_teacher_handler = self.GetAllTeacher()
@@ -362,3 +516,79 @@ class TeacherAttendance:
 
         self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
         self.delete_teacher_handler.start()
+
+    # *Attendances
+    def GetTargetTeacherAttendances(self):
+        handler = Get(self.Model.get_all_attendances)
+        handler.started.connect(self.View.AttendanceLoadingScreen.run)
+        handler.operation.connect(self.set_teacher_attendances_list)
+        handler.finished.connect(self.View.AttendanceLoadingScreen.hide)
+        return handler
+
+    def DeleteTeacherAttendances(self):
+        handler = Operation(self.Model.delete_teacher_attendances)
+        handler.started.connect(self.View.AttendanceLoadingScreen.run)
+        handler.finished.connect(self.View.AttendanceLoadingScreen.hide)
+        return handler
+
+    def ClearTeacherAttendances(self):
+        handler = Operation(self.Model.clear_teacher_attendances)
+        handler.started.connect(self.View.AttendanceLoadingScreen.run)
+        handler.finished.connect(self.View.AttendanceLoadingScreen.hide)
+        return handler
+
+    def set_teacher_attendances_list(self, attendances):
+        if not attendances:
+            self.View.disable_teacher_attendance_delete_clear()
+            self.View.lbl_attendance_status.setText(f'Attendances: 0')
+        else:
+            self.View.enable_teacher_attendance_delete_clear()
+
+        attendance_model = self.Model.ListModel(self.View.lv_attendance, attendances)
+        self.View.lv_attendance.setModel(attendance_model)
+        self.View.lbl_attendance_status.setText(f"Attendances: {len(attendances)}")
+    
+    def init_delete_teacher_attendances(self):
+        self.View.show_confirm(self.delete_teacher_attendances)
+
+    def delete_teacher_attendances(self):
+        indices = self.View.lv_attendance.selectedIndexes()
+        indices = [index.row() for index in indices]
+        attendance_model = self.View.lv_attendance.model()
+        targets = [[attendance_model.getRowData(index)] for index in indices]
+
+        self.get_target_teacher_attendances_handler = self.GetTargetTeacherAttendances()
+        self.delete_teacher_attendances_handler = self.DeleteTeacherAttendances()
+
+        self.get_target_teacher_attendances_handler.val = self.TargetTeacher,
+        self.delete_teacher_attendances_handler.val = targets,
+        self.delete_teacher_attendances_handler.operation.connect(self.get_target_teacher_attendances_handler.start)
+        self.delete_teacher_attendances_handler.start()
+
+    def init_clear_teacher_attendances(self):
+        self.View.show_confirm(self.clear_teacher_attendances, "Are you sure you want to remove everything?")
+
+    def clear_teacher_attendances(self):
+        self.get_target_teacher_attendances_handler = self.GetTargetTeacherAttendances()
+        self.clear_teacher_attendances_handler = self.ClearTeacherAttendances()
+
+        self.get_target_teacher_attendances_handler.val = self.TargetTeacher,
+        self.clear_teacher_attendances_handler.val = self.TargetTeacher.Username,
+        self.clear_teacher_attendances_handler.operation.connect(self.get_target_teacher_attendances_handler.start)
+        self.clear_teacher_attendances_handler.start()
+
+    def empty_attendance_list(self):
+        try:
+            if self.View.lv_attendance.model().rowCount() != 0:
+                self.View.lv_attendance.model().removeRows(
+                    0, self.View.lv_attendance.model().rowCount())
+        except AttributeError:
+            return
+
+    def show_alert(self, type, message):
+        self.ShowAlert = Alert()
+        self.ShowAlert.operation.connect(self.View.show_alert)
+        self.ShowAlert.val = type, message
+        self.ShowAlert.start()
+    
+    

@@ -63,22 +63,11 @@ class User:
 
 class Attendance:
 
-    def __init__(self, ID, Teacher, Name, File, Date):
-        self.ID = ID
-        self.Teacher = Teacher
+    def __init__(self, Name):
         self.Name = Name
-        self.File = File
-        self.Date = Date
 
     def __str__(self):
-        return f"Attendance(ID={self.ID}, Teacher={self.Teacher}, Name={self.Name}, File={self.File}, Date={self.Date},)"
-
-    @staticmethod
-    def get_headers():
-        return ("ID", "Teacher", "Name", "File", "Date")
-
-    def get_values(self):
-        return (self.ID, self.Teacher, self.Name, self.File, self.Date)
+        return f"Attendance(Name={self.Name})"
 
     def get_display(self):
         return self.Name

@@ -139,8 +139,7 @@ class ExportSectionStudentTable(QtCore.QThread):
             self.alert('file', 'Exporting Tables')
             file_names = ['Sections.csv',
                           'Students.csv', 'Section Students.csv']
-            file_headers = [('ID', 'Name'), ('UserID', 'Username',
-                                             'Privilege', 'Salt', 'Hash'), ('ID', 'Section', 'Student')]
+            file_headers = [('ID', 'Name'), ('UserID', 'Username','Privilege', 'Salt', 'Hash'), ('ID', 'Section', 'Student')]
             tables = self.fn()
             for index, table in enumerate(tables):
                 with open(f'{self.path}\{file_names[index]}', 'w', newline='') as file:
@@ -666,13 +665,6 @@ class SectionStudent:
         section_model = self.View.tv_sections.model()
 
         if section_model.getRowData(row)[0] == 'NULL':
-            self.View.disable_student_edit_delete()
-            self.View.disable_section_student_delete_clear()
-            self.View.btn_init_add_section_student.setDisabled(True)
-            self.View.tv_sections.clearSelection()
-            self.View.tv_students.clearSelection()
-            self.empty_section_student_list()
-            self.View.txt_section_name.setFocus(True)
             self.View.btn_init_add_section.click()
             return
 
@@ -774,6 +766,12 @@ class SectionStudent:
 
     # Buttons
     def init_add_section(self):
+        self.View.disable_student_edit_delete()
+        self.View.disable_section_student_delete_clear()
+        self.View.btn_init_add_section_student.setDisabled(True)
+        self.View.tv_sections.clearSelection()
+        self.View.tv_students.clearSelection()
+        self.empty_section_student_list()
         self.View.clear_student_inputs()
         self.View.clear_section_inputs()
         self.View.disable_section_buttons()
@@ -783,6 +781,7 @@ class SectionStudent:
         self.View.tv_students.clearSelection()
         self.View.lv_section_student.clearSelection()
         self.View.lbl_section_students_status.setText("Students: 0")
+        self.View.txt_section_name.setFocus(True)
 
     def init_edit_section(self):
         self.View.disable_section_buttons()
@@ -1143,8 +1142,6 @@ class SectionStudent:
         student_model = self.View.tv_students.model()
 
         if row == student_model.rowCount() - 1:
-            self.View.tv_students.clearSelection()
-            self.View.txt_student_username.setFocus(True)
             self.View.btn_init_add_student.click()
             return
 
@@ -1237,12 +1234,14 @@ class SectionStudent:
 
     # Buttons
     def init_add_student(self):
+        self.View.tv_students.clearSelection()
         self.View.clear_student_inputs()
         self.View.disable_student_buttons()
         self.View.enable_student_inputs()
         self.View.set_student('Add')
         self.View.tv_students.clearSelection()
         self.View.lv_section_student.clearSelection()
+        self.View.txt_student_username.setFocus(True)
 
     def init_edit_student(self):
         self.View.disable_student_buttons()
@@ -1257,10 +1256,12 @@ class SectionStudent:
             self.get_latest_student()
         if not self.TargetStudent:
             self.View.disable_student_edit_delete()
+            if len(self.View.tv_students.model().data) != 1:
+                self.target_student_row = self.View.tv_students.model().rowCount() - 2
         if len(self.View.tv_students.model().data) != 1:
             index = self.View.tv_students.model().createIndex(self.target_student_row, 0)
             self.table_student_clicked(index)
-            self.View.tv_students.selectRow(self.target_section_row)
+            self.View.tv_students.selectRow(self.target_student_row)
 
     def init_add_edit_student(self):
         if self.View.student_state == "Add":
@@ -1339,7 +1340,7 @@ class SectionStudent:
         self.get_all_student_handler.finished.connect(
             self.View.btn_cancel_student.click)
         self.edit_student_handler.start()
-
+    
     # Student Delete
     def init_delete_student(self):
         self.View.show_confirm(self.delete_student)

@@ -111,6 +111,11 @@ class Admin:
         self.get_target_class_section.operation.connect(self.ClassMember.set_class_section_list)
         self.get_target_class_section.finished.connect(self.View.TableClassLoadingScreen.hide)
 
+        self.get_target_teacher_attendances = Get(self.Model.TeacherAttendance.get_all_attendances)
+        self.get_target_teacher_attendances.started.connect(self.View.AttendanceLoadingScreen.run)
+        self.get_target_teacher_attendances.operation.connect(self.TeacherAttendance.set_teacher_attendances_list)
+        self.get_target_teacher_attendances.finished.connect(self.View.AttendanceLoadingScreen.hide)
+
     def change_page(self, index):
         for side_nav in self.View.side_navs:
             if side_nav.is_active:
@@ -179,14 +184,17 @@ class Admin:
     def get_model_latest_teacher(self):
         teacher_model = self.View.tv_teachers.model()
         if teacher_model.rowCount() <= 1:
+            self.View.lbl_attendance_status.setText(f'Attendances: 0')
             self.View.TableTeacherLoadingScreen.hide()
             return
 
         self.TeacherAttendance.target_teacher_row = teacher_model.rowCount() - 2
         self.TeacherAttendance.TargetTeacher = self.Model.Teacher(*teacher_model.getRowData(self.TeacherAttendance.target_teacher_row))
         self.View.tv_teachers.selectRow(self.TeacherAttendance.target_teacher_row)
-
         self.set_latest_teacher_inputs()
+
+        self.get_target_teacher_attendances.val = self.TeacherAttendance.TargetTeacher,
+        self.get_target_teacher_attendances.start()
 
     def set_latest_teacher_inputs(self):
         Teacher = self.TeacherAttendance.TargetTeacher

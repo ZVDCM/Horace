@@ -54,7 +54,7 @@ class BlacklistURL:
         self.View.btn_add_edit_url.clicked.connect(
             self.init_add_edit_url)
         self.View.btn_cancel_url.clicked.connect(self.cancel_url)
-        self.View.btn_delete_url.clicked.connect(self.delete_url)
+        self.View.btn_delete_url.clicked.connect(self.init_delete_url)
 
         self.View.txt_url.returnPressed.connect(self.set_url)
         self.View.web_viewer.loadStarted.connect(self.View.URLViewerLoadingScreen.run)
@@ -251,6 +251,9 @@ class BlacklistURL:
 
         self.get_all_url_handler.finished.connect(lambda: self.select_latest_url(domain))
         self.edit_url_handler.start()
+
+    def init_delete_url(self):
+        self.View.show_confirm(self.delete_url)
 
     # URL Delete
     def delete_url(self):

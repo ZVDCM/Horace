@@ -1,5 +1,5 @@
 from Admin.Misc.Functions.hash import *
-
+import mysql
 
 class TeacherAttendance:
 
@@ -10,6 +10,55 @@ class TeacherAttendance:
         self.TableModel = Model.TableModel
         self.ListModel = Model.ListModel
         self.Database = Model.Database
+
+    def import_teacher_table(self, teachers):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        try:
+            insert_query = "INSERT INTO Users (Username, Privilege, Salt, Hash) VALUES (%s,%s,%s,%s)"
+            cursor.executemany(insert_query, (teachers))
+            db.commit()
+            res = 'successful'
+        except mysql.connector.errors.ProgrammingError:
+            res = 'programming error'
+        except mysql.connector.errors.InterfaceError:
+            res = 'programming error'
+        except mysql.connector.errors.IntegrityError:
+            res = 'integrity error'
+
+        cursor.close()
+        db.close()
+
+        return res
+
+    def export_teacher_table(self):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = "SELECT * FROM Users WHERE Privilege='Teacher'"
+        cursor.execute(select_query)
+        teachers = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        return [teachers]
+
+    def clear_teacher_table(self):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Users WHERE Privilege='Teacher'"
+        cursor.execute(delete_query)
+        db.commit()
+
+        res = 'successful'
+
+        cursor.close()
+        db.close()
+
+        return res
 
     def get_all_teacher(self):
         db = self.Database.connect()
@@ -101,6 +150,48 @@ class TeacherAttendance:
 
         delete_query = "DELETE FROM Users WHERE Privilege='Teacher' AND UserID=%s"
         cursor.executemany(delete_query, (teachers))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
+
+    def get_all_attendances(self, User):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = "SELECT Name FROM Attendances WHERE Teacher=%s"
+        cursor.execute(select_query, (User.Username,))
+
+        attendances = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        if attendances:
+            return [self.Attendance(*attendance) for attendance in attendances]
+        return []
+    
+    def delete_teacher_attendances(self, attendances):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Attendances WHERE Name=%s"
+        cursor.executemany(delete_query, (attendances))
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return 'successful'
+
+    def clear_teacher_attendances(self, teacher):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Attendances WHERE Teacher=%s"
+        cursor.execute(delete_query, (teacher,))
         db.commit()
 
         cursor.close()

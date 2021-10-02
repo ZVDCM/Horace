@@ -67,7 +67,6 @@ class Admin(QtWidgets.QMainWindow):
         self.URLSLoadingScreen = LoadingScreen(self.w_url, relative_path(
             'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
 
-
         self.hide_buttons()
         self.disable_edit_delete()
         self.disable_student_inputs()
@@ -2431,6 +2430,8 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_59.addWidget(self.btn_search_attendance)
         self.verticalLayout_43.addLayout(self.horizontalLayout_59)
         self.lv_attendance = ListView(self.w_attendance)
+        self.lv_attendance.setSelectionMode(
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.lv_attendance.setObjectName("lv_attendance")
         self.verticalLayout_43.addWidget(self.lv_attendance)
         self.verticalLayout_40.addWidget(self.w_attendance)
@@ -3991,6 +3992,14 @@ class Admin(QtWidgets.QMainWindow):
     def disable_teacher_edit_delete(self):
         self.btn_init_edit_teacher.setDisabled(True)
         self.btn_delete_teacher.setDisabled(True)
+
+    def disable_teacher_attendance_delete_clear(self):
+        self.btn_delete_attendance.setDisabled(True)
+        self.btn_clear_attendance_table.setDisabled(True)
+
+    def enable_teacher_attendance_delete_clear(self):
+        self.btn_delete_attendance.setDisabled(False)
+        self.btn_clear_attendance_table.setDisabled(False)
 
     def enable_teacher_edit_delete(self):
         self.btn_init_edit_teacher.setDisabled(False)

@@ -176,7 +176,7 @@ class ClassMember:
         self.View.btn_init_edit_class.clicked.connect(self.init_edit_class)
         self.View.btn_add_edit_class.clicked.connect(self.init_add_edit_class)
         self.View.btn_cancel_class.clicked.connect(self.cancel_class)
-        self.View.btn_delete_class.clicked.connect(self.delete_class)
+        self.View.btn_delete_class.clicked.connect(self.init_delete_class)
 
         self.View.btn_init_class_bulk.clicked.connect(self.init_add_class_bulk)
         self.View.btn_back_class_bulk.clicked.connect(self.go_back_class)
@@ -380,13 +380,6 @@ class ClassMember:
         class_model = self.View.tv_class.model()
 
         if row == class_model.rowCount() - 1:
-            self.empty_class_teacher_list()
-            self.empty_class_section_list()
-            self.View.lbl_class_teacher_status.setText('Teachers: 0')
-            self.View.btn_init_add_class_teacher.setDisabled(True)
-            self.View.btn_init_add_class_section.setDisabled(True)
-            self.View.disable_class_teacher_delete_clear()
-            self.View.disable_class_section_delete_clear()
             self.View.btn_init_add_class.click()
             return
 
@@ -467,10 +460,20 @@ class ClassMember:
 
     # Buttons
     def init_add_class(self):
+        self.View.tv_class.clearSelection()
+        self.empty_class_teacher_list()
+        self.empty_class_section_list()
+        self.View.lbl_class_teacher_status.setText('Teachers: 0')
+        self.View.lbl_class_section_status.setText('Sections: 0')
+        self.View.btn_init_add_class_teacher.setDisabled(True)
+        self.View.btn_init_add_class_section.setDisabled(True)
+        self.View.disable_class_teacher_delete_clear()
+        self.View.disable_class_section_delete_clear()
         self.View.clear_class_inputs()
         self.View.disable_class_buttons()
         self.View.enable_class_inputs()
         self.View.set_class('Add')
+        self.View.txt_class_code.setFocus(True)
 
     def init_edit_class(self):
         self.View.disable_class_buttons()
@@ -566,6 +569,9 @@ class ClassMember:
         self.edit_class_handler.start()
 
     # Class Delete
+    def init_delete_class(self):
+        self.View.show_confirm(self.delete_class)
+
     def delete_class(self):
         self.get_all_class_handler = self.GetAllClass()
         self.delete_class_handler = self.DeleteClass()
