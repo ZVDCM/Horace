@@ -3513,53 +3513,53 @@ class Admin(QtWidgets.QMainWindow):
             QtWidgets.QLayout.SetDefaultConstraint)
         self.horizontalLayout_56.setSpacing(0)
         self.horizontalLayout_56.setObjectName("horizontalLayout_56")
-        self.txt_search_class_student = QtWidgets.QLineEdit(
+        self.txt_search_class_section = QtWidgets.QLineEdit(
             self.w_class_section)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.txt_search_class_student.sizePolicy().hasHeightForWidth())
-        self.txt_search_class_student.setSizePolicy(sizePolicy)
-        self.txt_search_class_student.setMinimumSize(QtCore.QSize(0, 30))
-        self.txt_search_class_student.setMaximumSize(
+            self.txt_search_class_section.sizePolicy().hasHeightForWidth())
+        self.txt_search_class_section.setSizePolicy(sizePolicy)
+        self.txt_search_class_section.setMinimumSize(QtCore.QSize(0, 30))
+        self.txt_search_class_section.setMaximumSize(
             QtCore.QSize(16777215, 35))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
-        self.txt_search_class_student.setFont(font)
-        self.txt_search_class_student.setStyleSheet("border-radius: none;\n"
+        self.txt_search_class_section.setFont(font)
+        self.txt_search_class_section.setStyleSheet("border-radius: none;\n"
                                                     "border-top-left-radius: 5px;\n"
                                                     "border-bottom-left-radius: 5px;")
-        self.txt_search_class_student.setObjectName("txt_search_class_student")
-        self.horizontalLayout_56.addWidget(self.txt_search_class_student)
-        self.btn_search_class_student = QtWidgets.QPushButton(
+        self.txt_search_class_section.setObjectName("txt_search_class_section")
+        self.horizontalLayout_56.addWidget(self.txt_search_class_section)
+        self.btn_search_class_section = QtWidgets.QPushButton(
             self.w_class_section)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.btn_search_class_student.sizePolicy().hasHeightForWidth())
-        self.btn_search_class_student.setSizePolicy(sizePolicy)
-        self.btn_search_class_student.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_search_class_student.setMaximumSize(QtCore.QSize(30, 30))
+            self.btn_search_class_section.sizePolicy().hasHeightForWidth())
+        self.btn_search_class_section.setSizePolicy(sizePolicy)
+        self.btn_search_class_section.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_search_class_section.setMaximumSize(QtCore.QSize(30, 30))
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(12)
         font.setBold(True)
         font.setWeight(75)
-        self.btn_search_class_student.setFont(font)
-        self.btn_search_class_student.setCursor(
+        self.btn_search_class_section.setFont(font)
+        self.btn_search_class_section.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_search_class_student.setStyleSheet("border-top-right-radius: 5px;\n"
+        self.btn_search_class_section.setStyleSheet("border-top-right-radius: 5px;\n"
                                                     "border-bottom-right-radius: 5px;")
-        self.btn_search_class_student.setText("")
-        self.btn_search_class_student.setIcon(icon4)
-        self.btn_search_class_student.setIconSize(QtCore.QSize(18, 18))
-        self.btn_search_class_student.setObjectName("btn_search_class_student")
-        self.horizontalLayout_56.addWidget(self.btn_search_class_student)
+        self.btn_search_class_section.setText("")
+        self.btn_search_class_section.setIcon(icon4)
+        self.btn_search_class_section.setIconSize(QtCore.QSize(18, 18))
+        self.btn_search_class_section.setObjectName("btn_search_class_section")
+        self.horizontalLayout_56.addWidget(self.btn_search_class_section)
         self.verticalLayout_25.addLayout(self.horizontalLayout_56)
         self.lv_class_section = ListView(self.w_class_section)
         self.lv_class_section.setSelectionMode(

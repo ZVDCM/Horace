@@ -265,7 +265,7 @@ class SectionStudent:
     def init_export_section_student(self):
         default_path = os.path.expanduser('~/Documents')
         path = QFileDialog.getExistingDirectory(
-                None, 'Export files to', default_path)
+                self.View, 'Export files to', default_path)
         if path:
             self.init_export_section_student_handler = self.ExportSectionStudentTable()
             self.init_export_section_student_handler.path = path

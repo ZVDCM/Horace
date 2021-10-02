@@ -1,7 +1,10 @@
-from PyQt5.QtWidgets import QDialog, QTableView, QWidget
+import csv
+import os
+from PyQt5.QtWidgets import QDialog, QFileDialog, QTableView, QWidget
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 from Admin.Misc.Widgets.data_table import DataTable
+from Admin.Misc.Widgets.import_classes_members import Import
 
 
 class Get(QtCore.QThread):
@@ -69,6 +72,80 @@ class AddItem(QtCore.QThread):
             self.operation.emit()
         self.quit()
 
+class Alert(QtCore.QThread):
+    operation = QtCore.pyqtSignal(str, str)
+
+    def __init__(self):
+        super().__init__()
+        self.val = ()
+
+    def run(self):
+        self.operation.emit(*self.val)
+        self.quit()
+
+class ExportClassesMembers(QtCore.QThread):
+    operation = QtCore.pyqtSignal()
+
+    def __init__(self, fn, alert):
+        super().__init__()
+        self.alert = alert
+        self.fn = fn
+        self.path = None
+
+    def run(self):
+        if self.path:
+            self.alert('file', 'Exporting Tables')
+            file_names = ['Classes.csv', 'Class Teachers.csv', 'Class Sections.csv']
+            file_headers = [('ID', 'Code', 'Name', 'Start', 'End'), ('ID', 'Code', 'Teacher', 'Host_Address'), ('ID', 'Code', 'Teacher', 'Section')]
+            tables = self.fn()
+            for index, table in enumerate(tables):
+                with open(f'{self.path}\{file_names[index]}', 'w', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(file_headers[index])
+                    writer.writerows(table)
+            self.alert('file', 'Tables Exported')
+        self.quit()
+
+class ImportClassesMembersTable(QtCore.QThread):
+    error = QtCore.pyqtSignal(object)
+
+    def __init__(self, Model, alert):
+        super().__init__()
+        self.alert = alert
+        self.Model = Model
+        self.val = ()
+
+    def run(self):
+        _classes, class_teachers, class_sections = self.val
+        errors = []
+        if _classes:
+            with open(_classes, newline='') as csvfile:
+                _classes_data = list(csv.reader(csvfile))[1:]
+                for index in range(len(_classes_data)):
+                    _classes_data[index] = _classes_data[index][1:]
+                res = self.Model.import_class_table(_classes_data)
+                if res != 'successful':
+                    errors.append('Class')
+        if class_teachers:
+            with open(class_teachers, newline='') as csvfile:
+                class_teachers_data = list(csv.reader(csvfile))[1:]
+                for index in range(len(class_teachers_data)):
+                    class_teachers_data[index] = class_teachers_data[index][1:len(class_teachers_data)]
+                res = self.Model.register_teachers_class(class_teachers_data)
+                if res != 'successful':
+                    errors.append('Class Teacher')
+        if class_sections:
+            with open(class_sections, newline='') as csvfile:
+                class_sections_data = list(csv.reader(csvfile))[1:]
+                for index in range(len(class_sections_data)):
+                    class_sections_data[index] = class_sections_data[index][1:]
+                res = self.Model.register_sections_class(class_sections_data)
+                if res != 'successful':
+                    errors.append('Class Section')
+        if errors:
+            self.error.emit(errors)
+        self.quit()
+
 class ClassMember:
 
     def __init__(self, Model, View, Contoller):
@@ -112,7 +189,51 @@ class ClassMember:
 
         self.View.txt_search_class.returnPressed.connect(self.search_class)
         self.View.btn_search_class.clicked.connect(self.search_class)
+
+        self.View.btn_import_class.clicked.connect(self.get_import_files)
+        self.View.btn_export_class.clicked.connect(self.init_export_classes_members)
+        self.View.btn_clear_class_table.clicked.connect(self.init_clear_classes_members)
+
+    def get_import_files(self):
+        self.Import = Import(self.View)
+        self.Import.operation.connect(self.init_import_classes_members)
+        self.Import.run()
+
+    def init_import_classes_members(self, _class, class_teachers, class_sections):
+        self.init_import_classes_members_handler = self.ImportClassesMembersTable()
+        self.init_import_classes_members_handler.val = _class, class_teachers, class_sections
+
+        self.get_all_class_handler = self.GetAllClass()
+        self.get_all_class_handler.finished.connect(self.get_latest_class)
     
+        self.init_import_classes_members_handler.finished.connect(self.get_all_class_handler.start)
+        self.init_import_classes_members_handler.start()
+
+    def import_error(self, errors):
+        self.View.run_popup(f"Import Error: {', '.join(errors)}", 'critical') 
+
+    def init_export_classes_members(self):
+        default_path = os.path.expanduser('~/Documents')
+        path = QFileDialog.getExistingDirectory(
+                self.View, 'Export files to', default_path)
+        if path:
+            self.export_classes_members_handler = self.ExportClassesMembers()
+            self.export_classes_members_handler.path = path
+            self.export_classes_members_handler.start()
+
+    def init_clear_classes_members(self):
+        self.View.show_confirm(self.clear_classes_members, "Are you sure you want to clear both tables?")
+
+    def clear_classes_members(self):
+        self.clear_section_student_handler = self.ClearClassesMembersTable()
+        self.get_all_class_handler = self.GetAllClass()
+        self.get_all_class_handler.finished.connect(self.get_latest_class)
+    
+        self.clear_section_student_handler.finished.connect(self.get_all_class_handler.start)
+        self.clear_section_student_handler.finished.connect(self.View.btn_cancel_class.click)
+        self.clear_section_student_handler.finished.connect(lambda: self.View.btn_init_add_class_teacher.setDisabled(True))
+        self.clear_section_student_handler.start()
+
     def add_class_bulk(self):
         self.AddItem = AddItem(self.Model.create_class, self.View.verticalLayout_50, self.View.scrollAreaWidgetContents_4, 'classItem_')
         self.AddItem.started.connect(self.View.TableClassLoadingScreen.run)
@@ -129,6 +250,12 @@ class ClassMember:
         self.View.add_class_item()
         self.View.add_class_item()
         self.View.sw_class.setCurrentIndex(1)
+
+    def show_alert(self, type, message):
+        self.ShowAlert = Alert()
+        self.ShowAlert.operation.connect(self.View.show_alert)
+        self.ShowAlert.val = type, message
+        self.ShowAlert.start()
 
     def go_back_class(self):
         self.View.sw_class.setCurrentIndex(0)
@@ -160,6 +287,25 @@ class ClassMember:
         self.View.txt_search_class.clear()
         
     # Operations
+    def ImportClassesMembersTable(self):
+        handler = ImportClassesMembersTable(self.Model, self.show_alert)
+        handler.started.connect(self.View.TableClassLoadingScreen.run)
+        handler.error.connect(self.import_error)
+        handler.finished.connect(self.View.TableClassLoadingScreen.hide)
+        return handler
+
+    def ExportClassesMembers(self):
+        handler = ExportClassesMembers(self.Model.export_classes_members_table, self.show_alert)
+        handler.started.connect(self.View.TableClassLoadingScreen.run)
+        handler.finished.connect(self.View.TableClassLoadingScreen.hide)
+        return handler
+
+    def ClearClassesMembersTable(self):
+        handler = Operation(self.Model.clear_classes_members_table)
+        handler.started.connect(self.View.TableClassLoadingScreen.run)
+        handler.finished.connect(self.View.TableClassLoadingScreen.hide)
+        return handler
+
     def GetAllClass(self):
         handler = Get(self.Model.get_all_class)
         handler.started.connect(self.View.TableClassLoadingScreen.run)
@@ -262,6 +408,12 @@ class ClassMember:
             self.View.disable_class_teacher_delete_clear()
             self.View.disable_class_section_delete_clear()
             self.View.lbl_class_table_status.setText('Class: 0')
+            self.View.lbl_class_teacher_status.setText('Teachers: 0')
+            self.View.lbl_class_section_status.setText('Sections: 0')
+            self.View.btn_init_add_class_teacher.setDisabled(True)
+            self.View.btn_init_add_class_section.setDisabled(True)
+            self.View.disable_class_teacher_delete_clear()
+            self.View.disable_class_section_delete_clear()
         else:
             self.View.enable_class_edit_delete()
 
@@ -308,6 +460,8 @@ class ClassMember:
         class_model = self.View.tv_class.model()
         self.set_target_class(self.Model.Class(
             *class_model.getRowData(class_model.rowCount() - 2)))
+        index = class_model.createIndex(class_model.rowCount() - 2, 0)
+        self.table_class_clicked(index)
 
     # Buttons
     def init_add_class(self):
@@ -326,6 +480,7 @@ class ClassMember:
         self.View.disable_class_inputs()
         self.View.set_class('Read')
         if not self.TargetClass:
+            self.View.clear_class_inputs()
             self.View.disable_class_edit_delete()
             self.View.disable_class_teacher_delete_clear()
             self.View.disable_class_teacher_delete_clear()
@@ -337,6 +492,13 @@ class ClassMember:
             index = self.View.tv_class.model().createIndex(self.target_class_row, 0)
             self.table_class_clicked(index)
             self.View.tv_class.selectRow(self.target_class_row)
+        else:
+            self.View.clear_class_inputs()
+            self.View.disable_class_edit_delete()
+            self.View.disable_class_teacher_delete_clear()
+            self.View.disable_class_teacher_delete_clear()
+            self.View.btn_init_add_class_teacher.setDisabled(True)
+            self.View.btn_init_add_class_section.setDisabled(True)
 
     def init_add_edit_class(self):
         if self.View.class_state == "Add":
@@ -418,6 +580,24 @@ class ClassMember:
         self.View.btn_delete_class_teacher.clicked.connect(self.init_delete_target_class_teacher)
         self.View.btn_clear_class_teacher.clicked.connect(self.init_clear_class_teachers)
         self.View.lv_class_teacher.clicked.connect(self.list_class_teacher_clicked)
+
+        self.View.txt_search_class_teacher.returnPressed.connect(self.search_class_teacher)
+        self.View.btn_search_class_teacher.clicked.connect(self.search_class_teacher)
+
+    def search_class_teacher(self):
+        target_class_teacher = self.View.txt_search_class_teacher.text()
+        class_teacher_model = self.View.lv_class_teacher.model()
+        class_teachers = class_teacher_model.data
+        target_indices = []
+        for index, class_teacher in enumerate(class_teachers):
+            if target_class_teacher in class_teacher:
+                target_indices.append(index)
+            self.View.lv_class_teacher.setRowHidden(index, True)
+
+        for target_index in target_indices:
+            self.View.lv_class_teacher.setRowHidden(target_index, False)
+
+        self.View.txt_search_class_teacher.clear()
 
     # Operation
     def GetTargetClassTeacher(self):
@@ -573,6 +753,24 @@ class ClassMember:
         self.View.lv_class_section.clicked.connect(self.list_class_section_clicked)
         self.View.btn_clear_class_student.clicked.connect(self.init_clear_target_section)
         self.View.btn_delete_class_section.clicked.connect(self.init_delete_target_section)
+
+        self.View.txt_search_class_section.returnPressed.connect(self.search_class_section)
+        self.View.btn_search_class_section.clicked.connect(self.search_class_section)
+
+    def search_class_section(self):
+        target_class_section = self.View.txt_search_class_section.text()
+        class_section_model = self.View.lv_class_section.model()
+        class_sections = class_section_model.data
+        target_indices = []
+        for index, class_section in enumerate(class_sections):
+            if target_class_section in class_section:
+                target_indices.append(index)
+            self.View.lv_class_section.setRowHidden(index, True)
+
+        for target_index in target_indices:
+            self.View.lv_class_section.setRowHidden(target_index, False)
+
+        self.View.txt_search_class_section.clear()
 
     # Operation
     def GetTargetClassSection(self):

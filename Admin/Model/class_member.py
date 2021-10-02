@@ -1,4 +1,6 @@
 import re
+
+import mysql
 from Admin.Misc.Functions.hash import *
 
 
@@ -14,6 +16,61 @@ class ClassMember:
         self.TableModel = Model.TableModel
         self.ListModel = Model.ListModel
         self.Database = Model.Database
+
+    def import_class_table(self, classes):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+        
+        try:
+            insert_query = "INSERT INTO Classes (Code, Name, Start, End) VALUES (%s,%s,%s,%s)"
+            cursor.executemany(insert_query, (classes))
+            db.commit()
+            res = 'successful'
+        except mysql.connector.errors.ProgrammingError:
+            res = 'programming error'
+        except  mysql.connector.errors.InterfaceError:
+            res = 'programming error'
+        except mysql.connector.errors.IntegrityError:
+            res = 'integrity error'
+
+        cursor.close()
+        db.close()
+
+        return res
+
+    def export_classes_members_table(self):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = "SELECT * FROM Classes"
+        cursor.execute(select_query)
+        classes = cursor.fetchall()
+        select_query = "SELECT * FROM Class_Teachers"
+        cursor.execute(select_query)
+        class_teachers = cursor.fetchall()
+        select_query = "SELECT * FROM Class_Sections"
+        cursor.execute(select_query)
+        class_sections = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        return [classes, class_teachers, class_sections]
+
+    def clear_classes_members_table(self):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        delete_query = "DELETE FROM Classes"
+        cursor.execute(delete_query)
+        db.commit()
+
+        res = 'successful'
+
+        cursor.close()
+        db.close()
+
+        return res
 
     def get_all_class(self):
         db = self.Database.connect()
@@ -145,20 +202,32 @@ class ClassMember:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        insert_query = "INSERT INTO Class_Teachers (Code, Teacher) VALUES (%s, %s)"
-        cursor.executemany(insert_query, (Teachers))
-        db.commit()
+        try:
+            insert_query = "INSERT INTO Class_Teachers (Code, Teacher) VALUES (%s, %s)"
+            cursor.executemany(insert_query, (Teachers))
+            db.commit()
+            res = 'successful'
+        except mysql.connector.errors.ProgrammingError:
+            res = 'programming error'
+        except  mysql.connector.errors.InterfaceError:
+            res = 'programming error'
+        except mysql.connector.errors.IntegrityError:
+            res = 'integrity error'
 
         cursor.close()
         db.close()
 
-        return 'successful'
+        return res
 
     def delete_class_teacher(self, teachers):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
         delete_query = "DELETE FROM Class_Teachers WHERE Code=%s AND Teacher=%s"
+        cursor.executemany(delete_query, (teachers))
+        db.commit()
+
+        delete_query = "DELETE FROM Class_Sections WHERE Code=%s AND Teacher=%s"
         cursor.executemany(delete_query, (teachers))
         db.commit()
 
@@ -172,6 +241,10 @@ class ClassMember:
         cursor = db.cursor(buffered=True)
 
         delete_query = "DELETE FROM Class_Teachers WHERE Code=%s"
+        cursor.execute(delete_query, (code,))
+        db.commit()
+
+        delete_query = "DELETE FROM Class_Sections WHERE Code=%s"
         cursor.execute(delete_query, (code,))
         db.commit()
 
@@ -220,14 +293,22 @@ class ClassMember:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        insert_query = "INSERT INTO Class_Sections (Code, Teacher, Section) VALUES (%s,%s,%s)"
-        cursor.executemany(insert_query, (class_sections))
-        db.commit()
+        try:
+            insert_query = "INSERT INTO Class_Sections (Code, Teacher, Section) VALUES (%s,%s,%s)"
+            cursor.executemany(insert_query, (class_sections))
+            db.commit()
+            res = 'successful'
+        except mysql.connector.errors.ProgrammingError:
+            res = 'programming error'
+        except  mysql.connector.errors.InterfaceError:
+            res = 'programming error'
+        except mysql.connector.errors.IntegrityError:
+            res = 'integrity error'
 
         cursor.close()
         db.close()
 
-        return 'successful'
+        return res
 
     def delete_class_section(self, class_sections):
         db = self.Database.connect()
