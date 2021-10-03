@@ -129,10 +129,10 @@ class ImportTeacherTable(QtCore.QThread):
 
 class TeacherAttendance:
 
-    def __init__(self, Model, View, Contoller):
+    def __init__(self, Model, View, Admin):
         self.Model = Model
         self.View = View
-        self.Contoller = Contoller
+        self.Admin = Admin
 
         self.target_teacher_row = None
         self.TargetTeacher = None
@@ -177,6 +177,7 @@ class TeacherAttendance:
 
         self.get_all_teacher_handler = self.GetAllTeacher()
         self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
+        self.get_all_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teachers imported successfully"))
     
         self.init_import_teachers_handler.finished.connect(self.get_all_teacher_handler.start)
         self.init_import_teachers_handler.start()
@@ -188,6 +189,7 @@ class TeacherAttendance:
         if path:
             self.export_teachers_handler = self.ExportTeacher()
             self.export_teachers_handler.path = path
+            self.export_teachers_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teachers exported successfully"))
             self.export_teachers_handler.start()
 
     def init_clear_teacher_table(self):
@@ -197,6 +199,7 @@ class TeacherAttendance:
         self.clear_teacher_table_handler = self.ClearTeacherTable()
         self.get_all_teacher_handler = self.GetAllTeacher()
         self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
+        self.get_all_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teachers table cleared successfully"))
     
         self.clear_teacher_table_handler.finished.connect(self.get_all_teacher_handler.start)
         self.clear_teacher_table_handler.start()
@@ -214,6 +217,8 @@ class TeacherAttendance:
         self.AddItem = AddItem(self.Model.create_teacher, self.View.verticalLayout_47, self.View.scrollAreaWidgetContents_3, 'teacherItem_')
         self.AddItem.started.connect(self.View.TableTeacherLoadingScreen.run)
         self.AddItem.operation.connect(self.go_back_teacher)
+        items = self.View.verticalLayout_47.count()-1
+        self.AddItem.operation.connect(lambda: self.Admin.set_admin_status(f"{items} teachers added successfully"))
         self.AddItem.error.connect(self.teacher_bulk_error)
         self.AddItem.finished.connect(self.View.TableTeacherLoadingScreen.hide)
         self.AddItem.start()
@@ -337,6 +342,7 @@ class TeacherAttendance:
         
         self.get_all_teacher_handler.finished.connect(
             self.get_latest_teacher)
+        self.get_all_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(target_teachers)} teachers deleted successfully"))
         self.delete_many_teacher_handler.start()
 
     # Table
@@ -479,6 +485,7 @@ class TeacherAttendance:
         self.add_teacher_handler.operation.connect(self.get_all_teacher_handler.start)
 
         self.get_all_teacher_handler.finished.connect(lambda: self.select_latest_teacher(username))
+        self.get_all_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teacher {username} added successfully"))
         self.add_teacher_handler.start()
 
     # Teacher Edit
@@ -489,6 +496,9 @@ class TeacherAttendance:
         if is_blank(username) or is_blank(password):
             self.View.run_pop('Teacher fields must be filled')
             return
+
+        prev = self.TargetTeacher.Username
+        new = username
 
         if username == self.TargetTeacher.Username and password == str(self.TargetTeacher.Salt + self.TargetTeacher.Hash):
             self.View.btn_cancel_teacher.click()
@@ -501,6 +511,7 @@ class TeacherAttendance:
         self.edit_teacher_handler.operation.connect(self.get_all_teacher_handler.start)
 
         self.get_all_teacher_handler.finished.connect(lambda: self.select_latest_teacher(username))
+        self.get_all_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teacher {prev} updated to {new} successfully"))
         self.edit_teacher_handler.start()
 
     def init_delete_teacher(self):
@@ -510,11 +521,13 @@ class TeacherAttendance:
     def delete_teacher(self):
         self.get_all_teacher_handler = self.GetAllTeacher()
         self.delete_teacher_handler = self.DeleteTeacher()
+        target = self.TargetTeacher
 
         self.delete_teacher_handler.val = self.TargetTeacher,
         self.delete_teacher_handler.operation.connect(self.get_all_teacher_handler.start)
 
         self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
+        self.get_all_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teacher {target.Username} deleted successfully"))
         self.delete_teacher_handler.start()
 
     # *Attendances
@@ -561,6 +574,7 @@ class TeacherAttendance:
         self.delete_teacher_attendances_handler = self.DeleteTeacherAttendances()
 
         self.get_target_teacher_attendances_handler.val = self.TargetTeacher,
+        self.get_target_teacher_attendances_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(targets)} attendances deleted successfully"))
         self.delete_teacher_attendances_handler.val = targets,
         self.delete_teacher_attendances_handler.operation.connect(self.get_target_teacher_attendances_handler.start)
         self.delete_teacher_attendances_handler.start()
@@ -573,6 +587,7 @@ class TeacherAttendance:
         self.clear_teacher_attendances_handler = self.ClearTeacherAttendances()
 
         self.get_target_teacher_attendances_handler.val = self.TargetTeacher,
+        self.get_target_teacher_attendances_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Attendances cleared successfully"))
         self.clear_teacher_attendances_handler.val = self.TargetTeacher.Username,
         self.clear_teacher_attendances_handler.operation.connect(self.get_target_teacher_attendances_handler.start)
         self.clear_teacher_attendances_handler.start()
