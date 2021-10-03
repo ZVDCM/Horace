@@ -805,12 +805,21 @@ class Host:
         self.ShowLoadingScreen.start()
 
     def set_url_list(self, urls):
+        if not urls:
+            self.View.btn_init_edit_url.setDisabled(True)
+            self.View.btn_delete_url.setDisabled(True)
+        else:
+            self.View.btn_init_edit_url.setDisabled(False)
+            self.View.btn_delete_url.setDisabled(False)
+
         url_model = self.Model.ListModel(self.View.lv_url, urls, True)
         self.View.lv_url.setModel(url_model)
 
     def set_latest_url(self):
         url_model = self.View.lv_url.model()
         if url_model.rowCount() == url_model.default_size:
+            self.View.btn_init_edit_url.setDisabled(True)
+            self.View.btn_delete_url.setDisabled(True)
             return
         index = url_model.createIndex(url_model.rowCount()-1, 0)
         self.View.lv_url.setCurrentIndex(index)
