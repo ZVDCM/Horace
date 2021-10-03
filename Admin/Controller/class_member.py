@@ -148,10 +148,10 @@ class ImportClassesMembersTable(QtCore.QThread):
 
 class ClassMember:
 
-    def __init__(self, Model, View, Contoller):
+    def __init__(self, Model, View, Admin):
         self.Model = Model
         self.View = View
-        self.Contoller = Contoller
+        self.Admin = Admin
 
         self.target_class_row = None
         self.TargetClass = None
@@ -205,6 +205,7 @@ class ClassMember:
 
         self.get_all_class_handler = self.GetAllClass()
         self.get_all_class_handler.finished.connect(self.get_latest_class)
+        self.get_all_class_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Classes and Members imported successfully"))
     
         self.init_import_classes_members_handler.finished.connect(self.get_all_class_handler.start)
         self.init_import_classes_members_handler.start()
@@ -219,6 +220,7 @@ class ClassMember:
         if path:
             self.export_classes_members_handler = self.ExportClassesMembers()
             self.export_classes_members_handler.path = path
+            self.export_classes_members_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Classes and Members exported successfully"))
             self.export_classes_members_handler.start()
 
     def init_clear_classes_members(self):
@@ -228,6 +230,7 @@ class ClassMember:
         self.clear_section_student_handler = self.ClearClassesMembersTable()
         self.get_all_class_handler = self.GetAllClass()
         self.get_all_class_handler.finished.connect(self.get_latest_class)
+        self.get_all_class_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Classes and Members table cleared successfully"))
     
         self.clear_section_student_handler.finished.connect(self.get_all_class_handler.start)
         self.clear_section_student_handler.finished.connect(self.View.btn_cancel_class.click)
@@ -238,6 +241,8 @@ class ClassMember:
         self.AddItem = AddItem(self.Model.create_class, self.View.verticalLayout_50, self.View.scrollAreaWidgetContents_4, 'classItem_')
         self.AddItem.started.connect(self.View.TableClassLoadingScreen.run)
         self.AddItem.operation.connect(self.go_back_class)
+        items = self.View.verticalLayout_50.count() - 1
+        self.AddItem.operation.connect(lambda: self.Admin.set_admin_status(f"{items} classes added successfully"))
         self.AddItem.error.connect(self.class_bulk_error)
         self.AddItem.finished.connect(self.View.TableClassLoadingScreen.hide)
         self.AddItem.start()
@@ -372,6 +377,7 @@ class ClassMember:
         
         self.get_all_class_handler.finished.connect(
             self.get_latest_class)
+        self.get_all_class_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(target_classes)} classes deleted successfully"))
         self.delete_many_class_handler.start()
 
     # Table
@@ -536,6 +542,7 @@ class ClassMember:
         self.add_class_handler.operation.connect(self.get_all_class_handler.start)
 
         self.get_all_class_handler.finished.connect(lambda: self.select_latest_class(code))
+        self.get_all_class_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{code} class added successfully"))
         self.add_class_handler.start()
 
     # Class Edit
@@ -552,6 +559,11 @@ class ClassMember:
         target_start = QtCore.QTime(*self.TargetClass.Start)
         target_end = QtCore.QTime(*self.TargetClass.End)
 
+        prev = self.TargetClass.Code
+        new = None
+        if code != self.TargetClass.Code:
+            new = code
+
         if code == self.TargetClass.Code and name == self.TargetClass.Name and start == target_start and end == target_end:
             self.View.btn_cancel_class.click()
             return
@@ -562,10 +574,15 @@ class ClassMember:
         self.get_all_class_handler = self.GetAllClass()
         self.edit_class_handler = self.EditClass()
 
-        self.edit_class_handler.val = self.TargetClass.ID, code, name, start, end
+        self.edit_class_handler.val = self.TargetClass.ID, prev, code, name, start, end
         self.edit_class_handler.operation.connect(self.get_all_class_handler.start)
 
         self.get_all_class_handler.finished.connect(lambda: self.select_latest_class(code))
+        if new:
+            self.get_all_class_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Class {prev} updated to {new} successfully"))
+        else:
+            self.get_all_class_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Class {prev} updated successfully"))
+
         self.edit_class_handler.start()
 
     # Class Delete
@@ -575,11 +592,13 @@ class ClassMember:
     def delete_class(self):
         self.get_all_class_handler = self.GetAllClass()
         self.delete_class_handler = self.DeleteClass()
+        target = self.TargetClass
 
         self.delete_class_handler.val = self.TargetClass,
         self.delete_class_handler.operation.connect(self.get_all_class_handler.start)
 
         self.get_all_class_handler.finished.connect(self.get_latest_class)
+        self.get_all_class_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Class {target.Code} deleted successfully"))
         self.delete_class_handler.start()
 
     # *Class Teacher
@@ -720,6 +739,7 @@ class ClassMember:
         self.register_teacher_handler = self.RegisterTeacher()
 
         self.get_target_class_teacher_handler.val = self.TargetClass,
+        self.get_target_class_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(class_teachers)} teachers added to {self.TargetClass.Code} successfully"))
         self.register_teacher_handler.val = class_teachers,
         self.register_teacher_handler.operation.connect(self.get_target_class_teacher_handler.start)
 
@@ -739,6 +759,7 @@ class ClassMember:
         self.delete_target_class_teachers_handler = self.DeleteClassTeacher()
 
         self.get_target_class_teacher_handler.val = self.TargetClass,
+        self.get_target_class_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(targets)} teachers removed from {self.TargetClass.Code} successfully"))
         self.delete_target_class_teachers_handler.val = targets,
         self.delete_target_class_teachers_handler.operation.connect(self.get_target_class_teacher_handler.start)
 
@@ -753,6 +774,7 @@ class ClassMember:
         index = self.View.tv_class.model().createIndex(self.target_class_row, 0)
         self.clear_class_teachers_handler.operation.connect(lambda: self.table_class_clicked(index))
 
+        self.clear_class_teachers_handler.finished.connect(lambda: self.Admin.set_admin_status("Class teachers list cleared successfully"))
         self.clear_class_teachers_handler.start()
 
     # *Class Section
@@ -877,6 +899,7 @@ class ClassMember:
         self.register_sections_handler = self.RegisterSections()
 
         self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
+        self.get_target_class_section_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(class_sections)} sections added to {self.TargetClassTeacher.Teacher}'s {self.TargetClass.Code} successfully"))
         self.register_sections_handler.val = class_sections,
         self.register_sections_handler.operation.connect(self.get_target_class_section_handler.start)
 
@@ -896,6 +919,7 @@ class ClassMember:
         self.delete_section_handler = self.DeleteClassSection()
 
         self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
+        self.get_target_class_section_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(targets)} sections removed from {self.TargetClassTeacher.Teacher}'s {self.TargetClass.Code} successfully"))
         self.delete_section_handler.val = targets,
         self.delete_section_handler.operation.connect(self.get_target_class_section_handler.start)
 
@@ -909,6 +933,7 @@ class ClassMember:
         self.clear_target_class_section_handler = self.ClearClassSection()
 
         self.get_target_class_section_handler.val = self.TargetClass, self.TargetClassTeacher
+        self.get_target_class_section_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{self.TargetClassTeacher.Teacher}'s {self.TargetClass.Code} sections cleared successfully"))
         self.clear_target_class_section_handler.val = self.TargetClass.Code, self.TargetClassTeacher.Teacher
         self.clear_target_class_section_handler.operation.connect(self.get_target_class_section_handler.start)
 

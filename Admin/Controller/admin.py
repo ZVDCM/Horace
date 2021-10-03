@@ -71,6 +71,10 @@ class Admin:
         self.View.run()
 
     def connect_signals(self):
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.timer_event)
+        self.timer.start(1000)
+
         for side_nav in self.View.side_navs:
             side_nav.operation.connect(self.change_page)
 
@@ -135,10 +139,6 @@ class Admin:
         self.get_target_teacher_attendances.started.connect(self.View.AttendanceLoadingScreen.run)
         self.get_target_teacher_attendances.operation.connect(self.TeacherAttendance.set_teacher_attendances_list)
         self.get_target_teacher_attendances.finished.connect(self.View.AttendanceLoadingScreen.hide)
-
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.timer_event)
-        self.timer.start(1000)
 
     def change_page(self, index):
         for side_nav in self.View.side_navs:

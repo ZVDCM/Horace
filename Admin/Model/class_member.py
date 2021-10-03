@@ -114,19 +114,26 @@ class ClassMember:
 
         return res
 
-    def edit_class(self, id, code, name, start, end):
+    def edit_class(self, id, prev_code, new_code, name, start, end):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT * FROM Classes WHERE Code=%s"
-        cursor.execute(select_query, (code,))
+        if prev_code != new_code:
+            select_query = "SELECT * FROM Classes WHERE Code=%s"
+            cursor.execute(select_query, (new_code,))
 
-        class_exist = cursor.fetchone()
-        res = "exists"
+            class_exist = cursor.fetchone()
+            res = "exists"
 
-        if not class_exist:
+            if not class_exist:
+                update_query = "UPDATE Classes SET Code=%s, Name=%s, Start=%s, End=%s WHERE ID=%s"
+                cursor.execute(update_query, (new_code, name, start, end, id))
+                db.commit()
+
+                res = "successful"
+        else:
             update_query = "UPDATE Classes SET Code=%s, Name=%s, Start=%s, End=%s WHERE ID=%s"
-            cursor.execute(update_query, (code, name, start, end, id))
+            cursor.execute(update_query, (new_code, name, start, end, id))
             db.commit()
 
             res = "successful"

@@ -498,7 +498,9 @@ class TeacherAttendance:
             return
 
         prev = self.TargetTeacher.Username
-        new = username
+        new = None
+        if username != self.TargetTeacher.Username:
+            new = username
 
         if username == self.TargetTeacher.Username and password == str(self.TargetTeacher.Salt + self.TargetTeacher.Hash):
             self.View.btn_cancel_teacher.click()
@@ -511,7 +513,10 @@ class TeacherAttendance:
         self.edit_teacher_handler.operation.connect(self.get_all_teacher_handler.start)
 
         self.get_all_teacher_handler.finished.connect(lambda: self.select_latest_teacher(username))
-        self.get_all_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teacher {prev} updated to {new} successfully"))
+        if new:
+            self.get_all_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teacher {prev} updated to {new} successfully"))
+        else:
+            self.get_all_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teacher {prev} updated successfully"))
         self.edit_teacher_handler.start()
 
     def init_delete_teacher(self):
@@ -574,7 +579,7 @@ class TeacherAttendance:
         self.delete_teacher_attendances_handler = self.DeleteTeacherAttendances()
 
         self.get_target_teacher_attendances_handler.val = self.TargetTeacher,
-        self.get_target_teacher_attendances_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(targets)} attendances deleted successfully"))
+        self.get_target_teacher_attendances_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{self.TargetTeacher.Username}'s {len(targets)} attendances deleted successfully"))
         self.delete_teacher_attendances_handler.val = targets,
         self.delete_teacher_attendances_handler.operation.connect(self.get_target_teacher_attendances_handler.start)
         self.delete_teacher_attendances_handler.start()
@@ -587,7 +592,7 @@ class TeacherAttendance:
         self.clear_teacher_attendances_handler = self.ClearTeacherAttendances()
 
         self.get_target_teacher_attendances_handler.val = self.TargetTeacher,
-        self.get_target_teacher_attendances_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Attendances cleared successfully"))
+        self.get_target_teacher_attendances_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{self.TargetTeacher.Username}'s Attendances cleared successfully"))
         self.clear_teacher_attendances_handler.val = self.TargetTeacher.Username,
         self.clear_teacher_attendances_handler.operation.connect(self.get_target_teacher_attendances_handler.start)
         self.clear_teacher_attendances_handler.start()

@@ -858,7 +858,9 @@ class SectionStudent:
             return
         
         prev = self.TargetSection.Name
-        new = section
+        new = None
+        if section != self.TargetSection.Name:
+            new = section
 
         if section == self.TargetSection.Name:
             self.View.btn_cancel_section.click()
@@ -875,7 +877,10 @@ class SectionStudent:
             lambda: self.select_latest_section(section))
         self.get_all_section_handler.finished.connect(
             self.View.btn_cancel_section.click)
-        self.get_all_section_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Section {prev} updated to {new} successfully"))
+        if new:
+            self.get_all_section_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Section {prev} updated to {new} successfully"))
+        else:
+            self.get_all_section_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Section {prev} updated successfully"))
         self.edit_section_handler.start()
 
     # Section Delete
@@ -1336,7 +1341,9 @@ class SectionStudent:
             return
 
         prev = self.TargetStudent.Username
-        new = username
+        new = None
+        if username != self.TargetStudent.Username:
+            new = username
 
         if username == self.TargetStudent.Username and password == str(self.TargetStudent.Salt + self.TargetStudent.Hash):
             self.View.btn_cancel_student.click()
@@ -1361,7 +1368,10 @@ class SectionStudent:
             lambda: self.select_latest_student(username))
         self.get_all_student_handler.finished.connect(
             self.View.btn_cancel_student.click)
-        self.get_all_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Student {prev} updated to {new} successfully"))
+        if new:
+            self.get_all_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Student {prev} updated to {new} successfully"))
+        else:
+            self.get_all_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Student {prev} successfully"))
         self.edit_student_handler.start()
     
     # Student Delete
