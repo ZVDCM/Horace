@@ -36,13 +36,19 @@ class Lobby:
         cursor = db.cursor(buffered=True)
 
         select_query = """
-            SELECT ID, Code, Teacher, INET_NTOA(Host_Address) FROM class_teachers WHERE Code IN (
-                SELECT Code FROM Class_Sections WHERE Code=%s AND Section IN (
-                        SELECT Section From Section_Students WHERE Student=%s
-                    )
-            );
+            SELECT ID, Code, Teacher, INET_NTOA(Host_Address) FROM class_teachers 
+                WHERE Code IN (
+                    SELECT Code FROM Class_Sections WHERE Code=%s AND Section IN (
+                            SELECT Section From Section_Students WHERE Student=%s
+                        )
+                )
+                    AND Start IN (
+                        SELECT Start FROM Class_Sections WHERE Code=%s AND Start=%s AND Section IN (
+                            SELECT Section From Section_Students WHERE Student=%s
+                        )
+                    );
         """
-        cursor.execute(select_query, (Class.Code, Student.Username))
+        cursor.execute(select_query, (Class.Code, Student.Username, Class.Code, Class.Raw_Start, Student.Username,))
 
         _class = cursor.fetchone()
 

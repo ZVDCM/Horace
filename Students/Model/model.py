@@ -24,6 +24,11 @@ class Class:
     def End(self):
         time = datetime.strptime(str(self._End), "%H:%M:%S")
         return time.strftime("%I:%M %p")
+    
+    @property
+    def Raw_Start(self):
+        return self._Start
+
 
 
 class ClassTeacher:

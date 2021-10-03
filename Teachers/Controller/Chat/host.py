@@ -138,7 +138,10 @@ class SetMeetingStatus(QtCore.QThread):
         self.val = None
 
     def run(self):
-        self.fn(self.val)
+        try:
+            self.fn(self.val)
+        except RuntimeError:
+            pass
         self.quit()
 
 

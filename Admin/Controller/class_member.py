@@ -570,7 +570,7 @@ class ClassMember:
         self.get_all_class_handler = self.GetAllClass()
         self.edit_class_handler = self.EditClass()
 
-        self.edit_class_handler.val = self.TargetClass.ID, prev, code, name, start, end
+        self.edit_class_handler.val = self.TargetClass.ID, prev, code, name, target_start, start, end
         self.edit_class_handler.operation.connect(self.get_all_class_handler.start)
 
         self.get_all_class_handler.finished.connect(lambda: self.select_latest_class(code))
@@ -728,7 +728,13 @@ class ClassMember:
 
     def add_target_teacher_data(self):
         self.DataTable.close()
-        class_teachers = [[self.TargetClass.Code, teacher]
+        start = QtCore.QTime(*self.TargetClass.Start)
+        start = ":".join([str(start.hour()), str(start.minute()), str(start.second())])
+
+        end = QtCore.QTime(*self.TargetClass.End)
+        end = ":".join([str(end.hour()), str(end.minute()), str(end.second())])
+
+        class_teachers = [[self.TargetClass.Code, teacher, start, end]
                             for teacher in self.DataTable.get_target_row_data()]
 
         self.get_target_class_teacher_handler = self.GetTargetClassTeacher()
@@ -748,8 +754,11 @@ class ClassMember:
         indices = self.View.lv_class_teacher.selectedIndexes()
         indices = [index.row() for index in indices]
         class_teacher_model = self.View.lv_class_teacher.model()
-        targets = [[self.TargetClass.Code, class_teacher_model.getRowData(
-            index)] for index in indices]
+
+        start = QtCore.QTime(*self.TargetClass.Start)
+        start = ":".join([str(start.hour()), str(start.minute()), str(start.second())])
+
+        targets = [[self.TargetClass.Code, class_teacher_model.getRowData(index), start] for index in indices]
 
         self.get_target_class_teacher_handler = self.GetTargetClassTeacher()
         self.delete_target_class_teachers_handler = self.DeleteClassTeacher()
@@ -888,7 +897,13 @@ class ClassMember:
 
     def add_target_section_data(self):
         self.DataTable.close()
-        class_sections = [[self.TargetClass.Code, self.TargetClassTeacher.Teacher, section]
+        start = QtCore.QTime(*self.TargetClass.Start)
+        start = ":".join([str(start.hour()), str(start.minute()), str(start.second())])
+
+        end = QtCore.QTime(*self.TargetClass.End)
+        end = ":".join([str(end.hour()), str(end.minute()), str(end.second())])
+
+        class_sections = [[self.TargetClass.Code, self.TargetClassTeacher.Teacher, section, start, end]
                             for section in self.DataTable.get_target_row_data()]
 
         self.get_target_class_section_handler = self.GetTargetClassSection()
@@ -908,8 +923,12 @@ class ClassMember:
         indices = self.View.lv_class_section.selectedIndexes()
         indices = [index.row() for index in indices]
         class_section_model = self.View.lv_class_section.model()
+
+        start = QtCore.QTime(*self.TargetClass.Start)
+        start = ":".join([str(start.hour()), str(start.minute()), str(start.second())])
+
         targets = [[self.TargetClass.Code, self.TargetClassTeacher.Teacher, class_section_model.getRowData(
-            index)] for index in indices]
+            index), start] for index in indices]
 
         self.get_target_class_section_handler = self.GetTargetClassSection()
         self.delete_section_handler = self.DeleteClassSection()

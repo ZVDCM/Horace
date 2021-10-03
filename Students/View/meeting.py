@@ -613,7 +613,10 @@ class Meeting(QtWidgets.QMainWindow):
         self.Popup.run()
 
     def set_meeting_status(self, status):
-        self.lbl_meeting_status.setText(status)
+        try:
+            self.lbl_meeting_status.setText(status)
+        except RuntimeError:
+            return
 
     def show_alert(self, type, message):
         if type == 'file':

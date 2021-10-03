@@ -422,4 +422,7 @@ class Lobby(QtWidgets.QMainWindow):
             self.ActiveOverlay.update()
 
     def set_lobby_status(self, status):
-        self.lbl_lobby_status.setText(status)
+        try:
+            self.lbl_lobby_status.setText(status)
+        except RuntimeError:
+            return

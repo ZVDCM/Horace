@@ -71,7 +71,7 @@ class Connect(QThread):
                 try:
                     self.Client.client.connect(self.address)
                     break
-                except OSError:
+                except (OSError, TypeError):
                     counter += 1
                     self.Client.set_meeting_status_handler(
                         'Connecting' + '.' * (counter % 4))
@@ -359,7 +359,10 @@ class SetMeetingStatus(QtCore.QThread):
         self.val = None
 
     def run(self):
-        self.fn(self.val)
+        try:
+            self.fn(self.val)
+        except RuntimeError:
+            pass
         self.quit()
 
 
@@ -537,11 +540,16 @@ class Client:
     def meeting_closed(self, event):
         self.client.close()
 
-        if not self.Controller.View.Lobby.isVisible():
-            self.Controller.SignInController.View.init_sign_in()
-            self.Controller.SignInController.Model.init_sign_in()
-            self.Controller.SignInController.init_sign_in()
+        try:
+            if not self.Controller.View.Lobby.isVisible():
+                self.Controller.SignInController.View.init_sign_in()
+                self.Controller.SignInController.Model.init_sign_in()
+                self.Controller.SignInController.init_sign_in()
+        except RuntimeError:
+            pass
         
+        if self.Connect.isRunning():
+            self.Connect.terminate()
         self.timer.stop()
         self.Controller.Lobby.enable_classes()
 
@@ -549,14 +557,10 @@ class Client:
         student_model = self.Model.ListModel(self.View.lv_student, students)
         self.View.lv_student.setModel(student_model)
 
-    def set_meeting_status(self):
-        return SetMeetingStatus(self.View.set_meeting_status)
 
     def set_meeting_status_handler(self, status):
         self.status_time = 0
-        self.handler = self.set_meeting_status()
-        self.handler.val = status
-        self.handler.start()
+        threading.Thread(target=self.View.set_meeting_status, args=(status,), daemon=True).start()
 
     def search(self):
         target_student = self.View.txt_search_student.text()

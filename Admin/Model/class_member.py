@@ -1,4 +1,5 @@
 import re
+from PyQt5.QtCore import QTime
 
 import mysql
 from Admin.Misc.Functions.hash import *
@@ -114,13 +115,13 @@ class ClassMember:
 
         return res
 
-    def edit_class(self, id, prev_code, new_code, name, start, end):
+    def edit_class(self, id, prev_code, new_code, name, prev_start, start, end):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        if prev_code != new_code:
-            select_query = "SELECT * FROM Classes WHERE Code=%s"
-            cursor.execute(select_query, (new_code,))
+        if prev_code != new_code and prev_start != start:
+            select_query = "SELECT * FROM Classes WHERE Code=%s AND Start=%s"
+            cursor.execute(select_query, (new_code, prev_start))
 
             class_exist = cursor.fetchone()
             res = "exists"
@@ -174,8 +175,11 @@ class ClassMember:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT ID, Code, Teacher FROM Class_Teachers WHERE Code=%s ORDER BY ID"
-        cursor.execute(select_query, (Class.Code,))
+        start = QTime(*Class.Start)
+        start = ":".join([str(start.hour()), str(start.minute()), str(start.second())])
+
+        select_query = "SELECT ID, Code, Teacher FROM Class_Teachers WHERE Code=%s and Start=%s ORDER BY ID"
+        cursor.execute(select_query, (Class.Code, start))
 
         class_teachers = cursor.fetchall()
 
@@ -190,11 +194,14 @@ class ClassMember:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
+        start = QTime(*Class.Start)
+        start = ":".join([str(start.hour()), str(start.minute()), str(start.second())])
+
         select_query = """
             SELECT UserID, Username, Salt, Hash FROM Users WHERE Privilege=%s
-            AND Username NOT IN (SELECT Teacher FROM Class_Teachers WHERE Code=%s);
+            AND Username NOT IN (SELECT Teacher FROM Class_Teachers WHERE Code=%s and Start=%s);
         """
-        cursor.execute(select_query, ('Teacher', Class.Code))
+        cursor.execute(select_query, ('Teacher', Class.Code, start))
 
         teachers_not_in_class = cursor.fetchall()
 
@@ -210,7 +217,7 @@ class ClassMember:
         cursor = db.cursor(buffered=True)
 
         try:
-            insert_query = "INSERT INTO Class_Teachers (Code, Teacher) VALUES (%s, %s)"
+            insert_query = "INSERT INTO Class_Teachers (Code, Teacher, Start, End) VALUES (%s, %s, %s, %s)"
             cursor.executemany(insert_query, (Teachers))
             db.commit()
             res = 'successful'
@@ -230,11 +237,11 @@ class ClassMember:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        delete_query = "DELETE FROM Class_Teachers WHERE Code=%s AND Teacher=%s"
+        delete_query = "DELETE FROM Class_Teachers WHERE Code=%s AND Teacher=%s AND Start=%s"
         cursor.executemany(delete_query, (teachers))
         db.commit()
 
-        delete_query = "DELETE FROM Class_Sections WHERE Code=%s AND Teacher=%s"
+        delete_query = "DELETE FROM Class_Sections WHERE Code=%s AND Teacher=%s AND Start=%s"
         cursor.executemany(delete_query, (teachers))
         db.commit()
 
@@ -265,8 +272,11 @@ class ClassMember:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT * FROM Class_Sections WHERE Code=%s AND Teacher=%s ORDER BY ID"
-        cursor.execute(select_query, (Class.Code, ClassTeacher.Teacher))
+        start = QTime(*Class.Start)
+        start = ":".join([str(start.hour()), str(start.minute()), str(start.second())])
+
+        select_query = "SELECT ID, Code, Teacher, Section FROM Class_Sections WHERE Code=%s AND Teacher=%s AND Start=%s ORDER BY ID"
+        cursor.execute(select_query, (Class.Code, ClassTeacher.Teacher, start))
 
         class_sections = cursor.fetchall()
         
@@ -281,11 +291,14 @@ class ClassMember:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
+        start = QTime(*Class.Start)
+        start = ":".join([str(start.hour()), str(start.minute()), str(start.second())])
+
         select_query = """
             SELECT * FROM Sections WHERE Name NOT IN (
-	            SELECT Section FROM Class_Sections WHERE Code=%s AND Teacher=%s);
+	            SELECT Section FROM Class_Sections WHERE Code=%s AND Teacher=%s AND Start=%s);
         """
-        cursor.execute(select_query, (Class.Code, ClassTeacher.Teacher))
+        cursor.execute(select_query, (Class.Code, ClassTeacher.Teacher, start))
 
         sections_not_in_class = cursor.fetchall()
 
@@ -301,7 +314,7 @@ class ClassMember:
         cursor = db.cursor(buffered=True)
 
         try:
-            insert_query = "INSERT INTO Class_Sections (Code, Teacher, Section) VALUES (%s,%s,%s)"
+            insert_query = "INSERT INTO Class_Sections (Code, Teacher, Section, Start, End) VALUES (%s,%s,%s,%s,%s)"
             cursor.executemany(insert_query, (class_sections))
             db.commit()
             res = 'successful'
@@ -321,7 +334,7 @@ class ClassMember:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        delete_query = "DELETE FROM Class_Sections WHERE Code=%s AND Teacher=%s AND Section=%s"
+        delete_query = "DELETE FROM Class_Sections WHERE Code=%s AND Teacher=%s AND Section=%s AND Start=%s"
         cursor.executemany(delete_query, (class_sections))
         db.commit()
 

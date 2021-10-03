@@ -14,10 +14,13 @@ class Lobby:
         cursor = db.cursor(buffered=True)
 
         select_query = """
-            SELECT * FROM Classes WHERE Code IN 
-            (SELECT Code FROM Class_Teachers WHERE Teacher=%s);
+            SELECT * FROM Classes 
+                WHERE Code IN (
+                        SELECT Code FROM Class_Teachers WHERE Teacher=%s)
+                    AND Start IN (
+                        SELECT Start FROM Class_Teachers WHERE Teacher=%s);
         """
-        cursor.execute(select_query, (User.Username,))
+        cursor.execute(select_query, (User.Username,User.Username))
 
         classes = cursor.fetchall()
 

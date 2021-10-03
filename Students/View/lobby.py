@@ -152,4 +152,7 @@ class Lobby(QtWidgets.QMainWindow):
         self.flow_layout.addWidget(self.ClassItem)
 
     def set_lobby_status(self, status):
-        self.lbl_lobby_status.setText(status)
+        try:
+            self.lbl_lobby_status.setText(status)
+        except RuntimeError:
+            return
