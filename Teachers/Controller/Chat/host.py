@@ -450,7 +450,7 @@ class Host:
                 if self.Controller.View.RemoteDesktop.isVisible():
                     if student in self.Controller.View.RemoteDesktop.title_bar.title.text():
                         self.Controller.View.RemoteDesktop.title_bar.btn_close.click()
-            except AttributeError:
+            except (AttributeError, RuntimeError):
                 pass
             student_model = self.View.lv_student.model()
             row = student_model.findRow(student)
@@ -730,7 +730,7 @@ class Host:
             if self.Meeting.is_frozen:
                 self.View.Overlay.btn_freeze.click()
             self.Controller.View.RemoteDesktop.title_bar.btn_close.click()
-        except AttributeError:
+        except (AttributeError, RuntimeError):
             pass
 
         for student_name, student_info in list(self.time.items())[1:]:

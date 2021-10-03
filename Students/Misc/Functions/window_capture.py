@@ -19,6 +19,7 @@ def rdc_screenshot():
     img = np.array(img)
     width, height = GetSystemMetrics(0), GetSystemMetrics(1)
     img = Image.frombytes("RGB", (width, height), img, "raw")
+    img = img.resize((1280, 720), Image.LANCZOS)
     return img
 
 def convert_pil_image_to_QPixmap(img):
