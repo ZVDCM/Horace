@@ -741,10 +741,13 @@ class Host:
             target=self.record_attendance, daemon=True, name="AttendanceThread")
         attendance_thread.start()
 
-        if not self.Controller.View.Lobby.isVisible():
-            self.Controller.SignInController.View.init_sign_in()
-            self.Controller.SignInController.Model.init_sign_in()
-            self.Controller.SignInController.init_sign_in()
+        try:
+            if not self.Controller.View.Lobby.isVisible():
+                self.Controller.SignInController.View.init_sign_in()
+                self.Controller.SignInController.Model.init_sign_in()
+                self.Controller.SignInController.init_sign_in()
+        except RuntimeError:
+            pass
 
         self.timer.stop()
         self.Controller.Lobby.enable_classes()

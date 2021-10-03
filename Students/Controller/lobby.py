@@ -94,9 +94,12 @@ class Lobby:
                 self.View.flow_layout.itemAt(i).widget().disable()
 
     def enable_classes(self):
-        if self.View.flow_layout.count():
-            for i in range(self.View.flow_layout.count()):
-                self.View.flow_layout.itemAt(i).widget().activate()
+        try:
+            if self.View.flow_layout.count():
+                for i in range(self.View.flow_layout.count()):
+                    self.View.flow_layout.itemAt(i).widget().activate()
+        except AttributeError:
+            return
 
     def more_clicked(self):
         pos = self.View.btn_more.mapToGlobal(self.View.btn_more.rect().bottomRight())
