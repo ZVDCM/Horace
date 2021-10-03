@@ -432,7 +432,7 @@ class SectionStudent:
 
         self.get_target_section_student_handler = self.GetTargetSectionStudent()
         self.get_target_section_student_handler.value = self.TargetSection,
-        self.get_target_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(section_students)} students added to{self.TargetSection.Name} successfully"))
+        self.get_target_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(section_students)} students added to {self.TargetSection.Name} successfully"))
 
         self.assign_student_section_handler.operation.connect(
             self.get_target_section_student_handler.start)

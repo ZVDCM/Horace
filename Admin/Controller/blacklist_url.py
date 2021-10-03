@@ -36,16 +36,15 @@ class Operation(QtCore.QThread):
 
 class BlacklistURL:
 
-    def __init__(self, Model, View, Contoller):
+    def __init__(self, Model, View, Admin):
         self.Model = Model
         self.View = View
-        self.Contoller = Contoller
+        self.Admin = Admin
 
         self.target_url_row = None
         self.TargetUrl = None
 
         self.connect_signals()
-
 
     def connect_signals(self):
         self.View.lv_url.clicked.connect(self.list_url_clicked)
@@ -69,6 +68,7 @@ class BlacklistURL:
         target_url = self.View.txt_search_url.text()
         if target_url.lower() == "null":
             return
+
         url_model = self.View.lv_url.model()
         urls = url_model.data
         target_indices = []
@@ -230,6 +230,7 @@ class BlacklistURL:
         self.add_url_handler.operation.connect(self.get_all_url_handler.start)
 
         self.get_all_url_handler.finished.connect(lambda: self.select_latest_url(domain))
+        self.get_all_url_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{domain} domain added successfully"))
         self.add_url_handler.start()
 
     # URL Edit
@@ -238,6 +239,11 @@ class BlacklistURL:
         if is_blank(domain):
             self.View.run_popup(f'URL fields must be filled')
             return
+
+        prev = self.TargetUrl.Domain
+        new = None
+        if domain != self.TargetUrl.Domain:
+            new = domain
 
         if domain == self.TargetUrl.Domain:
             self.View.btn_cancel_url.click()
@@ -250,6 +256,11 @@ class BlacklistURL:
         self.edit_url_handler.operation.connect(self.get_all_url_handler.start)
 
         self.get_all_url_handler.finished.connect(lambda: self.select_latest_url(domain))
+        if new:
+            self.get_all_url_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Domain {domain} updated to {new} successfully"))
+        else:
+            self.get_all_url_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Domain {domain} updated successfully"))
+
         self.edit_url_handler.start()
 
     def init_delete_url(self):
@@ -259,11 +270,13 @@ class BlacklistURL:
     def delete_url(self):
         self.get_all_url_handler = self.GetAllURL()
         self.delete_url_handler = self.DeleteURL()
+        target = self.TargetUrl
 
         self.delete_url_handler.val = self.TargetUrl,
         self.delete_url_handler.operation.connect(self.get_all_url_handler.start)
 
         self.get_all_url_handler.finished.connect(self.get_latest_url)
+        self.get_all_url_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Domain {target.Domain} deleted successfully"))
         self.delete_url_handler.start()
 
     def init_clear_url_table(self):
@@ -275,4 +288,5 @@ class BlacklistURL:
         self.truncate_url_handler.operation.connect(self.get_all_url_handler.start)
         self.get_all_url_handler.finished.connect(lambda: self.View.web_viewer.setUrl(QtCore.QUrl("https://www.google.com")))
         self.get_all_url_handler.finished.connect(self.get_latest_url)
+        self.get_all_url_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Domain list cleared successfully"))
         self.truncate_url_handler.start()
