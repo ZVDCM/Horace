@@ -5,33 +5,30 @@ from Admin.Controller.section_student import SectionStudent
 from Admin.Controller.teacher_attendance import TeacherAttendance
 from Admin.Controller.class_member import ClassMember
 from Admin.Controller.blacklist_url import BlacklistURL
+import threading
+import time
 
-class GetAll(QtCore.QThread):
-    section_operation = QtCore.pyqtSignal(list)
-    student_operation = QtCore.pyqtSignal(list)
-    teacher_operation = QtCore.pyqtSignal(list)
-    class_operation = QtCore.pyqtSignal(list)
-    url_operation = QtCore.pyqtSignal(list)
+class SetAdminStatus(QtCore.QThread):
 
-    def __init__(self, get_all_section, get_all_student, get_all_teacher, get_all_class, get_all_url):
+    def __init__(self, fn):
         super().__init__()
-        self.get_all_section = get_all_section
-        self.get_all_student = get_all_student
-        self.get_all_teacher = get_all_teacher
-        self.get_all_class = get_all_class
-        self.get_all_url = get_all_url
+        self.fn = fn
+        self.val = None
 
     def run(self):
-        res = self.get_all_section()
-        self.section_operation.emit(res)
-        res = self.get_all_student()
-        self.student_operation.emit(res)
-        res = self.get_all_teacher()
-        self.teacher_operation.emit(res)
-        res = self.get_all_class()
-        self.class_operation.emit(res)
-        res = self.get_all_url()
-        self.url_operation.emit(res)
+        self.fn(self.val)
+        self.quit()
+
+class GetAll(QtCore.QThread):
+    operation = QtCore.pyqtSignal(object)
+
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+
+    def run(self):
+        res = self.fn()
+        self.operation.emit(res)
         self.quit()
 
 class Get(QtCore.QThread):
@@ -68,6 +65,9 @@ class Admin:
 
         self.View.title_bar.title.setText("Admin")
 
+        self.start_time = QtCore.QTime(0, 0, 0)
+        self.status_time = 0
+
         self.View.run()
 
     def connect_signals(self):
@@ -76,30 +76,50 @@ class Admin:
 
         self.View.resizeEvent = self.resize
 
-        self.get_all = GetAll(self.Model.SectionStudent.get_all_section, self.Model.SectionStudent.get_all_student, self.Model.TeacherAttendance.get_all_teacher, self.Model.ClassMember.get_all_class, self.Model.BlacklistURL.get_all_url)
-        self.get_all.started.connect(self.View.TableSectionStudentLoadingScreen.run)
-        self.get_all.started.connect(self.View.TableTeacherLoadingScreen.run)
-        self.get_all.started.connect(self.View.TableClassLoadingScreen.run)
-        self.get_all.started.connect(self.View.URLSLoadingScreen.run)
-        self.get_all.section_operation.connect(self.SectionStudent.set_section_table)
-        self.get_all.student_operation.connect(self.SectionStudent.set_student_table)
-        self.get_all.teacher_operation.connect(self.TeacherAttendance.set_teacher_table)
-        self.get_all.class_operation.connect(self.ClassMember.set_class_table)
-        self.get_all.url_operation.connect(self.BlacklistURL.set_url_list)
-        self.get_all.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
-        self.get_all.finished.connect(self.View.TableTeacherLoadingScreen.hide)
-        self.get_all.finished.connect(self.View.TableClassLoadingScreen.hide)
-        self.get_all.finished.connect(self.View.URLSLoadingScreen.hide)
-        self.get_all.finished.connect(self.get_model_latest_section)
-        self.get_all.finished.connect(self.get_model_latest_teacher)
-        self.get_all.finished.connect(self.get_model_latest_class)
-        self.get_all.finished.connect(self.get_model_latest_url)
+        self.get_all_section = GetAll(self.Model.SectionStudent.get_all_section)
+        self.get_all_section.started.connect(self.View.TableSectionStudentLoadingScreen.run)
+        self.get_all_section.operation.connect(self.SectionStudent.set_section_table)
+        self.get_all_section.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
+        
+        self.get_all_student = GetAll(self.Model.SectionStudent.get_all_student)
+        self.get_all_student.started.connect(self.View.TableSectionStudentLoadingScreen.run)
+        self.get_all_student.operation.connect(self.SectionStudent.set_student_table)
+        self.get_all_student.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
+        self.get_all_student.finished.connect(self.get_model_latest_section)
+        self.get_all_student.finished.connect(lambda: self.set_admin_status_handler("Sections and Students loaded successfully"))
 
         self.get_all_section_student = Get(self.Model.SectionStudent.get_all_section_student)
         self.get_all_section_student.started.connect(self.View.SectionStudentLoadingScreen.run)
         self.get_all_section_student.operation.connect(self.set_section_student_listview)
         self.get_all_section_student.finished.connect(self.View.SectionStudentLoadingScreen.hide)
         self.get_all_section_student.finished.connect(self.select_latest_targets)
+        
+        self.get_all_teacher_and_attendances = GetAll(self.Model.TeacherAttendance.get_all_teacher)
+        self.get_all_teacher_and_attendances.started.connect(self.View.TableTeacherLoadingScreen.run)
+        self.get_all_teacher_and_attendances.operation.connect(self.TeacherAttendance.set_teacher_table)
+        self.get_all_teacher_and_attendances.finished.connect(self.View.TableTeacherLoadingScreen.hide)
+        self.get_all_teacher_and_attendances.finished.connect(self.get_model_latest_teacher)
+        self.get_all_teacher_and_attendances.finished.connect(lambda: self.set_admin_status_handler("Teacher and Attendances loaded successfully"))
+
+        self.get_all_class = GetAll(self.Model.ClassMember.get_all_class)
+        self.get_all_class.started.connect(self.View.TableClassLoadingScreen.run)
+        self.get_all_class.operation.connect(self.ClassMember.set_class_table)
+        self.get_all_class.finished.connect(self.View.TableClassLoadingScreen.hide)
+        self.get_all_class.finished.connect(self.get_model_latest_class)
+        self.get_all_class.finished.connect(lambda: self.set_admin_status_handler("Classes and Members loaded successfully"))
+        
+        self.get_all_url = GetAll(self.Model.BlacklistURL.get_all_url)
+        self.get_all_url.started.connect(self.View.URLSLoadingScreen.run)
+        self.get_all_url.operation.connect(self.BlacklistURL.set_url_list)
+        self.get_all_url.finished.connect(self.View.URLSLoadingScreen.hide)
+        self.get_all_url.finished.connect(self.get_model_latest_url)
+        self.get_all_url.finished.connect(lambda: self.set_admin_status_handler("Blacklisted URLs loaded successfully"))
+
+        self.get_all_section.finished.connect(self.get_all_student.start)
+        self.get_all_student.finished.connect(self.get_all_section_student.start)
+        self.get_all_section_student.finished.connect(self.get_all_teacher_and_attendances.start)
+        self.get_all_teacher_and_attendances.finished.connect(self.get_all_class.start)
+        self.get_all_class.finished.connect(self.get_all_url.start)
 
         self.get_target_class_teacher = Get(self.Model.ClassMember.get_target_class_teacher)
         self.get_target_class_teacher.started.connect(self.View.TableClassLoadingScreen.run)
@@ -116,6 +136,10 @@ class Admin:
         self.get_target_teacher_attendances.operation.connect(self.TeacherAttendance.set_teacher_attendances_list)
         self.get_target_teacher_attendances.finished.connect(self.View.AttendanceLoadingScreen.hide)
 
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.timer_event)
+        self.timer.start(1000)
+
     def change_page(self, index):
         for side_nav in self.View.side_navs:
             if side_nav.is_active:
@@ -128,7 +152,7 @@ class Admin:
         target.setCurrentIndex(index)
 
     def init_databases(self):
-        self.get_all.start()
+        self.get_all_section.start()
 
     # *SectionStudent
     def set_section_student_listview(self, students):
@@ -257,3 +281,17 @@ class Admin:
         self.View.URLLoadingScreen.resize_loader()
         self.View.URLSLoadingScreen.resize_loader()
         super(QMainWindow, self.View).resizeEvent(event)
+
+    def set_admin_status_handler(self, status):
+        threading.Thread(target=self.set_admin_status, args=(status,), daemon=True).start()
+
+    def set_admin_status(self, status):
+        self.status_time = 0
+        self.View.set_admin_status(status)
+
+    def timer_event(self):
+        self.start_time = self.start_time.addSecs(1)
+
+        self.status_time += 1
+        if self.status_time == 5:
+            self.View.lbl_database_status.clear()

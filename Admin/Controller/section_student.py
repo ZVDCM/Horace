@@ -275,6 +275,7 @@ class SectionStudent:
             self.get_all_student_handler.start)
         self.get_all_student_handler.finished.connect(
             self.View.btn_cancel_section.click)
+        self.get_all_student_handler.finished.connect(lambda: self.Admin.set_admin_status("Sections and Students imported successfully"))
 
         self.init_import_section_student_handler.start()
 
@@ -285,6 +286,7 @@ class SectionStudent:
         if path:
             self.init_export_section_student_handler = self.ExportSectionStudentTable()
             self.init_export_section_student_handler.path = path
+            self.init_export_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status("Sections and Students exported successfully"))
             self.init_export_section_student_handler.start()
 
     def show_alert(self, type, message):
@@ -306,6 +308,7 @@ class SectionStudent:
             self.get_all_section_handler.start)
         self.get_all_section_handler.finished.connect(
             self.get_all_student_handler.start)
+        self.get_all_section_handler.finished.connect(lambda: self.Admin.set_admin_status("Sections and Students table cleared successfully"))
         self.clear_section_student_handler.start()
 
     # *SectionStudent
@@ -429,6 +432,7 @@ class SectionStudent:
 
         self.get_target_section_student_handler = self.GetTargetSectionStudent()
         self.get_target_section_student_handler.value = self.TargetSection,
+        self.get_target_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(section_students)} students added to{self.TargetSection.Name} successfully"))
 
         self.assign_student_section_handler.operation.connect(
             self.get_target_section_student_handler.start)
@@ -450,6 +454,7 @@ class SectionStudent:
 
         self.get_target_section_student_handler = self.GetTargetSectionStudent()
         self.get_target_section_student_handler.value = self.TargetSection,
+        self.get_target_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(targets)} students removed from {self.TargetSection.Name} successfully"))
 
         self.delete_section_student_handler.operation.connect(
             self.get_target_section_student_handler.start)
@@ -465,6 +470,7 @@ class SectionStudent:
 
         self.get_target_section_student_handler = self.GetTargetSectionStudent()
         self.get_target_section_student_handler.value = self.TargetSection,
+        self.get_target_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"All students removed from {self.TargetSection.Name} successfully"))
 
         self.remove_all_section_students_handler.operation.connect(
             self.get_target_section_student_handler.start)
@@ -521,6 +527,8 @@ class SectionStudent:
         self.AddItem.started.connect(
             self.View.TableSectionStudentLoadingScreen.run)
         self.AddItem.operation.connect(self.go_back_section)
+        items = self.View.verticalLayout_53.count()-1
+        self.AddItem.operation.connect(lambda: self.Admin.set_admin_status(f"{items} sections added successfully"))
         self.AddItem.error.connect(self.section_bulk_error)
         self.AddItem.finished.connect(
             self.View.TableSectionStudentLoadingScreen.hide)
@@ -657,6 +665,7 @@ class SectionStudent:
 
         self.get_all_section_handler.finished.connect(
             self.get_latest_target_section_student)
+        self.get_all_section_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(target_sections)} sections deleted successfully"))
         self.delete_many_section_handler.start()
 
     # Table
@@ -836,6 +845,7 @@ class SectionStudent:
                 self.empty_section_student_list)
             self.get_all_section_handler.finished.connect(
                 self.View.btn_cancel_section.click)
+            self.get_all_section_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Section {section} added successfully"))
             self.add_section_handler.start()
         except AttributeError:
             return
@@ -846,6 +856,9 @@ class SectionStudent:
         if is_blank(section):
             self.View.run_popup('Section fields must be filled')
             return
+        
+        prev = self.TargetSection.Name
+        new = section
 
         if section == self.TargetSection.Name:
             self.View.btn_cancel_section.click()
@@ -862,6 +875,7 @@ class SectionStudent:
             lambda: self.select_latest_section(section))
         self.get_all_section_handler.finished.connect(
             self.View.btn_cancel_section.click)
+        self.get_all_section_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Section {prev} updated to {new} successfully"))
         self.edit_section_handler.start()
 
     # Section Delete
@@ -871,13 +885,14 @@ class SectionStudent:
     def delete_section(self):
         self.get_all_section_handler = self.GetAllSection()
         self.delete_section_handler = self.DeleteSection()
-
+        target = self.TargetSection
         self.delete_section_handler.val = self.TargetSection,
         self.delete_section_handler.operation.connect(
             self.get_all_section_handler.start)
 
         self.get_all_section_handler.finished.connect(
             self.get_latest_target_section_student)
+        self.get_all_section_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Section {target.Name} deleted successfully"))
         self.delete_section_handler.start()
 
     # *Student
@@ -945,6 +960,8 @@ class SectionStudent:
         self.AddItem.started.connect(
             self.View.TableSectionStudentLoadingScreen.run)
         self.AddItem.operation.connect(self.go_back_student)
+        items = self.View.verticalLayout_38.count()-1
+        self.AddItem.operation.connect(lambda: self.Admin.set_admin_status(f"{items} students added successfully"))
         self.AddItem.error.connect(self.student_bulk_error)
         self.AddItem.finished.connect(
             self.View.TableSectionStudentLoadingScreen.hide)
@@ -1131,6 +1148,7 @@ class SectionStudent:
                 self.get_latest_section_student)
         self.get_all_student_handler.finished.connect(
             self.View.btn_cancel_section.click)
+        self.get_all_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{len(target_students)} students deleted successfully"))
         self.delete_many_student_handler.start()
 
         self.View.txt_student_username.clear()
@@ -1300,6 +1318,7 @@ class SectionStudent:
             lambda: self.select_latest_student(username))
         self.get_all_student_handler.finished.connect(
             self.View.btn_cancel_student.click)
+        self.get_all_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Student {username} added successfully"))
 
         if self.TargetSection:
             self.get_all_section_student_handler.val = self.TargetSection,
@@ -1315,6 +1334,9 @@ class SectionStudent:
         if is_blank(username) or is_blank(password):
             self.View.run_popup('Student fields must be filled')
             return
+
+        prev = self.TargetStudent.Username
+        new = username
 
         if username == self.TargetStudent.Username and password == str(self.TargetStudent.Salt + self.TargetStudent.Hash):
             self.View.btn_cancel_student.click()
@@ -1339,6 +1361,7 @@ class SectionStudent:
             lambda: self.select_latest_student(username))
         self.get_all_student_handler.finished.connect(
             self.View.btn_cancel_student.click)
+        self.get_all_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Student {prev} updated to {new} successfully"))
         self.edit_student_handler.start()
     
     # Student Delete
@@ -1348,6 +1371,7 @@ class SectionStudent:
     def delete_student(self):
         self.get_all_student_handler = self.GetAllStudents()
         self.delete_student_handler = self.DeleteStudent()
+        target = self.TargetStudent
 
         self.delete_student_handler.val = self.TargetStudent,
         self.delete_student_handler.operation.connect(
@@ -1362,6 +1386,7 @@ class SectionStudent:
                 self.get_latest_section_student)
         self.get_all_student_handler.finished.connect(
             self.View.btn_cancel_section.click)
+        self.get_all_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Student {target.Username} deleted successfully"))
         self.delete_student_handler.start()
 
         self.View.txt_student_username.clear()

@@ -3808,7 +3808,7 @@ class Admin(QtWidgets.QMainWindow):
                                       "}")
         self.status_bar.setSizeGripEnabled(True)
         self.status_bar.setObjectName("status_bar")
-        self.lbl_database_status = QtWidgets.QLabel("Database Initialized", self.status_bar)
+        self.lbl_database_status = QtWidgets.QLabel(self.status_bar)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(1)
@@ -4211,3 +4211,6 @@ class Admin(QtWidgets.QMainWindow):
             item = AlertItem(self.alert, 'clip_2.png', message)
         self.alert.add_item(item)
         self.alert.show()
+
+    def set_admin_status(self, status):
+        self.lbl_database_status.setText(status)
