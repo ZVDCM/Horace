@@ -16,6 +16,8 @@ class TitleBar(QtWidgets.QWidget):
 
     def setupUi(self, Form):
         Form.setObjectName("Form")
+        Form.setMinimumSize(QtCore.QSize(0, 30))
+        Form.setMaximumSize(QtCore.QSize(16777215, 30))
         self.horizontalLayout = QtWidgets.QHBoxLayout(Form)
         self.horizontalLayout.setContentsMargins(10, 0, 0, 0)
         self.horizontalLayout.setSpacing(0)

@@ -18,6 +18,11 @@ class TableView(QTableView):
                 gridline-color: #97b9f4;
             }
 
+            QTableView::item {
+                border: none;
+                padding-left: 10px;
+            }
+
             QTableView::item:selected:active {
                 border: none;
                 background: #0078D7;
@@ -45,11 +50,12 @@ class TableView(QTableView):
             
             QScrollBar:horizontal{
                 height: 9px;
+                background-color: #102542;    
             }
             
             QScrollBar:vertical{
+                background-color: #102542;    
                 width: 9px;
-                margin: 0;
             }
             
             QScrollBar::handle:vertical{

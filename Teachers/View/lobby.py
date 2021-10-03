@@ -47,6 +47,7 @@ class Lobby(QtWidgets.QMainWindow):
         MainWindow.setMinimumSize(QtCore.QSize(974, 806))
         MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        MainWindow.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.centralwidget)

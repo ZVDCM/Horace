@@ -228,13 +228,9 @@ class ClassMember:
 
     def clear_classes_members(self):
         self.clear_section_student_handler = self.ClearClassesMembersTable()
-        self.get_all_class_handler = self.GetAllClass()
-        self.get_all_class_handler.finished.connect(self.get_latest_class)
-        self.get_all_class_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Classes and Members table cleared successfully"))
-    
-        self.clear_section_student_handler.finished.connect(self.get_all_class_handler.start)
-        self.clear_section_student_handler.finished.connect(self.View.btn_cancel_class.click)
-        self.clear_section_student_handler.finished.connect(lambda: self.View.btn_init_add_class_teacher.setDisabled(True))
+        self.clear_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Classes and Members table cleared successfully"))
+        self.clear_section_student_handler.finished.connect(self.Admin.init_databases)
+        self.clear_section_student_handler.finished.connect(self.View.clear_class_inputs)
         self.clear_section_student_handler.start()
 
     def add_class_bulk(self):

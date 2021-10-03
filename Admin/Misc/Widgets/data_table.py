@@ -48,6 +48,7 @@ class DataTable(QtWidgets.QDialog):
                             QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Form.setFocusPolicy(QtCore.Qt.StrongFocus)
         Form.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        Form.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         Form.setStyleSheet("QWidget{\n"
                            "    background: #102542;\n"
                            "    color: white; \n"

@@ -1,3 +1,4 @@
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from Admin.Misc.Functions.is_blank import is_blank
 from PyQt5 import QtCore
 
@@ -63,6 +64,7 @@ class BlacklistURL:
 
         self.View.txt_search_url.returnPressed.connect(self.search_url)
         self.View.btn_search_url.clicked.connect(self.search_url)
+
 
     def search_url(self):
         target_url = self.View.txt_search_url.text()

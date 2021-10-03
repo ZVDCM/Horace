@@ -1,12 +1,15 @@
-from Admin.Model.model import Class
+import os
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QFileDialog, QMainWindow
 from Admin.Controller.section_student import SectionStudent
 from Admin.Controller.teacher_attendance import TeacherAttendance
 from Admin.Controller.class_member import ClassMember
 from Admin.Controller.blacklist_url import BlacklistURL
 import threading
-import time
+from win32api import GetSystemMetrics
+
+from Admin.Misc.Widgets.change_password import ChangePassword
+
 
 class SetAdminStatus(QtCore.QThread):
 
@@ -42,6 +45,17 @@ class Get(QtCore.QThread):
     def run(self):
         res = self.fn(*self.val)
         self.operation.emit(res)
+        self.quit()
+
+class Alert(QtCore.QThread):
+    operation = QtCore.pyqtSignal(str, str)
+
+    def __init__(self):
+        super().__init__()
+        self.val = ()
+
+    def run(self):
+        self.operation.emit(*self.val)
         self.quit()
 
 class Admin:
@@ -91,12 +105,6 @@ class Admin:
         self.get_all_student.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
         self.get_all_student.finished.connect(self.get_model_latest_section)
         self.get_all_student.finished.connect(lambda: self.set_admin_status_handler("Sections and Students loaded successfully"))
-
-        self.get_all_section_student = Get(self.Model.SectionStudent.get_all_section_student)
-        self.get_all_section_student.started.connect(self.View.SectionStudentLoadingScreen.run)
-        self.get_all_section_student.operation.connect(self.set_section_student_listview)
-        self.get_all_section_student.finished.connect(self.View.SectionStudentLoadingScreen.hide)
-        self.get_all_section_student.finished.connect(self.select_latest_targets)
         
         self.get_all_teacher_and_attendances = GetAll(self.Model.TeacherAttendance.get_all_teacher)
         self.get_all_teacher_and_attendances.started.connect(self.View.TableTeacherLoadingScreen.run)
@@ -120,10 +128,15 @@ class Admin:
         self.get_all_url.finished.connect(lambda: self.set_admin_status_handler("Blacklisted URLs loaded successfully"))
 
         self.get_all_section.finished.connect(self.get_all_student.start)
-        self.get_all_student.finished.connect(self.get_all_section_student.start)
-        self.get_all_section_student.finished.connect(self.get_all_teacher_and_attendances.start)
+        self.get_all_student.finished.connect(self.get_all_teacher_and_attendances.start)
         self.get_all_teacher_and_attendances.finished.connect(self.get_all_class.start)
         self.get_all_class.finished.connect(self.get_all_url.start)
+
+        self.get_all_section_student = Get(self.Model.SectionStudent.get_all_section_student)
+        self.get_all_section_student.started.connect(self.View.SectionStudentLoadingScreen.run)
+        self.get_all_section_student.operation.connect(self.set_section_student_listview)
+        self.get_all_section_student.finished.connect(self.View.SectionStudentLoadingScreen.hide)
+        self.get_all_section_student.finished.connect(self.select_latest_targets)
 
         self.get_target_class_teacher = Get(self.Model.ClassMember.get_target_class_teacher)
         self.get_target_class_teacher.started.connect(self.View.TableClassLoadingScreen.run)
@@ -139,6 +152,13 @@ class Admin:
         self.get_target_teacher_attendances.started.connect(self.View.AttendanceLoadingScreen.run)
         self.get_target_teacher_attendances.operation.connect(self.TeacherAttendance.set_teacher_attendances_list)
         self.get_target_teacher_attendances.finished.connect(self.View.AttendanceLoadingScreen.hide)
+
+        self.View.btn_more.clicked.connect(self.more_clicked)
+        self.View.AccountContextMenu._create.connect(self.create_backup)
+        self.View.AccountContextMenu._load.connect(self.load_backup)
+        self.View.AccountContextMenu._change.connect(self.change_password)
+        self.View.AccountContextMenu._sign_out.connect(self.View.close)
+        self.View.closeEvent = self.parent_closed
 
     def change_page(self, index):
         for side_nav in self.View.side_navs:
@@ -295,3 +315,52 @@ class Admin:
         self.status_time += 1
         if self.status_time == 5:
             self.View.lbl_database_status.clear()
+
+    def more_clicked(self):
+        pos = self.View.btn_more.mapToGlobal(self.View.btn_more.rect().bottomLeft())
+        height = GetSystemMetrics(1)
+        if pos.y() > height - self.View.AccountContextMenu.height():
+            pos_up = self.View.btn_more.mapToGlobal(self.View.btn_more.rect().topLeft())
+            self.View.AccountContextMenu.move(pos_up.x(), pos_up.y()- self.View.AccountContextMenu.height())
+        else:
+            self.View.AccountContextMenu.move(pos)
+        self.View.AccountContextMenu.show()
+
+    def create_backup(self):
+        default_path = os.path.expanduser('~/Documents')
+        path = QFileDialog.getExistingDirectory(
+                self.View, 'Save backup to', default_path)
+        if path:
+            self.show_alert('file', 'Creating backup')
+            path = os.path.join(path, 'horace.sql')
+            os.system(f"mysqldump -u root --databases Horace --tables users --where=\"Privilege<>'Admin'\" > {path}")
+            os.system(f"mysqldump -u root --databases Horace --tables sections section_students classes class_teachers class_sections attendances urls >> {path}")
+            os.system(f"mysqldump -u root --databases Horace --tables security_questions --where=\"Admin<>'Admin'\" >> {path} && exit")
+            self.show_alert('file', 'Backup created')
+            self.set_admin_status_handler("Database backup created successfully")
+
+    def load_backup(self):
+        default_path = os.path.expanduser('~/Documents')
+        path = QFileDialog.getOpenFileName(
+                self.View, f'Select database backup file', default_path, 'SQL (*.sql)')
+        path = path[0]
+        if path:
+            self.Model.Database.load_backup(path)
+            self.init_databases()
+
+    def show_alert(self, type, message):
+        self.ShowAlert = Alert()
+        self.ShowAlert.operation.connect(self.View.show_alert)
+        self.ShowAlert.val = type, message
+        self.ShowAlert.start()
+    
+    def change_password(self):
+        self.ChangePassword = ChangePassword(self, self.View, self.Controller.User, self.Model)
+        self.ChangePassword.run()
+        
+    def parent_closed(self, event):
+        self.Controller.SignInController.View.init_sign_in()
+        self.Controller.SignInController.Model.init_sign_in()
+        self.Controller.SignInController.init_sign_in()
+        self.timer.stop()
+        super(QMainWindow, self.View).closeEvent(event)

@@ -20,6 +20,7 @@ class Alert(QtWidgets.QWidget):
         Form.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
                               QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Form.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
+        Form.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(0)

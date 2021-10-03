@@ -5,7 +5,7 @@ from Admin.Model.blacklist_url import BlacklistURL
 from Admin.Model.class_member import ClassMember
 from Admin.Model.table_model import TableModel
 from Admin.Model.list_model import ListModel
-
+from Admin.Misc.Functions.hash import *
 
 class _SectionStudent:
     def __init__(self, ID, Section, Student):
@@ -176,3 +176,23 @@ class Model:
         self.TeacherAttendance = TeacherAttendance(self)
         self.ClassMember = ClassMember(self)
         self.BlacklistURL = BlacklistURL(self)
+
+    def update_password(self, username, password):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        salt = generate_salt()
+        hashed_password = get_hashed_password(password, salt)
+
+        update_query = "UPDATE Users SET Salt=%s, Hash=%s WHERE Username=%s"
+        cursor.execute(update_query, (salt, hashed_password, username))
+        db.commit()
+        
+        cursor.close()
+        db.close()
+        
+        return True
+
+    def is_match(self, salt, _hash, password):
+        hashed_password = salt+_hash
+        return check_password(password, hashed_password) 

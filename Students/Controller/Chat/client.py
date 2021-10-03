@@ -491,7 +491,7 @@ class Client:
             size = os.path.getsize(response[0])
 
             if size > 131_072_000:
-                print('file exceeds 125mb limit')
+                self.View.run_popup(f'File must be lower than 125mb in size')
                 return
 
             with open(response[0], "rb") as file:

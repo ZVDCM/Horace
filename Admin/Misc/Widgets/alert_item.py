@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Students.Misc.Functions.relative_path import relative_path
+from Teachers.Misc.Functions.relative_path import relative_path
 
 
 class AlertItem(QtWidgets.QWidget):

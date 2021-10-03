@@ -93,7 +93,7 @@ class Lobby:
 
         self.View.btn_more.clicked.connect(self.more_clicked)
         self.View.ContextMenu.password.connect(self.change_password)
-        self.View.ContextMenu.sign_out.connect(self.sign_out)
+        self.View.ContextMenu.sign_out.connect(self.View.close)
 
         self.View.closeEvent = self.lobby_closed
 
@@ -286,14 +286,11 @@ class Lobby:
         self.ChangePassword = ChangePassword(self, self.View, self.Controller.User, self.Model)
         self.ChangePassword.run()
 
-    def sign_out(self):
-        self.View.close()
-
     def lobby_closed(self, event):
         try:
             if self.Controller.View.Meeting.isVisible():
                 return
-        except AttributeError:
+        except (AttributeError, RuntimeError):
             pass
         self.Controller.SignInController.View.init_sign_in()
         self.Controller.SignInController.Model.init_sign_in()

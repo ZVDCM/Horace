@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Students.Misc.Widgets.custom_text_edit import TextEdit
-from Students.Misc.Functions.relative_path import relative_path
+from Teachers.Misc.Widgets.custom_text_edit import TextEdit
+from Teachers.Misc.Functions.relative_path import relative_path
 
 
 class MessageReceived(QtWidgets.QWidget):

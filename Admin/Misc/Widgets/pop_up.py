@@ -24,6 +24,7 @@ class Popup(QtWidgets.QDialog):
                               QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Dialog.setFocusPolicy(QtCore.Qt.StrongFocus)
         Dialog.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
+        Dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         Dialog.setStyleSheet("QWidget{\n"
                              "    background: #0B1A30;\n"
                              "    color: white; \n"

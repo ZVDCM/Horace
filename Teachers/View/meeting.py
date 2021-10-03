@@ -58,6 +58,7 @@ class Meeting(QtWidgets.QMainWindow):
         MainWindow.setMinimumSize(QtCore.QSize(800, 570))
         MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        MainWindow.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("QWidget {\n"
                                          "    background: #0B1A30;\n"
@@ -796,6 +797,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout_8.addWidget(self.btn_init_add_url)
         self.btn_init_edit_url = QtWidgets.QPushButton(
             self.widget2)
+        self.btn_init_edit_url.setDisabled(True)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)

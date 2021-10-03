@@ -29,6 +29,7 @@ class MessageTarget(QtWidgets.QDialog):
                               QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Dialog.setStyleSheet("background: #102542")
         Dialog.setFocusPolicy(QtCore.Qt.StrongFocus)
+        Dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_5.setSpacing(0)

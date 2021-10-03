@@ -1,6 +1,6 @@
-from Teachers.Misc.Functions.relative_path import relative_path
+from Students.Misc.Functions.relative_path import relative_path
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Teachers.Misc.Widgets.custom_text_edit import TextEdit
+from Students.Misc.Widgets.custom_text_edit import TextEdit
 
 
 class FileMessageSent(QtWidgets.QWidget):

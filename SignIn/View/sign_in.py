@@ -29,6 +29,7 @@ class SignIn(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.setFixedSize(337, 455)
+        Form.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         Form.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         Form.setStyleSheet("QWidget{\n"
                            "    background: #102542; color: white\n"

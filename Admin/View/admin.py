@@ -1,3 +1,4 @@
+from Admin.Misc.Widgets.account_context_menu import AccountContextMenu
 from Admin.Misc.Widgets.alert import Alert
 from Admin.Misc.Widgets.alert_item import AlertItem
 from Admin.Misc.Widgets.class_item import ClassItem
@@ -81,6 +82,8 @@ class Admin(QtWidgets.QMainWindow):
         self.class_state = "Read"
         self.url_state = "Read"
 
+        self.AccountContextMenu = AccountContextMenu(self.btn_more)
+
     def run(self):
         self.raise_()
         self.show()
@@ -88,6 +91,7 @@ class Admin(QtWidgets.QMainWindow):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
+        MainWindow.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         MainWindow.setMinimumSize(QtCore.QSize(1188, 884))
         MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -113,41 +117,7 @@ class Admin(QtWidgets.QMainWindow):
                                          "}\n"
                                          "\n"
                                          "\n"
-                                         "QTabWidget::pane {\n"
-                                         "     padding: 1px;\n"
-                                         "     border: 1px solid #256eff;\n"
-                                         "     background: transparent;\n"
-                                         "} \n"
-                                         "\n"
-                                         "QTabBar{\n"
-                                         "     background: transparent\n"
-                                         "}\n"
-                                         "\n"
-                                         "QTabBar::tab {\n"
-                                         "      padding: 3px 10px;\n"
-                                         "      color: gray;\n"
-                                         "      border-top-left-radius: 5px;\n"
-                                         "      border-top-right-radius: 5px;\n"
-                                         "} \n"
-                                         "\n"
-                                         "QTabBar::tab:selected { \n"
-                                         "      background: #256eff;\n"
-                                         "      color: white;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QTabBar::tab:!selected {\n"
-                                         "      background: #0d3c6e;\n"
-                                         "      margin-top: 1px;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QTabBar::tab:!selected:hover {\n"
-                                         "    border-top: 1px solid #256eff;\n"
-                                         "    border-right: 1px solid #256eff;\n"
-                                         "    border-left:  1px solid #256eff;\n"
-                                         "    padding: 0px;\n"
-                                         "    padding-top: -1px;\n"
-                                         "}\n"
-                                         "")
+                                         )
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)

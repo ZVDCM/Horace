@@ -38,6 +38,7 @@ class RemoteDesktop(QtWidgets.QMainWindow):
         MainWindow.resize(800, 570)
         MainWindow.setMinimumSize(QtCore.QSize(800, 570))
         MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        MainWindow.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)

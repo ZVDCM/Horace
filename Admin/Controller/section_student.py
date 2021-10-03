@@ -301,14 +301,8 @@ class SectionStudent:
 
     def clear_section_student(self):
         self.clear_section_student_handler = self.ClearSectionStudentTable()
-        self.get_all_section_handler = self.GetAllSection()
-        self.get_all_student_handler = self.GetAllStudents()
-
-        self.clear_section_student_handler.finished.connect(
-            self.get_all_section_handler.start)
-        self.get_all_section_handler.finished.connect(
-            self.get_all_student_handler.start)
-        self.get_all_section_handler.finished.connect(lambda: self.Admin.set_admin_status("Sections and Students table cleared successfully"))
+        self.clear_section_student_handler.finished.connect(self.Admin.init_databases)
+        self.clear_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status("Sections and Students table cleared successfully"))
         self.clear_section_student_handler.start()
 
     # *SectionStudent
@@ -869,7 +863,7 @@ class SectionStudent:
         self.get_all_section_handler = self.GetAllSection()
         self.edit_section_handler = self.EditSection()
 
-        self.edit_section_handler.val = self.TargetSection.ID, section
+        self.edit_section_handler.val = self.TargetSection.ID, prev, section
         self.edit_section_handler.operation.connect(
             self.get_all_section_handler.start)
 
@@ -1352,7 +1346,7 @@ class SectionStudent:
         self.get_all_student_handler = self.GetAllStudents()
         self.edit_student_handler = self.EditStudent()
 
-        self.edit_student_handler.val = self.TargetStudent.UserID, username, self.TargetStudent.Salt, self.TargetStudent.Hash, password
+        self.edit_student_handler.val = self.TargetStudent.UserID, prev, username, self.TargetStudent.Salt, self.TargetStudent.Hash, password
         self.edit_student_handler.operation.connect(
             self.get_all_student_handler.start)
 

@@ -73,18 +73,22 @@ class Host:
         self.stream_thread.start()
 
     def handler(self):
-        while self.View.isVisible() and self.Meeting.is_connected:
-            if self.Meeting.is_frozen:
-                return
-            try:
-                self.last_frame = window_capture()
-            except (win32ui.error, pywintypes.error, mss.exception.ScreenShotError):
-                pass
-            self.display_frame(self.last_frame)
-            broadcast_thread = threading.Thread(target=self.broadcast_frame, args=(self.last_frame,), daemon=True, name="BroadcastThread")
-            broadcast_thread.start()
-            time.sleep(0.025)
-        self.View.disconnect_screen()
+        try:
+            while self.View.isVisible() and self.Meeting.is_connected:
+                if self.Meeting.is_frozen:
+                    return
+                try:
+                    self.last_frame = window_capture()
+                except (win32ui.error, pywintypes.error, mss.exception.ScreenShotError):
+                    pass
+                self.display_frame(self.last_frame)
+                broadcast_thread = threading.Thread(target=self.broadcast_frame, args=(self.last_frame,), daemon=True, name="BroadcastThread")
+                broadcast_thread.start()
+                time.sleep(0.025)
+                
+            self.View.disconnect_screen()
+        except RuntimeError:
+            return
 
     def display_frame(self, frame):
         frame = convert_bytearray_to_QPixmap(frame)
@@ -110,10 +114,13 @@ class Host:
         packets = str(math.ceil(len(pil_img)/self.BUFFER)).encode(self.FORMAT)
         self.host.sendto(packets, self.BROADCAST_ADDR)
 
-        while pil_img and self.View.isVisible():
-            bytes_sent = self.host.sendto(
-                pil_img[:self.BUFFER], self.BROADCAST_ADDR)
-            pil_img = pil_img[bytes_sent:]
+        try:
+            while pil_img and self.View.isVisible():
+                bytes_sent = self.host.sendto(
+                    pil_img[:self.BUFFER], self.BROADCAST_ADDR)
+                pil_img = pil_img[bytes_sent:]
+        except RuntimeError:
+            return
 
     def screen_resized(self, event):
         if self.Meeting.is_frozen:

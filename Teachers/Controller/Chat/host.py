@@ -529,7 +529,7 @@ class Host:
             size = os.path.getsize(response[0])
 
             if size > 131_072_000:
-                print('file too large')
+                self.View.run_popup(f'File must be lower than 125mb in size')
                 return
 
             with open(response[0], "rb") as file:
@@ -703,7 +703,7 @@ class Host:
             size = os.path.getsize(response[0])
 
             if size > 131_072_000:
-                print('file too large')
+                self.View.run_popup(f'File must be lower than 125mb in size')
                 return
 
             with open(response[0], "rb") as file:

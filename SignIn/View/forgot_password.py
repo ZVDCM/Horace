@@ -35,6 +35,7 @@ class ForgotPassword(QtWidgets.QDialog):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.setFixedSize(510, 315)
+        Form.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)

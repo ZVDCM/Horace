@@ -33,125 +33,142 @@ class Import(QtWidgets.QDialog):
                             QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Dialog.setFocusPolicy(QtCore.Qt.StrongFocus)
         Dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        Dialog.setStyleSheet("QWidget{\n"
-                             "    background: #102542;\n"
-                             "    color: white; \n"
-                             "    font-family: Barlow\n"
-                             "}\n"
-                             "\n"
-                             "QLineEdit {\n"
-                             "      padding: 5px;\n"
-                             "      border: 1px solid #0e4884;\n"
-                             "      border-radius: 5px;\n"
-                             "}\n"
-                             "\n"
-                             "QPushButton {\n"
-                             "  padding: 5px 8px;\n"
-                             "  border: 1px solid #0e4884;\n"
-                             "  background-color: #0e4884;\n"
-                             "}\n"
-                             "\n"
-                             "QPushButton::disabled {\n"
-                             "  padding: 5px;\n"
-                             " color: gray;\n"
-                             "  border: 1px solid #0B1A30;\n"
-                             "  background-color: #0B1A30;\n"
-                             "}\n"
-                             "\n"
-                             "QPushButton:focus,\n"
-                             "QPushButton:hover {\n"
-                             "  border: 1px solid #256eff;\n"
-                             "  outline: none;\n"
-                             "}\n"
-                             "\n"
-                             "QPushButton:pressed {\n"
-                             "  background-color: #072f49;\n"
-                             "}\n"
-                             "\n"
-                             "QTableView{\n"
-                             "    border: 1px solid #0e4884;\n"
-                             "}\n"
-                             "\n"
-                             "QHeaderView::section {\n"
-                             "    background-color: #0d3c6e;\n"
-                             "    border-top: 0px solid #97b9f4;\n"
-                             "    border-bottom: 1px solid #97b9f4;\n"
-                             "    border-right: 1px solid #97b9f4;\n"
-                             "}\n"
-                             "\n"
-                             "QTableView {\n"
-                             "    gridline-color: #97b9f4;\n"
-                             "}\n"
-                             "\n"
-                             "QTableCornerButton::section{\n"
-                             "    background-color: #0d3c6e;\n"
-                             "    border-top: 0px solid #97b9f4;\n"
-                             "    border-bottom: 1px solid #97b9f4;\n"
-                             "    border-right: 1px solid #97b9f4;\n"
-                             "}\n"
-                             "\n"
-                             "QScrollBar:horizontal{\n"
-                             "    height: 9px;\n"
-                             "    border-radius: 5px;\n"
-                             "}\n"
-                             "\n"
-                             "QScrollBar:vertical{\n"
-                             "    width: 9px;\n"
-                             "    margin: 0;\n"
-                             "    border-radius: 5px;\n"
-                             "}\n"
-                             "\n"
-                             "QScrollBar::handle:vertical{\n"
-                             "    background-color: #97b9f4;    \n"
-                             "    width: 18px;\n"
-                             "    border-radius: 4px;\n"
-                             "}\n"
-                             "\n"
-                             "QScrollBar::handle:horizontal{\n"
-                             "    background-color: #97b9f4;    \n"
-                             "    min-width: 5px;\n"
-                             "    border-radius: 4px;\n"
-                             "}\n"
-                             "\n"
-                             "QScrollBar::sub-line:horizontal,\n"
-                             "QScrollBar::sub-line:vertical{\n"
-                             "    height: 0;\n"
-                             "    width: 0;\n"
-                             "}\n"
-                             "\n"
-                             "QScrollBar::add-line:horizontal,\n"
-                             "QScrollBar::add-line:vertical{\n"
-                             "    height: 0;\n"
-                             "    width: 0;\n"
-                             "}\n"
-                             "\n"
-                             "QScrollBar::add-page:horizontal{\n"
-                             "    background: #102542;\n"
-                             "    border-top-right-radius: 4px;\n"
-                             "    border-bottom-right-radius: 4px;\n"
-                             "    margin-left: -3px;\n"
-                             "}\n"
-                             "\n"
-                             "QScrollBar::add-page:vertical{\n"
-                             "    background: #102542;\n"
-                             "    border-bottom-left-radius: 4px;\n"
-                             "    border-bottom-right-radius: 4px;\n"
-                             "    margin-top: -3px;\n"
-                             "}\n"
-                             "\n"
-                             "QScrollBar::sub-page:horizontal{\n"
-                             "    background: #102542;\n"
-                             "    border-bottom-left-radius: 4px;\n"
-                             "    margin-right: -3px;\n"
-                             "}\n"
-                             "\n"
-                             "QScrollBar::sub-page:vertical{\n"
-                             "    background: #102542;\n"
-                             "    border-top-left-radius: 0;\n"
-                             "    border-top-right-radius: 4px;\n"
-                             "    margin-bottom: -3px;\n"
-                             "}\n"
-                             "")
+        Dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        Dialog.setStyleSheet("""
+                            QWidget{
+                                background: #102542;
+                                color: white; 
+                                font-family: Barlow
+                            }
+                            
+                            QLineEdit {
+                                padding: 5px;
+                                border: 1px solid #0e4884;
+                                border-radius: 5px;
+                            }
+                            
+                            QPushButton {
+                            padding: 5px 8px;
+                            border: 1px solid #0e4884;
+                            background-color: #0e4884;
+                            }
+                            
+                            QPushButton::disabled {
+                            padding: 5px;
+                            color: gray;
+                            border: 1px solid #0B1A30;
+                            background-color: #0B1A30;
+                            }
+                            
+                            QPushButton:focus,
+                            QPushButton:hover {
+                            border: 1px solid #256eff;
+                            outline: none;
+                            }
+                            
+                            QPushButton:pressed {
+                            background-color: #072f49;
+                            }
+                            
+                            QTableView{
+                                border: 1px solid #0e4884;
+                            }
+                            
+                            QHeaderView::section {
+                                background-color: #0d3c6e;
+                                border-top: 0px solid #97b9f4;
+                                border-bottom: 1px solid #97b9f4;
+                                border-right: 1px solid #97b9f4;
+                            }
+                            
+                            QTableView {
+                                outline: 0;
+                                border: 1px solid #0e4884;
+                                gridline-color: #97b9f4;
+                            }
+
+                            QTableView::item {
+                                border: none;
+                                padding-left: 10px;
+                            }
+
+                            QTableView::item:selected:active {
+                                border: none;
+                                background: #0078D7;
+                            }
+
+                            QTableView::item:selected:!active {
+                                border: none;
+                                background: white;
+                                color: black;
+                            }
+
+                            QHeaderView::section {
+                                background-color: #0d3c6e;
+                                border-top: 0px solid #97b9f4;
+                                border-bottom: 1px solid #97b9f4;
+                                border-right: 1px solid #97b9f4;
+                            }
+                            
+                            QTableCornerButton::section{
+                                background-color: #0d3c6e;
+                                border-top: 0px solid #97b9f4;
+                                border-bottom: 1px solid #97b9f4;
+                                border-right: 1px solid #97b9f4;
+                            }
+                            
+                            QScrollBar:horizontal{
+                                height: 9px;
+                                background-color: #102542;    
+                            }
+                            
+                            QScrollBar:vertical{
+                                background-color: #102542;    
+                                width: 9px;
+                            }
+                            
+                            QScrollBar::handle:vertical{
+                                background-color: #97b9f4;    
+                                width: 18px;
+                            }
+                            
+                            QScrollBar::handle:horizontal{
+                                background-color: #97b9f4;    
+                                min-width: 5px;
+                            }
+                            
+                            QScrollBar::sub-line:horizontal,
+                            QScrollBar::sub-line:vertical{
+                                height: 0;
+                                width: 0;
+                            }
+                            
+                            QScrollBar::add-line:horizontal,
+                            QScrollBar::add-line:vertical{
+                                height: 0;
+                                width: 0;
+                            }
+                            
+                            QScrollBar::add-page:horizontal{
+                                background: #102542;
+                                margin-left: -3px;
+                            }
+                            
+                            QScrollBar::add-page:vertical{
+                                background: #102542;
+                                margin-top: -3px;
+                            }
+                            
+                            QScrollBar::sub-page:horizontal{
+                                background: #102542;
+                                margin-right: -3px;
+                            }
+                            
+                            QScrollBar::sub-page:vertical{
+                                background: #102542;
+                                margin-bottom: -3px;
+                            }
+                             """)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")

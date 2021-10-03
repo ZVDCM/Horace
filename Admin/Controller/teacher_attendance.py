@@ -197,11 +197,8 @@ class TeacherAttendance:
 
     def clear_teacher_table(self):
         self.clear_teacher_table_handler = self.ClearTeacherTable()
-        self.get_all_teacher_handler = self.GetAllTeacher()
-        self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
-        self.get_all_teacher_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teachers table cleared successfully"))
-    
-        self.clear_teacher_table_handler.finished.connect(self.get_all_teacher_handler.start)
+        self.clear_teacher_table_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teachers table cleared successfully"))
+        self.clear_teacher_table_handler.finished.connect(self.Admin.init_databases)
         self.clear_teacher_table_handler.start()
 
     def init_add_teacher_bulk(self):
@@ -509,7 +506,7 @@ class TeacherAttendance:
         self.get_all_teacher_handler = self.GetAllTeacher()
         self.edit_teacher_handler = self.EditTeacher()
 
-        self.edit_teacher_handler.val = self.TargetTeacher.UserID, username, self.TargetTeacher.Salt, self.TargetTeacher.Hash, password
+        self.edit_teacher_handler.val = self.TargetTeacher.UserID, prev, username, self.TargetTeacher.Salt, self.TargetTeacher.Hash, password
         self.edit_teacher_handler.operation.connect(self.get_all_teacher_handler.start)
 
         self.get_all_teacher_handler.finished.connect(lambda: self.select_latest_teacher(username))

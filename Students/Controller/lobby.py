@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow
-from Teachers.Misc.Widgets.change_password import ChangePassword
+from Students.Misc.Widgets.change_password import ChangePassword
 from PyQt5 import QtCore
 from win32api import GetSystemMetrics
 
@@ -52,7 +52,7 @@ class Lobby:
 
         self.View.btn_more.clicked.connect(self.more_clicked)
         self.View.ContextMenu.password.connect(self.change_password)
-        self.View.ContextMenu.sign_out.connect(self.sign_out)
+        self.View.ContextMenu.sign_out.connect(self.View.close)
 
         self.View.closeEvent = self.lobby_closed
     
@@ -112,9 +112,6 @@ class Lobby:
         self.ChangePassword = ChangePassword(self, self.View, self.Controller.User, self.Model)
         self.ChangePassword.run()
 
-    def sign_out(self):
-        self.View.close()
-
     def set_lobby_status_handler(self, status):
         self.handler = SetLobbyStatus(self.View.set_lobby_status)
         self.handler.val = status
@@ -125,7 +122,7 @@ class Lobby:
         try:
             if self.Controller.View.Meeting.isVisible():
                 return
-        except AttributeError:
+        except (AttributeError, RuntimeError):
             pass
         self.Controller.SignInController.View.init_sign_in()
         self.Controller.SignInController.Model.init_sign_in()

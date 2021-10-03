@@ -393,17 +393,30 @@ class SectionStudent:
 
         return res
 
-    def edit_student(self, userid, username, salt, hash, password):
+    def edit_student(self, userid, prev, username, salt, hash, password):
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT * FROM Users WHERE Username=%s"
-        cursor.execute(select_query, (username,))
+        if prev != username:
+            select_query = "SELECT * FROM Users WHERE Username=%s"
+            cursor.execute(select_query, (username,))
 
-        student_exist = cursor.fetchone()
-        res = "exists"
+            student_exist = cursor.fetchone()
+            res = "exists"
 
-        if not student_exist:
+            if not student_exist:
+                if password != str(salt + hash):
+                    salt = generate_salt()
+                    hash = get_hashed_password(password, salt)
+
+                update_query = "UPDATE Users SET Username=%s, Salt=%s, Hash=%s WHERE UserID=%s AND Privilege=%s"
+                cursor.execute(update_query, (username, salt, hash, userid, "Student"))
+                db.commit()
+
+                res = 'successful'
+
+           
+        else:
             if password != str(salt + hash):
                 salt = generate_salt()
                 hash = get_hashed_password(password, salt)
@@ -413,7 +426,7 @@ class SectionStudent:
             db.commit()
 
             res = 'successful'
-
+            
         cursor.close()
         db.close()
 

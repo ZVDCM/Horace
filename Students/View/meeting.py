@@ -44,6 +44,7 @@ class Meeting(QtWidgets.QMainWindow):
         MainWindow.setMinimumSize(QtCore.QSize(800, 570))
         MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        MainWindow.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("background: #0B1A30;")
         self.centralwidget.setObjectName("centralwidget")

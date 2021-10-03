@@ -14,7 +14,7 @@ class Lobby:
         cursor = db.cursor(buffered=True)
 
         select_query = """
-          SELECT * FROM Classes WHERE Code IN (
+            SELECT * FROM Classes WHERE Code IN (
             SELECT Code FROM Class_Sections WHERE Section IN (
                 SELECT Section From Section_Students WHERE Student=%s
                 )

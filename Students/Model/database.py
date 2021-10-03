@@ -7,7 +7,6 @@ class Database:
         try:
             return mc.connect(
                 user="root",
-                password="root123",
                 host="192.168.0.100",
                 database="Horace"
             )

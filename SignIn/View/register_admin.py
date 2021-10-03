@@ -43,6 +43,7 @@ class RegisterAdmin(QtWidgets.QDialog):
         Form.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint |
                             QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Form.setFocusPolicy(QtCore.Qt.StrongFocus)
+        Form.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         Form.setStyleSheet("QWidget{\n"
                            "    background: #102542; color: white\n"
                            "}\n"
