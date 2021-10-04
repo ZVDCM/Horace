@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>583</width>
+    <height>396</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>583</width>
+    <height>396</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>583</width>
+    <height>396</height>
+   </size>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget{
+	background: #102542;
+	color: white; 
+	font-family: Barlow
+}
+
+QLineEdit {
+  	padding: 5px;
+  	border: 1px solid #0e4884;
+  	border-radius: 5px;
+}
+
+QPushButton {
+  padding: 5px 8px;
+  border: 1px solid #0e4884;
+  background-color: #0e4884;
+}
+
+QPushButton::disabled {
+  padding: 5px;
+ color: gray;
+  border: 1px solid #0B1A30;
+  background-color: #0B1A30;
+}
+
+QLineEdit:focus,
+QLineEdit:hover,
+QPushButton:focus,
+QPushButton:hover {
+  border: 1px solid #256eff;
+  outline: none;
+}
+
+QPushButton:pressed {
+  background-color: #072f49;
+}
+
+QTableView{
+	border: 1px solid #0e4884;
+}
+
+QHeaderView::section {
+	background-color: #0d3c6e;
+	border-top: 0px solid #97b9f4;
+	border-bottom: 1px solid #97b9f4;
+	border-right: 1px solid #97b9f4;
+}
+
+QTableView {
+	gridline-color: #97b9f4;
+}
+
+QTableCornerButton::section{
+	background-color: #0d3c6e;
+    border-top: 0px solid #97b9f4;
+    border-bottom: 1px solid #97b9f4;
+    border-right: 1px solid #97b9f4;
+}
+
+QScrollBar:horizontal{
+	height: 9px;
+    border-radius: 5px;
+}
+
+QScrollBar:vertical{
+	width: 9px;
+    margin: 0;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical{
+	background-color: #97b9f4;    
+    width: 18px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:horizontal{
+	background-color: #97b9f4;    
+    min-width: 5px;
+    border-radius: 4px;
+}
+
+QScrollBar::sub-line:horizontal,
+QScrollBar::sub-line:vertical{
+	height: 0;
+    width: 0;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::add-line:vertical{
+	height: 0;
+    width: 0;
+}
+
+QScrollBar::add-page:horizontal{
+	background: #102542;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    margin-left: -3px;
+}
+
+QScrollBar::add-page:vertical{
+	background: #102542;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    margin-top: -3px;
+}
+
+QScrollBar::sub-page:horizontal{
+    background: #102542;
+    border-bottom-left-radius: 4px;
+	margin-right: -3px;
+}
+
+QScrollBar::sub-page:vertical{
+    background: #102542;
+	border-top-left-radius: 0;
+	border-top-right-radius: 4px;
+	margin-bottom: -3px;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="title_bar" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_10">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
+      <property name="spacing">
+       <number>20</number>
+      </property>
+      <property name="leftMargin">
+       <number>20</number>
+      </property>
+      <property name="topMargin">
+       <number>15</number>
+      </property>
+      <property name="rightMargin">
+       <number>20</number>
+      </property>
+      <property name="bottomMargin">
+       <number>25</number>
+      </property>
+      <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <property name="horizontalSpacing">
+         <number>20</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>15</number>
+        </property>
+        <item row="3" column="1" colspan="2">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>78</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="5" column="2" colspan="2">
+         <widget class="QPushButton" name="btn_section_student">
+          <property name="font">
+           <font>
+            <family>Barlow</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-radius: 5px;</string>
+          </property>
+          <property name="text">
+           <string>Import Section Students</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="1" colspan="3">
+         <widget class="QLineEdit" name="txt_student">
+          <property name="font">
+           <font>
+            <family>Barlow</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="placeholderText">
+           <string>Students Table.csv</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QPushButton" name="btn_section">
+          <property name="font">
+           <font>
+            <family>Barlow</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-radius: 5px;</string>
+          </property>
+          <property name="text">
+           <string>Import Sections</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1" colspan="3">
+         <widget class="QLineEdit" name="txt_section_student">
+          <property name="font">
+           <font>
+            <family>Barlow</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="placeholderText">
+           <string>Section Students Table.csv</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="3">
+         <widget class="QLineEdit" name="txt_section">
+          <property name="font">
+           <font>
+            <family>Barlow</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="placeholderText">
+           <string>Section Table.csv</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="2">
+         <widget class="QTableWidget" name="tableWidget">
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <row>
+           <property name="text">
+            <string>1</string>
+           </property>
+          </row>
+          <column>
+           <property name="text">
+            <string>ID</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Name</string>
+           </property>
+          </column>
+          <item row="0" column="0">
+           <property name="text">
+            <string>1</string>
+           </property>
+          </item>
+          <item row="0" column="1">
+           <property name="text">
+            <string>Section</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="2" column="0" rowspan="2">
+         <widget class="QTableWidget" name="tableWidget_2">
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+          <row>
+           <property name="text">
+            <string>1</string>
+           </property>
+          </row>
+          <column>
+           <property name="text">
+            <string>UserID</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Username</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Privilege</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Salt</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Hash</string>
+           </property>
+          </column>
+          <item row="0" column="0">
+           <property name="text">
+            <string>1</string>
+           </property>
+          </item>
+          <item row="0" column="1">
+           <property name="text">
+            <string>Juan</string>
+           </property>
+          </item>
+          <item row="0" column="2">
+           <property name="text">
+            <string>Student</string>
+           </property>
+          </item>
+          <item row="0" column="3">
+           <property name="text">
+            <string>$2b$14$CvyVRP55XtLdY/zYj6/ixu</string>
+           </property>
+          </item>
+          <item row="0" column="4">
+           <property name="text">
+            <string>a4qNHklO8jfF6eRlrqCMBnQCb6dO/nW</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="4" column="0" rowspan="2">
+         <widget class="QTableWidget" name="tableWidget_3">
+          <row>
+           <property name="text">
+            <string>1</string>
+           </property>
+          </row>
+          <column>
+           <property name="text">
+            <string>ID</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Section</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Student</string>
+           </property>
+          </column>
+          <item row="0" column="0">
+           <property name="text">
+            <string>1</string>
+           </property>
+          </item>
+          <item row="0" column="1">
+           <property name="text">
+            <string>Section</string>
+           </property>
+          </item>
+          <item row="0" column="2">
+           <property name="text">
+            <string>Juan</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="1" colspan="2">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>88</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="3" column="3">
+         <widget class="QPushButton" name="btn_student">
+          <property name="font">
+           <font>
+            <family>Barlow</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-radius: 5px;</string>
+          </property>
+          <property name="text">
+           <string>Import Students</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,2,1">
+        <item>
+         <widget class="QPushButton" name="btn_cancel">
+          <property name="font">
+           <font>
+            <family>Barlow</family>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-radius: 5px;	background-color: none;</string>
+          </property>
+          <property name="text">
+           <string>Cancel</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_import">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="font">
+           <font>
+            <family>Barlow</family>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-radius: 5px;</string>
+          </property>
+          <property name="text">
+           <string>Import</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
