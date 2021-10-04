@@ -8,6 +8,7 @@ import queue
 import socket
 import threading
 
+
 class Frame(QThread):
     operation = pyqtSignal(QPixmap)
 
@@ -93,17 +94,16 @@ class Client:
         while self.Meeting.is_connected and not self.Meeting.is_frozen and not self.client._closed and not self.chat_socket._closed:
             try:
                 data, _ = self.client.recvfrom(self.MAX_DGRAM)
-                if len(data) < 100:
+                if len(data) < 150:
                     packets = int(data.decode(self.FORMAT))
                     buffer = b""
                     for _ in range(packets):
                         data, _ = self.client.recvfrom(self.MAX_DGRAM)
                         buffer += data
-
                     self.frames.put(buffer)
-            except OSError:
+            except OSError as e:
                 return
-            except UnicodeDecodeError:
+            except UnicodeDecodeError as e:
                 continue
 
     def display(self):
@@ -123,7 +123,8 @@ class Client:
                 frame = convert_pil_image_to_QPixmap(self.last_frame)
                 self.SetFrame.frame = frame
                 self.SetFrame.start()
-            except zlib.error:
+            except (zlib.error, pickle.UnpicklingError):
+                self.frames = queue.Queue()
                 continue
 
     def set_last_frame(self):

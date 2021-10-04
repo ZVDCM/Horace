@@ -84,8 +84,6 @@ class Host:
                 self.display_frame(self.last_frame)
                 broadcast_thread = threading.Thread(target=self.broadcast_frame, args=(self.last_frame,), daemon=True, name="BroadcastThread")
                 broadcast_thread.start()
-                time.sleep(0.025)
-                
             self.View.disconnect_screen()
         except RuntimeError:
             return
@@ -105,16 +103,16 @@ class Host:
         self.SetFrame.start()
 
     def broadcast_frame(self, frame):
-        if not self.View.isVisible():
-            return
-            
-        pil_img = convert_bytearray_to_pil_image(frame)
-        pil_img = zlib.compress(pickle.dumps(
-            pil_img, pickle.HIGHEST_PROTOCOL), 9)
-        packets = str(math.ceil(len(pil_img)/self.BUFFER)).encode(self.FORMAT)
-        self.host.sendto(packets, self.BROADCAST_ADDR)
-
         try:
+            if not self.View.isVisible():
+                return
+                
+            pil_img = convert_bytearray_to_pil_image(frame)
+            pil_img = zlib.compress(pickle.dumps(
+                pil_img, pickle.HIGHEST_PROTOCOL), 9)
+            packets = str(math.ceil(len(pil_img)/self.BUFFER)).encode(self.FORMAT)
+            self.host.sendto(packets, self.BROADCAST_ADDR)
+
             while pil_img and self.View.isVisible():
                 bytes_sent = self.host.sendto(
                     pil_img[:self.BUFFER], self.BROADCAST_ADDR)

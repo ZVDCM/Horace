@@ -269,9 +269,10 @@ class Host:
 
     def set_meeting_status_handler(self, status):
         self.status_time = 0
-        self.handler = SetMeetingStatus(self.View.set_meeting_status)
-        self.handler.val = status
-        self.handler.start()
+        threading.Thread(target=self.set_meeting_status, args=(status,), daemon=True).start()
+    
+    def set_meeting_status(self, status):
+        self.View.set_meeting_status(status)
 
     def init_host(self):
         self.host = socket.socket()

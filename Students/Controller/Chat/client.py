@@ -148,17 +148,17 @@ class Receive(QThread):
                             f"Teacher {self.Client.ClassTeacher.Teacher} thawed the screen")
 
                     elif message['data'] == 'shutdown':
-                        print(message['data'])
-                        # subprocess.call('shutdown /s /f /t 0',
-                        #                     creationflags=self.DETACHED_PROCESS)
+                        # print(message['data'])
+                        subprocess.call('shutdown /s /f /t 0',
+                                            creationflags=self.DETACHED_PROCESS)
                     elif message['data'] == 'restart':
-                        print(message['data'])
-                        # subprocess.call('shutdown /r /f /t 0',
-                        #                     creationflags=self.DETACHED_PROCESS)
+                        # print(message['data'])
+                        subprocess.call('shutdown /r /f /t 0',
+                                            creationflags=self.DETACHED_PROCESS)
                     elif message['data'] == 'lock':
-                        print(message['data'])
-                        # subprocess.call('rundll32.exe user32.dll,LockWorkStation',
-                        #                     creationflags=self.DETACHED_PROCESS)
+                        # print(message['data'])
+                        subprocess.call('rundll32.exe user32.dll,LockWorkStation',
+                                            creationflags=self.DETACHED_PROCESS)
                     elif message['data'] == 'start control':
                         print(message['data'])
                         self.RDCClient = RDCClient(
@@ -176,37 +176,37 @@ class Receive(QThread):
                             f"Teacher {self.Client.ClassTeacher.Teacher} ended remote desktop control")
 
                 elif message['type'] == 'mouse':
-                    print(message['data'])
-                    # mouse = MouseController()
-                    # if message['data'][0] == 'move':
-                    #     mouse.position = message['data'][1]
-                    # elif message['data'][0] == 'pressed':
-                    #     if message['data'][1] == 'left':
-                    #         mouse.press(Button.left)
-                    #     if message['data'][1] == 'middle':
-                    #         mouse.press(Button.middle)
-                    #     if message['data'][1] == 'right':
-                    #         mouse.press(Button.right)
-                    # elif message['data'][0] == 'released':
-                    #     if message['data'][1] == 'left':
-                    #         mouse.release(Button.left)
-                    #     if message['data'][1] == 'middle':
-                    #         mouse.release(Button.middle)
-                    #     if message['data'][1] == 'right':
-                    #         mouse.release(Button.right)
-                    # elif message['data'][0] == 'scroll':
-                    #     if message['data'][1] == 'up':
-                    #         mouse.scroll(0, 1)
-                    #     if message['data'][1] == 'down':
-                    #         mouse.scroll(0, -1)
+                    # print(message['data'])
+                    mouse = MouseController()
+                    if message['data'][0] == 'move':
+                        mouse.position = message['data'][1]
+                    elif message['data'][0] == 'pressed':
+                        if message['data'][1] == 'left':
+                            mouse.press(Button.left)
+                        if message['data'][1] == 'middle':
+                            mouse.press(Button.middle)
+                        if message['data'][1] == 'right':
+                            mouse.press(Button.right)
+                    elif message['data'][0] == 'released':
+                        if message['data'][1] == 'left':
+                            mouse.release(Button.left)
+                        if message['data'][1] == 'middle':
+                            mouse.release(Button.middle)
+                        if message['data'][1] == 'right':
+                            mouse.release(Button.right)
+                    elif message['data'][0] == 'scroll':
+                        if message['data'][1] == 'up':
+                            mouse.scroll(0, 1)
+                        if message['data'][1] == 'down':
+                            mouse.scroll(0, -1)
 
                 elif message['type'] == 'keyboard':
-                    print(message['data'])
-                    # keyboard = KeyboardController()
-                    # if "pressed" == message['data'][0]:
-                    #     keyboard.press(message['data'][1])
-                    # if "released" == message['data'][0]:
-                    #     keyboard.release(message['data'][1])
+                    # print(message['data'])
+                    keyboard = KeyboardController()
+                    if "pressed" == message['data'][0]:
+                        keyboard.press(message['data'][1])
+                    if "released" == message['data'][0]:
+                        keyboard.release(message['data'][1])
 
                 elif message['type'] == 'time':
                     self.Client.EndLoading.start()
@@ -248,13 +248,12 @@ class Receive(QThread):
                                 f"Teacher {self.Client.ClassTeacher.Teacher} whitelisted {self.blacklisted_sites[-1]}")
 
                     print(message['data'])
-                    self.blacklisted_sites = message['data']
+                    # self.blacklisted_sites = message['data']
 
-                    # urls = message['data']
                     # open(self.HOST_PATH, 'w').close()
                     # with open(self.HOST_PATH, 'r+') as hostfile:
                     #     hosts_content = hostfile.read()
-                    #     for site in urls:
+                    #     for site in self.blacklisted_sites:
                     #         if site not in hosts_content:
                     #             hostfile.write(self.REDIRECT +
                     #                             '\t' + site + '\r\n')
@@ -305,7 +304,10 @@ class Screenshot(QThread):
     def run(self):
         try:
             while self.View.isVisible() and not self.client_socket._closed:
-                sct = screenshot()
+                try:
+                    sct = screenshot()
+                except OSError:
+                    continue
                 message = normalize_message('frame', sct)
                 self.Client.send(message)
                 time.sleep(2)
