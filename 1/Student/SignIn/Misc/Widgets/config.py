@@ -3,6 +3,7 @@ from SignIn.Misc.Functions.is_blank import is_blank
 from SignIn.Misc.Functions.relative_path import relative_path
 from SignIn.Misc.Widgets.dialog_title_bar import TitleBar
 from SignIn.Misc.Widgets.active_overlay import ActiveOverlay
+from SignIn.Misc.Widgets.loading_screen import LoadingScreen
 
 
 class Config(QtWidgets.QDialog):
@@ -20,7 +21,8 @@ class Config(QtWidgets.QDialog):
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
 
-        self.teacher = None
+        self.LoadingScreen = LoadingScreen(self.widget, relative_path('SignIn', ['Misc', 'Resources'], 'loading_bars.gif'))
+
         self.set_fields()
 
     def run(self):

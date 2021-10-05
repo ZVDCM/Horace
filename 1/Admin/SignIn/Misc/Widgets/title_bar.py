@@ -3,6 +3,21 @@ from SignIn.Misc.Functions.relative_path import relative_path
 from SignIn.Misc.Functions.read_db_config import read_db_config
 from SignIn.Misc.Widgets.config import Config
 
+class Operation(QtCore.QThread):
+    success = QtCore.pyqtSignal()
+    error = QtCore.pyqtSignal()
+
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+
+    def run(self):
+        is_success = self.fn()
+        if not is_success:
+            self.error.emit()
+        else:
+            self.success.emit()
+        self.quit()
 
 class TitleBar(QtWidgets.QWidget):
     resize = QtCore.pyqtSignal()
@@ -153,10 +168,11 @@ class TitleBar(QtWidgets.QWidget):
         self.Config.run()
 
     def configured(self):
-        is_success = self.controller.Model.Database.init_db()
-        if not is_success:
-            self.parent.run_popup('Database error', 'critical')
-        else:
-            self.Config.close()
+        self.Operation = Operation(self.controller.Model.Database.init_db)
+        self.Operation.started.connect(self.Config.LoadingScreen.run)
+        self.Operation.success.connect(self.Config.close)
+        self.Operation.error.connect(lambda: self.parent.run_popup('Database error', 'critical'))
+        self.Operation.finished.connect(self.Config.LoadingScreen.hide)
+        self.Operation.start()
 
 
