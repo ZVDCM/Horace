@@ -73,9 +73,6 @@ class SignIn:
         self.View.btn_next.clicked.connect(self.sign_in)
         self.View.btn_cancel.clicked.connect(self.View.first_state)
 
-        self.View.lbl_forgot_password.operation.connect(
-            self.init_forgot_password)
-
         self.get_user = Operation(self.Model.get_user)
         self.get_user.started.connect(self.View.LoadingScreen.run)
         self.get_user.operation.connect(self.is_user)
@@ -87,6 +84,7 @@ class SignIn:
         self.is_match.started.connect(self.View.LoadingScreen.run)
         self.is_match.finished.connect(self.View.LoadingScreen.hide)
         self.is_match.validation.connect(self.is_not_match)
+        self.is_match.operation.connect(self.init_student)
 
     def sign_in(self):
         if len(self.View.lbl_validation.text()) > 0:
@@ -124,24 +122,11 @@ class SignIn:
             self.View.txt_input.clear()
             return
 
-        self.is_match.operation.connect(self.init_student)
-
         self.is_match.val = self.User.Salt, self.User.Hash, password
         self.is_match.start()
 
     def is_not_match(self):
         self.View.invalid_input("Password invalid")
-
-    def init_register_admin(self):
-        self.Controller.Model.init_register_admin()
-        self.Controller.View.init_register_admin()
-        self.Controller.init_register_admin()
-
-    def init_forgot_password(self):
-        self.View.LoadingScreen.show()
-        self.Controller.Model.init_forgot_password()
-        self.Controller.View.init_forgot_password()
-        self.Controller.init_forgot_password()
 
     def init_student(self):
         self.StudentController = StudentController(self.Controller, self.User)

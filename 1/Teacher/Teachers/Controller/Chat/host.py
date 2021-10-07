@@ -231,7 +231,6 @@ class Host:
 
         self.AddAttendance = Attendance(self.Model.create_attendance)
         self.AddAttendance.operation.connect(lambda: self.Controller.SignInController.SignIn.show_alert('attendance', 'Attendance Stored'))
-        self.AddAttendance.operation.connect(self.Controller.Lobby.get_attendances)
 
         self.IncrementBadge = Operation()
         self.IncrementBadge.operation.connect(self.View.BadgeOverlay.increment)
@@ -720,25 +719,21 @@ class Host:
             if 2 % student_info['logged'] != 0:
                 self.time[student_name]['log'].append(('Left', class_end))
 
-        attendance_thread = threading.Thread(
-            target=self.record_attendance, daemon=True, name="AttendanceThread")
-        attendance_thread.start()
-
         try:
-            if not self.Controller.View.Lobby.isVisible():
-                try:
-                    if self.View.isVisible():
-                        self.View.close()
-                except RuntimeError:
-                    pass
-                self.Controller.SignInController.View.init_sign_in()
-                self.Controller.SignInController.Model.init_sign_in()
-                self.Controller.SignInController.init_sign_in()
+            if self.Controller.View.Lobby.isVisible():
+                self.Controller.Lobby.enable_classes()
+                self.AddAttendance.operation.connect(self.Controller.Lobby.get_attendances)
+                attendance_thread = threading.Thread(
+                    target=self.record_attendance, daemon=True, name="AttendanceThread")
+                attendance_thread.start()
+            if self.View.isVisible():
+                self.View.close()
         except RuntimeError:
-            pass
+            self.Controller.SignInController.View.init_sign_in()
+            self.Controller.SignInController.Model.init_sign_in()
+            self.Controller.SignInController.init_sign_in()
 
         self.timer.stop()
-        self.Controller.Lobby.enable_classes()
 
     def record_attendance(self):
         self.Controller.SignInController.SignIn.show_alert('attendance', 'Storing Attendance...')

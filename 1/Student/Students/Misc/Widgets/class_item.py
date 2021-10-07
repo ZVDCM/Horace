@@ -131,6 +131,7 @@ class ClassItem(QtWidgets.QWidget):
         super().leaveEvent(event)
 
     def mousePressEvent(self, event):
-        if self.is_active:
-            self.operation.emit(self.Class)
+        if event.buttons() == QtCore.Qt.LeftButton:
+            if self.is_active:
+                self.operation.emit(self.Class)
         super().mousePressEvent(event)

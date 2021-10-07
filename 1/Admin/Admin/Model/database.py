@@ -1,13 +1,14 @@
 import os
 import mysql.connector as mc
 from Admin.Misc.Functions.read_db_config import read_db_config
+from SignIn.Misc.Functions.relative_path import relative_path
 
 class Database:
 
     def connect(self):
         try:
             db_config = read_db_config()
-            db_config['database'] = 'horace' 
+            db_config['database'] = 'Horace' 
             return mc.connect(**db_config)
         except mc.Error as e:
             return
@@ -24,15 +25,13 @@ class Database:
 
         self.drop_database()
 
-        os.system(f'mysql -u root Horace < {path}')
+        os.system(f"mysql --defaults-file={relative_path('Config', [''], 'admin.ini')} Horace < {path}")
 
         self.set_admin(admin, security_questions)
 
     def drop_database(self):
-        db = mc.connect(
-                user="root",
-                host="127.0.0.1"
-        )
+        db_config = read_db_config()
+        db = mc.connect(**db_config)
         cursor = db.cursor()
 
         sql_query = """

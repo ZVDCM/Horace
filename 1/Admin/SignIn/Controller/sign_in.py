@@ -89,6 +89,7 @@ class SignIn:
         self.is_match = Validate(self.Model.is_match)
         self.is_match.started.connect(self.View.LoadingScreen.run)
         self.is_match.finished.connect(self.View.LoadingScreen.hide)
+        self.is_match.operation.connect(self.init_admin)
         self.is_match.validation.connect(self.is_not_match)
 
     def sign_in(self):
@@ -130,8 +131,6 @@ class SignIn:
             self.View.invalid_input("Password must be filled")
             self.View.txt_input.clear()
             return
-
-        self.is_match.operation.connect(self.init_admin)
 
         self.is_match.val = self.User.Salt, self.User.Hash, password
         self.is_match.start()

@@ -278,6 +278,7 @@ class Admin:
         self.View.web_viewer.setUrl(QtCore.QUrl(f'https://{Url.Domain}'))
 
     def resize(self, event):
+        self.View.ActiveOverlay.resize_loader()
         self.View.TableSectionStudentLoadingScreen.resize_loader()
         self.View.TableTeacherLoadingScreen.resize_loader()
         self.View.TableClassLoadingScreen.resize_loader()

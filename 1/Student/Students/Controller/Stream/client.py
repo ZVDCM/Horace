@@ -1,4 +1,5 @@
 from PyQt5 import QtCore
+from PyQt5.QtWidgets import QWidget
 from Students.Misc.Functions.window_capture import convert_pil_image_to_QPixmap
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -63,8 +64,6 @@ class Client:
         self.DisconnectScreen = Operation()
         self.DisconnectScreen.operation.connect(self.View.disconnect_screen)
 
-        self.View.widget.resizeEvent = self.screen_resized
-
     def init_client(self):
         self.client = socket.socket(type=socket.SOCK_DGRAM)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -101,9 +100,9 @@ class Client:
                         data, _ = self.client.recvfrom(self.MAX_DGRAM)
                         buffer += data
                     self.frames.put(buffer)
-            except OSError as e:
+            except OSError:
                 return
-            except UnicodeDecodeError as e:
+            except UnicodeDecodeError:
                 continue
 
     def display(self):
@@ -114,7 +113,6 @@ class Client:
                 break
             elif frame == 'frozen':
                 try:
-                    self.set_last_frame()
                     break
                 except AttributeError:
                     continue
@@ -126,14 +124,3 @@ class Client:
             except (zlib.error, pickle.UnpicklingError):
                 self.frames = queue.Queue()
                 continue
-
-    def set_last_frame(self):
-        frame = convert_pil_image_to_QPixmap(self.last_frame)
-        frame = frame.scaled(
-                self.View.w_left.width(), self.View.w_left.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
-        self.View.screen.setPixmap(frame)
-
-    def screen_resized(self, event):
-        if self.Meeting.is_frozen:
-            self.set_last_frame()
-        self.View.LoadingScreen.parent_resized(None)

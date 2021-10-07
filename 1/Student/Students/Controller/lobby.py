@@ -1,3 +1,4 @@
+import threading
 from PyQt5.QtWidgets import QMainWindow
 from Students.Misc.Widgets.change_password import ChangePassword
 from PyQt5 import QtCore
@@ -116,11 +117,12 @@ class Lobby:
         self.ChangePassword.run()
 
     def set_lobby_status_handler(self, status):
-        self.handler = SetLobbyStatus(self.View.set_lobby_status)
-        self.handler.val = status
-        self.handler.start()
+        threading.Thread(target=self.View.set_lobby_status, args=(status,), daemon=True).start()
         self.timer = QtCore.QTimer.singleShot(5000, self.View.lbl_lobby_status.clear)
     
+    def set_lobby_status(self, status):
+        self.View.set_lobby_status(status)
+
     def lobby_closed(self, event):
         try:
             if self.Controller.View.Meeting.isVisible():

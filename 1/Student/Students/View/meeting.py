@@ -9,6 +9,7 @@ from Students.Misc.Functions.relative_path import relative_path
 from Students.Misc.Widgets.meeting_title_bar import TitleBar
 from Students.Misc.Widgets.custom_list_view import ListView
 from Students.Misc.Widgets.message_sent import MessageSent
+from Students.Misc.Widgets.screenviewer import ScreenViewer
 
 
 class Meeting(QtWidgets.QMainWindow):
@@ -159,12 +160,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.screen = QtWidgets.QLabel(self.w_left)
-        self.screen.setStyleSheet("")
-        self.screen.setText("")
-        self.screen.setAlignment(QtCore.Qt.AlignCenter)
-        self.screen.setObjectName("screen")
-        self.horizontalLayout.addWidget(self.screen)
+        self.screen_viewer = ScreenViewer(self.w_left)
+        self.horizontalLayout.addWidget(self.screen_viewer)
         self.horizontalLayout_12.addWidget(self.w_left)
         self.sw_right = QtWidgets.QStackedWidget(self.widget)
         self.sw_right.setMinimumSize(QtCore.QSize(310, 0))
@@ -584,12 +581,10 @@ class Meeting(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot(QtGui.QPixmap)
     def set_frame(self, frame):
-        frame = frame.scaled(
-                self.screen.width(), self.screen.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
-        self.screen.setPixmap(frame)
+        self.screen_viewer.setFrame(frame)
 
     def disconnect_screen(self):
-        self.screen.clear()
+        self.screen_viewer.setFrame(None)
 
     def set_timer(self, time):
         self.lbl_timer.setText(time)

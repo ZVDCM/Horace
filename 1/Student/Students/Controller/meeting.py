@@ -47,7 +47,6 @@ class Meeting:
         self.is_connected = True
         self.is_disconnected = False
 
-
         self.View.title_bar.title.setText(self.Class.Name)
 
         self.ChatClient = ChatClient(self, self.Class, self.ClassTeacher, self.Model, self.View, self.Controller)

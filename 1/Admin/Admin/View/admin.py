@@ -14,6 +14,7 @@ from Admin.Misc.Widgets.pop_up import Popup
 from Admin.Misc.Functions.relative_path import relative_path
 from Admin.Misc.Widgets.student_item import StudentItem
 from Admin.Misc.Widgets.teacher_item import TeacherItem
+from Admin.Misc.Widgets.active_overlay import ActiveOverlay
 
 
 class Admin(QtWidgets.QMainWindow):
@@ -80,6 +81,9 @@ class Admin(QtWidgets.QMainWindow):
         self.url_state = "Read"
 
         self.AccountContextMenu = AccountContextMenu(self.btn_more)
+        self.ActiveOverlay = ActiveOverlay(self)
+        QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
+
 
     def run(self):
         self.raise_()
@@ -4175,3 +4179,11 @@ class Admin(QtWidgets.QMainWindow):
 
     def set_admin_status(self, status):
         self.lbl_database_status.setText(status)
+
+    def on_focus_change(self):
+        if self.isActiveWindow():
+            self.ActiveOverlay.is_focused = True
+            self.ActiveOverlay.update()
+        else:
+            self.ActiveOverlay.is_focused = False
+            self.ActiveOverlay.update()

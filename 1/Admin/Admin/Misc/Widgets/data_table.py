@@ -1,6 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Admin.Misc.Widgets.title_bar import TitleBar
-from Admin.Misc.Widgets.loading_screen import LoadingScreen
 from Admin.Misc.Widgets.active_overlay import ActiveOverlay
 from Admin.Misc.Widgets.custom_table_view import TableView
 from Admin.Misc.Functions.relative_path import relative_path
@@ -85,6 +84,59 @@ class DataTable(QtWidgets.QDialog):
                            "  background-color: #072f49;\n"
                            "}\n"
                            "\n"
+                           """
+                            QScrollBar:horizontal{
+                                height: 9px;
+                                background-color: #102542;    
+                            }
+                            
+                            QScrollBar:vertical{
+                                background-color: #102542;    
+                                width: 9px;
+                            }
+                            
+                            QScrollBar::handle:vertical{
+                                background-color: #97b9f4;    
+                                width: 18px;
+                            }
+                            
+                            QScrollBar::handle:horizontal{
+                                background-color: #97b9f4;    
+                                min-width: 5px;
+                            }
+                            
+                            QScrollBar::sub-line:horizontal,
+                            QScrollBar::sub-line:vertical{
+                                height: 0;
+                                width: 0;
+                            }
+                            
+                            QScrollBar::add-line:horizontal,
+                            QScrollBar::add-line:vertical{
+                                height: 0;
+                                width: 0;
+                            }
+                            
+                            QScrollBar::add-page:horizontal{
+                                background: #102542;
+                                margin-left: -3px;
+                            }
+                            
+                            QScrollBar::add-page:vertical{
+                                background: #102542;
+                                margin-top: -3px;
+                            }
+                            
+                            QScrollBar::sub-page:horizontal{
+                                background: #102542;
+                                margin-right: -3px;
+                            }
+                            
+                            QScrollBar::sub-page:vertical{
+                                background: #102542;
+                                margin-bottom: -3px;
+                            }
+                           """
                            )
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)

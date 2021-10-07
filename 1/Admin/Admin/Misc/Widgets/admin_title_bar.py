@@ -195,6 +195,7 @@ class TitleBar(QtWidgets.QWidget):
 
     def set_minimum(self):
         self.parent.showNormal()
+        self.parent.ActiveOverlay.show()
         self.btn_maximize_restore.setStyleSheet("QPushButton{\n"
                                                 "    border: none;\n"
                                                 "    border-radius: none;\n"
@@ -215,6 +216,7 @@ class TitleBar(QtWidgets.QWidget):
     def set_maximum(self):
         self.prev_size = self.parent.size()
         self.parent.showMaximized()
+        self.parent.ActiveOverlay.hide()
         self.btn_maximize_restore.setStyleSheet("QPushButton{\n"
                                                 "    border: none;\n"
                                                 "    border-radius: none;\n"
