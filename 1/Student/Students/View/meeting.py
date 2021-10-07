@@ -582,6 +582,8 @@ class Meeting(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot(QtGui.QPixmap)
     def set_frame(self, frame):
         self.screen_viewer.setFrame(frame)
+        if self.screen_viewer.zoom == 0:
+            self.screen_viewer.fitInView()
 
     def disconnect_screen(self):
         self.screen_viewer.setFrame(None)

@@ -1,7 +1,7 @@
-import os
 import mysql.connector as mc
 from Admin.Misc.Functions.read_db_config import read_db_config
 from SignIn.Misc.Functions.relative_path import relative_path
+import subprocess
 
 class Database:
 
@@ -25,7 +25,7 @@ class Database:
 
         self.drop_database()
 
-        os.system(f"mysql --defaults-file={relative_path('Config', [''], 'admin.ini')} Horace < {path}")
+        subprocess.call(f"mysql --defaults-file={relative_path('Config', [''], 'admin.ini')} Horace", stdin=open(path, 'r'), creationflags=0x00000008)
 
         self.set_admin(admin, security_questions)
 

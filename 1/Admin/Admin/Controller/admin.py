@@ -1,4 +1,5 @@
 import os
+import subprocess
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QFileDialog, QMainWindow
 from Admin.Controller.section_student import SectionStudent
@@ -50,6 +51,7 @@ class Get(QtCore.QThread):
 
 
 class Admin:
+    DETACHED_PROCESS = 0x00000008
 
     def __init__(self, Controller):
         self.Model = Controller.Model
@@ -325,9 +327,9 @@ class Admin:
         if path:
             self.Controller.SignInController.SignIn.show_alert('file', 'Creating backup')
             path = os.path.join(path, 'horace.sql')
-            os.system(f"mysqldump --defaults-file={relative_path('Config', [''], 'admin.ini')} --databases Horace --tables users --where=\"Privilege<>'Admin'\" > {path}")
-            os.system(f"mysqldump --defaults-file={relative_path('Config', [''], 'admin.ini')} --databases Horace --tables sections section_students classes class_teachers class_sections attendances urls >> {path}")
-            os.system(f"mysqldump --defaults-file={relative_path('Config', [''], 'admin.ini')} --databases Horace --tables security_questions --where=\"Admin<>'Admin'\" >> {path} && exit")
+            subprocess.call(f"mysqldump --defaults-file={relative_path('Config', [''], 'admin.ini')} --databases Horace --tables users --where=\"Privilege<>'Admin'\"", stdout=open(path, 'w'), creationflags=self.DETACHED_PROCESS)
+            subprocess.call(f"mysqldump --defaults-file={relative_path('Config', [''], 'admin.ini')} --databases Horace --tables sections section_students classes class_teachers class_sections attendances urls", stdout=open(path, 'a'), creationflags=self.DETACHED_PROCESS)
+            subprocess.call(f"mysqldump --defaults-file={relative_path('Config', [''], 'admin.ini')} --databases Horace --tables security_questions --where=\"Admin<>'Admin'\"", stdout=open(path, 'a'), creationflags=self.DETACHED_PROCESS)
             self.Controller.SignInController.SignIn.show_alert('file', 'Backup created')
             self.set_admin_status_handler("Database backup created successfully")
 

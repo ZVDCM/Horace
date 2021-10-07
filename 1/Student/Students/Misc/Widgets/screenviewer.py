@@ -5,7 +5,7 @@ class ScreenViewer(QtWidgets.QGraphicsView):
 
     def __init__(self, parent):
         super().__init__(parent=parent)
-        self._zoom = 0
+        self.zoom = 0
         self._empty = True
         self._scene = QtWidgets.QGraphicsScene(self)
         self._photo = QtWidgets.QGraphicsPixmapItem()
@@ -18,7 +18,6 @@ class ScreenViewer(QtWidgets.QGraphicsView):
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setBackgroundBrush(QtGui.QBrush(QtGui.QColor("#0B1A30")))
         self.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self._zoom = 0
 
     def hasPhoto(self):
         return not self._empty
@@ -36,7 +35,7 @@ class ScreenViewer(QtWidgets.QGraphicsView):
                     factor = min(viewrect.width() / scenerect.width(),
                                 viewrect.height() / scenerect.height())
                     self.scale(factor, factor)
-                self._zoom = 0
+                self.zoom = 0
         except RuntimeError:
             return
 
@@ -54,16 +53,16 @@ class ScreenViewer(QtWidgets.QGraphicsView):
         if self.hasPhoto():
             if event.angleDelta().y() > 0:
                 factor = 1.25
-                self._zoom += 1
+                self.zoom += 1
             else:
                 factor = 0.8
-                self._zoom -= 1
-            if self._zoom > 0:
+                self.zoom -= 1
+            if self.zoom > 0:
                 self.scale(factor, factor)
-            elif self._zoom == 0:
+            elif self.zoom == 0:
                 self.fitInView()
             else:
-                self._zoom = 0
+                self.zoom = 0
 
     def mousePressEvent(self, event):
         if self._photo.isUnderMouse():
