@@ -1,5 +1,6 @@
 import mysql.connector as mc
 from SignIn.Misc.Functions.read_db_config import read_db_config
+from mysql.connector.locales.eng import client_error
 
 class Database:
 

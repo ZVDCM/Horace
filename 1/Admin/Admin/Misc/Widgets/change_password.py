@@ -44,7 +44,7 @@ class ChangePassword(QtWidgets.QDialog):
                             "             characters (!, $, %, etc.)."]
         self.is_password_valid = False
 
-        self.LoadingScreen = LoadingScreen(self.widget_2, relative_path('Teachers', ['Misc', 'Resources'], 'loading_bars.gif'))
+        self.LoadingScreen = LoadingScreen(self.widget_2, relative_path('Admin', ['Misc', 'Resources'], 'loading_bars.gif'))
 
         self.title_bar.title.setText("Change Password")
         self.connect_signals()
@@ -184,7 +184,7 @@ class ChangePassword(QtWidgets.QDialog):
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_reveal_old_password.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(relative_path('Teachers', ['Misc', 'Resources'], 'show.png')),
+        icon.addPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'show.png')),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_reveal_old_password.setIcon(icon)
         self.btn_reveal_old_password.setIconSize(QtCore.QSize(20, 20))

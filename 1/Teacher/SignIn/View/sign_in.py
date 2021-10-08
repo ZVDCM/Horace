@@ -1,3 +1,4 @@
+import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 from SignIn.Misc.Widgets.title_bar import TitleBar
 from SignIn.Misc.Widgets.loading_screen import LoadingScreen
@@ -24,8 +25,11 @@ class SignIn(QtWidgets.QWidget):
         self.LoadingScreen = LoadingScreen(self.widget, relative_path('SignIn', ['Misc', 'Resources'], 'loading_squares.gif'))
         self.ActiveOverlay = ActiveOverlay(self)
         self.ActiveOverlay.show()
-
         self.alert = Alert()
+
+        filenames = next(os.walk(relative_path('SignIn', ['Misc', 'Resources'], 'Barlow')), (None, None, []))[2]
+        for filename in filenames:
+            QtGui.QFontDatabase.addApplicationFont(f"{relative_path('SignIn', ['Misc', 'Resources'], 'Barlow')}\\{filename}")
         
     def run(self):
         self.raise_()

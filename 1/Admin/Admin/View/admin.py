@@ -386,7 +386,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_import_students_sections.setStyleSheet("border-radius: 5px")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(
-            "C:/Users/moral/Desktop/Resources/import.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            relative_path('Admin', ['Misc', 'Resources'], 'import.png')), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_import_students_sections.setIcon(icon)
         self.btn_import_students_sections.setIconSize(QtCore.QSize(20, 20))
         self.btn_import_students_sections.setObjectName(

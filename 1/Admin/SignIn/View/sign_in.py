@@ -7,7 +7,7 @@ from SignIn.Misc.Widgets.alert import Alert
 from SignIn.Misc.Widgets.alert_item import AlertItem
 from SignIn.Misc.Widgets.pop_up import Popup
 from SignIn.Misc.Functions.relative_path import relative_path
-
+import os
 
 class SignIn(QtWidgets.QWidget):
 
@@ -26,6 +26,10 @@ class SignIn(QtWidgets.QWidget):
         self.ActiveOverlay.show()
         self.alert = Alert()
 
+        filenames = next(os.walk(relative_path('SignIn', ['Misc', 'Resources'], 'Barlow')), (None, None, []))[2]
+        for filename in filenames:
+            QtGui.QFontDatabase.addApplicationFont(f"{relative_path('SignIn', ['Misc', 'Resources'], 'Barlow')}\\{filename}")
+            
     def run(self):
         self.raise_()
         self.show()
