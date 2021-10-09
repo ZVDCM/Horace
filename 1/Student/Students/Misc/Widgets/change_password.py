@@ -438,11 +438,11 @@ class ChangePassword(QtWidgets.QDialog):
         icon = QtGui.QIcon()
         if target_text.echoMode() == QtWidgets.QLineEdit.Password:
             target_text.setEchoMode(QtWidgets.QLineEdit.Normal)
-            icon.addPixmap(QtGui.QPixmap(relative_path('SignIn', ['Misc', 'Resources'], 'hide.png')),
+            icon.addPixmap(QtGui.QPixmap(relative_path('Students', ['Misc', 'Resources'], 'hide.png')),
                            QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
             target_text.setEchoMode(QtWidgets.QLineEdit.Password)
-            icon.addPixmap(QtGui.QPixmap(relative_path('SignIn', ['Misc', 'Resources'], 'show.png')),
+            icon.addPixmap(QtGui.QPixmap(relative_path('Students', ['Misc', 'Resources'], 'show.png')),
                            QtGui.QIcon.Normal, QtGui.QIcon.Off)
         target_btn.setIcon(icon)
     

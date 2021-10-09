@@ -1,24 +1,27 @@
 from PyQt5.QtGui import QImage, QPixmap
 import numpy as np
-from mss import mss
 from PIL import Image
-from win32api import GetSystemMetrics
+import ctypes
 import pyautogui
 
 
 def screenshot():
     img = pyautogui.screenshot()
     img = np.array(img)
-    width, height = GetSystemMetrics(0), GetSystemMetrics(1)
-    img = Image.frombytes("RGB", (width, height), img, "raw")
+    user32 = ctypes.windll.user32
+    user32.SetProcessDPIAware()
+    w, h = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+    img = Image.frombytes("RGB", (w, h), img, "raw")
     img = img.resize((400, 225), Image.LANCZOS)
     return img
 
 def rdc_screenshot():
     img = pyautogui.screenshot()
     img = np.array(img)
-    width, height = GetSystemMetrics(0), GetSystemMetrics(1)
-    img = Image.frombytes("RGB", (width, height), img, "raw")
+    user32 = ctypes.windll.user32
+    user32.SetProcessDPIAware()
+    w, h = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+    img = Image.frombytes("RGB", (w, h), img, "raw")
     img = img.resize((1280, 720), Image.LANCZOS)
     return img
 

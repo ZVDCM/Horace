@@ -4,7 +4,7 @@ import win32ui
 import numpy as np
 from mss import mss
 from PIL import Image
-from win32api import GetSystemMetrics
+import ctypes
 
 
 def set_pixel(img, w, x, y, rgb=(0, 0, 0)):
@@ -60,14 +60,18 @@ def window_capture():
         return img
 
 def convert_bytearray_to_QPixmap(img):
-    w, h = GetSystemMetrics(0), GetSystemMetrics(1)
+    user32 = ctypes.windll.user32
+    user32.SetProcessDPIAware()
+    w, h = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
     qimg = QImage(img, w, h, QImage.Format_RGB888)
     return QPixmap(qimg)
 
 def convert_bytearray_to_pil_image(img):
-    width, height = GetSystemMetrics(0), GetSystemMetrics(1)
+    user32 = ctypes.windll.user32
+    user32.SetProcessDPIAware()
+    w, h = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
     img = np.array(img)
-    img = Image.frombytes("RGB", (width, height), img, "raw")
+    img = Image.frombytes("RGB", (w, h), img, "raw")
     return img
 
 def convert_pil_image_to_QPixmap(img):
