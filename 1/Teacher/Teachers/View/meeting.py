@@ -22,8 +22,6 @@ class Meeting(QtWidgets.QMainWindow):
         self.View = View
         self.setupUi(self)
 
-        self.Popup = Popup(self)
-
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
 
         self.ActiveOverlay = ActiveOverlay(self)
@@ -1059,6 +1057,8 @@ class Meeting(QtWidgets.QMainWindow):
         self.lbl_timer.setText(time)
 
     def run_popup(self, message, icon='information'):
+        self.Popup = Popup(self)
+
         if icon == 'question':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
                 'Teachers', ['Misc', 'Resources'], 'question.png')))

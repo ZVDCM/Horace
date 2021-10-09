@@ -8,8 +8,8 @@ class Popup(QtWidgets.QDialog):
         super().__init__()
         self.parent = parent
         self.setupUi(self)
-        QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self.widget)
+        self.ActiveOverlay.show()
         self.btn_ok.clicked.connect(self.close)
 
     def run(self):
@@ -24,7 +24,6 @@ class Popup(QtWidgets.QDialog):
                               QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Dialog.setFocusPolicy(QtCore.Qt.StrongFocus)
         Dialog.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
-        Dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         Dialog.setStyleSheet("QWidget{\n"
                              "    background: #0B1A30;\n"
                              "    color: white; \n"
@@ -56,7 +55,7 @@ class Popup(QtWidgets.QDialog):
         self.lbl_icon.setMaximumSize(QtCore.QSize(60, 60))
         self.lbl_icon.setText("")
         self.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Teachers', ['Misc', 'Resources'], 'information.png')))
+            'Students', ['Misc', 'Resources'], 'information.png')))
         self.lbl_icon.setScaledContents(False)
         self.lbl_icon.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl_icon.setObjectName("lbl_icon")
@@ -116,14 +115,6 @@ class Popup(QtWidgets.QDialog):
     def mouseReleaseEvent(self, event):
         self.pressing = False
         super().mouseReleaseEvent(event)
-
-    def on_focus_change(self):
-        if self.isActiveWindow():
-            self.ActiveOverlay.is_focused = True
-            self.ActiveOverlay.update()
-        else:
-            self.ActiveOverlay.is_focused = False
-            self.ActiveOverlay.update()
 
     def keyPressEvent(self, event):
         if event.key() == 16777220:

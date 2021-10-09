@@ -19,8 +19,6 @@ class Meeting(QtWidgets.QMainWindow):
         self.View = View
         self.setupUi(self)
 
-        self.Popup = Popup(self)
-
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
         self.ActiveOverlay = ActiveOverlay(self)
 
@@ -29,7 +27,6 @@ class Meeting(QtWidgets.QMainWindow):
         self.close_buttons = [self.btn_close_student_list, self.btn_close_chat]
 
         self.BadgeOverlay = BadgeOverlay(self.btn_chat)
-
 
     def run(self):
         self.raise_()
@@ -591,7 +588,8 @@ class Meeting(QtWidgets.QMainWindow):
     def set_timer(self, time):
         self.lbl_timer.setText(time)
 
-    def run_popup(self, message, icon='Information'):
+    def run_popup(self, message, icon='information'):
+        self.Popup = Popup(self)
         if icon == 'Question':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
             'Students', ['Misc', 'Resources'], 'question.png')))
@@ -601,7 +599,6 @@ class Meeting(QtWidgets.QMainWindow):
         elif icon == 'Critical':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
             'Students', ['Misc', 'Resources'], 'critical.png')))
-        
         self.Popup.lbl_message.setText(message)
         self.Popup.run()
 

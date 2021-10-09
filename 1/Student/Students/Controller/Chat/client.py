@@ -250,9 +250,12 @@ class Receive(QThread):
                             if site not in hosts_content:
                                 hostfile.write(self.REDIRECT +
                                                 '\t' + site + '\r\n')
-                    os.system("taskkill /f /im chrome.exe")
-                    os.system("taskkill /f /im iexplore.exe")
-                    os.system("taskkill /f /im msedge.exe")
+                    subprocess.call('taskkill /f /im chrome.exe',
+                                            creationflags=self.DETACHED_PROCESS)
+                    subprocess.call('taskkill /f /im iexplore.exe',
+                                            creationflags=self.DETACHED_PROCESS)
+                    subprocess.call('taskkill /f /im msedge.exe',
+                                            creationflags=self.DETACHED_PROCESS)
 
                 elif message['type'] == 'student':
                     new_list_students = message['data']
