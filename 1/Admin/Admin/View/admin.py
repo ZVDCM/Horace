@@ -716,8 +716,6 @@ class Admin(QtWidgets.QMainWindow):
             self.student_section_student_bulk)
         self.sa_student_bulk.setStyleSheet("")
         self.sa_student_bulk.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.sa_student_bulk.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOn)
         self.sa_student_bulk.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)
         self.sa_student_bulk.setSizeAdjustPolicy(
@@ -845,8 +843,6 @@ class Admin(QtWidgets.QMainWindow):
         self.sa_section_bulk = QtWidgets.QScrollArea(
             self.student_section_section_bulk)
         self.sa_section_bulk.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.sa_section_bulk.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOn)
         self.sa_section_bulk.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)
         self.sa_section_bulk.setSizeAdjustPolicy(
@@ -1884,8 +1880,6 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_29.setObjectName("horizontalLayout_29")
         self.sa_teacher_bulk = QtWidgets.QScrollArea(self.teacher_teacher_bulk)
         self.sa_teacher_bulk.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.sa_teacher_bulk.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOn)
         self.sa_teacher_bulk.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)
         self.sa_teacher_bulk.setWidgetResizable(True)
@@ -2659,8 +2653,6 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_30.setObjectName("horizontalLayout_30")
         self.scrollArea_4 = QtWidgets.QScrollArea(self.class_class_bulk)
         self.scrollArea_4.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.scrollArea_4.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOn)
         self.scrollArea_4.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)
         self.scrollArea_4.setWidgetResizable(True)

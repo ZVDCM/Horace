@@ -14,9 +14,9 @@ class Alert(QtWidgets.QWidget):
 
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(326, 203)
-        Form.setMinimumSize(QtCore.QSize(326, 203))
-        Form.setMaximumSize(QtCore.QSize(326, 203))
+        Form.resize(326, 500)
+        Form.setMinimumSize(QtCore.QSize(326, 500))
+        Form.setMaximumSize(QtCore.QSize(326, 500))
         Form.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
                               QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Form.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)

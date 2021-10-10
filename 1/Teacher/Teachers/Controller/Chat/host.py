@@ -562,10 +562,10 @@ class Host:
         path = QFileDialog.getSaveFileName(
             self.View, 'Save File', path, ext)[0]
         if path:
-            self.Controller.SignInController.SignIn.show_alert('file', 'Downloading file...')
+            self.Controller.SignInController.SignIn.View.show_alert('file', 'Downloading file...')
             with open(path, 'wb') as file:
                 file.write(data)
-            self.Controller.SignInController.SignIn.show_alert('file', 'File downloaded')
+            self.Controller.SignInController.SignIn.View.show_alert('file', 'File downloaded')
 
     def display_file_message_received(self, sender, filename, data):
         file_message_received = _FileMessageReceived(
