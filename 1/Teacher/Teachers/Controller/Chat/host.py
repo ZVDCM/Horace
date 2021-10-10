@@ -230,6 +230,7 @@ class Host:
         self.timer.start(1000)
 
         self.AddAttendance = Attendance(self.Model.create_attendance)
+        self.AddAttendance.started.connect(lambda: self.Controller.SignInController.SignIn.show_alert('attendance', 'Storing Attendance...'))
         self.AddAttendance.operation.connect(lambda: self.Controller.SignInController.SignIn.show_alert('attendance', 'Attendance Stored'))
 
         self.IncrementBadge = Operation()
@@ -719,24 +720,24 @@ class Host:
             if 2 % student_info['logged'] != 0:
                 self.time[student_name]['log'].append(('Left', class_end))
 
+        attendance_thread = threading.Thread(
+                    target=self.record_attendance, daemon=True, name="AttendanceThread")
+        attendance_thread.start()
+
         try:
             if self.Controller.View.Lobby.isVisible():
                 self.Controller.Lobby.enable_classes()
                 self.AddAttendance.operation.connect(self.Controller.Lobby.get_attendances)
-                attendance_thread = threading.Thread(
-                    target=self.record_attendance, daemon=True, name="AttendanceThread")
-                attendance_thread.start()
             if self.View.isVisible():
                 self.View.close()
         except RuntimeError:
             self.Controller.SignInController.View.init_sign_in()
             self.Controller.SignInController.Model.init_sign_in()
             self.Controller.SignInController.init_sign_in()
-
+        
         self.timer.stop()
 
     def record_attendance(self):
-        self.Controller.SignInController.SignIn.show_alert('attendance', 'Storing Attendance...')
         attendance = "".join(("Class Meeting Summary\n",
                               f"Total Number of Students,{len(list(self.time.items())[1:])}\n",
                               f"Teacher,{self.Controller.User.Username}\n",

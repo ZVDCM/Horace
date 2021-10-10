@@ -25,7 +25,7 @@ class AlertItem(QtWidgets.QWidget):
         self.icon = QtWidgets.QLabel(Form)
         self.icon.setMinimumSize(QtCore.QSize(50, 0))
         self.icon.setText("")
-        self.icon.setPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], self.photo)))
+        self.icon.setPixmap(QtGui.QPixmap(relative_path('Students', ['Misc', 'Resources'], self.photo)))
         self.icon.setAlignment(QtCore.Qt.AlignCenter)
         self.icon.setObjectName("icon")
         self.horizontalLayout.addWidget(self.icon)
@@ -62,7 +62,7 @@ class AlertItem(QtWidgets.QWidget):
         super(QtWidgets.QLabel, self.lbl_close).mousePressEvent(event)
 
     def enterEvent(self, event):
-        self.lbl_close.setPixmap(QtGui.QPixmap(relative_path('Admin', ['Misc', 'Resources'], 'close_2.png')))
+        self.lbl_close.setPixmap(QtGui.QPixmap(relative_path('Students', ['Misc', 'Resources'], 'close_2.png')))
         super().enterEvent(event)
     
     def leaveEvent(self, event):
