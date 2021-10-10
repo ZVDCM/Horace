@@ -49,6 +49,8 @@ class Meeting:
 
         self.View.title_bar.title.setText(self.Class.Name)
 
+        self.View.widget.resizeEvent = self.resized
+
         self.ChatClient = ChatClient(self, self.Class, self.ClassTeacher, self.Model, self.View, self.Controller)
         self.connect_signals()
         self.View.run()
@@ -74,3 +76,8 @@ class Meeting:
 
         self.View.interactors[index].activate()
         self.View.sw_right.setCurrentIndex(index)
+
+    def resized(self, event):
+        if self.View.screen_viewer.zoom > 0:
+            self.View.screen_viewer.zoom = 0
+
