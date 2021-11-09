@@ -95,13 +95,12 @@ class AddItem(QtCore.QThread):
     operation = QtCore.pyqtSignal()
     error = QtCore.pyqtSignal()
 
-    def __init__(self, fn, layout, widget, tag, additional=None):
+    def __init__(self, fn, layout, widget, tag):
         super().__init__()
         self.fn = fn
         self.layout = layout
         self.widget = widget
         self.tag = tag
-        self.additional = additional
 
     def run(self):
         error_items = []
@@ -113,8 +112,6 @@ class AddItem(QtCore.QThread):
                 for value in values:
                     if is_blank(value):
                         error_items.append(value)
-                if self.additional:
-                    values = (*self.additional, *values)
                 res = self.fn(*values)
                 if res == 'successful':
                     target_item.close_item()
@@ -124,6 +121,39 @@ class AddItem(QtCore.QThread):
             self.operation.emit()
         self.quit()
 
+
+class AddStudentItem(QtCore.QThread):
+    operation = QtCore.pyqtSignal()
+    error = QtCore.pyqtSignal()
+
+    def __init__(self, fn, layout, widget, tag, section):
+        super().__init__()
+        self.fn = fn
+        self.layout = layout
+        self.widget = widget
+        self.tag = tag
+        self.section = section
+
+    def run(self):
+        error_items = []
+        for index in range(self.layout.count()):
+            target_item = self.widget.findChild(
+                QWidget, f'{self.tag}{index+1}')
+            if target_item:
+                values = target_item.get_value()
+                for value in values:
+                    if is_blank(value):
+                        error_items.append(value)
+                res = self.fn(self.section, *values)
+                if res == 'successful':
+                    target_item.close_item()
+                else:
+                    error_items.append(0)
+        if error_items:
+            self.error.emit()
+        else:
+            self.operation.emit()
+        self.quit()
 
 class ExportSectionStudentTable(QtCore.QThread):
     operation = QtCore.pyqtSignal()
@@ -714,12 +744,9 @@ class SectionStudent:
 
     def set_section_table(self, sections):
         if not sections:
-            self.View.disable_section_edit_delete()
-            self.View.disable_student_edit_delete()
             self.View.disable_section_student_delete_clear()
             self.View.clear_section_inputs()
             self.View.lbl_sections_table_status.setText(f'Sections: 0')
-            self.View.btn_init_add_section_student.setDisabled(True)
         else:
             self.View.btn_init_add_section_student.setDisabled(False)
             self.View.enable_section_edit_delete()
@@ -937,8 +964,10 @@ class SectionStudent:
         self.View.sw_student_section.setCurrentIndex(1)
 
     def add_student_bulk(self):
-        self.AddItem = AddItem(self.Model.create_student, self.View.verticalLayout_38,
-                               self.View.widget_11, 'studentItem_', (self.TargetSection.Name,))
+        self.AddItem = AddStudentItem(self.Model.create_student, self.View.verticalLayout_38,
+                               self.View.widget_11, 'studentItem_', None)
+        if self.TargetSection:
+            self.AddItem.additional = self.TargetSection.Name
         self.AddItem.started.connect(
             self.View.TableSectionStudentLoadingScreen.run)
         self.AddItem.operation.connect(self.go_back_student)
@@ -1191,14 +1220,15 @@ class SectionStudent:
         self.View.txt_student_password.setText(
             str(self.TargetStudent.Salt + self.TargetStudent.Hash))
         self.View.txt_student_password.setCursorPosition(0)
+        self.View.enable_student_edit_delete()
 
     def set_student_table(self, students):
         if not students:
-            self.View.disable_section_edit_delete()
+            self.View.disable_student_edit_delete()
             self.View.clear_student_inputs()
             self.empty_section_student_list()
         else:
-            self.View.enable_section_edit_delete()
+            self.View.enable_student_edit_delete()
 
         student_model = self.Model.TableModel(
             self.View.tv_students, students, self.Model.Student.get_headers())
@@ -1272,7 +1302,7 @@ class SectionStudent:
     # Student Error
     def student_error(self, error):
         if error == 'exists':
-            self.View.run_popup(f'Student exists')
+            self.View.run_popup(f'User exists')
         elif error == "section exists":
             self.View.run_popup(f'Student already in section')
 

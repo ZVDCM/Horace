@@ -8,8 +8,6 @@ class Popup(QtWidgets.QDialog):
         super().__init__()
         self.parent = parent
         self.setupUi(self)
-        self.ActiveOverlay = ActiveOverlay(self.widget)
-        self.ActiveOverlay.show()
         self.btn_ok.clicked.connect(self.close)
 
     def run(self):
@@ -41,6 +39,11 @@ class Popup(QtWidgets.QDialog):
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.widget = QtWidgets.QWidget(Dialog)
         self.widget.setObjectName("widget")
+        self.widget.setStyleSheet("""
+            QWidget#widget{
+                border: 1px solid #256eff; 
+            }
+        """)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout_2.setContentsMargins(20, 20, 20, 20)
         self.verticalLayout_2.setSpacing(20)

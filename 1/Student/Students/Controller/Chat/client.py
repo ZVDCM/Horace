@@ -11,6 +11,9 @@ from Students.Misc.Functions.messages import *
 from Students.Controller.RDC.client import Client as RDCClient
 from pynput.mouse import Button, Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController
+from PyQt5.QtGui import QPixmap
+from Students.Misc.Widgets.pop_up import Popup
+from Students.Misc.Functions.relative_path import relative_path
 import os
 import time
 import socket
@@ -276,11 +279,23 @@ class Receive(QThread):
                     self.Client.SetStudentList.start()
 
                 elif message['type'] == 'popup':
-                    self.Client.Popup.val = message['data']
-                    self.Client.Popup.start()
                     self.Client.set_meeting_status_handler(
                         f'Teacher {self.Client.ClassTeacher.Teacher} sent a popup')
-                        
+                    message, icon = message['data']
+                    if icon == 'Question':
+                        self.Client.View.Popup.lbl_icon.setPixmap(QPixmap(relative_path(
+                        'Students', ['Misc', 'Resources'], 'question.png')))
+                    elif icon == 'Warning':
+                        self.Client.View.Popup.lbl_icon.setPixmap(QPixmap(relative_path(
+                        'Students', ['Misc', 'Resources'], 'warning.png')))
+                    elif icon == 'Critical':
+                        self.Client.View.Popup.lbl_icon.setPixmap(QPixmap(relative_path(
+                        'Students', ['Misc', 'Resources'], 'critical.png')))
+                    else:
+                        self.Client.View.Popup.lbl_icon.setPixmap(QPixmap(relative_path(
+                        'Students', ['Misc', 'Resources'], 'information.png')))
+                    self.Client.View.Popup.lbl_message.setText(message)
+                    self.Client.View.Popup.run()
         except RuntimeError:
             pass
 
@@ -335,16 +350,15 @@ class SetStudentList(QThread):
         self.quit()
 
 
-class Popup(QThread):
+# class Popup(QThread):
 
-    def __init__(self, fn):
-        super().__init__()
-        self.fn = fn
-        self.val = ()
+#     def __init__(self, fn):
+#         super().__init__()
+#         self.fn = fn
+#         self.val = ()
 
-    def run(self):
-        self.fn(*self.val)
-        self.quit()
+#     def run(self):
+#         self.fn(*self.val)
 
 
 class SetMeetingStatus(QtCore.QThread):
@@ -420,8 +434,6 @@ class Client:
 
         self.SetStudentList = SetStudentList()
         self.SetStudentList.operation.connect(self.set_student_list)
-
-        self.Popup = Popup(self.View.run_popup)
 
         self.View.btn_search_student.clicked.connect(self.search)
         self.View.txt_search_student.returnPressed.connect(self.search)

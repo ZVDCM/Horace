@@ -25,7 +25,7 @@ class Meeting(QtWidgets.QMainWindow):
         self.LoadingScreen = LoadingScreen(self.widget, relative_path('Students', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         self.interactors = [self.btn_student_list, self.btn_chat]
         self.close_buttons = [self.btn_close_student_list, self.btn_close_chat]
-
+        self.Popup = Popup()
         self.BadgeOverlay = BadgeOverlay(self.btn_chat)
 
     def run(self):
@@ -588,7 +588,7 @@ class Meeting(QtWidgets.QMainWindow):
     def set_timer(self, time):
         self.lbl_timer.setText(time)
 
-    def run_popup(self, message, icon='information'):
+    def run_popup(self, message, icon='Information'):
         self.Popup = Popup(self)
         if icon == 'Question':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(

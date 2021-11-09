@@ -186,8 +186,9 @@ class TeacherAttendance:
 
     def clear_teacher_table(self):
         self.clear_teacher_table_handler = self.ClearTeacherTable()
-        self.clear_teacher_table_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teachers table cleared successfully"))
         self.clear_teacher_table_handler.finished.connect(self.Admin.init_databases)
+        self.clear_teacher_table_handler.finished.connect(self.View.clear_teacher_inputs)
+        self.clear_teacher_table_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teachers table cleared successfully"))
         self.clear_teacher_table_handler.start()
 
     def init_add_teacher_bulk(self):
@@ -453,7 +454,7 @@ class TeacherAttendance:
     # Teacher Error
     def teacher_error(self, error):
         if error == 'exists':
-            self.View.run_popup(f'Teacher exists')
+            self.View.run_popup(f'User exists')
 
     # Teacher Add
     def add_teacher(self):

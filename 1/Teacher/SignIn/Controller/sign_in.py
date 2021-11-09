@@ -132,7 +132,4 @@ class SignIn:
         self.View.hide()
 
     def show_alert(self, type, message):
-        self.ShowAlert = Alert()
-        self.ShowAlert.operation.connect(self.View.show_alert)
-        self.ShowAlert.val = type, message
-        self.ShowAlert.start()
+        self.View.show_alert(type, message)

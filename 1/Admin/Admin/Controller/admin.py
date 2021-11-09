@@ -94,7 +94,6 @@ class Admin:
         self.get_all_student.started.connect(self.View.TableSectionStudentLoadingScreen.run)
         self.get_all_student.operation.connect(self.SectionStudent.set_student_table)
         self.get_all_student.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
-        self.get_all_student.finished.connect(self.get_model_latest_section)
         self.get_all_student.finished.connect(lambda: self.set_admin_status_handler("Sections and Students loaded successfully"))
         
         self.get_all_teacher_and_attendances = GetAll(self.Model.TeacherAttendance.get_all_teacher)
@@ -127,7 +126,6 @@ class Admin:
         self.get_all_section_student.started.connect(self.View.SectionStudentLoadingScreen.run)
         self.get_all_section_student.operation.connect(self.set_section_student_listview)
         self.get_all_section_student.finished.connect(self.View.SectionStudentLoadingScreen.hide)
-        self.get_all_section_student.finished.connect(self.select_latest_targets)
 
         self.get_target_class_teacher = Get(self.Model.ClassMember.get_target_class_teacher)
         self.get_target_class_teacher.started.connect(self.View.TableClassLoadingScreen.run)
@@ -173,47 +171,6 @@ class Admin:
         self.View.lv_section_student.setCurrentIndex(index)
         self.View.lbl_section_students_status.setText(f'Students: {len(students)}')
 
-    def get_model_latest_section(self):
-        section_model = self.View.tv_sections.model()
-        if section_model.rowCount() <= 1:
-            self.View.TableSectionStudentLoadingScreen.hide()
-            self.View.disable_student_edit_delete()
-            return
-
-        self.SectionStudent.target_section_row = section_model.rowCount() - 2
-        self.SectionStudent.TargetSection = self.Model.Section(*section_model.getRowData(self.SectionStudent.target_section_row))
-        
-        self.get_all_section_student.val = self.SectionStudent.TargetSection,
-        self.get_all_section_student.start()
-
-    def select_latest_targets(self):
-        self.View.tv_sections.selectRow(self.SectionStudent.target_section_row)
-        self.set_latest_section_inputs()
-        section_students = self.View.lv_section_student.model().getData()
-
-        if section_students != []:
-            self.View.enable_student_edit_delete()
-            student_model = self.View.tv_students.model()
-            student = section_students[0]
-            self.SectionStudent.target_student_row = student_model.findRow(student)
-            self.SectionStudent.TargetStudent = self.Model.Student(*student_model.getRowData(self.SectionStudent.target_student_row))
-            self.SectionStudent.TargetStudent.Section = self.SectionStudent.TargetSection.Name
-
-            self.View.tv_students.selectRow(self.SectionStudent.target_student_row)
-            self.set_latest_section_student_inputs()
-        else:
-            self.View.disable_section_student_delete_clear()
-            self.View.disable_student_edit_delete()
-
-    def set_latest_section_inputs(self):
-        Section = self.SectionStudent.TargetSection
-        self.View.txt_section_name.setText(Section.Name)
-
-    def set_latest_section_student_inputs(self):
-        Student = self.SectionStudent.TargetStudent
-        self.View.txt_student_username.setText(Student.Username)
-        self.View.txt_student_password.setText(str(Student.Salt + Student.Hash))
-        self.View.txt_student_password.setCursorPosition(0)
 
     # *Teacher
     def get_model_latest_teacher(self):

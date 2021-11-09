@@ -217,9 +217,9 @@ class ClassMember:
 
     def clear_classes_members(self):
         self.clear_section_student_handler = self.ClearClassesMembersTable()
-        self.clear_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Classes and Members table cleared successfully"))
         self.clear_section_student_handler.finished.connect(self.Admin.init_databases)
         self.clear_section_student_handler.finished.connect(self.View.clear_class_inputs)
+        self.clear_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Classes and Members table cleared successfully"))
         self.clear_section_student_handler.start()
 
     def add_class_bulk(self):
@@ -302,7 +302,6 @@ class ClassMember:
         handler.started.connect(self.View.ClassLoadingScreen.run)
         handler.error.connect(self.class_error)
         handler.finished.connect(self.View.ClassLoadingScreen.hide)
-        handler.finished.connect(self.View.btn_cancel_class.click)
         return handler 
 
     def EditClass(self):
@@ -520,8 +519,9 @@ class ClassMember:
         self.add_class_handler.val = code, name, start, end
         self.add_class_handler.operation.connect(self.get_all_class_handler.start)
 
-        self.get_all_class_handler.finished.connect(lambda: self.select_latest_class(code))
         self.get_all_class_handler.finished.connect(lambda: self.Admin.set_admin_status(f"{code} class added successfully"))
+        self.get_all_class_handler.finished.connect(lambda: self.select_latest_class(code))
+        self.get_all_class_handler.finished.connect(self.View.btn_cancel_class.click)
         self.add_class_handler.start()
 
     # Class Edit
@@ -534,7 +534,7 @@ class ClassMember:
         if is_blank(code) or is_blank(name):
             self.View.run_popup(f'Class fields must be filled')
             return
-
+        
         target_start = QtCore.QTime(*self.TargetClass.Start)
         target_end = QtCore.QTime(*self.TargetClass.End)
 
@@ -546,6 +546,8 @@ class ClassMember:
         if code == self.TargetClass.Code and name == self.TargetClass.Name and start == target_start and end == target_end:
             self.View.btn_cancel_class.click()
             return
+
+        target_start = ":".join([str(i) for i in self.TargetClass.Start])
 
         start = ":".join([str(start.hour()), str(start.minute()), str(start.second())])
         end = ":".join([str(end.hour()), str(end.minute()), str(end.second())])

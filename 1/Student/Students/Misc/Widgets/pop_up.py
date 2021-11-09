@@ -4,12 +4,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Popup(QtWidgets.QDialog):
-    def __init__(self, parent):
+    def __init__(self):
         super().__init__()
-        self.parent = parent
         self.setupUi(self)
-        self.ActiveOverlay = ActiveOverlay(self.widget)
-        self.ActiveOverlay.show()
         self.btn_ok.clicked.connect(self.close)
 
     def run(self):
@@ -20,7 +17,7 @@ class Popup(QtWidgets.QDialog):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(299, 139)
-        Dialog.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint | 
+        Dialog.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.FramelessWindowHint |
                               QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         Dialog.setFocusPolicy(QtCore.Qt.StrongFocus)
         Dialog.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
@@ -41,6 +38,11 @@ class Popup(QtWidgets.QDialog):
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.widget = QtWidgets.QWidget(Dialog)
         self.widget.setObjectName("widget")
+        self.widget.setStyleSheet("""
+            QWidget#widget{
+                border: 1px solid #256eff; 
+            }
+        """)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout_2.setContentsMargins(20, 20, 20, 20)
         self.verticalLayout_2.setSpacing(20)

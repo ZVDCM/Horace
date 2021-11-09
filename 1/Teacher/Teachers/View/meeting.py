@@ -1056,7 +1056,7 @@ class Meeting(QtWidgets.QMainWindow):
     def set_timer(self, time):
         self.lbl_timer.setText(time)
 
-    def run_popup(self, message, icon='information'):
+    def run_popup(self, message, icon='Information'):
         self.Popup = Popup(self)
 
         if icon == 'question':
