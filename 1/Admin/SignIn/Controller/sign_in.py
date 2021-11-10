@@ -68,6 +68,7 @@ class SignIn:
         self.connect_signals()
 
         self.View.title_bar.title.setText("Horace")
+        self.View.txt_input.setText("Admin")
 
         self.View.run()
 
@@ -123,6 +124,7 @@ class SignIn:
             return
 
         self.View.second_state()
+        self.View.txt_input.setText("TestTest!1")
         self.View.LoadingScreen.hide()
 
     def input_password(self):

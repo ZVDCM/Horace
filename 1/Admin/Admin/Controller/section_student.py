@@ -126,8 +126,9 @@ class AddStudentItem(QtCore.QThread):
     operation = QtCore.pyqtSignal()
     error = QtCore.pyqtSignal()
 
-    def __init__(self, fn, layout, widget, tag, section):
+    def __init__(self, View, fn, layout, widget, tag, section):
         super().__init__()
+        self.View = View
         self.fn = fn
         self.layout = layout
         self.widget = widget
@@ -144,6 +145,8 @@ class AddStudentItem(QtCore.QThread):
                 for value in values:
                     if is_blank(value):
                         error_items.append(value)
+                if values[0]:
+                    self.View.temp_passwords[values[0]] = values[1]
                 res = self.fn(self.section, *values)
                 if res == 'successful':
                     target_item.close_item()
@@ -747,6 +750,7 @@ class SectionStudent:
             self.View.disable_section_student_delete_clear()
             self.View.clear_section_inputs()
             self.View.lbl_sections_table_status.setText(f'Sections: 0')
+            self.View.btn_init_add_section_student.setDisabled(True)
         else:
             self.View.btn_init_add_section_student.setDisabled(False)
             self.View.enable_section_edit_delete()
@@ -762,6 +766,16 @@ class SectionStudent:
         section_model = self.View.tv_sections.model()
         self.set_target_section(self.Model.Section(
             *section_model.getRowData(section_model.findRow(section))))
+
+    def get_latest_section(self):
+        try:
+            section_model = self.View.tv_sections.model()
+            self.set_target_section(self.Model.Section(*section_model.data[-2]))
+            self.get_target_section_student_handler = self.GetTargetSectionStudent()
+            self.get_target_section_student_handler.value = self.TargetSection,
+            self.get_target_section_student_handler.start()
+        except IndexError:
+            return
 
     def get_latest_target_section_student(self):
         section_model = self.View.tv_sections.model()
@@ -964,7 +978,7 @@ class SectionStudent:
         self.View.sw_student_section.setCurrentIndex(1)
 
     def add_student_bulk(self):
-        self.AddItem = AddStudentItem(self.Model.create_student, self.View.verticalLayout_38,
+        self.AddItem = AddStudentItem(self.View, self.Model.create_student, self.View.verticalLayout_38,
                                self.View.widget_11, 'studentItem_', None)
         if self.TargetSection:
             self.AddItem.additional = self.TargetSection.Name
@@ -1070,9 +1084,6 @@ class SectionStudent:
         handler.validation.connect(
             lambda: self.View.lbl_section_students_status.setText(
                 'Students: 0')
-        )
-        handler.validation.connect(
-            lambda: self.View.btn_init_add_section.setDisabled(True)
         )
         handler.validation.connect(
             lambda: self.View.btn_init_add_section_student.setDisabled(True)
@@ -1281,17 +1292,11 @@ class SectionStudent:
     def cancel_student(self):
         self.View.enable_student_buttons()
         self.View.disable_student_inputs()
-        self.View.set_student('Read')
-        if self.View.tv_sections.model().rowCount() == 1:
+        if self.View.student_state == "Add":
             self.get_latest_student()
-        if not self.TargetStudent:
-            self.View.disable_student_edit_delete()
-            if len(self.View.tv_students.model().data) != 1:
-                self.target_student_row = self.View.tv_students.model().rowCount() - 2
-        if len(self.View.tv_students.model().data) != 1:
-            index = self.View.tv_students.model().createIndex(self.target_student_row, 0)
-            self.table_student_clicked(index)
+        elif self.View.student_state == "Edit":
             self.View.tv_students.selectRow(self.target_student_row)
+        self.View.set_student('Read')
 
     def init_add_edit_student(self):
         if self.View.student_state == "Add":
@@ -1326,6 +1331,8 @@ class SectionStudent:
             self.add_student_handler.val = "", username, password
         self.add_student_handler.operation.connect(
             self.get_all_student_handler.start)
+        self.add_student_handler.operation.connect(
+            lambda: self.View.add_temp_password(username, password))
         self.get_all_student_handler.finished.connect(
             lambda: self.select_latest_student(username))
         self.get_all_student_handler.finished.connect(
@@ -1361,6 +1368,8 @@ class SectionStudent:
 
         self.edit_student_handler.val = self.TargetStudent.UserID, prev, username, self.TargetStudent.Salt, self.TargetStudent.Hash, password
         self.edit_student_handler.operation.connect(
+            lambda: self.View.edit_temp_password(prev, username, password))
+        self.edit_student_handler.operation.connect(
             self.get_all_student_handler.start)
 
         if self.TargetSection:
@@ -1391,6 +1400,8 @@ class SectionStudent:
         target = self.TargetStudent
 
         self.delete_student_handler.val = self.TargetStudent,
+        self.delete_student_handler.operation.connect(
+            lambda: self.View.delete_temp_password(target.Username))
         self.delete_student_handler.operation.connect(
             self.get_all_student_handler.start)
 

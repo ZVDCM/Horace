@@ -8,8 +8,8 @@ from Admin.Controller.blacklist_url import BlacklistURL
 import threading
 from win32api import GetSystemMetrics
 from Admin.Misc.Functions.relative_path import relative_path
-
 from Admin.Misc.Widgets.change_password import ChangePassword
+from Admin.Misc.Widgets.gen_pass import GeneratedUserPass
 
 
 class SetAdminStatus(QtCore.QThread):
@@ -73,6 +73,8 @@ class Admin:
         self.start_time = QtCore.QTime(0, 0, 0)
         self.status_time = 0
 
+        self.GeneratedUserPass = GeneratedUserPass(self.View, self.Controller)
+
         self.View.run()
 
     def connect_signals(self):
@@ -88,11 +90,13 @@ class Admin:
         self.get_all_section = GetAll(self.Model.SectionStudent.get_all_section)
         self.get_all_section.started.connect(self.View.TableSectionStudentLoadingScreen.run)
         self.get_all_section.operation.connect(self.SectionStudent.set_section_table)
+        self.get_all_section.operation.connect(self.SectionStudent.get_latest_section)
         self.get_all_section.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
         
         self.get_all_student = GetAll(self.Model.SectionStudent.get_all_student)
         self.get_all_student.started.connect(self.View.TableSectionStudentLoadingScreen.run)
         self.get_all_student.operation.connect(self.SectionStudent.set_student_table)
+        self.get_all_student.operation.connect(self.SectionStudent.get_latest_target_section_student)
         self.get_all_student.finished.connect(self.View.TableSectionStudentLoadingScreen.hide)
         self.get_all_student.finished.connect(lambda: self.set_admin_status_handler("Sections and Students loaded successfully"))
         
@@ -142,6 +146,7 @@ class Admin:
         self.get_target_teacher_attendances.operation.connect(self.TeacherAttendance.set_teacher_attendances_list)
         self.get_target_teacher_attendances.finished.connect(self.View.AttendanceLoadingScreen.hide)
 
+        self.View.btn_password.clicked.connect(self.gen_pass_clicked)
         self.View.btn_more.clicked.connect(self.more_clicked)
         self.View.AccountContextMenu._create.connect(self.create_backup)
         self.View.AccountContextMenu._load.connect(self.load_backup)
@@ -170,7 +175,6 @@ class Admin:
         index = section_student_model.createIndex(0,0)
         self.View.lv_section_student.setCurrentIndex(index)
         self.View.lbl_section_students_status.setText(f'Students: {len(students)}')
-
 
     # *Teacher
     def get_model_latest_teacher(self):
@@ -270,10 +274,16 @@ class Admin:
         height = GetSystemMetrics(1)
         if pos.y() > height - self.View.AccountContextMenu.height():
             pos_up = self.View.btn_more.mapToGlobal(self.View.btn_more.rect().topLeft())
-            self.View.AccountContextMenu.move(pos_up.x(), pos_up.y()- self.View.AccountContextMenu.height())
+            self.View.AccountContextMenu.move(pos_up.x(), pos_up.y()- self.View.AccountContextMenu.height() - 10)
         else:
             self.View.AccountContextMenu.move(pos)
         self.View.AccountContextMenu.show()
+
+    def gen_pass_clicked(self):
+        self.GeneratedUserPass.input_user_pass(self.View.temp_passwords)
+        pos_up = self.View.btn_password.mapToGlobal(self.View.btn_password.rect().topLeft())
+        self.GeneratedUserPass.move(pos_up.x(), pos_up.y() - self.GeneratedUserPass.height() - 10)
+        self.GeneratedUserPass.show()
 
     def create_backup(self):
         default_path = os.path.expanduser('~/Documents')

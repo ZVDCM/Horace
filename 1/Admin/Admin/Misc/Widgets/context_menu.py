@@ -52,7 +52,7 @@ class ContextMenu(QtWidgets.QWidget):
         self.label_5.setMaximumSize(QtCore.QSize(22, 22))
         self.label_5.setText("")
         self.label_5.setPixmap(QtGui.QPixmap(relative_path(
-            'Teachers', ['Misc', 'Resources'], 'trash.png')))
+            'Admin', ['Misc', 'Resources'], 'trash.png')))
         self.label_5.setScaledContents(False)
         self.label_5.setAlignment(QtCore.Qt.AlignCenter)
         self.label_5.setObjectName("label_5")

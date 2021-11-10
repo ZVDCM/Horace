@@ -35,7 +35,7 @@ class Admin(QtWidgets.QMainWindow):
             'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
         self.TableClassLoadingScreen = LoadingScreen(self.w_table_class, relative_path(
             'Admin', ['Misc', 'Resources'], 'loading_bars_huge.gif'))
-        
+
         # Section Student
         self.SectionLoadingScreen = LoadingScreen(self.w_section_input, relative_path(
             'Admin', ['Misc', 'Resources'], 'loading_squares.gif'))
@@ -84,6 +84,7 @@ class Admin(QtWidgets.QMainWindow):
         self.ActiveOverlay = ActiveOverlay(self)
         QtWidgets.QApplication.instance().focusChanged.connect(self.on_focus_change)
 
+        self.temp_passwords = {}
 
     def run(self):
         self.raise_()
@@ -216,8 +217,31 @@ class Admin(QtWidgets.QMainWindow):
         spacerItem1 = QtWidgets.QSpacerItem(
             20, 283, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem1)
-        self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
+        self.verticalLayout_999 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_999.setSpacing(20)
+        self.verticalLayout_999.setObjectName("verticalLayout_999")
+        self.btn_password = QtWidgets.QPushButton(self.side_bar)
+        self.btn_password.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_password.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_password.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_password.setStyleSheet("QPushButton{\n"
+                                        "    border: none;\n"
+                                        "    border-radius: none;\n"
+                                        "    background: none;\n"
+                                        "    background-repeat: none;\n"
+                                        f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'password.png')});\n"
+                                        "    background-position: center center;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QPushButton:hover{\n"
+                                        "    background: none;\n"
+                                        "    background-repeat: none;\n"
+                                        f"   background-image: url({relative_path('Admin', ['Misc', 'Resources'], 'password_2.png')});\n"
+                                        "    background-position: center center;\n"
+                                        "}")
+        self.btn_password.setObjectName("btn_password")
+        self.verticalLayout_999.addWidget(self.btn_password)
         self.btn_more = QtWidgets.QPushButton(self.side_bar)
         self.btn_more.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_more.setMaximumSize(QtCore.QSize(30, 30))
@@ -238,11 +262,11 @@ class Admin(QtWidgets.QMainWindow):
                                     "    background-position: center center;\n"
                                     "}")
         self.btn_more.setObjectName("btn_more")
-        self.horizontalLayout_7.addWidget(self.btn_more)
+        self.verticalLayout_999.addWidget(self.btn_more)
         spacerItem2 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_7.addItem(spacerItem2)
-        self.verticalLayout_5.addLayout(self.horizontalLayout_7)
+        self.verticalLayout_999.addItem(spacerItem2)
+        self.verticalLayout_5.addLayout(self.verticalLayout_999)
         self.horizontalLayout.addWidget(self.side_bar)
         self.widget_2 = QtWidgets.QWidget(self.centralwidget)
         self.widget_2.setStyleSheet("background: #081425")
@@ -269,70 +293,71 @@ class Admin(QtWidgets.QMainWindow):
         self.w_table_section_student = QtWidgets.QWidget(self.section_student)
         self.w_table_section_student.setMinimumSize(QtCore.QSize(377, 0))
         self.w_table_section_student.setStyleSheet("QWidget{\n"
-                                    "    background: #102542;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QLineEdit {\n"
-                                    "      padding: 1px 5px;\n"
-                                    "      border: 1px solid #0e4884;\n"
-                                    "      border-radius: 5px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton {\n"
-                                    "  padding: 5px;\n"
-                                    "  border: 1px solid #0e4884;\n"
-                                    "  background-color: #0e4884;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QLineEdit:focus,\n"
-                                    "QLineEdit:hover,\n"
-                                    "QPushButton:focus,\n"
-                                    "QPushButton:hover {\n"
-                                    "  border: 1px solid #256eff;\n"
-                                    "  outline: none;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton:pressed {\n"
-                                    "  background-color: #072f49;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar:vertical{\n"
-                                    "    width: 18px;\n"
-                                    "    margin: 0px 3px 0px 7px;\n"
-                                    "    border-radius: 5px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::handle:vertical{\n"
-                                    "    background-color: #97b9f4;    \n"
-                                    "    min-height: 5px;\n"
-                                    "     border-radius: 4px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::sub-line:vertical{\n"
-                                    "     height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-line:vertical{\n"
-                                    "        height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-page:vertical{\n"
-                                    "    background: #0b1a30;\n"
-                                    "    border-bottom-left-radius: 4px;\n"
-                                    "    border-bottom-right-radius: 4px;\n"
-                                    "    margin-top: -3px;\n"
-                                    " }\n"
-                                    "\n"
-                                    "QScrollBar::sub-page:vertical{\n"
-                                    "      background: #0b1a30;\n"
-                                    "    border-top-left-radius: 4px;\n"
-                                    "    border-top-right-radius: 4px;\n"
-                                    "    margin-bottom: -3px;\n"
-                                    "}")
+                                                   "    background: #102542;\n"
+                                                   "}\n"
+                                                   "\n"
+                                                   "QLineEdit {\n"
+                                                   "      padding: 1px 5px;\n"
+                                                   "      border: 1px solid #0e4884;\n"
+                                                   "      border-radius: 5px;\n"
+                                                   "}\n"
+                                                   "\n"
+                                                   "QPushButton {\n"
+                                                   "  padding: 5px;\n"
+                                                   "  border: 1px solid #0e4884;\n"
+                                                   "  background-color: #0e4884;\n"
+                                                   "}\n"
+                                                   "\n"
+                                                   "QLineEdit:focus,\n"
+                                                   "QLineEdit:hover,\n"
+                                                   "QPushButton:focus,\n"
+                                                   "QPushButton:hover {\n"
+                                                   "  border: 1px solid #256eff;\n"
+                                                   "  outline: none;\n"
+                                                   "}\n"
+                                                   "\n"
+                                                   "QPushButton:pressed {\n"
+                                                   "  background-color: #072f49;\n"
+                                                   "}\n"
+                                                   "\n"
+                                                   "QScrollBar:vertical{\n"
+                                                   "    width: 18px;\n"
+                                                   "    margin: 0px 3px 0px 7px;\n"
+                                                   "    border-radius: 5px;\n"
+                                                   "}\n"
+                                                   "\n"
+                                                   "QScrollBar::handle:vertical{\n"
+                                                   "    background-color: #97b9f4;    \n"
+                                                   "    min-height: 5px;\n"
+                                                   "     border-radius: 4px;\n"
+                                                   "}\n"
+                                                   "\n"
+                                                   "QScrollBar::sub-line:vertical{\n"
+                                                   "     height: 0;\n"
+                                                   "     width: 0;\n"
+                                                   "}\n"
+                                                   "\n"
+                                                   "QScrollBar::add-line:vertical{\n"
+                                                   "        height: 0;\n"
+                                                   "     width: 0;\n"
+                                                   "}\n"
+                                                   "\n"
+                                                   "QScrollBar::add-page:vertical{\n"
+                                                   "    background: #0b1a30;\n"
+                                                   "    border-bottom-left-radius: 4px;\n"
+                                                   "    border-bottom-right-radius: 4px;\n"
+                                                   "    margin-top: -3px;\n"
+                                                   " }\n"
+                                                   "\n"
+                                                   "QScrollBar::sub-page:vertical{\n"
+                                                   "      background: #0b1a30;\n"
+                                                   "    border-top-left-radius: 4px;\n"
+                                                   "    border-top-right-radius: 4px;\n"
+                                                   "    margin-bottom: -3px;\n"
+                                                   "}")
         self.w_table_section_student.setObjectName("w_table_section_student")
-        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.w_table_section_student)
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(
+            self.w_table_section_student)
         self.verticalLayout_6.setContentsMargins(15, 15, 15, 15)
         self.verticalLayout_6.setSpacing(5)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
@@ -340,7 +365,8 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_8.setContentsMargins(-1, -1, -1, 10)
         self.horizontalLayout_8.setSpacing(6)
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
-        self.lbl_sections_table_status = QtWidgets.QLabel(self.w_table_section_student)
+        self.lbl_sections_table_status = QtWidgets.QLabel(
+            self.w_table_section_student)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
@@ -357,7 +383,8 @@ class Admin(QtWidgets.QMainWindow):
         self.line_8.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_8.setObjectName("line_8")
         self.horizontalLayout_8.addWidget(self.line_8)
-        self.lbl_students_table_status = QtWidgets.QLabel(self.w_table_section_student)
+        self.lbl_students_table_status = QtWidgets.QLabel(
+            self.w_table_section_student)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(10)
@@ -458,7 +485,8 @@ class Admin(QtWidgets.QMainWindow):
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
         self.line.setObjectName("line")
         self.verticalLayout_6.addWidget(self.line)
-        self.sw_student_section = QtWidgets.QStackedWidget(self.w_table_section_student)
+        self.sw_student_section = QtWidgets.QStackedWidget(
+            self.w_table_section_student)
         self.sw_student_section.setObjectName("sw_student_section")
         self.student_section_table = QtWidgets.QWidget()
         self.student_section_table.setObjectName("student_section_table")
@@ -562,7 +590,8 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_46.addLayout(self.horizontalLayout_47)
         self.verticalLayout_8.addLayout(self.horizontalLayout_46)
         self.tv_sections = TableView(self.groupBox_2)
-        self.tv_sections.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.tv_sections.setSelectionMode(
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.tv_sections.setObjectName("tv_sections")
         self.verticalLayout_8.addWidget(self.tv_sections)
         self.horizontalLayout_11.addWidget(self.groupBox_2)
@@ -651,7 +680,8 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_44.addLayout(self.horizontalLayout_45)
         self.verticalLayout_7.addLayout(self.horizontalLayout_44)
         self.tv_students = TableView(self.groupBox)
-        self.tv_students.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.tv_students.setSelectionMode(
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.tv_students.setObjectName("tv_students")
         self.verticalLayout_7.addWidget(self.tv_students)
         self.horizontalLayout_11.addWidget(self.groupBox)
@@ -661,16 +691,18 @@ class Admin(QtWidgets.QMainWindow):
         self.student_section_student_bulk.setObjectName(
             "student_section_student_bulk")
 
-        self.verticalLayout_100 = QtWidgets.QVBoxLayout(self.student_section_student_bulk)
-        self.verticalLayout_100.setContentsMargins(0,15,0,0)
+        self.verticalLayout_100 = QtWidgets.QVBoxLayout(
+            self.student_section_student_bulk)
+        self.verticalLayout_100.setContentsMargins(0, 15, 0, 0)
         self.verticalLayout_100.setSpacing(15)
 
         self.horizontalLayout_100 = QtWidgets.QHBoxLayout()
         self.verticalLayout_100.addLayout(self.horizontalLayout_100)
-        self.horizontalLayout_100.setContentsMargins(0,0,0,0)
+        self.horizontalLayout_100.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_100.setSpacing(6)
 
-        self.section_combobox = QtWidgets.QComboBox(self.student_section_student_bulk)
+        self.section_combobox = QtWidgets.QComboBox(
+            self.student_section_student_bulk)
         font = QtGui.QFont()
         font.setFamily("Barlow")
         font.setPointSize(12)
@@ -741,7 +773,7 @@ class Admin(QtWidgets.QMainWindow):
         spacerItem6 = QtWidgets.QSpacerItem(
             20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_38.addItem(spacerItem6)
-        
+
         self.sa_student_bulk.setWidget(self.widget_11)
         self.horizontalLayout_27.addWidget(self.sa_student_bulk)
         self.verticalLayout_33 = QtWidgets.QVBoxLayout()
@@ -1608,68 +1640,68 @@ class Admin(QtWidgets.QMainWindow):
         self.w_table_teacher = QtWidgets.QWidget(self.teacher)
         self.w_table_teacher.setMinimumSize(QtCore.QSize(377, 0))
         self.w_table_teacher.setStyleSheet("QWidget{\n"
-                                    "    background: #102542;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QLineEdit {\n"
-                                    "      padding: 1px 5px;\n"
-                                    "      border: 1px solid #0e4884;\n"
-                                    "      border-radius: 5px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton {\n"
-                                    "  padding: 5px;\n"
-                                    "  border: 1px solid #0e4884;\n"
-                                    "  background-color: #0e4884;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QLineEdit:focus,\n"
-                                    "QLineEdit:hover,\n"
-                                    "QPushButton:focus,\n"
-                                    "QPushButton:hover {\n"
-                                    "  border: 1px solid #256eff;\n"
-                                    "  outline: none;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton:pressed {\n"
-                                    "  background-color: #072f49;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar:vertical{\n"
-                                    "    width: 18px;\n"
-                                    "    margin: 0px 3px 0px 7px;\n"
-                                    "    border-radius: 5px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::handle:vertical{\n"
-                                    "    background-color: #97b9f4;    \n"
-                                    "    min-height: 5px;\n"
-                                    "     border-radius: 4px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::sub-line:vertical{\n"
-                                    "     height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-line:vertical{\n"
-                                    "        height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-page:vertical{\n"
-                                    "    background: #0b1a30;\n"
-                                    "    border-bottom-left-radius: 4px;\n"
-                                    "    border-bottom-right-radius: 4px;\n"
-                                    "    margin-top: -3px;\n"
-                                    " }\n"
-                                    "\n"
-                                    "QScrollBar::sub-page:vertical{\n"
-                                    "      background: #0b1a30;\n"
-                                    "    border-top-left-radius: 4px;\n"
-                                    "    border-top-right-radius: 4px;\n"
-                                    "    margin-bottom: -3px;\n"
-                                    "}")
+                                           "    background: #102542;\n"
+                                           "}\n"
+                                           "\n"
+                                           "QLineEdit {\n"
+                                           "      padding: 1px 5px;\n"
+                                           "      border: 1px solid #0e4884;\n"
+                                           "      border-radius: 5px;\n"
+                                           "}\n"
+                                           "\n"
+                                           "QPushButton {\n"
+                                           "  padding: 5px;\n"
+                                           "  border: 1px solid #0e4884;\n"
+                                           "  background-color: #0e4884;\n"
+                                           "}\n"
+                                           "\n"
+                                           "QLineEdit:focus,\n"
+                                           "QLineEdit:hover,\n"
+                                           "QPushButton:focus,\n"
+                                           "QPushButton:hover {\n"
+                                           "  border: 1px solid #256eff;\n"
+                                           "  outline: none;\n"
+                                           "}\n"
+                                           "\n"
+                                           "QPushButton:pressed {\n"
+                                           "  background-color: #072f49;\n"
+                                           "}\n"
+                                           "\n"
+                                           "QScrollBar:vertical{\n"
+                                           "    width: 18px;\n"
+                                           "    margin: 0px 3px 0px 7px;\n"
+                                           "    border-radius: 5px;\n"
+                                           "}\n"
+                                           "\n"
+                                           "QScrollBar::handle:vertical{\n"
+                                           "    background-color: #97b9f4;    \n"
+                                           "    min-height: 5px;\n"
+                                           "     border-radius: 4px;\n"
+                                           "}\n"
+                                           "\n"
+                                           "QScrollBar::sub-line:vertical{\n"
+                                           "     height: 0;\n"
+                                           "     width: 0;\n"
+                                           "}\n"
+                                           "\n"
+                                           "QScrollBar::add-line:vertical{\n"
+                                           "        height: 0;\n"
+                                           "     width: 0;\n"
+                                           "}\n"
+                                           "\n"
+                                           "QScrollBar::add-page:vertical{\n"
+                                           "    background: #0b1a30;\n"
+                                           "    border-bottom-left-radius: 4px;\n"
+                                           "    border-bottom-right-radius: 4px;\n"
+                                           "    margin-top: -3px;\n"
+                                           " }\n"
+                                           "\n"
+                                           "QScrollBar::sub-page:vertical{\n"
+                                           "      background: #0b1a30;\n"
+                                           "    border-top-left-radius: 4px;\n"
+                                           "    border-top-right-radius: 4px;\n"
+                                           "    margin-bottom: -3px;\n"
+                                           "}")
         self.w_table_teacher.setObjectName("w_table_teacher")
         self.verticalLayout_16 = QtWidgets.QVBoxLayout(self.w_table_teacher)
         self.verticalLayout_16.setContentsMargins(15, 15, 15, 15)
@@ -1736,7 +1768,8 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_export_teachers.setIconSize(QtCore.QSize(20, 20))
         self.btn_export_teachers.setObjectName("btn_export_teachers")
         self.horizontalLayout_14.addWidget(self.btn_export_teachers)
-        self.btn_clear_teachers_table = QtWidgets.QPushButton(self.w_table_teacher)
+        self.btn_clear_teachers_table = QtWidgets.QPushButton(
+            self.w_table_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -1769,7 +1802,8 @@ class Admin(QtWidgets.QMainWindow):
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_2.setObjectName("line_2")
         self.verticalLayout_16.addWidget(self.line_2)
-        self.sw_teacher_attendance = QtWidgets.QStackedWidget(self.w_table_teacher)
+        self.sw_teacher_attendance = QtWidgets.QStackedWidget(
+            self.w_table_teacher)
         self.sw_teacher_attendance.setObjectName("sw_teacher_attendance")
         self.teacher_table = QtWidgets.QWidget()
         self.teacher_table.setObjectName("teacher_table")
@@ -1856,7 +1890,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_search_teacher.setCursor(
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_search_teacher.setStyleSheet("border-top-right-radius: 5px;\n"
-                                                  "border-bottom-right-radius: 5px;")
+                                              "border-bottom-right-radius: 5px;")
         self.btn_search_teacher.setText("")
         self.btn_search_teacher.setIcon(icon4)
         self.btn_search_teacher.setIconSize(QtCore.QSize(18, 18))
@@ -1865,7 +1899,8 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_48.addLayout(self.horizontalLayout_49)
         self.verticalLayout_17.addLayout(self.horizontalLayout_48)
         self.tv_teachers = TableView(self.groupBox_3)
-        self.tv_teachers.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.tv_teachers.setSelectionMode(
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.tv_teachers.setObjectName("tv_teachers")
         self.verticalLayout_17.addWidget(self.tv_teachers)
         self.horizontalLayout_17.addWidget(self.groupBox_3)
@@ -2400,7 +2435,7 @@ class Admin(QtWidgets.QMainWindow):
         self.lv_attendance.setObjectName("lv_attendance")
         self.verticalLayout_43.addWidget(self.lv_attendance)
         self.verticalLayout_40.addWidget(self.w_attendance)
-        
+
         self.verticalLayout_40.setStretch(4, 1)
         self.horizontalLayout_4.addWidget(self.widget_7)
         self.horizontalLayout_4.setStretch(0, 2)
@@ -2415,68 +2450,68 @@ class Admin(QtWidgets.QMainWindow):
         self.w_table_class = QtWidgets.QWidget(self.class_member)
         self.w_table_class.setMinimumSize(QtCore.QSize(377, 0))
         self.w_table_class.setStyleSheet("QWidget{\n"
-                                    "    background: #102542;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QLineEdit {\n"
-                                    "      padding: 1px 5px;\n"
-                                    "      border: 1px solid #0e4884;\n"
-                                    "      border-radius: 5px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton {\n"
-                                    "  padding: 5px;\n"
-                                    "  border: 1px solid #0e4884;\n"
-                                    "  background-color: #0e4884;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QLineEdit:focus,\n"
-                                    "QLineEdit:hover,\n"
-                                    "QPushButton:focus,\n"
-                                    "QPushButton:hover {\n"
-                                    "  border: 1px solid #256eff;\n"
-                                    "  outline: none;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton:pressed {\n"
-                                    "  background-color: #072f49;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar:vertical{\n"
-                                    "    width: 18px;\n"
-                                    "    margin: 0px 3px 0px 7px;\n"
-                                    "    border-radius: 5px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::handle:vertical{\n"
-                                    "    background-color: #97b9f4;    \n"
-                                    "    min-height: 5px;\n"
-                                    "     border-radius: 4px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::sub-line:vertical{\n"
-                                    "     height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-line:vertical{\n"
-                                    "        height: 0;\n"
-                                    "     width: 0;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QScrollBar::add-page:vertical{\n"
-                                    "    background: #0b1a30;\n"
-                                    "    border-bottom-left-radius: 4px;\n"
-                                    "    border-bottom-right-radius: 4px;\n"
-                                    "    margin-top: -3px;\n"
-                                    " }\n"
-                                    "\n"
-                                    "QScrollBar::sub-page:vertical{\n"
-                                    "      background: #0b1a30;\n"
-                                    "    border-top-left-radius: 4px;\n"
-                                    "    border-top-right-radius: 4px;\n"
-                                    "    margin-bottom: -3px;\n"
-                                    "}")
+                                         "    background: #102542;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QLineEdit {\n"
+                                         "      padding: 1px 5px;\n"
+                                         "      border: 1px solid #0e4884;\n"
+                                         "      border-radius: 5px;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QPushButton {\n"
+                                         "  padding: 5px;\n"
+                                         "  border: 1px solid #0e4884;\n"
+                                         "  background-color: #0e4884;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QLineEdit:focus,\n"
+                                         "QLineEdit:hover,\n"
+                                         "QPushButton:focus,\n"
+                                         "QPushButton:hover {\n"
+                                         "  border: 1px solid #256eff;\n"
+                                         "  outline: none;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QPushButton:pressed {\n"
+                                         "  background-color: #072f49;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QScrollBar:vertical{\n"
+                                         "    width: 18px;\n"
+                                         "    margin: 0px 3px 0px 7px;\n"
+                                         "    border-radius: 5px;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QScrollBar::handle:vertical{\n"
+                                         "    background-color: #97b9f4;    \n"
+                                         "    min-height: 5px;\n"
+                                         "     border-radius: 4px;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QScrollBar::sub-line:vertical{\n"
+                                         "     height: 0;\n"
+                                         "     width: 0;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QScrollBar::add-line:vertical{\n"
+                                         "        height: 0;\n"
+                                         "     width: 0;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QScrollBar::add-page:vertical{\n"
+                                         "    background: #0b1a30;\n"
+                                         "    border-bottom-left-radius: 4px;\n"
+                                         "    border-bottom-right-radius: 4px;\n"
+                                         "    margin-top: -3px;\n"
+                                         " }\n"
+                                         "\n"
+                                         "QScrollBar::sub-page:vertical{\n"
+                                         "      background: #0b1a30;\n"
+                                         "    border-top-left-radius: 4px;\n"
+                                         "    border-top-right-radius: 4px;\n"
+                                         "    margin-bottom: -3px;\n"
+                                         "}")
         self.w_table_class.setObjectName("w_table_class")
         self.verticalLayout_29 = QtWidgets.QVBoxLayout(self.w_table_class)
         self.verticalLayout_29.setContentsMargins(15, 15, 15, 15)
@@ -2639,7 +2674,8 @@ class Admin(QtWidgets.QMainWindow):
         self.horizontalLayout_52.addLayout(self.horizontalLayout_53)
         self.verticalLayout_31.addLayout(self.horizontalLayout_52)
         self.tv_class = TableView(self.groupBox_5)
-        self.tv_class.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.tv_class.setSelectionMode(
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.tv_class.setObjectName("tv_class")
         self.verticalLayout_31.addWidget(self.tv_class)
         self.horizontalLayout_26.addWidget(self.groupBox_5)
@@ -3095,7 +3131,8 @@ class Admin(QtWidgets.QMainWindow):
         spacerItem25 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_32.addItem(spacerItem25)
-        self.btn_init_add_class_teacher = QtWidgets.QPushButton(self.w_class_teacher)
+        self.btn_init_add_class_teacher = QtWidgets.QPushButton(
+            self.w_class_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3124,7 +3161,8 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_init_add_class_teacher.setObjectName(
             "btn_init_add_class_teacher")
         self.horizontalLayout_32.addWidget(self.btn_init_add_class_teacher)
-        self.btn_delete_class_teacher = QtWidgets.QPushButton(self.w_class_teacher)
+        self.btn_delete_class_teacher = QtWidgets.QPushButton(
+            self.w_class_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3149,7 +3187,8 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_delete_class_teacher.setIconSize(QtCore.QSize(21, 21))
         self.btn_delete_class_teacher.setObjectName("btn_delete_class_teacher")
         self.horizontalLayout_32.addWidget(self.btn_delete_class_teacher)
-        self.btn_clear_class_teacher = QtWidgets.QPushButton(self.w_class_teacher)
+        self.btn_clear_class_teacher = QtWidgets.QPushButton(
+            self.w_class_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3180,7 +3219,8 @@ class Admin(QtWidgets.QMainWindow):
             QtWidgets.QLayout.SetDefaultConstraint)
         self.horizontalLayout_60.setSpacing(0)
         self.horizontalLayout_60.setObjectName("horizontalLayout_60")
-        self.txt_search_class_teacher = QtWidgets.QLineEdit(self.w_class_teacher)
+        self.txt_search_class_teacher = QtWidgets.QLineEdit(
+            self.w_class_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3200,7 +3240,8 @@ class Admin(QtWidgets.QMainWindow):
                                                     "border-bottom-left-radius: 5px;")
         self.txt_search_class_teacher.setObjectName("txt_search_class_teacher")
         self.horizontalLayout_60.addWidget(self.txt_search_class_teacher)
-        self.btn_search_class_teacher = QtWidgets.QPushButton(self.w_class_teacher)
+        self.btn_search_class_teacher = QtWidgets.QPushButton(
+            self.w_class_teacher)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -3951,7 +3992,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_init_edit_teacher.setDisabled(True)
         self.btn_delete_teacher.setDisabled(True)
         self.w_teacher_btn.show()
-    
+
     def disable_teacher_edit_delete(self):
         self.btn_init_edit_teacher.setDisabled(True)
         self.btn_delete_teacher.setDisabled(True)
@@ -4006,7 +4047,7 @@ class Admin(QtWidgets.QMainWindow):
         self.btn_init_edit_class.setDisabled(True)
         self.btn_delete_class.setDisabled(True)
         self.w_class_btn.show()
-        
+
     def disable_class_edit_delete(self):
         self.btn_init_edit_class.setDisabled(True)
         self.btn_delete_class.setDisabled(True)
@@ -4091,20 +4132,20 @@ class Admin(QtWidgets.QMainWindow):
     def run_popup(self, message, icon='information'):
         if icon == 'question':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Admin', ['Misc', 'Resources'], 'question.png')))
+                'Admin', ['Misc', 'Resources'], 'question.png')))
         elif icon == 'warning':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Admin', ['Misc', 'Resources'], 'warning.png')))
+                'Admin', ['Misc', 'Resources'], 'warning.png')))
         elif icon == 'critical':
             self.Popup.lbl_icon.setPixmap(QtGui.QPixmap(relative_path(
-            'Admin', ['Misc', 'Resources'], 'critical.png')))
-        
+                'Admin', ['Misc', 'Resources'], 'critical.png')))
+
         self.Popup.lbl_message.setText(message)
         self.Popup.run()
 
     def set_database_status(self, text):
         self.lbl_database_status.setText(text)
-    
+
     def show_confirm(self, next_step, message=None):
         self.Confirm = Confirm(self.View, message)
         self.Confirm.operation.connect(next_step)
@@ -4119,7 +4160,8 @@ class Admin(QtWidgets.QMainWindow):
 
     def add_section_item(self):
         sectionItem = SectionItem(self)
-        sectionItem.setObjectName(f"sectionItem_{self.verticalLayout_53.count()}")
+        sectionItem.setObjectName(
+            f"sectionItem_{self.verticalLayout_53.count()}")
         self.verticalLayout_53.insertWidget(0, sectionItem)
         self.btn_add_section_bulk.setDisabled(False)
 
@@ -4132,10 +4174,11 @@ class Admin(QtWidgets.QMainWindow):
 
     def add_student_item(self):
         student_item = StudentItem(self)
-        student_item.setObjectName(f"studentItem_{self.verticalLayout_38.count()}")
+        student_item.setObjectName(
+            f"studentItem_{self.verticalLayout_38.count()}")
         self.verticalLayout_38.insertWidget(0, student_item)
         self.btn_add_student_bulk.setDisabled(False)
-        
+
     def clear_student_item(self):
         for index in range(self.verticalLayout_38.count()-1):
             target = self.verticalLayout_38.itemAt(index).widget()
@@ -4145,10 +4188,11 @@ class Admin(QtWidgets.QMainWindow):
 
     def add_teacher_item(self):
         teacher_item = TeacherItem(self)
-        teacher_item.setObjectName(f"teacherItem_{self.verticalLayout_47.count()}")
+        teacher_item.setObjectName(
+            f"teacherItem_{self.verticalLayout_47.count()}")
         self.verticalLayout_47.insertWidget(0, teacher_item)
         self.btn_add_teacher_bulk.setDisabled(False)
-        
+
     def clear_teacher_item(self):
         for index in range(self.verticalLayout_47.count()-1):
             target = self.verticalLayout_47.itemAt(index).widget()
@@ -4161,7 +4205,7 @@ class Admin(QtWidgets.QMainWindow):
         class_item.setObjectName(f"classItem_{self.verticalLayout_50.count()}")
         self.verticalLayout_50.insertWidget(0, class_item)
         self.btn_add_class_bulk.setDisabled(False)
-        
+
     def clear_class_item(self):
         for index in range(self.verticalLayout_50.count()-1):
             target = self.verticalLayout_50.itemAt(index).widget()
@@ -4179,3 +4223,16 @@ class Admin(QtWidgets.QMainWindow):
         else:
             self.ActiveOverlay.is_focused = False
             self.ActiveOverlay.update()
+
+    def add_temp_password(self, name, _pass):
+        self.temp_passwords[name] = _pass
+
+    def edit_temp_password(self, prev, name, _pass):
+        try:
+            del self.temp_passwords[prev]
+        except KeyError:
+            pass
+        self.temp_passwords[name] = _pass
+
+    def delete_temp_password(self, name):
+        del self.temp_passwords[name]

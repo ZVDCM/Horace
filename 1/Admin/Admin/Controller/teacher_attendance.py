@@ -41,13 +41,13 @@ class AddItem(QtCore.QThread):
     operation = QtCore.pyqtSignal()
     error = QtCore.pyqtSignal()
 
-    def __init__(self, fn, layout, widget, tag, additional=None):
+    def __init__(self, View, fn, layout, widget, tag):
         super().__init__()
+        self.View = View
         self.fn = fn
         self.layout = layout
         self.widget = widget
         self.tag = tag
-        self.additional = additional
 
     def run(self):
         error_items = []
@@ -58,8 +58,8 @@ class AddItem(QtCore.QThread):
                 for value in values:
                     if is_blank(value):
                         error_items.append(value)
-                if self.additional:
-                    values = (*self.additional, *values)
+                if values[0]:
+                    self.View.temp_passwords[values[0]] = values[1]
                 res = self.fn(*values)
                 if res == 'successful':
                     target_item.close_item()
@@ -201,7 +201,7 @@ class TeacherAttendance:
         self.View.sw_teacher_attendance.setCurrentIndex(1)
 
     def add_teacher_bulk(self):
-        self.AddItem = AddItem(self.Model.create_teacher, self.View.verticalLayout_47, self.View.scrollAreaWidgetContents_3, 'teacherItem_')
+        self.AddItem = AddItem(self.View, self.Model.create_teacher, self.View.verticalLayout_47, self.View.scrollAreaWidgetContents_3, 'teacherItem_')
         self.AddItem.started.connect(self.View.TableTeacherLoadingScreen.run)
         self.AddItem.operation.connect(self.go_back_teacher)
         items = self.View.verticalLayout_47.count()-1
@@ -469,6 +469,8 @@ class TeacherAttendance:
         self.add_teacher_handler = self.AddTeacher()
 
         self.add_teacher_handler.val = username, password
+        self.add_teacher_handler.operation.connect( 
+            lambda: self.View.add_temp_password(username, password))
         self.add_teacher_handler.operation.connect(self.get_all_teacher_handler.start)
 
         self.get_all_teacher_handler.finished.connect(lambda: self.select_latest_teacher(username))
@@ -497,6 +499,8 @@ class TeacherAttendance:
         self.edit_teacher_handler = self.EditTeacher()
 
         self.edit_teacher_handler.val = self.TargetTeacher.UserID, prev, username, self.TargetTeacher.Salt, self.TargetTeacher.Hash, password
+        self.edit_teacher_handler.operation.connect( 
+            lambda: self.View.edit_temp_password(prev, username, password))
         self.edit_teacher_handler.operation.connect(self.get_all_teacher_handler.start)
 
         self.get_all_teacher_handler.finished.connect(lambda: self.select_latest_teacher(username))
@@ -516,6 +520,8 @@ class TeacherAttendance:
         target = self.TargetTeacher
 
         self.delete_teacher_handler.val = self.TargetTeacher,
+        self.delete_teacher_handler.operation.connect( 
+            lambda: self.View.delete_temp_password(target.Username))
         self.delete_teacher_handler.operation.connect(self.get_all_teacher_handler.start)
 
         self.get_all_teacher_handler.finished.connect(self.get_latest_teacher)
