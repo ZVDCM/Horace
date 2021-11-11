@@ -122,47 +122,75 @@ class Lobby(QtWidgets.QMainWindow):
         self.horizontalLayout.addWidget(self.side_bar)
         self.sw_all = QtWidgets.QStackedWidget(self.centralwidget)
         self.sw_all.setStyleSheet("QWidget {\n"
-                                  "    background: #081425;\n"
-                                  "    color: white; \n"
-                                  "    font-family: Barlow\n"
-                                  "}\n"
-                                  "\n"
-                                  "QLineEdit {\n"
-                                  "    padding: 1px 5px;\n"
-                                  "    border: 1px solid #0e4884;\n"
-                                  "    border-radius: 5px;\n"
-                                  "}\n"
-                                  "\n"
-                                  "QPushButton {\n"
-                                  "  padding: 5px;\n"
-                                  "  border: 1px solid #0e4884;\n"
-                                  "  background-color: #0e4884;\n"
-                                  "}\n"
-                                  "\n"
-                                  "QLineEdit:focus,\n"
-                                  "QLineEdit:hover,\n"
-                                  "QPushButton:focus,\n"
-                                  "QPushButton:hover {\n"
-                                  "  border: 1px solid #256eff;\n"
-                                  "  outline: none;\n"
-                                  "}\n"
-                                  "\n"
-                                  "QPushButton:pressed {\n"
-                                  "  background-color: #072f49;\n"
-                                  "}\n"
-                                  "\n"
-                                  "QGroupBox {\n"
-                                  "    border: 1px solid #083654;\n"
-                                  "    border-radius: 5px;\n"
-                                  "    margin-top: 15px;\n"
-                                  "}\n"
-                                  "QGroupBox::title{\n"
-                                  "    subcontrol-origin: margin;\n"
-                                  "    subcontrol-position: top left;\n"
-                                  "    margin-top: 2px;\n"
-                                  "    margin-left: 20px;\n"
-                                  "    background-color: transparent;\n"
-                                  "}\n"
+                                "    background: #081425;\n"
+                                "    color: white; \n"
+                                "    font-family: Barlow\n"
+                                "}\n"
+                                "\n"
+                                "QLineEdit {\n"
+                                "    padding: 1px 5px;\n"
+                                "    border: 1px solid #0e4884;\n"
+                                "    border-radius: 5px;\n"
+                                "}\n"
+                                "\n"
+                                "QComboBox {\n"
+                                "     padding: 1px 7px;\n"
+                                "     border: 1px solid #0e4884;\n"
+                                "     border-radius: 5px;\n"
+                                "}\n"
+                                "QComboBox::disabled {\n"
+                                "     background: #060d18;"
+                                "     border: none\n"
+                                "}\n"
+                                "\n"
+                                "QPushButton {\n"
+                                "  padding: 5px;\n"
+                                "  border: 1px solid #0e4884;\n"
+                                "  background-color: #0e4884;\n"
+                                "}\n"
+                                "\n"
+                                "QLineEdit:focus,\n"
+                                "QLineEdit:hover,\n"
+                                "QPushButton:focus,\n"
+                                "QPushButton:hover,\n"
+                                "QComboBox:focus,\n"
+                                "QComboBox:hover {\n"
+                                "  border: 1px solid #256eff;\n"
+                                "  outline: none;\n"
+                                "}\n"
+                                "\n"
+                                "QPushButton:pressed {\n"
+                                "  background-color: #072f49;\n"
+                                "}\n"
+                                "\n"
+                                "QGroupBox {\n"
+                                "    border: 1px solid #083654;\n"
+                                "    border-radius: 5px;\n"
+                                "    margin-top: 15px;\n"
+                                "}\n"
+                                "QGroupBox::title{\n"
+                                "    subcontrol-origin: margin;\n"
+                                "    subcontrol-position: top left;\n"
+                                "    margin-top: 2px;\n"
+                                "    margin-left: 20px;\n"
+                                "    background-color: transparent;\n"
+                                "}\n"
+                                "QComboBox::drop-down {\n"    
+                                "    subcontrol-origin: padding;\n"                                                     
+                                "    subcontrol-position: top right;\n"
+                                "    border: none;\n"
+                                "}\n"
+                                "\n"
+                                "QComboBox::down-arrow {\n"
+                                f"   image: url({relative_path('Teachers', ['Misc', 'Resources'], 'down.png')});\n"
+                                "    padding-right: 10px;\n"
+                                "}\n"
+                                "\n"
+                                "QComboBox::down-arrow::disabled {\n"
+                                f"   image: url({relative_path('Teachers', ['Misc', 'Resources'], 'down_2.png')});\n"
+                                "    padding-right: 10px;\n"
+                                "}\n"
+                                "\n"
                                   )
         self.sw_all.setObjectName("sw_all")
         self.classes = QtWidgets.QWidget()
@@ -180,7 +208,7 @@ class Lobby(QtWidgets.QMainWindow):
         font.setFamily("Barlow")
         font.setPointSize(14)
         self.label_6.setFont(font)
-        self.label_6.setStyleSheet("padding-bottom: 3px;")
+        self.label_6.setStyleSheet("padding-top: 2px;")
         self.label_6.setAlignment(QtCore.Qt.AlignCenter)
         self.label_6.setIndent(1)
         self.label_6.setObjectName("label_6")
@@ -219,7 +247,7 @@ class Lobby(QtWidgets.QMainWindow):
 
         self.horizontalLayout_69 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_69.setContentsMargins(0,0,5,0)
-        self.horizontalLayout_69.setSpacing(0)
+        self.horizontalLayout_69.setSpacing(15)
 
         self.label_7 = QtWidgets.QLabel(self.attendances)
         font = QtGui.QFont()
@@ -232,6 +260,185 @@ class Lobby(QtWidgets.QMainWindow):
         self.label_7.setIndent(1)
         self.label_7.setObjectName("label_7")
         self.horizontalLayout_69.addWidget(self.label_7)
+
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_69.addItem(spacerItem)
+
+        self.cmb_year = QtWidgets.QComboBox(self.attendances)
+        self.cmb_year.setDisabled(True)
+        self.cmb_year.setMinimumSize(QtCore.QSize(80, 30))
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(12)
+        self.cmb_year.setFont(font)
+        self.cmb_year.view().setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.cmb_year.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.cmb_year.setMaxVisibleItems(4)
+        self.cmb_year.setSizeAdjustPolicy(
+            QtWidgets.QComboBox.AdjustToContents)
+        self.cmb_year.setStyleSheet("QComboBox QAbstractItemView {\n"
+                           "    outline: none;\n"
+                           "}\n"
+                           "QScrollBar {\n"
+                           "  background: blue;\n"
+                           "  width: 8px;\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::handle {\n"
+                           "  background-color: rgb(68, 68, 68);\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar:vertical {\n"
+                           "  width: 9px;\n"
+                           "  margin: 0;\n"
+                           "  border-radius: 5px;\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::handle:vertical {\n"
+                           "  background-color: #97b9f4;\n"
+                           "  width: 18px;\n"
+                           "\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::sub-line:vertical {\n"
+                           "  height: 0;\n"
+                           "  width: 0;\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::add-line:vertical {\n"
+                           "  height: 0;\n"
+                           "  width: 0;\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::add-page:vertical {\n"
+                           "  background: #0B1A30;\n"
+                           "  margin-top: -3px;\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::sub-page:vertical {\n"
+                           "  background: #0B1A30;\n"
+                           "  margin-bottom: -3px;\n"
+                           "}\n"
+                           "\n")
+        self.cmb_year.setObjectName("cmb_year")
+        self.horizontalLayout_69.addWidget(self.cmb_year)
+
+        self.cmb_month = QtWidgets.QComboBox(self.attendances)
+        self.cmb_month.setDisabled(True)
+        self.cmb_month.setMinimumSize(QtCore.QSize(80, 30))
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(12)
+        self.cmb_month.setFont(font)
+        self.cmb_month.view().setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.cmb_month.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.cmb_month.setMaxVisibleItems(4)
+        self.cmb_month.setSizeAdjustPolicy(
+            QtWidgets.QComboBox.AdjustToContents)
+        self.cmb_month.setStyleSheet("QComboBox QAbstractItemView {\n"
+                           "    outline: none;\n"
+                           "}\n"
+                           "QScrollBar {\n"
+                           "  background: blue;\n"
+                           "  width: 8px;\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::handle {\n"
+                           "  background-color: rgb(68, 68, 68);\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar:vertical {\n"
+                           "  width: 9px;\n"
+                           "  margin: 0;\n"
+                           "  border-radius: 5px;\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::handle:vertical {\n"
+                           "  background-color: #97b9f4;\n"
+                           "  width: 18px;\n"
+                           "\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::sub-line:vertical {\n"
+                           "  height: 0;\n"
+                           "  width: 0;\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::add-line:vertical {\n"
+                           "  height: 0;\n"
+                           "  width: 0;\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::add-page:vertical {\n"
+                           "  background: #0B1A30;\n"
+                           "  margin-top: -3px;\n"
+                           "}\n"
+                           "\n"
+                           "QScrollBar::sub-page:vertical {\n"
+                           "  background: #0B1A30;\n"
+                           "  margin-bottom: -3px;\n"
+                           "}\n"
+                           "\n")
+        self.cmb_month.setObjectName("cmb_month")
+        self.horizontalLayout_69.addWidget(self.cmb_month)
+
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(relative_path('Teachers', ['Misc', 'Resources'], 'download.png')),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(relative_path('Teachers', ['Misc', 'Resources'], 'download_2.png')),
+                       QtGui.QIcon.Disabled, QtGui.QIcon.Off)
+
+        self.btn_download_month = QtWidgets.QPushButton("Monthly Attendances",self.attendances)
+        self.btn_download_month.setIcon(icon)
+        self.btn_download_month.setDisabled(True)
+        font = QtGui.QFont()
+        font.setFamily("Barlow")
+        font.setPointSize(10)
+        self.btn_download_month.setFont(font)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.btn_download_month.sizePolicy().hasHeightForWidth())
+        self.btn_download_month.setSizePolicy(sizePolicy)
+        self.btn_download_month.setCursor(
+            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_download_month.setMinimumSize(
+            QtCore.QSize(0, 30))
+        self.btn_download_month.setMaximumSize(
+            QtCore.QSize(16777215, 30))
+        self.btn_download_month.setStyleSheet("border-radius: 5px;   ")
+        self.btn_download_month.setStyleSheet("""
+            QPushButton{
+                border-radius: 5px;
+                background: none;
+                padding-left: 7px;
+                padding-right: 7px;
+                color: white;
+            }
+
+            QPushButton::disabled{
+                color: #6b6b6b;
+                border: none;
+            }
+                                    """)
+        self.btn_download_month.setObjectName(
+            "btn_download_month")
+        self.horizontalLayout_69.addWidget(self.btn_download_month)
+
+        self.line = QtWidgets.QFrame(self.attendances)
+        self.line.setStyleSheet("color: #083654;")
+        self.line.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.line.setLineWidth(2)
+        self.line.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line.setObjectName("line")
+        self.horizontalLayout_69.addWidget(self.line)
 
         self.btn_download = QtWidgets.QPushButton(self.attendances)
         sizePolicy = QtWidgets.QSizePolicy(

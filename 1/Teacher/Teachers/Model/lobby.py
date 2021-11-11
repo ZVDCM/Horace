@@ -48,7 +48,7 @@ class Lobby:
         db = self.Database.connect()
         cursor = db.cursor(buffered=True)
 
-        select_query = "SELECT Name FROM Attendances WHERE Teacher=%s"
+        select_query = "SELECT Name, Date FROM Attendances WHERE Teacher=%s"
         cursor.execute(select_query, (User.Username,))
 
         attendances = cursor.fetchall()
@@ -57,7 +57,7 @@ class Lobby:
         db.close()
 
         if attendances:
-            return [attendance[0] for attendance in attendances]
+            return [[attendance[0], attendance[-1]] for attendance in attendances]
         return []
 
     def get_attendance_data(self, User, attendance):
@@ -94,4 +94,20 @@ class Lobby:
 
     def is_match(self, salt, _hash, password):
         hashed_password = salt+_hash
-        return check_password(password, hashed_password) 
+        return check_password(password, hashed_password)
+
+    def get_month_attendances(self, month, year):
+        db = self.Database.connect()
+        cursor = db.cursor(buffered=True)
+
+        select_query = f"SELECT Name, File FROM Attendances WHERE Name LIKE '%{month}%{year}%'"
+        cursor.execute(select_query)
+
+        attendances = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        if attendances:
+            return attendances
+        return None

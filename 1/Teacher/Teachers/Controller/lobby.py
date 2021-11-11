@@ -5,7 +5,7 @@ from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QLabel, QMainWindow, QPushButton, QWidget
 import socket
-
+from datetime import datetime
 from win32api import GetSystemMetrics
 
 
@@ -66,6 +66,7 @@ class Lobby:
         self.get_attendances()
 
         self.View.title_bar.title.setText('Lobby')
+        self.dates_dict = {}
 
         self.View.run()
 
@@ -75,7 +76,8 @@ class Lobby:
         self.View.resizeEvent = self.resize
 
         self.View.lv_attendance.clicked.connect(self.attendance_list_clicked)
-        self.View.btn_download.clicked.connect(self.download_attendance)
+        self.View.btn_download_month.clicked.connect(self.init_download_month_attendances)
+        self.View.btn_download.clicked.connect(self.download_attendance)    
 
         self.View.txt_search_attendance.returnPressed.connect(self.search_attendance)
         self.View.btn_search_attendance.clicked.connect(self.search_attendance)
@@ -86,6 +88,7 @@ class Lobby:
         self.View.ContextMenu.sign_out.connect(self.View.close)
 
         self.View.closeEvent = self.lobby_closed
+        self.View.cmb_year.currentTextChanged.connect(self.year_changed)
 
     def GetAllClass(self):
         handler = Get(self.Model.get_all_class)
@@ -101,7 +104,15 @@ class Lobby:
         handler = Get(self.Model.get_all_attendances)
         handler.started.connect(self.View.AttendanceListLoadingScreen.show)
         handler.operation.connect(self.set_attendances)
+        handler.operation.connect(lambda: self.View.cmb_year.setDisabled(False))
+        handler.operation.connect(lambda: self.View.cmb_month.setDisabled(False))
+        handler.operation.connect(lambda: self.View.btn_download_month.setDisabled(False))
         handler.finished.connect(self.View.AttendanceListLoadingScreen.hide)
+        return handler
+
+    def GetMonthAttendances(self):
+        handler = Get(self.Model.get_month_attendances)
+        handler.operation.connect(self.download_month_attendances)
         return handler
 
     def GetAttendanceData(self):
@@ -186,15 +197,29 @@ class Lobby:
 
     def set_attendances(self, attendances):
         if attendances:
-            attendance_model = self.Model.ListModel(self.View.lv_attendance, attendances)
+            file_names = [attendance[0] for attendance in attendances]
+            dates = [attendance[1] for attendance in attendances]
+            for date in dates:
+                self.dates_dict.setdefault(str(date.year),[]).append(date.strftime("%B"))
+            for year, months in self.dates_dict.items():
+                self.dates_dict[year] = set(months)
+                sorted(self.dates_dict[year], key=lambda month: datetime.strptime(month, "%B"))
+                self.View.cmb_year.addItem(year)
+            
+            attendance_model = self.Model.ListModel(self.View.lv_attendance, file_names)
             self.View.lv_attendance.setModel(attendance_model)
             index = attendance_model.createIndex(0,0)
             self.View.lv_attendance.setCurrentIndex(index)
             self.View.lv_attendance.model().layoutChanged.emit()
 
-            self.target_attendance = attendances[0]
+            self.target_attendance = file_names[0]
             self.get_attendance_data(self.target_attendance)
             self.set_lobby_status_handler('Attendances loaded successfully')
+
+    def year_changed(self):
+        self.View.cmb_month.clear()
+        for month in self.dates_dict[self.View.cmb_year.currentText()]:
+            self.View.cmb_month.addItem(month)
 
     def attendance_list_clicked(self, index):
         row = index.row()
@@ -296,3 +321,27 @@ class Lobby:
     
     def set_lobby_status(self, status):
         self.View.set_lobby_status(status)
+
+    def init_download_month_attendances(self):
+        month = self.View.cmb_month.currentText()
+        year = self.View.cmb_year.currentText()
+        path = os.path.expanduser('~/Documents')
+        path = QFileDialog.getExistingDirectory(
+            self.View, 'Save Directory', path)
+        if path:
+            self.Controller.SignInController.SignIn.show_alert('file', 'Downloading file...')
+            self.folder_path = os.path.join(path, f"{month} {year}")
+            try:
+                os.mkdir(self.folder_path)
+            except FileExistsError:
+                pass
+            self.get_month_attendances = self.GetMonthAttendances()
+            self.get_month_attendances.val = month, year
+            self.get_month_attendances.start()
+
+    def download_month_attendances(self, attendances):
+        for attendance in attendances:
+            file_path = os.path.join(self.folder_path, attendance[0])
+            with open(file_path, 'wb') as file:
+                file.write(attendance[1])
+        self.Controller.SignInController.SignIn.show_alert('file', 'File downloaded')

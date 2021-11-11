@@ -201,6 +201,6 @@ class GeneratedUserPass(QtWidgets.QWidget):
             lineedit.setFont(font)
             lineedit.setMinimumSize(QtCore.QSize(0, 30))
             lineedit.setStyleSheet("Background: #081425")
-            lineedit.setDisabled(True)
+            lineedit.setReadOnly(True)
             vbox.addWidget(lineedit)
             self.verticalLayout_3.insertWidget(0, widget)
