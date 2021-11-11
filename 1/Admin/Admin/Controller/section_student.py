@@ -319,6 +319,7 @@ class SectionStudent:
         self.clear_section_student_handler = self.ClearSectionStudentTable()
         self.clear_section_student_handler.finished.connect(self.Admin.init_databases)
         self.clear_section_student_handler.finished.connect(lambda: self.Admin.set_admin_status("Sections and Students table cleared successfully"))
+        self.clear_section_student_handler.finished.connect(self.View.clear_temp_password)
         self.clear_section_student_handler.start()
 
     # *SectionStudent
@@ -1296,6 +1297,7 @@ class SectionStudent:
             self.get_latest_student()
         elif self.View.student_state == "Edit":
             self.View.tv_students.selectRow(self.target_student_row)
+            self.set_student_inputs()
         self.View.set_student('Read')
 
     def init_add_edit_student(self):
@@ -1368,7 +1370,7 @@ class SectionStudent:
 
         self.edit_student_handler.val = self.TargetStudent.UserID, prev, username, self.TargetStudent.Salt, self.TargetStudent.Hash, password
         self.edit_student_handler.operation.connect(
-            lambda: self.View.edit_temp_password(prev, username, password))
+            lambda: self.View.edit_temp_password(username, password, self.TargetStudent))
         self.edit_student_handler.operation.connect(
             self.get_all_student_handler.start)
 

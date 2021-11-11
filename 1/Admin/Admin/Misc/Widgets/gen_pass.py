@@ -150,9 +150,12 @@ class GeneratedUserPass(QtWidgets.QWidget):
         self.label.setText(_translate("Form", "Generated User Passwords"))
 
     def hideEvent(self, event):
-        for i in range(self.verticalLayout_3.count()-2):
-            self.verticalLayout_3.removeWidget(
-                self.verticalLayout_3.itemAt(i).widget())
+        for i in range(self.verticalLayout_3.count()-1):
+            try:
+                self.verticalLayout_3.removeWidget(
+                    self.verticalLayout_3.itemAt(i).widget())
+            except AttributeError:
+                continue
         return super().hideEvent(event)
 
     def connect_signals(self):
@@ -182,12 +185,12 @@ class GeneratedUserPass(QtWidgets.QWidget):
             self.btn_download.setDisabled(True)
 
         for user, _pass in user_pass.items():
-            target = self.scrollAreaWidgetContents.findChild(QtWidgets.QWidget, user+_pass)
+            target = self.scrollAreaWidgetContents.findChild(QtWidgets.QWidget, user)
             if target:
                 continue
             
             widget = QtWidgets.QWidget(self.scrollAreaWidgetContents)
-            widget.setObjectName(user+_pass)
+            widget.setObjectName(user)
             vbox = QtWidgets.QVBoxLayout(widget)
             vbox.setContentsMargins(0, 0, 0, 0)
             font = QtGui.QFont()

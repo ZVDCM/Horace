@@ -4227,12 +4227,21 @@ class Admin(QtWidgets.QMainWindow):
     def add_temp_password(self, name, _pass):
         self.temp_passwords[name] = _pass
 
-    def edit_temp_password(self, prev, name, _pass):
-        try:
-            del self.temp_passwords[prev]
-        except KeyError:
-            pass
-        self.temp_passwords[name] = _pass
+    def edit_temp_password(self, username, _pass, prev_user):
+        if username != prev_user.Username:
+            old_pass = self.temp_passwords[prev_user.Username]
+            del self.temp_passwords[prev_user.Username]
+            self.temp_passwords[username] = old_pass
+            if old_pass != _pass and len(_pass) == 8:
+                self.temp_passwords[username] = _pass
+            return
+        self.temp_passwords[username] = _pass
 
     def delete_temp_password(self, name):
-        del self.temp_passwords[name]
+        try:
+            del self.temp_passwords[name]
+        except KeyError:
+            return
+
+    def clear_temp_password(self):
+        self.temp_passwords = {}

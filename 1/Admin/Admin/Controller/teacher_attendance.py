@@ -188,6 +188,8 @@ class TeacherAttendance:
         self.clear_teacher_table_handler = self.ClearTeacherTable()
         self.clear_teacher_table_handler.finished.connect(self.Admin.init_databases)
         self.clear_teacher_table_handler.finished.connect(self.View.clear_teacher_inputs)
+        self.clear_teacher_table_handler.finished.connect(self.empty_attendance_list)
+        self.clear_teacher_table_handler.finished.connect(self.View.clear_temp_password)
         self.clear_teacher_table_handler.finished.connect(lambda: self.Admin.set_admin_status(f"Teachers table cleared successfully"))
         self.clear_teacher_table_handler.start()
 

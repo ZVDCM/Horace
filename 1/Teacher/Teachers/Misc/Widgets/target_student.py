@@ -70,7 +70,10 @@ class TargetStudent(QtWidgets.QWidget):
         self.btn_close_target.clicked.connect(self.remove_self)
 
     def remove_self(self):
-        self.parent.targets.remove(self.name)
-        self.deleteLater()
+        try:
+            self.parent.targets.remove(self.name)
+        except ValueError:
+            pass
+        self.setParent(None)
         if len(self.parent.targets) == 0:
             self.parent.w_reply.hide()

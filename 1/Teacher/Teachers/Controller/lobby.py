@@ -196,6 +196,7 @@ class Lobby:
         self.get_all_attendances_handler.start()
 
     def set_attendances(self, attendances):
+        self.dates_dict = {}
         if attendances:
             file_names = [attendance[0] for attendance in attendances]
             dates = [attendance[1] for attendance in attendances]

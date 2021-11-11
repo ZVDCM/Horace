@@ -5,7 +5,7 @@ block_cipher = pyi_crypto.PyiBlockCipher(key='HoraceHoraceHora')
 
 
 a = Analysis(['main.py'],
-             pathex=['E:\\Programming\\python\\final\\1\\Student'],
+             pathex=['E:\\Programming\\python\\Final\\1\\Student'],
              binaries=[],
              datas=[],
              hiddenimports=[],

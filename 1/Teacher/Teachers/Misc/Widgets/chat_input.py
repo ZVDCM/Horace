@@ -203,7 +203,13 @@ class ChatInput(QtWidgets.QWidget):
     def hide_targets(self):
         self.targets = []
         for i in range(self.horizontalLayout_15.count()-1):
-            self.horizontalLayout_15.removeWidget(self.horizontalLayout_15.itemAt(i).widget())
+            try:
+                self.horizontalLayout_15.removeWidget(self.horizontalLayout_15.itemAt(i).widget())
+            except AttributeError:
+                continue
+        spacerItem = QtWidgets.QSpacerItem(
+            106, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_15.addItem(spacerItem)
         self.w_reply.hide()
 
     def add_student(self, name):
@@ -211,5 +217,5 @@ class ChatInput(QtWidgets.QWidget):
             return
         target_student = TargetStudent(self, name)
         target_student.setObjectName(name)
-        self.horizontalLayout_15.insertWidget(self.horizontalLayout_15.count()-1,target_student)
+        self.horizontalLayout_15.insertWidget(0, target_student)
         self.targets.append(name)
